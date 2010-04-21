@@ -10,4 +10,8 @@
 		<property name="adherentDao" ref="adherentDao" />
 	</bean>
 
+	<bean id="plongeeService" class="com.asptt.plongee.resa.service.impl.PlongeeServiceImpl">
+		<property name="plongeeDao" ref="plongeeDao" />
+	</bean>
+
 </beans>

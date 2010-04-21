@@ -10,8 +10,11 @@ import com.asptt.plongee.resa.service.AdherentService;
 public class AdherentServiceImpl implements AdherentService {
 
 	private AdherentDao adherentDao;
-	
-	
+
+	public void setAdherentDao(AdherentDao adherentDao) {
+		this.adherentDao = adherentDao;
+	}
+
 	public Adherent rechercherAdherentParIdentifiant(String id) {
 		try {
 			return adherentDao.findById(id);
@@ -28,7 +31,20 @@ public class AdherentServiceImpl implements AdherentService {
 		}
 	}
 
-	public void setAdherentDao(AdherentDao adherentDao) {
-		this.adherentDao = adherentDao;
+	public Adherent rechercherDP(List<Adherent> adherents) {
+		try {
+			return adherentDao.findDP(adherents);
+		} catch (TechnicalException e) {
+			throw new IllegalStateException(e);
+		}
 	}
+
+	public Adherent rechercherPilote(List<Adherent> adherents) {
+		try {
+			return adherentDao.findPilote(adherents);
+		} catch (TechnicalException e) {
+			throw new IllegalStateException(e);
+		}
+	}
+
 }

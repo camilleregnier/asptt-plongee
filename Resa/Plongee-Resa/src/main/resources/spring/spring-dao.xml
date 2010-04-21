@@ -8,6 +8,12 @@
 
 	<bean id="adherentDao" class="com.asptt.plongee.resa.dao.jdbc.AdherentJdbcDao">
 		<property name="dataSource" ref="dataSource" />
+	    <property name="plongeeDao" ref="plongeeDao"/>
+	</bean>
+
+	<bean id="plongeeDao" class="com.asptt.plongee.resa.dao.jdbc.PlongeeJdbcDao">
+		<property name="dataSource" ref="dataSource" />
+	    <property name="adherentDao" ref="adherentDao"/>
 	</bean>
 
 </beans>
