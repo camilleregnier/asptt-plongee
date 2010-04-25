@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
+import com.asptt.plongee.resa.model.Adherent.Encadrement;
+
 public class Plongee implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -112,5 +114,28 @@ public class Plongee implements Serializable {
 			return false;
 		}
 	}
+	
+	public int getNomberOfEncadrant() {
+		int nb = 0;
+		if(null != getParticipants()){
+			for(Adherent adh : getParticipants()){
+				if(null != adh.getEncadrement()){
+					nb = nb +1;
+				}
+			}
+		}
+		return nb;
+	}
 
+	public int getNomberOfNiveau(NiveauAutonomie niveau) {
+		int nb = 0;
+		if(null != getParticipants()){
+			for(Adherent adh : getParticipants()){
+				if( niveau.equals(adh.getNiveau()) ){
+					nb = nb +1;
+				}
+			}
+		}
+		return nb;
+	}
 }
