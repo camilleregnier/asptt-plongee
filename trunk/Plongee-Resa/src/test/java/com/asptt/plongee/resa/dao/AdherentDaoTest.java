@@ -22,8 +22,8 @@ public class AdherentDaoTest extends AbstractDaoTest {
 		Assert.assertNull(inconnu);
 	}
 	
-	
-	public Adherent create() throws TechnicalException {
+	@Test
+	public void testCreate() {
 		Adherent adh = new Adherent();
 		adh.setNumeroLicense("111111");
 		adh.setNom("DICOSTANZO");
@@ -33,9 +33,12 @@ public class AdherentDaoTest extends AbstractDaoTest {
 		adh.setMail("gilbert.costanzo@orange.fr");
 		adh.setEncadrement(Adherent.Encadrement.E4);
 		adh.setPilote(true);
-		adherentDao.create(adh);
-		return adh;
 		
+		try {
+			adherentDao.create(adh);
+			Assert.fail("duplication des adhérents non controlée");
+		} catch (TechnicalException e) {
+			// La duplication a bien été controlée
+		}
 	}
-
 }
