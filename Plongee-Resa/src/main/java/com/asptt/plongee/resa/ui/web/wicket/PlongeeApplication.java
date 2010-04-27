@@ -21,7 +21,7 @@ public class PlongeeApplication extends AuthenticatedWebApplication {
 		super.init();
 
 		// démarrage du contexte Spring (injection des dépendances)
-		ctx = new ClassPathXmlApplicationContext("/spring/spring-service.xml", "/spring/spring-dao.xml", "/spring/spring-datasource.xml");
+		ctx = new ClassPathXmlApplicationContext("/spring/spring-service-impl.xml", "/spring/spring-dao-jdbc.xml", "/spring/spring-datasource.xml");
 		
 		// setting page that Wicket will display if user has no rights to access
 		// a page

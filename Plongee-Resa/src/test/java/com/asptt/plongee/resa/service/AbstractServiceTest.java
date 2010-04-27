@@ -8,7 +8,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.asptt.plongee.resa.dao.AdherentDao;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations={"classpath:/spring/spring-service.xml", "classpath:/spring/spring-dao-test.xml", "classpath:/spring/spring-datasource-test.xml"})
+@ContextConfiguration(locations={"classpath:/spring/spring-service-impl.xml", "classpath:/spring/spring-dao-inmemory.xml"})
 public abstract class AbstractServiceTest {
 
 
