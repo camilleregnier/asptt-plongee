@@ -6,7 +6,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations={"classpath:/spring/spring-dao-test.xml", "classpath:/spring/spring-datasource-test.xml"})
+@ContextConfiguration(locations={"classpath:/spring/spring-dao-jdbc.xml", "classpath:/spring/spring-datasource-test.xml"})
 public abstract class AbstractDaoTest {
 
 
