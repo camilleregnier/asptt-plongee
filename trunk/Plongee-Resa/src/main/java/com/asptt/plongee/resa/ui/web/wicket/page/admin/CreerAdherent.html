@@ -1,0 +1,34 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:wicket="http://wicket.apache.org" xml:lang="fr">
+
+    <head>
+        <title>Creer Adherent</title>
+        <link rel="stylesheet" type="text/css" href="plongee.css" />
+    </head>
+    <body>
+        <div id="wrapper">
+            <div id="en tete">
+                <div id="bandeau">
+                    <img src="logoAsptt.gif">
+                </div>
+                <div id="menu">
+                </div>
+            </div>
+            <form wicket:id="inputForm" id="inputForm">
+            <div id="corps">
+                Nom<input wicket:id="nom"/><br>
+                Prenom<input wicket:id="prenom"/><br>
+                License<input wicket:id="numeroLicense"/><br>
+                Telephone<input wicket:id="telephone"/><br>
+                Mail<input wicket:id="mail"/>
+            </div>
+            <input type="submit" value="Valider" />
+            </form>
+        </div>
+        <div id="pied">
+            <img src="piedPageAsptt.gif">   
+        </div>
+    </body>
+</html>   
