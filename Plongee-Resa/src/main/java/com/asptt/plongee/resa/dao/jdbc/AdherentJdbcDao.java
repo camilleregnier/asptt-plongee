@@ -36,11 +36,15 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 			st.setString(4, adh.getNiveau().toString());
 			st.setString(5, adh.getTelephone());
 			st.setString(6, adh.getMail());
-			st.setString(7, adh.getEncadrement().toString());
+			if(null == adh.getEncadrement()){
+				st.setString(7, null);
+			} else {
+				st.setString(7, adh.getEncadrement().name());
+			}
 			if(adh.isPilote()){
-				st.setInt(7, 1);
+				st.setInt(8, 1);
 			}else{
-				st.setInt(7, 0);
+				st.setInt(8, 0);
 			}
 			if (st.executeUpdate() == 0) {
 				throw new TechnicalException("L'adhérent n'a pu être enregistré"); 
@@ -54,7 +58,7 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 	public void delete(Adherent adh) throws TechnicalException {
 		try {
 			StringBuffer sb = new StringBuffer();
-			sb.append("DELETE ADHERENT WHERE");
+			sb.append("DELETE FROM ADHERENT WHERE");
 			sb.append(" LICENSE = ?");
 			PreparedStatement st = getDataSource().getConnection().
 				prepareStatement(sb.toString());
