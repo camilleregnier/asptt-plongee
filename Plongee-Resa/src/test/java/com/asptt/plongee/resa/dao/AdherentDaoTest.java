@@ -23,7 +23,7 @@ public class AdherentDaoTest extends AbstractDaoTest {
 	}
 	
 	@Test
-	public void testCreate() {
+	public void testCreateKo() {
 		Adherent adh = new Adherent();
 		adh.setNumeroLicense("111111");
 		adh.setNom("DICOSTANZO");
@@ -38,7 +38,50 @@ public class AdherentDaoTest extends AbstractDaoTest {
 			adherentDao.create(adh);
 			Assert.fail("duplication des adhérents non controlée");
 		} catch (TechnicalException e) {
+			System.out.println("On a bien une exception");
 			// La duplication a bien été controlée
 		}
 	}
+
+	@Test
+	public void testCreateOk() {
+		Adherent adh = new Adherent();
+		adh.setNumeroLicense("123456");
+		adh.setNom("NomTEST");
+		adh.setPrenom("PrenomTEST");
+		adh.setNiveau(com.asptt.plongee.resa.model.NiveauAutonomie.P3);
+		adh.setTelephone("1111111111");
+		adh.setMail("titi.toto@orange.fr");
+		adh.setEncadrement(null);
+		adh.setPilote(false);
+		
+		try {
+			adherentDao.create(adh);
+			System.out.println("On a bien une creation");
+		} catch (TechnicalException e) {
+			Assert.fail("creation d'un adherent plantée");
+			// La duplication a bien été controlée
+		}
+	}
+
+	@Test
+	public void testDelete() {
+		Adherent adh = new Adherent();
+		adh.setNumeroLicense("123456");
+		adh.setNom("NomTEST");
+		adh.setPrenom("PrenomTEST");
+		adh.setNiveau(com.asptt.plongee.resa.model.NiveauAutonomie.P3);
+		adh.setTelephone("1111111111");
+		adh.setMail("titi.toto@orange.fr");
+		adh.setEncadrement(null);
+		adh.setPilote(false);
+		try {
+			adherentDao.delete(adh);
+			System.out.println("On a bien une suppression");
+		} catch (TechnicalException e) {
+			Assert.fail("Suppression d'un adherent plantée");
+			// La duplication a bien été controlée
+		}
+	}
+
 }
