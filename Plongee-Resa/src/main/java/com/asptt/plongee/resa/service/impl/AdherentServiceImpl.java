@@ -9,6 +9,16 @@ import com.asptt.plongee.resa.service.AdherentService;
 
 public class AdherentServiceImpl implements AdherentService {
 
+	public void creerAdherent(Adherent adherent) {
+		try {
+			adherentDao.create(adherent);
+		} catch (TechnicalException e) {
+			e.printStackTrace();
+			throw new IllegalStateException(e);
+		}
+		
+	}
+
 	private AdherentDao adherentDao;
 
 	public void setAdherentDao(AdherentDao adherentDao) {
