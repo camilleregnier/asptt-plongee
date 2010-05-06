@@ -10,8 +10,9 @@ public class Adherent {
 	private String numeroLicense; // ID
 	private String nom;
 	private String prenom;
-	private Encadrement encadrement;
-	private NiveauAutonomie niveau;
+	private String encadrement;
+	private NiveauAutonomie n = NiveauAutonomie.P0;
+	private String niveau = NiveauAutonomie.P0.toString();
 	private boolean pilote;
 	private boolean dp;
 	private Byte[] photo; // au format jpeg ??
@@ -50,15 +51,19 @@ public class Adherent {
 		this.nom = nom;
 	}
 
-	public Encadrement getEncadrement() {
+	public String getEncadrement() {
 		return encadrement;
 	}
 
 	public void setEncadrement(Encadrement encadrement) {
-		this.encadrement = encadrement;
+		this.encadrement = encadrement.toString();
+	}
+	
+	public void setEncadrement(String encadrement) {
+		setEncadrement(Encadrement.valueOf(encadrement));
 	}
 
-	public NiveauAutonomie getNiveau() {
+	public String getNiveau() {
 		return niveau;
 	}
 
@@ -66,7 +71,11 @@ public class Adherent {
 		if(niveau.equals(niveau.P5)){
 			setDp(true);
 		}
-		this.niveau = niveau;
+		this.niveau = niveau.toString();
+	}
+	
+	public void setNiveau(String niveau) {
+		setNiveau(NiveauAutonomie.valueOf(niveau));
 	}
 
 	public boolean isPilote() {
