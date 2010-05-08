@@ -13,7 +13,6 @@ import com.asptt.plongee.resa.model.Adherent;
 import com.asptt.plongee.resa.model.NiveauAutonomie;
 import com.asptt.plongee.resa.model.Plongee;
 import com.asptt.plongee.resa.model.Adherent.Encadrement;
-import com.asptt.plongee.resa.service.impl.PlongeeServiceImpl;
 
 public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 
@@ -39,7 +38,7 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 			if(null == adh.getEncadrement()){
 				st.setString(7, null);
 			} else {
-				st.setString(7, adh.getEncadrement().name());
+				st.setString(7, adh.getEncadrement());
 			}
 			if(adh.isPilote()){
 				st.setInt(8, 1);
