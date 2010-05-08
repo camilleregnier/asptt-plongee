@@ -56,7 +56,11 @@ public class Adherent {
 	}
 
 	public void setEncadrement(Encadrement encadrement) {
-		this.encadrement = encadrement.toString();
+		if(null == encadrement){
+			this.encadrement = null;
+		}else{
+			this.encadrement = encadrement.toString();
+		}
 	}
 	
 	public void setEncadrement(String encadrement) {
