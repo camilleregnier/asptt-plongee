@@ -16,35 +16,39 @@
 
 <meta name="author" content="Zenika" />
 
-<link href="css/zencontact.css" media="screen" rel="stylesheet"
-	type="text/css" />
+<link rel="stylesheet" type="text/css" href="/medias/css/plongee.css" />
 
 </head>
 
 <body>
+<div id="wrapper">
+	<div id="en tete">
+                <div id="bandeau">
+                    <img src="/medias/images/logoAsptt.gif">
+                </div>
+            </div>
+	<p>
+	
+		<wicket:link>
+			<a href="AccueilPage.html">Accueil</a>
+			<a href="inscription/InscriptionPlongeePage.html">R&eacute;server plong&eacute;e(s)</a>
+			<a href="consultation/ConsulterPlongee.html">Consulter les plong&eacute;es</a>
+			<a href="admin/CreerAdherent.html">CreerAdherent</a>
+		</wicket:link>
 
-<div id="header">
-	<wicket:link>
-		<a href="AccueilPage.html">Accueil</a>
-		<a href="inscription/InscriptionPlongeePage.html">R&eacute;server plong&eacute;e(s)</a>
-		<a href="plongees/ConsulterPlongeePage.html">Consulter les plong&eacute;es</a>
-		<a href="admin/CreerAdherent.html">CreerAdherent</a>
-	</wicket:link>
-</div>
-<p></p>
-<div id="content">
-	<div id="contacts">
-		<div class="contact">
-			<wicket:child />
-		</div>
+	</p>
+	<div id="corps">
+		<wicket:child />
 	</div>
 </div>
-
 <div id="footer">
-<p id="legal">
-<a href="http://pagesperso-orange.fr/marseille.plongee/">Asptt Plong&eacute;e</a>
-Copyright&copy; 2010
-</p>
+		<p id="legal">
+			<a href="http://pagesperso-orange.fr/marseille.plongee/">Asptt Plong&eacute;e</a>
+			Copyright&copy; 2010
+		</p>
+	</div>
+<div id="pied">
+	<img src="/medias/images/piedPageAsptt.gif">   
 </div>
 
 </body>

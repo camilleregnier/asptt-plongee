@@ -11,7 +11,7 @@ public class Plongee implements Serializable {
 	public static enum Type {MATIN, APRES_MIDI, SOIR, NUIT }
 	
 	private Integer id;
-	private Type type;
+	private String type;
 	private NiveauAutonomie niveauMinimum;
 	private int nbMaxPlaces;
 	private String niveauDP;
@@ -30,11 +30,14 @@ public class Plongee implements Serializable {
 	public void setId(Integer id) {
 		this.id = id;
 	}
-	public Type getType() {
+	public String getType() {
 		return type;
 	}
 	public void setType(Type type) {
-		this.type = type;
+		this.type = type.toString();
+	}
+	public void setType(String type){
+		setType(Type.valueOf(type));
 	}
 	public NiveauAutonomie getNiveauMinimum() {
 		return niveauMinimum;

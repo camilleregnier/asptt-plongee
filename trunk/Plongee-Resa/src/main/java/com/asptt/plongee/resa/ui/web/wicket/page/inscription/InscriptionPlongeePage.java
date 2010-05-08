@@ -1,17 +1,26 @@
 package com.asptt.plongee.resa.ui.web.wicket.page.inscription;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
+import org.apache.wicket.datetime.markup.html.basic.DateLabel;
 import org.apache.wicket.feedback.IFeedback;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.Check;
 import org.apache.wicket.markup.html.form.CheckBox;
+import org.apache.wicket.markup.html.form.CheckBoxMultipleChoice;
+import org.apache.wicket.markup.html.form.CheckGroup;
+import org.apache.wicket.markup.html.form.CheckGroupSelector;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.util.convert.converters.DateConverter;
 
 import com.asptt.plongee.resa.model.Plongee;
 import com.asptt.plongee.resa.ui.web.wicket.page.TemplatePage;
@@ -29,55 +38,34 @@ public class InscriptionPlongeePage extends TemplatePage {
 		private static final long serialVersionUID = -1555366090072306934L;
 
 		private List<Plongee> data;
+		CheckGroup<Plongee> group = new CheckGroup<Plongee>("group", new ArrayList<Plongee>());
 
 		public InscriptionPlongeeFrom(String name, IFeedback feedback) {
 
 			super(name);
+					
+			add(group);
 
-//			// ajout de quelques plong�es, mais �a devra �tre r�cup�r� de la base
-//			data = new ArrayList<Plongee>();
-//			Calendar cal = Calendar.getInstance();
-//			data.add(new Plongee(cal.getTime(), false));
-//			cal.add(Calendar.DAY_OF_WEEK, 1);
-//			data.add(new Plongee(cal.getTime(), false));
-//			cal.add(Calendar.DAY_OF_WEEK, 1);
-//			data.add(new Plongee(cal.getTime(), false));
-//			cal.add(Calendar.DAY_OF_WEEK, 1);
-//			data.add(new Plongee(cal.getTime(), false));
-//		
-//			ListView<Plongee> listView = new ListView<Plongee>("list", data) {
-//				protected void populateItem(ListItem<Plongee> item) {
-//					Plongee plongee = (Plongee) item.getModelObject();
-//					item.add(new Label("name", plongee.getDate().toString()));
-//					item.add(new CheckBox("check", new PropertyModel<Boolean>(
-//							plongee, "statut")));
-//				}
-//			};
-//			listView.setReuseItems(true);
-//			add(listView);
+			group.add(new CheckGroupSelector("groupselector"));
 			
 			data = 	getResaSession().getPlongeeService().rechercherPlongeeTout();
 
-			ListView<Plongee> listView2 = new ListView("plongeeList", data){
-				public void populateItem(final ListItem listItem) {                
-					final Plongee plongee =	(Plongee)listItem.getModelObject();                
-					listItem.add(new Label("id", new Integer(plongee.getId()).toString()));                
-					listItem.add(new Label("date", plongee.getDate().toString()));                
-					listItem.add(new Label("demiJournee",plongee.getType().toString()));
-					//listItem.add(new Label("statut",plongee.getStatut()));
-					//listItem.add(new CheckBox("check", new PropertyModel<Boolean>(plongee, "statut")));
-					listItem.add(new CheckBox("check"));
+			ListView<Plongee> list = new ListView<Plongee>("plongeeList", data){
+				public void populateItem(ListItem<Plongee> listItem) {           
+					listItem.add(new Check<Plongee>("check", listItem.getModel()));
+					listItem.add(new Label("date", new PropertyModel<Date>(listItem.getDefaultModel(), "date")));                
+					listItem.add(new Label("type",new PropertyModel<String>(listItem.getDefaultModel(), "type")));
 				}
 			
-			};
-			
-			listView2.setReuseItems(true);
-			add(listView2);
+			}.setReuseItems(true);
+			group.add(list);
 			
 		}
 
 		public void onSubmit() {
-			info("data: " + data); // print current contents
+			// TODO appeler le service d'inscription
+			Collection<Plongee> list = group.getModelObject();
+			System.out.println("nb de plongée : " +list.size());
 			setResponsePage(InscriptionConfirmationPlongeePage.class);
 		}
 

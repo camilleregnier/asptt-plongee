@@ -1,18 +1,36 @@
 package com.asptt.plongee.resa.ui.web.wicket.page.admin;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Enumeration;
+import java.util.List;
+
+import org.apache.wicket.markup.html.form.CheckBox;
+import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.ListChoice;
+import org.apache.wicket.markup.html.form.RequiredTextField;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.Model;
+import org.apache.wicket.util.lang.EnumeratedType;
+import org.apache.wicket.validation.validator.EmailAddressValidator;
+import org.apache.wicket.validation.validator.PatternValidator;
 
 import com.asptt.plongee.resa.model.Adherent;
+import com.asptt.plongee.resa.model.NiveauAutonomie;
+import com.asptt.plongee.resa.model.Adherent.Encadrement;
 import com.asptt.plongee.resa.ui.web.wicket.page.AccueilPage;
 import com.asptt.plongee.resa.ui.web.wicket.page.TemplatePage;
 import com.asptt.plongee.resa.ui.web.wicket.page.inscription.InscriptionConfirmationPlongeePage;
 
 public class CreerAdherent extends TemplatePage {
-	
+
 	public CreerAdherent() {
-		//super();
+		// Constructeur du formulaire et du feedback panel pour renvoyer des messages sur la page
+		final FeedbackPanel feedback = new FeedbackPanel("feedback");
+		add(feedback);
 		add(new MyForm("inputForm"));
 	}
 
@@ -24,21 +42,53 @@ public class CreerAdherent extends TemplatePage {
 		private static final long serialVersionUID = 5374674730458593314L;
 
 		public MyForm(String id) {
-			super(id, new CompoundPropertyModel(new Adherent()));
-			add(new TextField("nom"));
-			add(new TextField("prenom"));
-			add(new TextField("numeroLicense"));
-			add(new TextField("telephone"));
-			add(new TextField("mail"));
+			super(id);
+			CompoundPropertyModel model = new CompoundPropertyModel(new Adherent());
+			setModel(model);
+
+			add(new RequiredTextField<String>("nom"));
+			add(new RequiredTextField<String>("prenom"));
+			add(new RequiredTextField<Integer>("numeroLicense",Integer.class));
+			
+			// TODO à modifier plus tard pour validation
+			add(new RequiredTextField<Integer>("telephone", Integer.class));
+			add(new RequiredTextField<String>("mail").add(EmailAddressValidator.getInstance()));
+			//add(new RequiredTextField<String>("telephone"));
+			//add(new RequiredTextField<String>("mail"));
+			
+			// Ajout de la liste des niveaux
+			List<String> niveaux = new ArrayList<String>();
+			for (NiveauAutonomie n : NiveauAutonomie.values()){
+				niveaux.add(n.toString());
+			}
+			add(new DropDownChoice("niveau", niveaux));
+			
+			// Ajjout de la liste des niveaux d'encadrement
+			List<String> encadrement = new ArrayList<String>();
+			for (Adherent.Encadrement e : Adherent.Encadrement.values()){
+				encadrement.add(e.toString());
+			}
+			add(new DropDownChoice("encadrement", encadrement));
+			
+			// Ajout de la checkbox pilote
+			add(new CheckBox("pilote", model.bind("pilote")));
+			
+			
+			// Ajout de la checkbox directeur de plongée
+			add(new CheckBox("dp", model.bind("dp")));
+			
+			//Ajout des roles
+			
 		}
+
 		public void onSubmit() {
 			Adherent adherent = (Adherent) getModelObject();
-			// TODO appeler le service adherent pour creer
+			
 			getResaSession().getAdherentService().creerAdherent(adherent);
-			System.out.println(adherent.toString());
+
 			setResponsePage(AccueilPage.class);
 		}
-		
+
 	}
 
 }

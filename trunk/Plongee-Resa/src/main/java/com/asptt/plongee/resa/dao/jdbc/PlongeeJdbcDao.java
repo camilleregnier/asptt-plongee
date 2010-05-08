@@ -38,7 +38,7 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements PlongeeDao {
 			prepareStatement("SELECT * FROM PLONGEE p  WHERE OUVERTURE_FORCEE=1");
 			ResultSet rs = st.executeQuery();
 			List<Plongee> plongees = new ArrayList<Plongee>();
-			if (rs.next()) {
+			while (rs.next()) {
 				Plongee plongee = wrapPlongee(rs);
 				plongees.add(plongee);
 			}
