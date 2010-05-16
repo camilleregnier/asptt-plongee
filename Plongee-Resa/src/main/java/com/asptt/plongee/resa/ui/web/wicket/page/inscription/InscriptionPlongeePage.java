@@ -22,10 +22,13 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.util.convert.converters.DateConverter;
 
+import com.asptt.plongee.resa.model.Adherent;
 import com.asptt.plongee.resa.model.Plongee;
+import com.asptt.plongee.resa.service.PlongeeService;
 import com.asptt.plongee.resa.ui.web.wicket.page.TemplatePage;
 
 public class InscriptionPlongeePage extends TemplatePage {
+
 
 	public InscriptionPlongeePage() {
 		final FeedbackPanel feedback = new FeedbackPanel("feedback");
@@ -36,19 +39,25 @@ public class InscriptionPlongeePage extends TemplatePage {
 	public class InscriptionPlongeeFrom extends Form {
 
 		private static final long serialVersionUID = -1555366090072306934L;
-
+		
 		private List<Plongee> data;
 		CheckGroup<Plongee> group = new CheckGroup<Plongee>("group", new ArrayList<Plongee>());
 
+		@SuppressWarnings("serial")
 		public InscriptionPlongeeFrom(String name, IFeedback feedback) {
 
 			super(name);
 					
 			add(group);
 
-			group.add(new CheckGroupSelector("groupselector"));
+//			group.add(new CheckGroupSelector("groupselector"));
 			
-			data = 	getResaSession().getPlongeeService().rechercherPlongeeTout();
+			/*
+			 * Retourne la liste des plongées ouvertes, pour les 7 prochains jours
+			 */
+			data = getResaSession().getPlongeeService().rechercherPlongeeOuverteForAdherent( 	
+					getResaSession().getPlongeeService().rechercherPlongeeTout(),
+					getResaSession().getAdherent());
 
 			ListView<Plongee> list = new ListView<Plongee>("plongeeList", data){
 				public void populateItem(ListItem<Plongee> listItem) {           
@@ -65,8 +74,34 @@ public class InscriptionPlongeePage extends TemplatePage {
 		public void onSubmit() {
 			// TODO appeler le service d'inscription
 			Collection<Plongee> list = group.getModelObject();
-			System.out.println("nb de plongée : " +list.size());
-			setResponsePage(InscriptionConfirmationPlongeePage.class);
+			List<Plongee> plongees = new ArrayList<Plongee>(list);
+			System.out.println("nb de plongée : " +plongees.size());
+			for(Plongee plongee : plongees){
+				if(getResaSession().getPlongeeService().isOkForResa(
+						plongee, 
+						getResaSession().getAdherent())){
+					//on peux inscrire l'adherent à la plongee
+					getResaSession().getPlongeeService().inscrireAdherent(
+							plongee, 
+							getResaSession().getAdherent());
+					setResponsePage(InscriptionConfirmationPlongeePage.class);
+				}else{
+					//onverifie si on peux le mettre en liste Attente
+					if(getResaSession().getPlongeeService().isOkForListeAttente(
+							plongee, 
+							getResaSession().getAdherent())){
+						//on peux inscrire l'adherent en liste attente
+						getResaSession().getPlongeeService().inscrireAdherentEnListeAttente(
+								plongee, 
+								getResaSession().getAdherent());
+						//setResponsePage(InscriptionConfirmationListeAttente.class);
+					}else{
+						/*
+						 * Inscription impossible
+						 */
+					}
+				}
+			}
 		}
 
 	}

@@ -28,10 +28,10 @@ public class AdherentDaoTest extends AbstractDaoTest {
 		adh.setNumeroLicense("111111");
 		adh.setNom("DICOSTANZO");
 		adh.setPrenom("Gilbert");
-		adh.setNiveau(com.asptt.plongee.resa.model.NiveauAutonomie.P5);
+		adh.setEnumNiveau(com.asptt.plongee.resa.model.NiveauAutonomie.P5);
 		adh.setTelephone("0491111111");
 		adh.setMail("gilbert.costanzo@orange.fr");
-		adh.setEncadrement(Adherent.Encadrement.E4);
+		adh.setEnumEncadrement(Adherent.Encadrement.E4);
 		adh.setPilote(true);
 		
 		try {
@@ -49,7 +49,7 @@ public class AdherentDaoTest extends AbstractDaoTest {
 		adh.setNumeroLicense("123456");
 		adh.setNom("NomTEST");
 		adh.setPrenom("PrenomTEST");
-		adh.setNiveau(com.asptt.plongee.resa.model.NiveauAutonomie.P3);
+		adh.setEnumNiveau(com.asptt.plongee.resa.model.NiveauAutonomie.P3);
 		adh.setTelephone("1111111111");
 		adh.setMail("titi.toto@orange.fr");
 		adh.setEncadrement(null);
@@ -70,7 +70,7 @@ public class AdherentDaoTest extends AbstractDaoTest {
 		adh.setNumeroLicense("123456");
 		adh.setNom("NomTEST");
 		adh.setPrenom("PrenomTEST");
-		adh.setNiveau(com.asptt.plongee.resa.model.NiveauAutonomie.P3);
+		adh.setEnumNiveau(com.asptt.plongee.resa.model.NiveauAutonomie.P3);
 		adh.setTelephone("1111111111");
 		adh.setMail("titi.toto@orange.fr");
 		adh.setEncadrement(null);

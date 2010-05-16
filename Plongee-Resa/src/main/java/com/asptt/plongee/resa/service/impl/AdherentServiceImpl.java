@@ -1,5 +1,6 @@
 package com.asptt.plongee.resa.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.asptt.plongee.resa.dao.AdherentDao;
@@ -41,20 +42,29 @@ public class AdherentServiceImpl implements AdherentService {
 		}
 	}
 
-	public Adherent rechercherDP(List<Adherent> adherents) {
-		try {
-			return adherentDao.findDP(adherents);
-		} catch (TechnicalException e) {
-			throw new IllegalStateException(e);
+	public List<Adherent> rechercherDPs(List<Adherent> adherents) {
+		List<Adherent> dps = new ArrayList<Adherent>();
+		for(Adherent a : adherents){
+			if(a.isDp()){
+				dps.add(a);
+			}
 		}
+		return dps;
 	}
 
-	public Adherent rechercherPilote(List<Adherent> adherents) {
-		try {
-			return adherentDao.findPilote(adherents);
-		} catch (TechnicalException e) {
-			throw new IllegalStateException(e);
+	public List<Adherent> rechercherPilotes(List<Adherent> adherents) {
+		List<Adherent> pilotes = new ArrayList<Adherent>();
+		for(Adherent a : adherents){
+			if(a.isPilote()){
+				pilotes.add(a);
+			}
 		}
+		return pilotes;
+//		try {
+//			return adherentDao.findPilote(adherents);
+//		} catch (TechnicalException e) {
+//			throw new IllegalStateException(e);
+//		}
 	}
 
 }

@@ -1,8 +1,11 @@
 package com.asptt.plongee.resa.ui.web.wicket;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.wicket.Request;
+import org.apache.wicket.Session;
 import org.apache.wicket.authentication.AuthenticatedWebSession;
 import org.apache.wicket.authorization.strategies.role.Roles;
 import org.springframework.context.ApplicationContext;
@@ -21,12 +24,15 @@ public class ResaSession extends AuthenticatedWebSession {
 	private Plongee plongee;
 	private ApplicationContext ctx;
 
-
 	public ResaSession(Request request, ApplicationContext ctx) {
 		super(request);
 		
 		this.ctx = ctx;
 	}
+	
+	public static ResaSession get() {
+		return (ResaSession) Session.get();
+		}
 	
 	public Adherent getAdherent() {
 		return adherent;
@@ -46,8 +52,7 @@ public class ResaSession extends AuthenticatedWebSession {
 	
 	public Roles getRoles() {
 		if (isSignedIn()) {
-//			return new Roles((String[])adherent.getRoles().toArray());
-			return new Roles("USER");
+			return adherent.getRoles();
 		}
 		return null;
 	}

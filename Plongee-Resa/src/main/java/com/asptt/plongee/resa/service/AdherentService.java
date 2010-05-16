@@ -11,9 +11,9 @@ public interface AdherentService {
 	
 	public List<Adherent> rechercherAdherentTout();
 	
-	public Adherent rechercherDP(List<Adherent> adherents);
+	public List<Adherent> rechercherDPs(List<Adherent> adherents);
 	
-	public Adherent rechercherPilote(List<Adherent> adherents);
+	public List<Adherent> rechercherPilotes(List<Adherent> adherents);
 
 	public void creerAdherent(Adherent adherent);
 

@@ -32,7 +32,8 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 			st.setString(1, adh.getNumeroLicense());
 			st.setString(2, adh.getNom());
 			st.setString(3, adh.getPrenom());
-			st.setString(4, adh.getNiveau().toString());
+//			st.setString(4, adh.getNiveau().toString());
+			st.setString(4, adh.getNiveau());
 			st.setString(5, adh.getTelephone());
 			st.setString(6, adh.getMail());
 			if(null == adh.getEncadrement()){
@@ -51,6 +52,13 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 			return adh;
 		} catch (SQLException e) {
 			throw new TechnicalException(e);
+		} finally{
+			try {
+				getDataSource().getConnection().close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+				throw new TechnicalException("Impossible de cloturer la connexion");
+			}
 		}
 	}
 
@@ -67,6 +75,13 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 			}
 		} catch (SQLException e) {
 			throw new TechnicalException(e);
+		} finally{
+			try {
+				getDataSource().getConnection().close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+				throw new TechnicalException("Impossible de cloturer la connexion");
+			}
 		}
 	}
 
@@ -78,7 +93,7 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 	public List<Adherent> findAll() throws TechnicalException {
 		try {
 			PreparedStatement st = getDataSource().getConnection()
-				.prepareStatement("select * from ADHERENTS");
+				.prepareStatement("select * from ADHERENT");
 			ResultSet rs = st.executeQuery();
 			List<Adherent> adherents = new ArrayList<Adherent>();
 			while (rs.next()) {
@@ -88,6 +103,13 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 			return adherents;
 		} catch (SQLException e) {
 			throw new TechnicalException(e);
+		}finally{
+			try {
+				getDataSource().getConnection().close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+				throw new TechnicalException("Impossible de cloturer la connexion");
+			}
 		}
 	}
 
@@ -104,13 +126,20 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 			return adherent;
 		} catch (SQLException e) {
 			throw new TechnicalException(e);
+		} finally{
+			try {
+				getDataSource().getConnection().close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+				throw new TechnicalException("Impossible de cloturer la connexion");
+			}
 		}
 	}
 
 
 	
 	
-	public List<String> getRoles(Adherent adherent) throws TechnicalException {
+	public List<String> getStrRoles(Adherent adherent) throws TechnicalException {
 		PreparedStatement st;
 		try {
 
@@ -128,6 +157,13 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 			return result;
 		} catch (SQLException e) {
 			throw new TechnicalException(e);
+		} finally{
+			try {
+				getDataSource().getConnection().close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+				throw new TechnicalException("Impossible de cloturer la connexion");
+			}
 		}
 	}
 
@@ -153,6 +189,13 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 			return adherents;
 		} catch (SQLException e) {
 			throw new TechnicalException(e);
+		} finally{
+			try {
+				getDataSource().getConnection().close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+				throw new TechnicalException("Impossible de cloturer la connexion");
+			}
 		}
 	}
 
@@ -160,18 +203,17 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 	throws TechnicalException {
 		PreparedStatement st;
 		try {
-
 			StringBuffer sb = new StringBuffer("select LICENSE, NOM, PRENOM, NIVEAU, TELEPHONE, MAIL, ENCADRANT, PILOTE ");
 			sb.append(" from plongee p, liste_attente la, adherent a ");
 			sb.append(" where idPLONGEES = ?");
 			sb.append(" and idPLONGEES = PLONGEES_idPLONGEES ");
 			sb.append(" and ADHERENT_LICENSE = LICENSE ");
+			sb.append(" and DATE_INSCRIPTION is null");
 			st = getDataSource().getConnection().
 			prepareStatement(sb.toString());
 			st.setInt(1, plongee.getId());
 			ResultSet rs = st.executeQuery();
 			List<Adherent> adherents = new ArrayList<Adherent>();
-			//AdherentServiceImpl daoAdh =AdherentServiceImpl.getInstance();
 			while(rs.next()){
 				Adherent adherent = wrapAdherent(rs);
 				adherents.add(adherent);
@@ -179,26 +221,33 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 			return adherents;
 		} catch (SQLException e) {
 			throw new TechnicalException(e);
+		} finally{
+			try {
+				getDataSource().getConnection().close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+				throw new TechnicalException("Impossible de cloturer la connexion");
+			}
 		}
 	}
 	
-	public Adherent findDP(List<Adherent> adherents) throws TechnicalException {
-		for(Adherent a : adherents){
-			if(a.isDp()){
-				return a;
-			}
-		}
-		return null;
-	}
+//	public Adherent findDP(List<Adherent> adherents) throws TechnicalException {
+//		for(Adherent a : adherents){
+//			if(a.isDp()){
+//				return a;
+//			}
+//		}
+//		return null;
+//	}
 	
-	public Adherent findPilote(List<Adherent> adherents) throws TechnicalException {
-		for(Adherent a : adherents){
-			if(a.isPilote()){
-				return a;
-			}
-		}
-		return null;
-	}
+//	public Adherent findPilote(List<Adherent> adherents) throws TechnicalException {
+//		for(Adherent a : adherents){
+//			if(a.isPilote()){
+//				return a;
+//			}
+//		}
+//		return null;
+//	}
 	
 	private Adherent wrapAdherent(ResultSet rs) throws SQLException, TechnicalException {
 		String licence = rs.getString("LICENSE");
@@ -216,11 +265,11 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 		adherent.setNumeroLicense(licence);
 		adherent.setNom(nom);
 		adherent.setPrenom(prenom);
-		adherent.setNiveau(niveau);
+		adherent.setEnumNiveau(niveau);
 		adherent.setTelephone(telephone);
 		adherent.setMail(mail);
-		adherent.setEncadrement(encadrant);
-		adherent.setRoles(getRoles(adherent));
+		adherent.setEnumEncadrement(encadrant);
+		adherent.setRoles(getStrRoles(adherent));
 		if(pilote == 1){
 			adherent.setPilote(true);
 		} else {

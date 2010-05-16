@@ -8,14 +8,10 @@ import com.asptt.plongee.resa.model.Plongee;
 
 public interface AdherentDao extends GenericDao<Adherent, String> {
 	
-	public List<String> getRoles(Adherent adherent) throws TechnicalException;
+	public List<String> getStrRoles(Adherent adherent) throws TechnicalException;
 
 	public List<Adherent> getAdherentsInscrits(Plongee plongee) throws TechnicalException;
 
 	public List<Adherent> getAdherentsWaiting(Plongee plongee) throws TechnicalException;
 	
-	public Adherent findDP(List<Adherent> adhrents) throws TechnicalException;
-
-	public Adherent findPilote(List<Adherent> adhrents) throws TechnicalException;
-
 }
