@@ -3,6 +3,8 @@ package com.asptt.plongee.resa.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.wicket.authorization.strategies.role.Roles;
+
 public class Adherent {
 
 	public static enum Encadrement {E1, E2, E3, E4 }
@@ -10,15 +12,16 @@ public class Adherent {
 	private String numeroLicense; // ID
 	private String nom;
 	private String prenom;
-	private String encadrement;
-	private NiveauAutonomie n = NiveauAutonomie.P0;
-	private String niveau = NiveauAutonomie.P0.toString();
+	private Encadrement encadrement;
+//	private NiveauAutonomie n = NiveauAutonomie.P0;
+//	private String niveau = NiveauAutonomie.P0.toString();
+	private NiveauAutonomie niveau;
 	private boolean pilote;
 	private boolean dp;
 	private Byte[] photo; // au format jpeg ??
 	private String telephone;
 	private String mail;
-	private List<String> roles;
+	private Roles roles;
 
 	
 	public Adherent() {
@@ -51,35 +54,55 @@ public class Adherent {
 		this.nom = nom;
 	}
 
-	public String getEncadrement() {
+	public Encadrement getEnumEncadrement() {
 		return encadrement;
 	}
 
-	public void setEncadrement(Encadrement encadrement) {
+	public String getEncadrement() {
+		if(null == encadrement){
+			return null;
+		}else{
+			return encadrement.toString();
+		}
+	}
+
+	public void setEnumEncadrement(Encadrement encadrement) {
 		if(null == encadrement){
 			this.encadrement = null;
 		}else{
-			this.encadrement = encadrement.toString();
+			this.encadrement = encadrement;
 		}
 	}
 	
 	public void setEncadrement(String encadrement) {
-		setEncadrement(Encadrement.valueOf(encadrement));
+		setEnumEncadrement(Encadrement.valueOf(encadrement));
+	}
+
+	public NiveauAutonomie getEnumNiveau() {
+		if(null == niveau){
+			return NiveauAutonomie.P0;
+		}else{
+			return niveau;
+		}
 	}
 
 	public String getNiveau() {
-		return niveau;
+		if(null == niveau){
+			return NiveauAutonomie.P0.toString();
+		}else{
+			return niveau.toString();
+		}
 	}
 
-	public void setNiveau(NiveauAutonomie niveau) {
+	public void setEnumNiveau(NiveauAutonomie niveau) {
 		if(niveau.equals(niveau.P5)){
 			setDp(true);
 		}
-		this.niveau = niveau.toString();
+		this.niveau = niveau;
 	}
 	
 	public void setNiveau(String niveau) {
-		setNiveau(NiveauAutonomie.valueOf(niveau));
+		setEnumNiveau(NiveauAutonomie.valueOf(niveau));
 	}
 
 	public boolean isPilote() {
@@ -91,7 +114,7 @@ public class Adherent {
 	}
 
 	public boolean isDp() {
-		if(getNiveau().equals(NiveauAutonomie.P5)){
+		if(getEnumNiveau().equals(NiveauAutonomie.P5)){
 			return true;
 		}else{
 			return false;
@@ -126,15 +149,29 @@ public class Adherent {
 		this.mail = mail;
 	}
 
-	public List<String> getRoles() {
+	public Roles getRoles() {
 		if(null == roles){
-			roles = new ArrayList<String>();
+			roles = new Roles();
 		}
 		return roles;
 	}
 
+//	public String[] getTabRoles() {
+//		if(null == roles){
+//			roles = new Roles();
+//		}
+//		String[] tabRoles = new String[roles.size()];
+//		for(int i =0; i< roles.size(); i++){
+//			tabRoles[i] = roles.get(i);
+//		}
+//		return tabRoles;
+//	}
+
 	public void setRoles(List<String> roles) {
-		this.roles = roles;
+		this.roles = new Roles();
+		for(String role : roles){
+			this.roles.add(role);
+		}
 	}
 
 }

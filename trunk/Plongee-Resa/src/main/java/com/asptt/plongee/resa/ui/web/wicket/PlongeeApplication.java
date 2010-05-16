@@ -6,12 +6,15 @@ import org.apache.wicket.Session;
 import org.apache.wicket.authentication.AuthenticatedWebApplication;
 import org.apache.wicket.authentication.AuthenticatedWebSession;
 import org.apache.wicket.authentication.pages.SignInPage;
+import org.apache.wicket.authorization.strategies.role.RoleAuthorizationStrategy;
+import org.apache.wicket.authorization.strategies.role.metadata.MetaDataRoleAuthorizationStrategy;
 import org.apache.wicket.markup.html.WebPage;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.asptt.plongee.resa.ui.web.wicket.page.AccueilPage;
 import com.asptt.plongee.resa.ui.web.wicket.page.LoginPage;
+import com.asptt.plongee.resa.ui.web.wicket.page.admin.CreerAdherent;
 
 public class PlongeeApplication extends AuthenticatedWebApplication {
 
@@ -27,8 +30,12 @@ public class PlongeeApplication extends AuthenticatedWebApplication {
 		// a page
 		getApplicationSettings().setAccessDeniedPage(LoginPage.class);
 		// setting authorization strategy (you can use any strategy you like)
-		// getSecuritySettings().setAuthorizationStrategy( new
-		// RoleAuthorizationStrategy( new MyRoleCheckingStrategy() ) );
+//		getSecuritySettings().setAuthorizationStrategy( new
+//		 RoleAuthorizationStrategy( new MyRoleCheckingStrategy() ) );
+//		getSecuritySettings().setAuthorizationStrategy(
+//				new RoleAuthorizationStrategy(new RoleAuthorizationStrategy()));
+//			MetaDataRoleAuthorizationStrategy.authorize(CreerAdherent.class, "ADMIN");
+//			MetaDataRoleAuthorizationStrategy.authorize(AdminInternalPage.class, "ADMIN");
 		// mounting login page so that it can be referred to in the security
 		// constraint
 		mountBookmarkablePage("/login", LoginPage.class);		
@@ -41,9 +48,8 @@ public class PlongeeApplication extends AuthenticatedWebApplication {
 	/**
 	 * Overriding newWebRequest so that to store take user information from
 	 * servletRequest and put it into wicket session.
-	 */
 	@Override
-	/*protected WebRequest newWebRequest(final HttpServletRequest servletRequest) {
+	protected WebRequest newWebRequest(final HttpServletRequest servletRequest) {
 		final WebRequest webRequest = super.newWebRequest(servletRequest);
 		final Session session = getSessionStore().lookup(webRequest);
 		if (session != null) {
@@ -52,7 +58,8 @@ public class PlongeeApplication extends AuthenticatedWebApplication {
 			 );
 		}
 		return webRequest;
-	}*/
+	}
+	 */
 
 	public Class<? extends WebPage> getHomePage() {
 		return AccueilPage.class;

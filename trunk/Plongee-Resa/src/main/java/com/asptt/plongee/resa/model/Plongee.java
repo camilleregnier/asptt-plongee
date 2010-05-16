@@ -1,6 +1,7 @@
 package com.asptt.plongee.resa.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -88,12 +89,18 @@ public class Plongee implements Serializable {
 		this.pilote = pilote;
 	}
 	public List<Adherent> getParticipants() {
+		if(null == participants){
+			return new ArrayList<Adherent>();
+		}
 		return participants;
 	}
 	public void setParticipants(List<Adherent> participants) {
 		this.participants = participants;
 	}
 	public List<Adherent> getParticipantsEnAttente() {
+		if(null == participantsEnAttente){
+			return new ArrayList<Adherent>();
+		}
 		return participantsEnAttente;
 	}
 	public void setParticipantsEnAttente(List<Adherent> participantsEnAttente) {

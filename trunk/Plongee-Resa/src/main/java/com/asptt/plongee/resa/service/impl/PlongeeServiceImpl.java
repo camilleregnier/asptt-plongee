@@ -38,14 +38,23 @@ public class PlongeeServiceImpl implements PlongeeService {
 
 	public List<Plongee> rechercherPlongeeTout() {
 		try {
-			return plongeeDao.findAll();
+//			return plongeeDao.findAll();
+			return plongeeDao.getPlongeesForWeek();
 		} catch (TechnicalException e) {
 			throw new IllegalStateException(e);
 		}
 	}
 
-	
-	
+	public List<Plongee> rechercherPlongeeAOuvrir(List<Plongee> plongees) {
+		List<Plongee> plongeesFermees = new ArrayList<Plongee>();
+		for(Plongee plongee : plongees){
+			if(!isOuverte(plongee)){
+				plongeesFermees.add(plongee);
+			}
+		}
+		return plongeesFermees;
+	}
+
 	public List<Plongee> rechercherPlongeeOuverteTout(List<Plongee> plongees) {
 		List<Plongee> plongeesOuvertes = new ArrayList<Plongee>();
 		for(Plongee plongee : plongees){
@@ -54,11 +63,47 @@ public class PlongeeServiceImpl implements PlongeeService {
 			}
 		}
 		return plongeesOuvertes;
-//		try {
-//			return plongeeDao.findAllOuvertes();
-//		} catch (TechnicalException e) {
-//			throw new IllegalStateException(e);
-//		}
+	}
+
+	public List<Plongee> rechercherPlongeeOuverteForAdherent(
+			List<Plongee> plongees, Adherent adherent) {
+		List<Plongee> plongeesOuvertes = new ArrayList<Plongee>();
+		for(Plongee plongee : plongees){
+			if(isOuverte(plongee)){
+				boolean isNotInscrit = true;
+				for(Adherent adh : plongee.getParticipants()){
+					if( adh.getNumeroLicense().equalsIgnoreCase(adherent.getNumeroLicense()) ){
+						isNotInscrit=false;
+						break;
+					}
+				}
+				if(isNotInscrit){
+					plongeesOuvertes.add(plongee);
+				}
+			}
+		}
+		return plongeesOuvertes;
+	}
+
+	public List<Plongee> rechercherPlongeesOuvertesWithAttente(
+			List<Plongee> plongees) {
+		List<Plongee> plongeesAttente = new ArrayList<Plongee>();
+		for(Plongee plongee : plongees){
+			if(isOuverte(plongee)){
+				if( plongee.getParticipantsEnAttente().size() > 0 ){
+					plongeesAttente.add(plongee);
+				}
+			}
+		}
+		return plongeesAttente;
+	}
+
+	public List<Plongee> rechercherPlongeeInscritForAdherent(Adherent adherent) {
+		try {
+			return plongeeDao.getPlongeesForAdherent(adherent);
+		} catch (TechnicalException e) {
+			throw new IllegalStateException(e);
+		}
 	}
 
 	public List<Adherent> rechercherInscriptions(Plongee plongee) {
@@ -89,4 +134,66 @@ public class PlongeeServiceImpl implements PlongeeService {
 		}
 	}
 
+	public Integer getNbPlaceRestante(Plongee plongee) {
+		try {
+			return plongee.getNbMaxPlaces() - 
+			adherentDao.getAdherentsWaiting(plongee).size();
+		} catch (TechnicalException e) {
+			e.printStackTrace();
+			throw new IllegalStateException(e);
+		}
+	}
+
+	public boolean isOkForResa(Plongee plongee, Adherent adherent) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public boolean isOkForListeAttente(Plongee plongee, Adherent adherent) {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	public void fairePasserAttenteInscrire(Plongee plongee, Adherent adherent) {
+		try {
+			plongeeDao.inscrireAdherentAttente(plongee, adherent);
+		} catch (TechnicalException e) {
+			throw new IllegalStateException(e);
+		}
+	}
+
+	public void inscrireAdherent(Plongee plongee, Adherent adherent) {
+		try {
+			plongeeDao.inscrireAdherentPlongee(plongee, adherent);
+		} catch (TechnicalException e) {
+			throw new IllegalStateException(e);
+		}
+	}
+
+	public void inscrireAdherentEnListeAttente(Plongee plongee,
+			Adherent adherent) {
+		try {
+			plongeeDao.inscrireAdherentAttente(plongee, adherent);
+		} catch (TechnicalException e) {
+			throw new IllegalStateException(e);
+		}
+	}
+
+	public void deInscrireAdherent(Plongee plongee, Adherent adherent) {
+		try {
+			plongeeDao.supprimeAdherentPlongee(plongee, adherent);
+		} catch (TechnicalException e) {
+			throw new IllegalStateException(e);
+		}
+	}
+
+	public void deInscrireAdherentEnListeAttente(Plongee plongee,
+			Adherent adherent) {
+		try {
+			plongeeDao.supprimeAdherentAttente(plongee, adherent);
+		} catch (TechnicalException e) {
+			throw new IllegalStateException(e);
+		}
+	}
+	
 }

@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
 
+import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
@@ -25,6 +26,7 @@ import com.asptt.plongee.resa.ui.web.wicket.page.AccueilPage;
 import com.asptt.plongee.resa.ui.web.wicket.page.TemplatePage;
 import com.asptt.plongee.resa.ui.web.wicket.page.inscription.InscriptionConfirmationPlongeePage;
 
+@AuthorizeInstantiation("ADMIN")
 public class CreerAdherent extends TemplatePage {
 
 	public CreerAdherent() {

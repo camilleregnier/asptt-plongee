@@ -1,7 +1,10 @@
 package com.asptt.plongee.resa.dao.inmemory;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+
+import org.apache.wicket.authorization.strategies.role.Roles;
 
 import com.asptt.plongee.resa.dao.AdherentDao;
 import com.asptt.plongee.resa.dao.TechnicalException;
@@ -16,8 +19,14 @@ public class AdherentInMemoryDao implements AdherentDao{
 		adherents = new ArrayList<Adherent>();
 	}
 	
-	public List<String> getRoles(Adherent adherent) throws TechnicalException {
-		return adherent.getRoles();
+	public List<String> getStrRoles(Adherent adherent) throws TechnicalException {
+		adherent.getRoles();
+		List<String> lstRoles = new ArrayList<String>();
+		Iterator it = adherent.getRoles().iterator();
+		while (it.hasNext()){
+			lstRoles.add( (String) it.next());
+		}
+		return lstRoles;
 	}
 
 	public Adherent create(Adherent obj) throws TechnicalException {
