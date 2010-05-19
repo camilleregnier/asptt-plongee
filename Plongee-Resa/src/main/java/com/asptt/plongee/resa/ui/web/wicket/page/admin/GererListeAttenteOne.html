@@ -1,0 +1,32 @@
+<wicket:extend>
+        <div id="wrapper">
+            <div id="corps">
+				<form wicket:id="inputForm" id="inputForm">
+						<fieldset>
+						<span wicket:id="group">
+							<legend>Choix des plong&eacute;es</legend>
+							<table>
+							<tr>
+								<td>Select</td>
+								<td>Id</td>
+								<td>Date</td>
+								<td>Type</td>
+							</tr>
+							<tr wicket:id="plongeeList">
+								<td><input type="radio" wicket:id="radio"/></td>
+								<td><span wicket:id="id"/></td>
+								<td><span wicket:id="date"/></td>
+								<td><span wicket:id="type"/></td>
+							</tr>
+							</table>
+							<input type="submit" value="Valider" />
+						</span>
+						</fieldset>
+				</form>
+				<div>
+					<span wicket:id="feedback" />
+				</div>
+				<div id="errorsDiv" class="innerError" />
+            </div>
+        </div>
+</wicket:extend>
