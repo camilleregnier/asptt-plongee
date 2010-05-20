@@ -22,6 +22,7 @@ public class Adherent {
 	private String telephone;
 	private String mail;
 	private Roles roles;
+	private String role;
 
 	
 	public Adherent() {
@@ -149,9 +150,16 @@ public class Adherent {
 		this.mail = mail;
 	}
 
+	public String getRole(){
+		if(null == roles){
+			return Roles.USER;
+		}
+		return roles.iterator().next();
+	}
+	
 	public Roles getRoles() {
 		if(null == roles){
-			roles = new Roles();
+			roles = new Roles("USER");
 		}
 		return roles;
 	}
@@ -173,5 +181,14 @@ public class Adherent {
 			this.roles.add(role);
 		}
 	}
-
+	
+	public void setRole(String role) {
+		this.role = role;
+		if (null == this.roles) {
+			this.roles = new Roles(role);
+		}
+		else {
+			this.roles.add(role) ;
+		}
+	}
 }
