@@ -2,6 +2,7 @@ package com.asptt.plongee.resa.ui.web.wicket.page.admin;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.List;
 
@@ -55,8 +56,6 @@ public class CreerAdherent extends TemplatePage {
 			// TODO à modifier plus tard pour validation
 			add(new RequiredTextField<Integer>("telephone", Integer.class));
 			add(new RequiredTextField<String>("mail").add(EmailAddressValidator.getInstance()));
-			//add(new RequiredTextField<String>("telephone"));
-			//add(new RequiredTextField<String>("mail"));
 			
 			// Ajout de la liste des niveaux
 			List<String> niveaux = new ArrayList<String>();
@@ -65,7 +64,7 @@ public class CreerAdherent extends TemplatePage {
 			}
 			add(new DropDownChoice("niveau", niveaux));
 			
-			// Ajjout de la liste des niveaux d'encadrement
+			// Ajout de la liste des niveaux d'encadrement
 			List<String> encadrement = new ArrayList<String>();
 			for (Adherent.Encadrement e : Adherent.Encadrement.values()){
 				encadrement.add(e.toString());
@@ -80,6 +79,8 @@ public class CreerAdherent extends TemplatePage {
 			add(new CheckBox("dp", model.bind("dp")));
 			
 			//Ajout des roles
+			List<String> roles = Arrays.asList(new String[] { "ADMIN", "USER", "SECRETARIAT" });
+			add(new DropDownChoice("role", roles));
 			
 		}
 
