@@ -4,7 +4,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+
+import javax.management.relation.Role;
 
 import com.asptt.plongee.resa.dao.AdherentDao;
 import com.asptt.plongee.resa.dao.PlongeeDao;
@@ -32,7 +35,6 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 			st.setString(1, adh.getNumeroLicense());
 			st.setString(2, adh.getNom());
 			st.setString(3, adh.getPrenom());
-//			st.setString(4, adh.getNiveau().toString());
 			st.setString(4, adh.getNiveau());
 			st.setString(5, adh.getTelephone());
 			st.setString(6, adh.getMail());
@@ -48,6 +50,21 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 			}
 			if (st.executeUpdate() == 0) {
 				throw new TechnicalException("L'adhérent n'a pu être enregistré"); 
+			}
+			sb = new StringBuffer();
+			//gestion des roles
+			Iterator it = adh.getRoles().iterator();
+			while (it.hasNext()){
+			sb.append("INSERT INTO rel_adherent_roles (`ADHERENT_LICENSE`, `ROLES_idROLES`)");
+			sb.append(" VALUES (?, ?)");
+			st = getDataSource().getConnection().
+				prepareStatement(sb.toString());
+			st.setString(1, adh.getNumeroLicense());
+			int id = getIdRole((String) it.next());
+			st.setInt(2, id );
+			if (st.executeUpdate() == 0) {
+				throw new TechnicalException("Le role n'a pu être enregistré"); 
+			}
 			}
 			return adh;
 		} catch (SQLException e) {
@@ -175,7 +192,8 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 			sb.append(" from plongee p, inscription_plongee i, adherent a ");
 			sb.append(" where idPLONGEES = ?");
 			sb.append(" and idPLONGEES = PLONGEES_idPLONGEES ");
-			sb.append(" and ADHERENT_LICENSE = LICENSE ");
+			sb.append(" and ADHERENT_LICENSE = LICENSE");
+			sb.append(" and DATE_ANNUL_PLONGEE is null");
 			st = getDataSource().getConnection().
 			prepareStatement(sb.toString());
 			st.setInt(1, plongee.getId());
@@ -231,24 +249,31 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 		}
 	}
 	
-//	public Adherent findDP(List<Adherent> adherents) throws TechnicalException {
-//		for(Adherent a : adherents){
-//			if(a.isDp()){
-//				return a;
-//			}
-//		}
-//		return null;
-//	}
-	
-//	public Adherent findPilote(List<Adherent> adherents) throws TechnicalException {
-//		for(Adherent a : adherents){
-//			if(a.isPilote()){
-//				return a;
-//			}
-//		}
-//		return null;
-//	}
-	
+	public int getIdRole(String libelle) throws TechnicalException {
+		PreparedStatement st;
+		try {
+			StringBuffer sb = new StringBuffer("select idRoles from roles where libelle=? ");
+			st = getDataSource().getConnection().
+			prepareStatement(sb.toString());
+			st.setString(1, libelle);
+			ResultSet rs = st.executeQuery();
+			int id = 0;
+			while(rs.next()){
+				id = rs.getInt("IdRoles");
+			}
+			return id;
+		} catch (SQLException e) {
+			throw new TechnicalException(e);
+		} finally{
+			try {
+				getDataSource().getConnection().close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+				throw new TechnicalException("Impossible de cloturer la connexion");
+			}
+		}
+	}
+
 	private Adherent wrapAdherent(ResultSet rs) throws SQLException, TechnicalException {
 		String licence = rs.getString("LICENSE");
 		String nom = rs.getString("NOM");
@@ -277,5 +302,6 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 		}
 		return adherent;
 	}
+
 
 }

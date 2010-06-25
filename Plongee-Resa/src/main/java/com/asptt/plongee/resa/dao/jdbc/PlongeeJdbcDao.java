@@ -124,6 +124,7 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements PlongeeDao {
 			sb.append(" AND license = adherent_license");
 			sb.append(" AND plongees_idPlongees = idPlongees");
 			sb.append(" AND date > current_date()");
+			sb.append(" AND date_annul_plongee is null");
 			PreparedStatement st = getDataSource().getConnection().
 				prepareStatement(sb.toString());
 			st.setString(1, adherent.getNumeroLicense());
@@ -208,16 +209,18 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements PlongeeDao {
 			Adherent adherent) throws TechnicalException {
 		try {
 			StringBuffer sb = new StringBuffer();
-			sb.append("delete from inscription_plongee");
+			sb.append("update inscription_plongee");
+			sb.append(" set date_annul_plongee = current_timestamp");
 			sb.append(" where adherent_license = ?  ");
 			sb.append(" and plongees_idplongees = ? ");
+			sb.append(" and date_annul_plongee is null ");
 			PreparedStatement st = getDataSource().getConnection().
 				prepareStatement(sb.toString());
 			st.setString(1, adherent.getNumeroLicense());
 			st.setInt(2, plongee.getId());
 			if (st.executeUpdate() == 0) {
 				throw new TechnicalException("L'adhérent"+adherent.getNumeroLicense()+
-						" n'a pu être inscrit à la plongée:"+plongee.getId()+"."); 
+						" n'a pu être de-inscrit à la plongée:"+plongee.getId()+"."); 
 			}
 		} catch (SQLException e) {
 			throw new TechnicalException(e);

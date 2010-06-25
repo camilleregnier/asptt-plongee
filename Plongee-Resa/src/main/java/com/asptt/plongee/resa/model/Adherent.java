@@ -1,11 +1,12 @@
 package com.asptt.plongee.resa.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.wicket.authorization.strategies.role.Roles;
 
-public class Adherent {
+public class Adherent implements Serializable {
 
 	public static enum Encadrement {E1, E2, E3, E4 }
 	
