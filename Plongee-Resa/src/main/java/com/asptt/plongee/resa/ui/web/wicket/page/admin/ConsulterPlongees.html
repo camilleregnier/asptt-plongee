@@ -1,0 +1,35 @@
+<wicket:extend>
+<span style="display: block; border: 1px solid black;">
+Plongee Selectionnee: <span wicket:id="selectedLabel">[selected contact]</span>
+</span><br/>
+<table cellspacing="0" class="dataview">
+	<tr>
+		<th>Action</th>
+		<th>ID</th>
+		<th>Date</th>
+		<th>DP</th>
+		<th>Type</th>
+	</tr>
+	<tr wicket:id="simple">
+		<td><span wicket:id="actions">[actions]</span> </td>
+		<td><span wicket:id="id">[id]</span> </td>
+		<td><span wicket:id="date">[date]</span></td>
+		<td><span wicket:id="dp">[dp]</span></td>
+		<td><span wicket:id="type">[type]</span></td>
+	</tr>
+</table>
+
+<table cellspacing="0" class="dataview">
+	<tr>
+		<th>Nom</th>
+		<th>Prenom</th>
+		<th>Niveau</th>
+	</tr>
+	<tr wicket:id="participants">
+		<td><span wicket:id="nom">[nom]</span> </td>
+		<td><span wicket:id="prenom">[prenom]</span> </td>
+		<td><span wicket:id="niveau">[niveau]</span></td>
+	</tr>
+</table>
+
+</wicket:extend>
