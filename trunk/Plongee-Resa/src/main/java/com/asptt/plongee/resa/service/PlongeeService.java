@@ -8,6 +8,7 @@ import com.asptt.plongee.resa.model.Plongee;
 public interface PlongeeService {
 
 	public Plongee rechercherPlongeeParId(String id);
+	public Plongee rechercherPlongeeParId(Integer id);
 	public List<Plongee> rechercherPlongeeTout();
 	public List<Plongee> rechercherPlongeeAOuvrir(List<Plongee> plongees);
 	public List<Plongee> rechercherPlongeeOuverteTout(List<Plongee> plongees);

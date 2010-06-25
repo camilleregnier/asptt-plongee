@@ -50,7 +50,7 @@ public class InscriptionPlongeePage extends TemplatePage {
 					
 			add(group);
 
-//			group.add(new CheckGroupSelector("groupselector"));
+			group.add(new CheckGroupSelector("groupselector"));
 			
 			/*
 			 * Retourne la liste des plongées ouvertes, pour les 7 prochains jours

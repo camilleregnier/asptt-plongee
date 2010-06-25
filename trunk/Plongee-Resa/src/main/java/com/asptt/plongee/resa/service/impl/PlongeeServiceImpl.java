@@ -146,7 +146,7 @@ public class PlongeeServiceImpl implements PlongeeService {
 
 	public boolean isOkForResa(Plongee plongee, Adherent adherent) {
 		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	public boolean isOkForListeAttente(Plongee plongee, Adherent adherent) {
