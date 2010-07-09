@@ -6,6 +6,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.wicket.datetime.markup.html.basic.DateLabel;
 import org.apache.wicket.feedback.IFeedback;
@@ -62,7 +63,16 @@ public class InscriptionPlongeePage extends TemplatePage {
 			ListView<Plongee> list = new ListView<Plongee>("plongeeList", data){
 				public void populateItem(ListItem<Plongee> listItem) {           
 					listItem.add(new Check<Plongee>("check", listItem.getModel()));
-					listItem.add(new Label("date", new PropertyModel<Date>(listItem.getDefaultModel(), "date")));                
+					
+					// Formatage de la date affichée
+					Calendar cal = Calendar.getInstance();
+					cal.setTime(listItem.getModel().getObject().getDate());
+					String dateAffichee = cal.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.FRANCE) + " ";
+					dateAffichee = dateAffichee + cal.get(Calendar.DAY_OF_MONTH) + " ";
+					dateAffichee = dateAffichee + cal.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.FRANCE) + " ";
+					dateAffichee = dateAffichee + cal.get(Calendar.YEAR);
+					
+					listItem.add(new Label("date", dateAffichee));                
 					listItem.add(new Label("type",new PropertyModel<String>(listItem.getDefaultModel(), "type")));
 				}
 			
@@ -75,7 +85,6 @@ public class InscriptionPlongeePage extends TemplatePage {
 			// TODO appeler le service d'inscription
 			Collection<Plongee> list = group.getModelObject();
 			List<Plongee> plongees = new ArrayList<Plongee>(list);
-			System.out.println("nb de plongée : " +plongees.size());
 			for(Plongee plongee : plongees){
 				if(getResaSession().getPlongeeService().isOkForResa(
 						plongee, 
@@ -84,17 +93,17 @@ public class InscriptionPlongeePage extends TemplatePage {
 					getResaSession().getPlongeeService().inscrireAdherent(
 							plongee, 
 							getResaSession().getAdherent());
-					setResponsePage(InscriptionConfirmationPlongeePage.class);
+					setResponsePage(new InscriptionConfirmationPlongeePage(plongee));
 				}else{
-					//onverifie si on peux le mettre en liste Attente
+					//on verifie si on peut le mettre en liste Attente
 					if(getResaSession().getPlongeeService().isOkForListeAttente(
 							plongee, 
 							getResaSession().getAdherent())){
-						//on peux inscrire l'adherent en liste attente
+						//on peut inscrire l'adherent en liste attente
 						getResaSession().getPlongeeService().inscrireAdherentEnListeAttente(
 								plongee, 
 								getResaSession().getAdherent());
-						//setResponsePage(InscriptionConfirmationListeAttente.class);
+						setResponsePage(new InscriptionListeAttentePlongeePage(plongee));
 					}else{
 						/*
 						 * Inscription impossible

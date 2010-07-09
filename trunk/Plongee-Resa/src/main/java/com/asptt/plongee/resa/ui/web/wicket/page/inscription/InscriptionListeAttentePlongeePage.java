@@ -7,21 +7,20 @@ import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 
 import com.asptt.plongee.resa.model.Adherent;
-import com.asptt.plongee.resa.model.InscritsPlongeeDataProvider;
+import com.asptt.plongee.resa.model.ListeAttentePlongeeDataProvider;
 import com.asptt.plongee.resa.model.Plongee;
 import com.asptt.plongee.resa.ui.web.wicket.page.TemplatePage;
 
-public class InscriptionConfirmationPlongeePage extends TemplatePage {
+public class InscriptionListeAttentePlongeePage extends TemplatePage {
 
 	@SuppressWarnings("serial")
-	public InscriptionConfirmationPlongeePage(Plongee plongee) {
+	public InscriptionListeAttentePlongeePage(Plongee plongee) {
 		
-		// On affiche la liste des participants en guise de confirmation
-		add(new DataView<Adherent>("participants",
-				new InscritsPlongeeDataProvider(getResaSession()
+		// On affiche la liste d'attente pour information
+		add(new DataView<Adherent>("listeAttente",
+				new ListeAttentePlongeeDataProvider(getResaSession()
 						.getPlongeeService(), getResaSession()
 						.getAdherentService(), plongee)) {
-			
 			protected void populateItem(final Item<Adherent> item) {
 				Adherent adherent = item.getModelObject();
 

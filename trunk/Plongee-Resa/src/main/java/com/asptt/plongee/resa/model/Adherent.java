@@ -19,6 +19,7 @@ public class Adherent implements Serializable {
 	private NiveauAutonomie niveau;
 	private boolean pilote;
 	private boolean dp;
+	private boolean actif;
 	private Byte[] photo; // au format jpeg ??
 	private String telephone;
 	private String mail;
@@ -113,6 +114,14 @@ public class Adherent implements Serializable {
 
 	public void setPilote(boolean pilote) {
 		this.pilote = pilote;
+	}
+
+	public boolean isActif() {
+		return actif;
+	}
+
+	public void setActif(boolean actif) {
+		this.actif = actif;
 	}
 
 	public boolean isDp() {

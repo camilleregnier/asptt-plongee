@@ -23,13 +23,7 @@ public class GererPlongeeAOuvrirTwo extends TemplatePage {
 	public Plongee plongeeAOuvrir = null;
 	
 	public GererPlongeeAOuvrirTwo(final Plongee plongee)
-	{
-//		Plongee plongee = new Plongee();
-//		getRequest().getParameter("plongeeAttente");
-//		if(pageparam.containsKey("plongeeAttente")){
-//			plongee = (Plongee) pageparam.get("plongeeAttente");
-//		}
-		
+	{		
 		plongeeAOuvrir = plongee;
 		
 		List<Adherent> dps = getResaSession().getAdherentService().rechercherDPs( 
@@ -99,8 +93,7 @@ public class GererPlongeeAOuvrirTwo extends TemplatePage {
 				PageParameters param = new PageParameters();
 				param.put("plongeeAOuvrir", plongeeAOuvrir);
 				param.put("inscrits", adhInscrits);
-//				setResponsePage(GererPlongeeAOuvrirTree.class, param);
-				setResponsePage(new GererPlongeeAOuvrirThree(adhInscrits, plongeeAOuvrir));
+				setResponsePage(new GererPlongeeAOuvrirThree(plongeeAOuvrir));
 			}
 		};
 

@@ -6,47 +6,38 @@ import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.model.IModel;
 
 import com.asptt.plongee.resa.service.AdherentService;
-import com.asptt.plongee.resa.service.PlongeeService;
 
 @SuppressWarnings("serial")
-public class InscritsPlongeeDataProvider implements IDataProvider<Adherent> {
+public class AdherentDataProvider implements IDataProvider<Adherent> {
 	
-	PlongeeService plongeeService;
 	AdherentService adherentService;
-	Plongee plongee;
 	
-	public InscritsPlongeeDataProvider (PlongeeService plongeeService, AdherentService adherentService, Plongee plongee){
-		this.plongeeService = plongeeService;
+	public AdherentDataProvider (AdherentService adherentService){
 		this.adherentService = adherentService;
-		this.plongee = plongee;
 	}
 
 	@Override
 	public Iterator<Adherent> iterator(int first, int count) {
-		// TODO à remplacer par la bonne méthode de plongeeService
-		return plongeeService.rechercherInscriptions(plongee).iterator();
+		return adherentService.rechercherAdherent(first, count).iterator();
 	}
 
 	@Override
 	public int size() {
-		// TODO Auto-generated method stub
-		if(null == plongeeService.rechercherInscriptions(plongee)){
+		if(null == adherentService.rechercherAdherentTout()){
 			return 0;
 		} else {			
-			return plongeeService.rechercherInscriptions(plongee).size();
+			return adherentService.rechercherAdherentTout().size();
 		}
 	}
 
 	@Override
 	public void detach() {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public IModel<Adherent> model(Adherent adherent) {
 		// TODO Auto-generated method stub
-		
 		return new DetachableAdherentModel(adherentService, adherent.getNumeroLicense());
 	}
 
