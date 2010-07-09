@@ -4,9 +4,7 @@ import java.util.Iterator;
 
 import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.model.IModel;
-
 import com.asptt.plongee.resa.service.PlongeeService;
-import com.asptt.plongee.resa.service.impl.PlongeeServiceImpl;
 
 @SuppressWarnings("serial")
 public class PlongeeDataProvider implements IDataProvider<Plongee> {

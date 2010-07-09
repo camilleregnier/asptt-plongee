@@ -28,8 +28,8 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 	public Adherent create(Adherent adh) throws TechnicalException {
 		try {
 			StringBuffer sb = new StringBuffer();
-			sb.append("INSERT INTO ADHERENT (`LICENSE`, `NOM`, `PRENOM`, `NIVEAU`, `TELEPHONE`, `MAIL`, `ENCADRANT`, `PILOTE`)");
-			sb.append(" VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+			sb.append("INSERT INTO ADHERENT (`LICENSE`, `NOM`, `PRENOM`, `NIVEAU`, `TELEPHONE`, `MAIL`, `ENCADRANT`, `PILOTE`, `DATE_DEBUT`)");
+			sb.append(" VALUES (?, ?, ?, ?, ?, ?, ?, ?, current_timestamp)");
 			PreparedStatement st = getDataSource().getConnection().
 				prepareStatement(sb.toString());
 			st.setString(1, adh.getNumeroLicense());
@@ -82,8 +82,9 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 	public void delete(Adherent adh) throws TechnicalException {
 		try {
 			StringBuffer sb = new StringBuffer();
-			sb.append("DELETE FROM ADHERENT WHERE");
-			sb.append(" LICENSE = ?");
+			sb.append("UPDATE ADHERENT");
+			sb.append(" SET DATE_FIN = current_timestamp , ACTIF = 0");
+			sb.append(" WHERE LICENSE = ?");
 			PreparedStatement st = getDataSource().getConnection().
 				prepareStatement(sb.toString());
 			st.setString(1, adh.getNumeroLicense());
@@ -102,15 +103,82 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 		}
 	}
 
-	public Adherent update(Adherent obj) throws TechnicalException {
-		// TODO Auto-generated method stub
-		return null;
+	public Adherent update(Adherent adh) throws TechnicalException {
+		try {
+			StringBuffer sb = new StringBuffer();
+			sb.append("UPDATE  ADHERENT (`LICENSE`, `NOM`, `PRENOM`, `NIVEAU`, `TELEPHONE`, `MAIL`, `ENCADRANT`, `PILOTE`, `DATE_DEBUT`)");
+			sb.append(" SET NIVEAU = ?,");
+			sb.append(" SET TELEPHONE = ?,");
+			sb.append(" SET MAIL = ?,");
+			sb.append(" SET ENCADRANT = ?,");
+			sb.append(" SET PILOTE = ?,");
+			sb.append(" SET ACTIF = ?,");
+			sb.append(" WHERE license = ?");
+
+			PreparedStatement st = getDataSource().getConnection().
+				prepareStatement(sb.toString());
+			st.setString(1, adh.getNiveau());
+			st.setString(2, adh.getTelephone());
+			st.setString(3, adh.getMail());
+			if(null == adh.getEncadrement()){
+				st.setString(4, null);
+			} else {
+				st.setString(4, adh.getEncadrement());
+			}
+			if(adh.isPilote()){
+				st.setInt(5, 1);
+			}else{
+				st.setInt(5, 0);
+			}
+			if(adh.isActif()){
+				st.setInt(6, 1);
+			}else{
+				st.setInt(6, 0);
+			}
+			st.setString(7, adh.getNumeroLicense());
+			if (st.executeUpdate() == 0) {
+				throw new TechnicalException("L'adhérent n'a pu être enregistré"); 
+			}
+			sb = new StringBuffer();
+			//gestion des roles 1er temps : on supprime les roles
+			sb.append("DELETE rel_adherent_roles WHERE ADHERENT_LICENSE = ? ");
+			PreparedStatement st1 = getDataSource().getConnection().prepareStatement(sb.toString());			
+			st1.setString(1, adh.getNumeroLicense());
+			if (st.executeUpdate() == 0) {
+				throw new TechnicalException("Impossible de supprimer les roles de l'adherent"); 
+			}
+			//gestion des roles 2ieme temps : on les re-creer		
+			Iterator it = adh.getRoles().iterator();
+			sb = new StringBuffer();
+			while (it.hasNext()){
+				sb.append("INSERT INTO rel_adherent_roles (`ADHERENT_LICENSE`, `ROLES_idROLES`)");
+				sb.append(" VALUES (?, ?)");
+				st = getDataSource().getConnection().
+					prepareStatement(sb.toString());
+				st.setString(1, adh.getNumeroLicense());
+				int id = getIdRole((String) it.next());
+				st.setInt(2, id );
+				if (st.executeUpdate() == 0) {
+					throw new TechnicalException("Le role n'a pu être enregistré"); 
+				}
+			}
+			return adh;
+		} catch (SQLException e) {
+			throw new TechnicalException(e);
+		} finally{
+			try {
+				getDataSource().getConnection().close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+				throw new TechnicalException("Impossible de cloturer la connexion");
+			}
+		}
 	}
 
 	public List<Adherent> findAll() throws TechnicalException {
 		try {
 			PreparedStatement st = getDataSource().getConnection()
-				.prepareStatement("select * from ADHERENT");
+				.prepareStatement("select * from ADHERENT where ACTIF = 1");
 			ResultSet rs = st.executeQuery();
 			List<Adherent> adherents = new ArrayList<Adherent>();
 			while (rs.next()) {
@@ -133,7 +201,7 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 	public Adherent findById(String id) throws TechnicalException {
 		try {
 			PreparedStatement st = getDataSource().getConnection().
-					prepareStatement("select * from ADHERENT where LICENSE = ?");
+					prepareStatement("select * from ADHERENT where LICENSE = ? and ACTIF = 1");
 			st.setString(1, id);
 			ResultSet rs = st.executeQuery();
 			Adherent adherent = null;

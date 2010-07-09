@@ -6,6 +6,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.wicket.datetime.markup.html.basic.DateLabel;
 import org.apache.wicket.feedback.IFeedback;
@@ -61,7 +62,16 @@ public class DeInscriptionPlongeePage extends TemplatePage {
 			ListView<Plongee> list = new ListView<Plongee>("plongeeList", data){
 				public void populateItem(ListItem<Plongee> listItem) {           
 					listItem.add(new Check<Plongee>("check", listItem.getModel()));
-					listItem.add(new Label("date", new PropertyModel<Date>(listItem.getDefaultModel(), "date")));                
+					
+					// Formatage de la date affichée
+					Calendar cal = Calendar.getInstance();
+					cal.setTime(listItem.getModel().getObject().getDate());
+					String dateAffichee = cal.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.FRANCE) + " ";
+					dateAffichee = dateAffichee + cal.get(Calendar.DAY_OF_MONTH) + " ";
+					dateAffichee = dateAffichee + cal.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.FRANCE) + " ";
+					dateAffichee = dateAffichee + cal.get(Calendar.YEAR);
+					
+					listItem.add(new Label("date", dateAffichee));                
 					listItem.add(new Label("type",new PropertyModel<String>(listItem.getDefaultModel(), "type")));
 				}
 			
@@ -71,15 +81,13 @@ public class DeInscriptionPlongeePage extends TemplatePage {
 		}
 
 		public void onSubmit() {
-			// TODO appeler le service d'inscription
 			Collection<Plongee> list = group.getModelObject();
 			List<Plongee> plongees = new ArrayList<Plongee>(list);
-			System.out.println("nb de plongée : " +plongees.size());
 			for(Plongee plongee : plongees){
 				getResaSession().getPlongeeService().deInscrireAdherent(
 						plongee, 
 						getResaSession().getAdherent());
-				setResponsePage(InscriptionConfirmationPlongeePage.class);
+				setResponsePage(new InscriptionConfirmationPlongeePage(plongee));
 			}
 		}
 

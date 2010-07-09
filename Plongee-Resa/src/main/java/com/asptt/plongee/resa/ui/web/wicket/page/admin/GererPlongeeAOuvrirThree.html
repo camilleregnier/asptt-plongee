@@ -1,16 +1,17 @@
 <wicket:extend>
-	confirmation
 	<fieldset>
 	<span wicket:id="navigator">[dataview navigator]</span>
-		<legend>Confirmation d'inscription à la plong&eacute;es du : </legend>
+		<legend>Confirmation d'inscription &agrave; la plong&eacute;es du : <span wicket:id="date">[date]</span></legend>
 	<table cellspacing="0" class="dataview">
 		<tr>
 			<th>Nom</th>
 			<th>Prenom</th>
+			<th>Niveau</th>
 		</tr>
 		<tr wicket:id="pageable">
-			<td><span wicket:id="nom">[actions]</span></td>
-			<td><span wicket:id="prenom">[contactid]</span> </td>
+			<td><span wicket:id="nom">[nom]</span></td>
+			<td><span wicket:id="prenom">[prenom]</span> </td>
+			<td><span wicket:id="niveau">[niveau]</span> </td>
 		</tr>
 	</table>
 	</fieldset>

@@ -1,21 +1,12 @@
 package com.asptt.plongee.resa.ui.web.wicket.page.admin;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.wicket.PageParameters;
-import org.apache.wicket.datetime.markup.html.basic.DateLabel;
 import org.apache.wicket.feedback.IFeedback;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.form.Check;
-import org.apache.wicket.markup.html.form.CheckBox;
-import org.apache.wicket.markup.html.form.CheckBoxMultipleChoice;
-import org.apache.wicket.markup.html.form.CheckGroup;
-import org.apache.wicket.markup.html.form.CheckGroupSelector;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.Radio;
 import org.apache.wicket.markup.html.form.RadioGroup;
@@ -25,11 +16,8 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
-import org.apache.wicket.util.convert.converters.DateConverter;
 
-import com.asptt.plongee.resa.model.Adherent;
 import com.asptt.plongee.resa.model.Plongee;
-import com.asptt.plongee.resa.service.PlongeeService;
 import com.asptt.plongee.resa.ui.web.wicket.page.TemplatePage;
 
 public class GererListeAttenteOne extends TemplatePage {
@@ -61,8 +49,16 @@ public class GererListeAttenteOne extends TemplatePage {
 			ListView<Plongee> list = new ListView<Plongee>("plongeeList", data){
 				public void populateItem(ListItem<Plongee> listItem) {           
 					listItem.add(new Radio<Plongee>("radio", listItem.getModel()));
-					listItem.add(new Label("id",new PropertyModel<String>(listItem.getDefaultModel(), "id")));
-					listItem.add(new Label("date", new PropertyModel<Date>(listItem.getDefaultModel(), "date")));                
+					
+					// Formatage de la date affichée
+					Calendar cal = Calendar.getInstance();
+					cal.setTime(listItem.getModel().getObject().getDate());
+					String dateAffichee = cal.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.FRANCE) + " ";
+					dateAffichee = dateAffichee + cal.get(Calendar.DAY_OF_MONTH) + " ";
+					dateAffichee = dateAffichee + cal.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.FRANCE) + " ";
+					dateAffichee = dateAffichee + cal.get(Calendar.YEAR);
+					
+					listItem.add(new Label("date", dateAffichee));                
 					listItem.add(new Label("type",new PropertyModel<String>(listItem.getDefaultModel(), "type")));
 				}
 			
