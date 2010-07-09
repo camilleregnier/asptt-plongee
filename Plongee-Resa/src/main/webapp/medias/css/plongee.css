@@ -1,0 +1,118 @@
+@CHARSET "ISO-8859-1";
+*{
+	margin: 0;
+}
+html, body {
+	height: 100%;
+	
+	background-color: white;
+	background-repeat: no-repeat;
+	background-attachment: fixed;
+	background-position: 96% 96%;
+	color: #6F6F6F;
+	font-family: 'Lucida Sans', 'Helvetica', 'Sans-serif', 'sans';
+	font-size: 9pt;
+	line-height: 1.8em;
+	padding: 10px 10px 10px 10px;
+	margin: 10px 10px 10px 10px;
+}
+
+h1,h2,h3,h4,h5,h6,h7,h8 {
+	color: #E9601A;
+	font-weight: normal;
+}
+
+#bandeau{
+	width: 100%;
+	height: 58px;
+	background-color: #F15E0C;
+	text-align: center;
+}
+
+#legal{
+	width: 100%;
+	height: 30px;
+	text-align: center;
+	margin-top: 15px;
+}
+
+#wrapper{ /*div englobant le header et le body, permettant de coller le footer en bas
+ne pas modifier les valeurs*/
+	min-height: 100%;
+	height: auto !important;
+	height: 100%;
+	margin: 0 auto -66px; /* 66px=hauteur du footer*/
+}
+
+#menu{
+	margin : 10px;
+}
+
+#menu ul{
+	list-style-type: none;
+	padding: 5px;
+	margin-top: 0;
+}
+
+#menu li{
+	display: inline;
+	margin-right: 15px;
+	margin-left: 15px;
+}
+
+#menu a {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	color: #F5F5F5;
+	font-weight: bold;
+	text-decoration: none;
+}
+
+#menu a:hover{
+	text-decoration: underline;
+}
+
+#corps{
+	margin : 20px;
+}
+
+#feedbackPanel{
+	margin: 20px;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	padding-left: 20px;
+	border: thin dotted #E9601A;
+}
+ 	
+#pied{
+	background-color: #F5F5F5;
+	width: 100%;
+	height: 66px;
+	text-align: center;
+}
+
+table.dataview {
+	margin-bottom: 10px;
+	border-bottom: 1px solid #0079d6;
+	font-size: 1em;
+	font-family: arial;
+	}
+	
+table.dataview caption { text-align: left; }
+table.dataview tr { padding-top: 2px; padding-bottom: 2px; }
+table.dataview tr.even { background-color: #ffebcd; }
+table.dataview tr.odd { background-color: #fff; }
+table.dataview tr td { padding-left: 8px; padding-right: 30px; }
+table.dataview tr th { color: black; padding-top: 3px; padding-bottom: 3px; padding-left: 8px; padding-right: 24px; background-color: #c1e4ff; border-bottom: 1px solid #0079d6; border-top: 1px solid #0079d6; text-align: left; white-space: nowrap; vertical-align: middle;}
+
+table.dataview tr th { background-position: right; background-repeat:no-repeat; }
+table.dataview tr th.wicket_orderDown {
+	background-color: #87cbff; background-image: url(displaytag/img/arrow_down.png); }
+table.dataview tr th.wicket_orderUp {
+	background-color: #87cbff; background-image: url(displaytag/img/arrow_up.png); }
+table.dataview tr th.wicket_orderNone {
+	background-image: url(displaytag/img/arrow_off.png);
+}
+table.dataview tr th a { font-weight: normal; }
+table.dataview #message { padding-left: 3px; }
+table.dataview caption { padding-bottom: 2px; }
+
