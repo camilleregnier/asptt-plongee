@@ -22,7 +22,17 @@ public class AdherentServiceImpl implements AdherentService {
 		}
 		
 	}
-
+	
+	public void updateAdherent(Adherent adherent) {
+		try {
+			adherentDao.update(adherent);
+		} catch (TechnicalException e) {
+			e.printStackTrace();
+			throw new IllegalStateException(e);
+		}
+		
+	}
+	
 	private AdherentDao adherentDao;
 
 	public void setAdherentDao(AdherentDao adherentDao) {

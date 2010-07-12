@@ -7,6 +7,7 @@ import java.util.List;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.ListMultipleChoice;
 import org.apache.wicket.markup.html.form.RequiredTextField;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
@@ -15,6 +16,7 @@ import org.apache.wicket.validation.validator.EmailAddressValidator;
 
 import com.asptt.plongee.resa.model.Adherent;
 import com.asptt.plongee.resa.model.NiveauAutonomie;
+import com.asptt.plongee.resa.ui.web.wicket.ResaSession;
 import com.asptt.plongee.resa.ui.web.wicket.page.AccueilPage;
 
 public class AdherentPanel extends Panel {
@@ -32,6 +34,7 @@ public class AdherentPanel extends Panel {
 
 		public AdherentForm(String id, IModel<Adherent> adherent) {
 			super(id);
+			
 			CompoundPropertyModel model = new CompoundPropertyModel(adherent);
 			setModel(model);
 
@@ -67,15 +70,19 @@ public class AdherentPanel extends Panel {
 			// Ajout des roles
 			List<String> roles = Arrays.asList(new String[] { "ADMIN", "USER",
 					"SECRETARIAT" });
-			add(new DropDownChoice("role", roles));
+			add(new ListMultipleChoice<String>("roles", roles));
+			
+			// Ajout de la checkbox membre actif (ou pas)
+			add(new CheckBox("actif", model.bind("actif")));
 
 		}
 
 		public void onSubmit() {
 			Adherent adherent = (Adherent) getModelObject();
 
-			// TODO appeler la bonne méthode de mise à jour de l'adhérent
-			//getResaSession().getAdherentService().creerAdherent(adherent);
+			// Mise à jour de l'adhérent
+			ResaSession resaSession = (ResaSession) getApplication().getSessionStore().lookup(getRequest());
+			resaSession.getAdherentService().updateAdherent(adherent);
 
 			setResponsePage(AccueilPage.class);
 		}
