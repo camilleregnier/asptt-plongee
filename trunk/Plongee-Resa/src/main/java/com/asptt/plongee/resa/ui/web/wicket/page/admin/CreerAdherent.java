@@ -6,11 +6,13 @@ import java.util.Collection;
 import java.util.Enumeration;
 import java.util.List;
 
+import org.apache.wicket.authorization.strategies.role.Roles;
 import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.ListChoice;
+import org.apache.wicket.markup.html.form.ListMultipleChoice;
 import org.apache.wicket.markup.html.form.RequiredTextField;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
@@ -80,7 +82,7 @@ public class CreerAdherent extends TemplatePage {
 			
 			//Ajout des roles
 			List<String> roles = Arrays.asList(new String[] { "ADMIN", "USER", "SECRETARIAT" });
-			add(new DropDownChoice("role", roles));
+			add(new ListMultipleChoice<String>("roles", roles));
 			
 		}
 

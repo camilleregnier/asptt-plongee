@@ -18,5 +18,7 @@ public interface AdherentService {
 	public List<Adherent> rechercherPilotes(List<Adherent> adherents);
 
 	public void creerAdherent(Adherent adherent);
+	
+	public void updateAdherent(Adherent adherent);
 
 }
