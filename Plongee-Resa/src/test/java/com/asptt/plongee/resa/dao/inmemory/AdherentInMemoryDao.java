@@ -91,4 +91,16 @@ public class AdherentInMemoryDao implements AdherentDao{
 		return null;
 	}
 
+	public int getIdRole(String libelle) throws TechnicalException {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public List<Adherent> getAdherentsLikeName(String name)
+			throws TechnicalException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
