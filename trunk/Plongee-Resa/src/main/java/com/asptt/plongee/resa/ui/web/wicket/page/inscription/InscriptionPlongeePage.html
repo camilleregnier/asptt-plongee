@@ -7,10 +7,17 @@
 							<legend>Choix des plong&eacute;es</legend>
 							<input type="checkbox" wicket:id="groupselector">tout selectionner / d&eacute;selectionner</input>
 							<table>
+							<tr>
+								<th>Choix</th>
+								<th>Date</th>
+								<th>Type</th>
+								<th>Niveau Mini.</th>
+							</tr>
 							<tr wicket:id="plongeeList">
 								<td><input type="checkbox" wicket:id="check"/></td>
 								<td><span wicket:id="date"/></td>
 								<td><span wicket:id="type"/></td>
+								<td><span wicket:id="niveauMini"/></td>
 							</tr>
 							</table>
 							<input type="submit" value="Valider" />
