@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import com.asptt.plongee.resa.dao.AdherentDao;
@@ -27,8 +28,41 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements PlongeeDao {
 	
 	
 	public Plongee create(Plongee obj) throws TechnicalException {
-		// TODO Auto-generated method stub
-		return null;
+		try {
+			StringBuffer sb = new StringBuffer();
+			sb.append("INSERT INTO PLONGEE (`DATE`, `DEMIE_JOURNEE`, `OUVERTURE_FORCEE`, `NIVEAU_MINI`, `NB_MAX_PLG`)");
+			sb.append(" VALUES (current_timestamp,?,?,?,?)");
+			PreparedStatement st = getDataSource().getConnection()
+					.prepareStatement(sb.toString());
+			st.setString(1, obj.getType());
+			if (obj.getOuvertureForcee()) {
+				st.setInt(2, 1);
+			} else {
+				st.setInt(2, 0);
+			}
+			if (null == obj.getNiveauMinimum()) {
+				st.setString(3, null);
+			} else {
+				st.setString(3, obj.getNiveauMinimum().toString());
+			}
+			st.setInt(4, obj.getNbMaxPlaces());
+			if (st.executeUpdate() == 0) {
+				throw new TechnicalException(
+						"La plongée n'a pu être enregistrée");
+			}
+			sb = new StringBuffer();
+			return obj;
+		} catch (SQLException e) {
+			throw new TechnicalException(e);
+		} finally {
+			try {
+				getDataSource().getConnection().close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+				throw new TechnicalException(
+						"Impossible de cloturer la connexion");
+			}
+		}
 	}
 
 	public void delete(Plongee obj) throws TechnicalException {
@@ -37,8 +71,42 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements PlongeeDao {
 	}
 
 	public Plongee update(Plongee obj) throws TechnicalException {
-		// TODO Auto-generated method stub
-		return null;
+		try {
+			StringBuffer sb = new StringBuffer();
+			sb.append("UPDATE PLONGEE");
+			sb.append(" SET OUVERTURE_FORCEE = ?,");
+			sb.append(" SET NIVEAU_MINI = ?,");
+			sb.append(" SET NB_MAX_PLG = ?");
+			PreparedStatement st = getDataSource().getConnection()
+					.prepareStatement(sb.toString());
+			if (obj.getOuvertureForcee()) {
+				st.setInt(1, 1);
+			} else {
+				st.setInt(1, 0);
+			}
+			if (null == obj.getNiveauMinimum()) {
+				st.setString(2, null);
+			} else {
+				st.setString(2, obj.getNiveauMinimum().toString());
+			}
+			st.setInt(3, obj.getNbMaxPlaces());
+			if (st.executeUpdate() == 0) {
+				throw new TechnicalException(
+						"La plongée "+obj.getId()+" n'a pu être modifiée");
+			}
+			sb = new StringBuffer();
+			return obj;
+		} catch (SQLException e) {
+			throw new TechnicalException(e);
+		} finally {
+			try {
+				getDataSource().getConnection().close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+				throw new TechnicalException(
+						"Impossible de cloturer la connexion");
+			}
+		}
 	}
 	
 	public List<Plongee> findAll() throws TechnicalException {
