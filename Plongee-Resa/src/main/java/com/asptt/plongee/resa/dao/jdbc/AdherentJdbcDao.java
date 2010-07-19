@@ -28,8 +28,7 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 	public Adherent create(Adherent adh) throws TechnicalException {
 		try {
 			StringBuffer sb = new StringBuffer();
-			sb
-					.append("INSERT INTO ADHERENT (`LICENSE`, `NOM`, `PRENOM`, `NIVEAU`, `TELEPHONE`, `MAIL`, `ENCADRANT`, `PILOTE`, `DATE_DEBUT`)");
+			sb.append("INSERT INTO ADHERENT (`LICENSE`, `NOM`, `PRENOM`, `NIVEAU`, `TELEPHONE`, `MAIL`, `ENCADRANT`, `PILOTE`, `DATE_DEBUT`)");
 			sb.append(" VALUES (?, ?, ?, ?, ?, ?, ?, ?, current_timestamp)");
 			PreparedStatement st = getDataSource().getConnection()
 					.prepareStatement(sb.toString());
@@ -113,8 +112,7 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 	public Adherent update(Adherent adh) throws TechnicalException {
 		try {
 			StringBuffer sb = new StringBuffer();
-			sb
-					.append("UPDATE ADHERENT");
+			sb.append("UPDATE ADHERENT");
 			sb.append(" SET NIVEAU = ?,");
 			sb.append(" TELEPHONE = ?,");
 			sb.append(" MAIL = ?,");
@@ -273,12 +271,42 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 		}
 	}
 
+	public List<Adherent> getAdherentsLikeName(String name)
+	throws TechnicalException {
+		PreparedStatement st;
+		try {
+			String generiqueName = "%";
+			generiqueName.concat(name);
+			generiqueName.concat("%");
+			StringBuffer sb = new StringBuffer("select LICENSE, NOM, PRENOM, NIVEAU, TELEPHONE, MAIL, ENCADRANT, PILOTE, ACTIF ");
+			sb.append(" from adherent a ");
+			sb.append(" where NOM LIKE ?");
+			st = getDataSource().getConnection().prepareStatement(sb.toString());
+			st.setString(1, generiqueName);
+			ResultSet rs = st.executeQuery();
+			List<Adherent> adherents = new ArrayList<Adherent>();
+			while (rs.next()) {
+				Adherent adherent = wrapAdherent(rs);
+				adherents.add(adherent);
+			}
+			return adherents;
+		} catch (SQLException e) {
+			throw new TechnicalException(e);
+		} finally {
+			try {
+				getDataSource().getConnection().close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+				throw new TechnicalException("Impossible de cloturer la connexion");
+			}
+		}
+	}
+
 	public List<Adherent> getAdherentsInscrits(Plongee plongee)
 			throws TechnicalException {
 		PreparedStatement st;
 		try {
-			StringBuffer sb = new StringBuffer(
-					"select LICENSE, NOM, PRENOM, NIVEAU, TELEPHONE, MAIL, ENCADRANT, PILOTE, ACTIF ");
+			StringBuffer sb = new StringBuffer("select LICENSE, NOM, PRENOM, NIVEAU, TELEPHONE, MAIL, ENCADRANT, PILOTE, ACTIF ");
 			sb.append(" from plongee p, inscription_plongee i, adherent a ");
 			sb.append(" where idPLONGEES = ?");
 			sb.append(" and idPLONGEES = PLONGEES_idPLONGEES ");
@@ -289,7 +317,6 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 			st.setInt(1, plongee.getId());
 			ResultSet rs = st.executeQuery();
 			List<Adherent> adherents = new ArrayList<Adherent>();
-			// AdherentServiceImpl daoAdh =AdherentServiceImpl.getInstance();
 			while (rs.next()) {
 				Adherent adherent = wrapAdherent(rs);
 				adherents.add(adherent);
