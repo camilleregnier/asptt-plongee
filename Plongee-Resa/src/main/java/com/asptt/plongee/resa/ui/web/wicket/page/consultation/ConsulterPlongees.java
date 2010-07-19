@@ -24,7 +24,7 @@ import com.asptt.plongee.resa.model.Plongee;
 import com.asptt.plongee.resa.model.PlongeeDataProvider;
 import com.asptt.plongee.resa.ui.web.wicket.page.TemplatePage;
 
-@AuthorizeInstantiation("USER")
+@AuthorizeInstantiation({"USER", "SECRETARIAT"})
 public class ConsulterPlongees extends TemplatePage {
 	Plongee selected;
 
@@ -70,6 +70,7 @@ public class ConsulterPlongees extends TemplatePage {
 				item.add(new Label("date", dateAffichee));
 				item.add(new Label("dp", nomDP));
 				item.add(new Label("type", plongee.getType()));
+				item.add(new Label("niveauMini", plongee.getNiveauMinimum().toString()));
 
 				item.add(new AttributeModifier("class", true,
 						new AbstractReadOnlyModel<String>() {

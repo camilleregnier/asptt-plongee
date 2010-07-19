@@ -7,6 +7,7 @@ import java.util.List;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.extensions.markup.html.form.palette.Palette;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
+import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
@@ -15,6 +16,7 @@ import org.apache.wicket.model.util.CollectionModel;
 import org.apache.wicket.model.util.ListModel;
 
 import com.asptt.plongee.resa.model.Adherent;
+import com.asptt.plongee.resa.model.NiveauAutonomie;
 import com.asptt.plongee.resa.model.Plongee;
 import com.asptt.plongee.resa.ui.web.wicket.page.TemplatePage;
 
@@ -66,13 +68,11 @@ public class GererPlongeeAOuvrirTwo extends TemplatePage {
 						idInscrits.add(adherent.getNumeroLicense());
 					}
 				}
-				System.out.println("Nombres d'inscrit="+idInscrits.size());
 				for(Adherent adherent : pilotes){
 					if(! idInscrits.contains(adherent.getNumeroLicense())){
 						idInscrits.add(adherent.getNumeroLicense());
 					}
 				}
-				System.out.println("Nombres d'inscrit="+idInscrits.size());
 				/*
 				 * Maintenant qu'on à la liste des id
 				 * on reconstitu une liste d'adherent
@@ -98,6 +98,13 @@ public class GererPlongeeAOuvrirTwo extends TemplatePage {
 		};
 
 		add(form);
+		
+		// Ajout de la liste des niveaux
+		List<String> niveaux = new ArrayList<String>();
+		for (NiveauAutonomie n : NiveauAutonomie.values()){
+			niveaux.add(n.toString());
+		}
+		//add(new DropDownChoice("niveau", niveaux));
 		form.add(palDp);
 		form.add(palPilote);
 

@@ -10,7 +10,7 @@ import org.apache.wicket.markup.html.basic.Label;
 
 import com.asptt.plongee.resa.model.Adherent;
 
-@AuthorizeInstantiation("USER")
+@AuthorizeInstantiation({"USER","ADMIN","SECRETARIAT"})
 public class AccueilPage extends TemplatePage {
 	
 	MarkupContainer adminMenus = new MarkupContainer("menuAdmin"){  
@@ -20,7 +20,7 @@ public class AccueilPage extends TemplatePage {
 		   return getResaSession().get().getRoles().hasRole("ADMIN");  
 		  }  
 		   
-	};  
+	};
 
 	public AccueilPage() { 
 		Adherent a = getResaSession().getAdherent();

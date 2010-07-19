@@ -26,21 +26,25 @@
                 <div id="bandeau">
                     <img src="/medias/images/logoAsptt.gif">
                 </div>
-            </div>
-	<p>
-	
+    </div>
+    
+	<div wicket:id="menuUser">
 		<wicket:link>
 			<a href="AccueilPage.html">Accueil</a>
 			<a href="inscription/InscriptionPlongeePage.html">R&eacute;server plong&eacute;e(s)</a>
 			<a href="inscription/DeInscriptionPlongeePage.html">DeInscrire plong&eacute;e(s)</a>
 			<a href="consultation/ConsulterPlongees.html">Consulter Plong&eacute;es</a>
-<!-- 
-			<a href="admin/GererListeAttenteOne.html">G&eacute;rer Liste Attente</a>
-			<a href="admin/CreerAdherent.html">CreerAdherent</a>
- -->
  		</wicket:link>
+ 	</div>
+ 	<div wicket:id="menuSecretariat">
+		<wicket:link>
+			<a href="AccueilPage.html">Accueil</a>
+			<a href="inscription/secretariat/InscriptionAdherentPlongeePage.html">Inscrire un adh&eacute;rent</a>
+			<a href="inscription/secretariat/InscriptionAdherentPlongeePage.html">Inscrire un ext&eacute;rieur</a>
+			<a href="consultation/ConsulterPlongees.html">Consulter Plong&eacute;es</a>
+ 		</wicket:link>
+ 	</div>
 
-	</p>
 	<div id="corps">
 		<wicket:child />
 	</div>

@@ -74,6 +74,7 @@ public class InscriptionPlongeePage extends TemplatePage {
 					
 					listItem.add(new Label("date", dateAffichee));                
 					listItem.add(new Label("type",new PropertyModel<String>(listItem.getDefaultModel(), "type")));
+					listItem.add(new Label("niveauMini",new PropertyModel<String>(listItem.getDefaultModel(), "niveauMinimum")));
 				}
 			
 			}.setReuseItems(true);
