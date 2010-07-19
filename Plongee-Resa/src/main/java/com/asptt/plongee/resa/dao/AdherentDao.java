@@ -10,8 +10,11 @@ public interface AdherentDao extends GenericDao<Adherent, String> {
 	
 	public List<String> getStrRoles(Adherent adherent) throws TechnicalException;
 
+	public int getIdRole(String libelle) throws TechnicalException;
+
 	public List<Adherent> getAdherentsInscrits(Plongee plongee) throws TechnicalException;
 
 	public List<Adherent> getAdherentsWaiting(Plongee plongee) throws TechnicalException;
 	
+	public List<Adherent> getAdherentsLikeName(String name) throws TechnicalException;
 }
