@@ -42,6 +42,7 @@ public class ConsulterPlongees extends TemplatePage {
 		add(dynamicPanel);
 
 
+		
 		add(new DataView<Plongee>("simple", new PlongeeDataProvider(
 				getResaSession().getPlongeeService())) {
 			protected void populateItem(final Item<Plongee> item) {

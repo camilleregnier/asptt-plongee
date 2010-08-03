@@ -13,19 +13,19 @@ import com.asptt.plongee.resa.model.Adherent;
 @AuthorizeInstantiation({"USER","ADMIN","SECRETARIAT"})
 public class AccueilPage extends TemplatePage {
 	
-	MarkupContainer adminMenus = new MarkupContainer("menuAdmin"){  
-		  
-		  @Override  
-		  public boolean isVisible() {     
-		   return getResaSession().get().getRoles().hasRole("ADMIN");  
-		  }  
-		   
-	};
+//	MarkupContainer adminMenus = new MarkupContainer("menuAdmin"){  
+//		  
+//		  @Override  
+//		  public boolean isVisible() {     
+//		   return getResaSession().get().getRoles().hasRole("ADMIN");  
+//		  }  
+//		   
+//	};
 
 	public AccueilPage() { 
 		Adherent a = getResaSession().getAdherent();
 	    add(new Label("hello", "Bienvenue:"+a.getPrenom()+", il est : " + calculerDateCourante()));
-	    add(adminMenus);
+//	    add(adminMenus);
 	} 
 
 	private String calculerDateCourante() {

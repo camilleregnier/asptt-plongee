@@ -123,4 +123,11 @@ public class Plongee implements Serializable {
 		}
 	}
 
+	public boolean isOuverte(){
+		if(isExistDP() && isExistPilote()){
+			return true;
+		} else{
+			return false;
+		}
+	}
 }

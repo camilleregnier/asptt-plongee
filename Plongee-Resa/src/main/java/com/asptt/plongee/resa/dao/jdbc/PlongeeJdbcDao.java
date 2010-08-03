@@ -112,7 +112,7 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements PlongeeDao {
 	public List<Plongee> findAll() throws TechnicalException {
 		try {
 			PreparedStatement st = getDataSource().getConnection().
-			prepareStatement("SELECT * FROM PLONGEE p  WHERE OUVERTURE_FORCEE=1");
+			prepareStatement("SELECT * FROM PLONGEE p  WHERE OUVERTURE_FORCEE=1 and date > CURRENT_TIMESTAMP()");
 			ResultSet rs = st.executeQuery();
 			List<Plongee> plongees = new ArrayList<Plongee>();
 			while (rs.next()) {
@@ -131,12 +131,12 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements PlongeeDao {
 			}
 		}
 	}
-
-	public List<Plongee> getPlongeesForWeek() throws TechnicalException {
+	
+	public List<Plongee> getPlongeesForFewDay( int nbjour) throws TechnicalException {
 		try {
 			StringBuffer sb = new StringBuffer("SELECT * FROM PLONGEE p  WHERE OUVERTURE_FORCEE=1");
-			sb.append(" and date > CURRENT_DATE()");
-//			sb.append(" and date < CURRENT_DATE() + 7");
+			sb.append(" and date < CURRENT_DATE() + "+nbjour);
+			sb.append(" and date > CURRENT_TIMESTAMP()");
 			
 			PreparedStatement st = getDataSource().getConnection().prepareStatement(sb.toString());
 			
@@ -144,7 +144,9 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements PlongeeDao {
 			List<Plongee> plongees = new ArrayList<Plongee>();
 			while (rs.next()) {
 				Plongee plongee = wrapPlongee(rs);
-				plongees.add(plongee);
+				if(plongee.isOuverte()) {
+					plongees.add(plongee);
+				}
 			}
 			return plongees;
 		} catch (SQLException e) {
@@ -182,7 +184,7 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements PlongeeDao {
 		}
 	}
 
-	public List<Plongee> getPlongeesForAdherent(Adherent adherent)
+	public List<Plongee> getPlongeesWhereAdherentIsInscrit(Adherent adherent)
 	throws TechnicalException {
 		try {
 			StringBuffer sb = new StringBuffer();
@@ -414,7 +416,7 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements PlongeeDao {
 		} else {
 			plongee.setOuvertureForcee(false);
 		}
-		List<Adherent> participants = adherentDao.getAdherentsInscrits(plongee);
+		List<Adherent> participants = adherentDao.getAdherentsInscrits(plongee,null,null);
 		plongee.setParticipants(participants);
 		for(Adherent a : participants){
 			if(a.isDp()){

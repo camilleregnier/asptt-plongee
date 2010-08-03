@@ -12,7 +12,7 @@ public interface AdherentDao extends GenericDao<Adherent, String> {
 
 	public int getIdRole(String libelle) throws TechnicalException;
 
-	public List<Adherent> getAdherentsInscrits(Plongee plongee) throws TechnicalException;
+	public List<Adherent> getAdherentsInscrits(Plongee plongee, String niveauPlongeur, String niveauEncadrement) throws TechnicalException;
 
 	public List<Adherent> getAdherentsWaiting(Plongee plongee) throws TechnicalException;
 	

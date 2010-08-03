@@ -24,10 +24,20 @@ public abstract class TemplatePage extends WebPage {
 		   
 	};
 	
+	MarkupContainer adminMenus = new MarkupContainer("menuAdmin"){  
+		  
+		  @Override  
+		  public boolean isVisible() {     
+		   return getResaSession().get().getRoles().hasRole("ADMIN");  
+		  }  
+		   
+	};
+
 	public TemplatePage() {
 		super();
-		 add(userMenus);
-		 add(secretariatMenus);
+		add(userMenus);
+		add(secretariatMenus);
+		add(adminMenus);
 	}
 
 	public ResaSession getResaSession(){

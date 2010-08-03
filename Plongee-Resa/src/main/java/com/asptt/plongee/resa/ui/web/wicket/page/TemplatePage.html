@@ -30,7 +30,7 @@
     
 	<div wicket:id="menuUser">
 		<wicket:link>
-			<a href="AccueilPage.html">Accueil</a>
+			<a href="AccueilPage.html">Accueil -> Adherent</a>
 			<a href="inscription/InscriptionPlongeePage.html">R&eacute;server plong&eacute;e(s)</a>
 			<a href="inscription/DeInscriptionPlongeePage.html">DeInscrire plong&eacute;e(s)</a>
 			<a href="consultation/ConsulterPlongees.html">Consulter Plong&eacute;es</a>
@@ -38,13 +38,21 @@
  	</div>
  	<div wicket:id="menuSecretariat">
 		<wicket:link>
-			<a href="AccueilPage.html">Accueil</a>
+			<a href="AccueilPage.html">Accueil -> Secretariat</a>
 			<a href="inscription/secretariat/InscriptionAdherentPlongeePage.html">Inscrire un adh&eacute;rent</a>
 			<a href="inscription/secretariat/InscriptionAdherentPlongeePage.html">Inscrire un ext&eacute;rieur</a>
 			<a href="consultation/ConsulterPlongees.html">Consulter Plong&eacute;es</a>
  		</wicket:link>
  	</div>
-
+	<div wicket:id="menuAdmin">
+		<wicket:link>
+			<a href="AccueilPage.html">Accueil -> Admin</a>
+			<a href="admin/GererListeAttenteOne.html">G&eacute;rer les listes d'attente</a>
+			<a href="admin/CreerAdherent.html">Cr&eacute;er un adh&eacute;rent</a>
+			<a href="admin/GererPlongeeAOuvrirOne.html">Ouvrir une plong&eacute;e</a>
+			<a href="admin/GererAdherents.html">G&eacute;rer les adh&eacute;rents</a>
+		</wicket:link>
+	</div>
 	<div id="corps">
 		<wicket:child />
 	</div>
