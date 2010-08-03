@@ -302,7 +302,7 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 		}
 	}
 
-	public List<Adherent> getAdherentsInscrits(Plongee plongee)
+	public List<Adherent> getAdherentsInscrits(Plongee plongee,  String niveauPlongeur, String niveauEncadrement)
 			throws TechnicalException {
 		PreparedStatement st;
 		try {
@@ -312,9 +312,29 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 			sb.append(" and idPLONGEES = PLONGEES_idPLONGEES ");
 			sb.append(" and ADHERENT_LICENSE = LICENSE");
 			sb.append(" and DATE_ANNUL_PLONGEE is null");
+			if(null != niveauPlongeur){
+				sb.append(" and a.NIVEAU = ?");
+			}
+			if(null != niveauEncadrement){
+				if(niveauEncadrement.equalsIgnoreCase("TOUS")){
+					sb.append(" and a.ENCADREMENT is not null");
+				} else{
+					sb.append(" and a.ENCADREMENT = ?");
+				}
+			}
 			st = getDataSource().getConnection()
 					.prepareStatement(sb.toString());
 			st.setInt(1, plongee.getId());
+			if(null != niveauPlongeur){
+				st.setString(2, niveauPlongeur);
+				if(null != niveauEncadrement && !niveauEncadrement.equalsIgnoreCase("TOUS")){
+					st.setString(3, niveauEncadrement);
+				}
+			} else {
+				if(null != niveauEncadrement && !niveauEncadrement.equalsIgnoreCase("TOUS")){
+					st.setString(2, niveauEncadrement);
+				}
+			}
 			ResultSet rs = st.executeQuery();
 			List<Adherent> adherents = new ArrayList<Adherent>();
 			while (rs.next()) {

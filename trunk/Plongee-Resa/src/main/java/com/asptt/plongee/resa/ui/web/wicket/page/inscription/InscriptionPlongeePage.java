@@ -27,6 +27,7 @@ import com.asptt.plongee.resa.model.Adherent;
 import com.asptt.plongee.resa.model.Plongee;
 import com.asptt.plongee.resa.service.PlongeeService;
 import com.asptt.plongee.resa.ui.web.wicket.page.TemplatePage;
+import com.asptt.plongee.resa.ui.web.wicket.page.admin.GererPlongeeAOuvrirTwo;
 
 public class InscriptionPlongeePage extends TemplatePage {
 
@@ -56,8 +57,7 @@ public class InscriptionPlongeePage extends TemplatePage {
 			/*
 			 * Retourne la liste des plongées ouvertes, pour les 7 prochains jours
 			 */
-			data = getResaSession().getPlongeeService().rechercherPlongeeOuverteForAdherent( 	
-					getResaSession().getPlongeeService().rechercherPlongeeTout(),
+			data = getResaSession().getPlongeeService().rechercherPlongeePourInscriptionAdherent( 	
 					getResaSession().getAdherent());
 
 			ListView<Plongee> list = new ListView<Plongee>("plongeeList", data){
@@ -87,16 +87,18 @@ public class InscriptionPlongeePage extends TemplatePage {
 			Collection<Plongee> list = group.getModelObject();
 			List<Plongee> plongees = new ArrayList<Plongee>(list);
 			for(Plongee plongee : plongees){
-				if(getResaSession().getPlongeeService().isOkForResa(
+				int response = getResaSession().getPlongeeService().isOkForResa(
 						plongee, 
-						getResaSession().getAdherent())){
-					//on peux inscrire l'adherent à la plongee
+						getResaSession().getAdherent());
+				
+				switch (response) {
+				case 1: //on peux inscrire l'adherent à la plongee
 					getResaSession().getPlongeeService().inscrireAdherent(
 							plongee, 
 							getResaSession().getAdherent());
 					setResponsePage(new InscriptionConfirmationPlongeePage(plongee));
-				}else{
-					//on verifie si on peut le mettre en liste Attente
+					break;
+				case 0: //on inscrit l'adherent en liste d'attente
 					if(getResaSession().getPlongeeService().isOkForListeAttente(
 							plongee, 
 							getResaSession().getAdherent())){
@@ -105,12 +107,46 @@ public class InscriptionPlongeePage extends TemplatePage {
 								plongee, 
 								getResaSession().getAdherent());
 						setResponsePage(new InscriptionListeAttentePlongeePage(plongee));
-					}else{
-						/*
-						 * Inscription impossible
-						 */
 					}
+					break;
+				case 2: // ouvrir la plongée
+					setResponsePage(new GererPlongeeAOuvrirTwo(plongee));
+					break;
+				case -1: 
+					/*
+					 * Inscription impossible
+					 */
+					setResponsePage(new InscriptionFailurePlongeePage(plongee));
+					break;
+				default:
+					/*
+					 * Inscription impossible
+					 */
+					setResponsePage(new InscriptionFailurePlongeePage(plongee));
+					break;
 				}
+//				if(response == 1){
+//					//on peux inscrire l'adherent à la plongee
+//					getResaSession().getPlongeeService().inscrireAdherent(
+//							plongee, 
+//							getResaSession().getAdherent());
+//					setResponsePage(new InscriptionConfirmationPlongeePage(plongee));
+//				}else{
+//					//on verifie si on peut le mettre en liste Attente
+//					if(getResaSession().getPlongeeService().isOkForListeAttente(
+//							plongee, 
+//							getResaSession().getAdherent())){
+//						//on peut inscrire l'adherent en liste attente
+//						getResaSession().getPlongeeService().inscrireAdherentEnListeAttente(
+//								plongee, 
+//								getResaSession().getAdherent());
+//						setResponsePage(new InscriptionListeAttentePlongeePage(plongee));
+//					}else{
+//						/*
+//						 * Inscription impossible
+//						 */
+//					}
+//				}
 			}
 		}
 

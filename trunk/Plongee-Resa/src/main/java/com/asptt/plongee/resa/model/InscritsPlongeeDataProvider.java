@@ -24,16 +24,16 @@ public class InscritsPlongeeDataProvider implements IDataProvider<Adherent> {
 	@Override
 	public Iterator<Adherent> iterator(int first, int count) {
 		// TODO à remplacer par la bonne méthode de plongeeService
-		return plongeeService.rechercherInscriptions(plongee).iterator();
+		return plongeeService.rechercherInscriptions(plongee,null,null).iterator();
 	}
 
 	@Override
 	public int size() {
 		// TODO Auto-generated method stub
-		if(null == plongeeService.rechercherInscriptions(plongee)){
+		if(null == plongeeService.rechercherInscriptions(plongee,null,null)){
 			return 0;
 		} else {			
-			return plongeeService.rechercherInscriptions(plongee).size();
+			return plongeeService.rechercherInscriptions(plongee,null,null).size();
 		}
 	}
 

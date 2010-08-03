@@ -18,13 +18,13 @@ public class PlongeeDataProvider implements IDataProvider<Plongee> {
 	@Override
 	public Iterator<Plongee> iterator(int first, int count) {
 		// TODO à remplacer par la bonne méthode de plongeeService
-		return plongeeService.rechercherPlongeeTout().iterator();
+		return plongeeService.rechercherPlongeeProchainJour().iterator();
 	}
 
 	@Override
 	public int size() {
 		// TODO Auto-generated method stub
-		return plongeeService.rechercherPlongeeTout().size();
+		return plongeeService.rechercherPlongeeProchainJour().size();
 	}
 
 	@Override

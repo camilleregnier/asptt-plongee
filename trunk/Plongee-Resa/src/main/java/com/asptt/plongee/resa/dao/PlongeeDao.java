@@ -8,9 +8,9 @@ import com.asptt.plongee.resa.model.Plongee;
 
 public interface PlongeeDao extends GenericDao<Plongee, Integer>{
 
-	public List<Plongee> getPlongeesForWeek() throws TechnicalException;
+	public List<Plongee> getPlongeesForFewDay( int nbjour) throws TechnicalException;
 	
-	public List<Plongee> getPlongeesForAdherent(Adherent adherent) throws TechnicalException;
+	public List<Plongee> getPlongeesWhereAdherentIsInscrit(Adherent adherent) throws TechnicalException;
 
 	public List<Plongee> getListeAttenteForAdherent(Adherent adherent) throws TechnicalException;
 
