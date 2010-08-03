@@ -23,10 +23,12 @@ import com.asptt.plongee.resa.model.ListeAttentePlongeeDataProvider;
 import com.asptt.plongee.resa.model.Plongee;
 import com.asptt.plongee.resa.model.PlongeeDataProvider;
 import com.asptt.plongee.resa.ui.web.wicket.page.TemplatePage;
+import com.asptt.plongee.resa.ui.web.wicket.page.admin.AdherentPanel;
 
 @AuthorizeInstantiation({"USER", "SECRETARIAT"})
 public class ConsulterPlongees extends TemplatePage {
-	Plongee selected;
+	private Plongee selected;
+	private ModalWindow modal2;
 
 	InscritsPlongeeDataProvider inscrit = new InscritsPlongeeDataProvider(
 			getResaSession().getPlongeeService(), getResaSession()
@@ -36,10 +38,15 @@ public class ConsulterPlongees extends TemplatePage {
 
 	@SuppressWarnings("serial")
 	public ConsulterPlongees() {
+		
+		modal2 = new ModalWindow("modal2");
+		modal2.setTitle("This is modal window with panel content.");
+		modal2.setCookieName("modal-adherent");
+		add(modal2);
 
-		dynamicPanel = new WebMarkupContainer("dynamicPanel");
-		dynamicPanel.setOutputMarkupId(true);
-		add(dynamicPanel);
+//		dynamicPanel = new WebMarkupContainer("dynamicPanel");
+//		dynamicPanel.setOutputMarkupId(true);
+//		add(dynamicPanel);
 
 
 		
@@ -55,8 +62,10 @@ public class ConsulterPlongees extends TemplatePage {
 				item.add(new AjaxLink("select") {
 					@Override
 					public void onClick(AjaxRequestTarget target) {
-						replaceEmptyPanel(target,
-								new ParticipantsPanel("dynamicPanel", item.getModel()));
+//						replaceEmptyPanel(target,
+//								new ParticipantsPanel("dynamicPanel", item.getModel()));
+						replaceModalWindow(target, item.getModel());
+						modal2.show(target);
 					}
 				});
 
@@ -72,6 +81,14 @@ public class ConsulterPlongees extends TemplatePage {
 				item.add(new Label("dp", nomDP));
 				item.add(new Label("type", plongee.getType()));
 				item.add(new Label("niveauMini", plongee.getNiveauMinimum().toString()));
+				
+				// Places restantes
+				InscritsPlongeeDataProvider tmpInscrits = new InscritsPlongeeDataProvider(
+						getResaSession().getPlongeeService(), getResaSession()
+						.getAdherentService(), plongee);
+				int reste = plongee.getNbMaxPlaces() - tmpInscrits.size();
+				item.add(new Label("placesRestantes", String.valueOf(reste)));
+				tmpInscrits = null;
 
 				item.add(new AttributeModifier("class", true,
 						new AbstractReadOnlyModel<String>() {
@@ -128,6 +145,11 @@ public class ConsulterPlongees extends TemplatePage {
 		target.addComponent(newPanel);
 
 	}
+	
+	private void replaceModalWindow(AjaxRequestTarget target, IModel<Plongee> plongee) {
+		modal2.setContent(new ParticipantsPanel(modal2.getContentId(), plongee));
+		modal2.setTitle("Liste des participants");
+	}
 
 	class ParticipantsPanel extends Panel {
 		@SuppressWarnings("serial")
@@ -144,7 +166,14 @@ public class ConsulterPlongees extends TemplatePage {
 
 					item.add(new Label("nom", adherent.getNom()));
 					item.add(new Label("prenom", adherent.getPrenom()));
-					item.add(new Label("niveau", adherent.getNiveau()));
+					
+					// Dès que le plongeur est encadrant, on affiche son niveau d'encadrement
+					String niveauAffiche;
+					if (adherent.getEncadrement() != null)
+						niveauAffiche = adherent.getEncadrement();
+					else niveauAffiche = adherent.getNiveau();
+						
+					item.add(new Label("niveau", niveauAffiche));
 
 					item.add(new AttributeModifier("class", true,
 							new AbstractReadOnlyModel<String>() {

@@ -8,7 +8,7 @@ import org.apache.wicket.authorization.strategies.role.Roles;
 
 public class Adherent implements Serializable {
 
-	public static enum Encadrement {E1, E2, E3, E4 }
+	public static enum Encadrement {E2, E3, E4 }
 	
 	private String numeroLicense; // ID
 	private String nom;
@@ -183,7 +183,11 @@ public class Adherent implements Serializable {
 //			tabRoles[i] = roles.get(i);
 //		}
 //		return tabRoles;
-//	}
+//	
+
+	public String getNomComplet(){
+		return nom + " " + prenom + " " + niveau + " (" + telephone + ")";
+	}
 
 	public void setRoles(List<String> roles) {
 		this.roles = new Roles();

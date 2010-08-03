@@ -32,6 +32,9 @@ public class DeInscriptionPlongeePage extends TemplatePage {
 
 
 	public DeInscriptionPlongeePage() {
+		
+		add(new Label("message", getResaSession().getAdherent().getPrenom() + ", voici les plongées auxquelles tu es inscrit(e)"));
+		
 		final FeedbackPanel feedback = new FeedbackPanel("feedback");
 		add(feedback);
 		add(new InscriptionPlongeeFrom("inputForm", feedback));

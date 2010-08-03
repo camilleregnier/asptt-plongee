@@ -30,11 +30,28 @@ import com.asptt.plongee.resa.ui.web.wicket.page.TemplatePage;
 import com.asptt.plongee.resa.ui.web.wicket.page.admin.GererPlongeeAOuvrirTwo;
 
 public class InscriptionPlongeePage extends TemplatePage {
-
-
-	public InscriptionPlongeePage() {
+	
+	private Adherent adhSecretariat;
+	
+	public InscriptionPlongeePage(){
+		
+		add(new Label("message", getResaSession().getAdherent().getPrenom() + ", ci-dessous, les plongées auxquelles tu peux t'inscrire"));
+		
 		final FeedbackPanel feedback = new FeedbackPanel("feedback");
 		add(feedback);
+		
+		add(new InscriptionPlongeeFrom("inputForm", feedback));
+	}
+	
+	public InscriptionPlongeePage(Adherent adherent) {
+		
+		adhSecretariat = adherent;
+		
+		add(new Label("message", adhSecretariat.getPrenom() + " " + adhSecretariat.getNom() + " peut s'inscrire aux plongées suivantes"));
+		
+		final FeedbackPanel feedback = new FeedbackPanel("feedback");
+		add(feedback);
+		
 		add(new InscriptionPlongeeFrom("inputForm", feedback));
 	}
 
@@ -58,7 +75,7 @@ public class InscriptionPlongeePage extends TemplatePage {
 			 * Retourne la liste des plongées ouvertes, pour les 7 prochains jours
 			 */
 			data = getResaSession().getPlongeeService().rechercherPlongeePourInscriptionAdherent( 	
-					getResaSession().getAdherent());
+					adhSecretariat != null ? adhSecretariat : getResaSession().getAdherent());
 
 			ListView<Plongee> list = new ListView<Plongee>("plongeeList", data){
 				public void populateItem(ListItem<Plongee> listItem) {           
@@ -95,7 +112,7 @@ public class InscriptionPlongeePage extends TemplatePage {
 				case 1: //on peux inscrire l'adherent à la plongee
 					getResaSession().getPlongeeService().inscrireAdherent(
 							plongee, 
-							getResaSession().getAdherent());
+							adhSecretariat != null ?  adhSecretariat : getResaSession().getAdherent());
 					setResponsePage(new InscriptionConfirmationPlongeePage(plongee));
 					break;
 				case 0: //on inscrit l'adherent en liste d'attente
@@ -105,7 +122,7 @@ public class InscriptionPlongeePage extends TemplatePage {
 						//on peut inscrire l'adherent en liste attente
 						getResaSession().getPlongeeService().inscrireAdherentEnListeAttente(
 								plongee, 
-								getResaSession().getAdherent());
+								adhSecretariat != null ?  adhSecretariat : getResaSession().getAdherent());
 						setResponsePage(new InscriptionListeAttentePlongeePage(plongee));
 					}
 					break;

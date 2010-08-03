@@ -22,6 +22,7 @@ import com.asptt.plongee.resa.model.Adherent;
 import com.asptt.plongee.resa.ui.web.wicket.ResaSession;
 import com.asptt.plongee.resa.ui.web.wicket.page.AccueilPage;
 import com.asptt.plongee.resa.ui.web.wicket.page.TemplatePage;
+import com.asptt.plongee.resa.ui.web.wicket.page.inscription.InscriptionPlongeePage;
 
 public class InscriptionAdherentPlongeePage extends TemplatePage {
 
@@ -72,13 +73,15 @@ public class InscriptionAdherentPlongeePage extends TemplatePage {
 					return adherent.getNumeroLicense();
 				}
 				protected String getTextValue(Adherent adherent) {
-					return adherent.getNom();
+					String texteAffiche = adherent.getNom() + " " + adherent.getPrenom() + " " + adherent.getNiveau();
+					return texteAffiche;
 				}
 			};
 			
 			ObjectAutoCompleteBuilder<Adherent, String> builder = new ObjectAutoCompleteBuilder<Adherent, String>(provider);
 			builder.autoCompleteRenderer(renderer);
 			builder.searchLinkText("Autre recherche");
+			builder.width(200);
 
 
 			autocompleteField = builder.build("numeroLicense", new Model<String>());
@@ -90,8 +93,7 @@ public class InscriptionAdherentPlongeePage extends TemplatePage {
 		}
 		
 		public void onSubmit() {
-			System.out.println(autocompleteField.getConvertedInput());
-			setResponsePage(AccueilPage.class);
+			setResponsePage(new InscriptionPlongeePage(getResaSession().getAdherentService().rechercherAdherentParIdentifiant(autocompleteField.getConvertedInput())));
 		}
 		
 	}
