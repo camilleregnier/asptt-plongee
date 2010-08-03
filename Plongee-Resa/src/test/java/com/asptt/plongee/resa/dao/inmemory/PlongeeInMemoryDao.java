@@ -73,7 +73,7 @@ public class PlongeeInMemoryDao implements PlongeeDao {
 		return null;
 	}
 
-	public List<Plongee> getPlongeesForAdherent(Adherent adherent)
+	public List<Plongee> getPlongeesWhereAdherentIsInscrit(Adherent adherent)
 		throws TechnicalException {
 		// TODO Auto-generated method stub
 		return null;
@@ -104,5 +104,12 @@ public class PlongeeInMemoryDao implements PlongeeDao {
 			throws TechnicalException {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public List<Plongee> getPlongeesForFewDay(int nbjour)
+			throws TechnicalException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
