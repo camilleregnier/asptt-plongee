@@ -121,3 +121,8 @@ ul
 padding: 0;
 margin: 15px;
 }
+
+table.palette td.pane choices {
+	width: 200px;
+	text-align: center;
+}
