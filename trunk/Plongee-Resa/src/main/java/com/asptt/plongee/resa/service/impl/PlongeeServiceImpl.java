@@ -170,7 +170,7 @@ public class PlongeeServiceImpl implements PlongeeService {
 		List<Plongee> plongeesAttente = new ArrayList<Plongee>();
 		for(Plongee plongee : plongees){
 			if(plongee.isOuverte()){
-				if( plongee.getParticipantsEnAttente().size() > 0 ){
+				if( plongee.getParticipantsEnAttente().size() > 0 && plongee.getParticipants().size() < plongee.getNbMaxPlaces()){
 					plongeesAttente.add(plongee);
 				}
 			}
@@ -236,31 +236,39 @@ public class PlongeeServiceImpl implements PlongeeService {
 			// sinon > impossible
 			if( ! plongee.isOuverte()){
 				if(adherent.isDp() && adherent.isPilote()){
+					// ouvrir plongée
 					isOk = 2;
 				} else {
+					// pas de assez de compétences pour ouvrir la plongée : pas inscrit !
 					isOk = -1;
 				}
 				return isOk;
 			}
 			// verifier le nombre d'inscrit
 			if(getNbPlaceRestante(plongee) < 0){
+				// trop de monde : pas inscrit !
 				isOk = -1;
 				return isOk;
 			}
-			// Si DP = P5 ou E3 => pas de BATM ou de P0
+			// Si DP = P5 => pas de BATM ou de P0
 			String niveauDP = plongee.getDp().getNiveau();
 			String encadrement = plongee.getDp().getEncadrement();
-			if(niveauDP.equalsIgnoreCase("P5") && encadrement.equalsIgnoreCase("E3")){
+			if(niveauDP.equalsIgnoreCase("P5")){
 				if(adherent.getNiveau().equalsIgnoreCase(NiveauAutonomie.BATM.toString()) 
 					|| adherent.getNiveau().equalsIgnoreCase(NiveauAutonomie.P0.toString())){
+					// inscription refusée
 					isOk = -1;
 					return isOk;
 				}
 			}
 			// verifier le niveau mini
-			int niveauAdherent = new Integer(adherent.getNiveau().substring(1)).intValue(); 
+			int niveauAdherent = -1;
+			if( ! adherent.getNiveau().equalsIgnoreCase(NiveauAutonomie.BATM.toString()) ){
+				niveauAdherent = new Integer(adherent.getNiveau().substring(1)).intValue(); 
+			}
 			int niveauMinPlongee = new Integer(plongee.getNiveauMinimum().toString().substring(1)).intValue(); 
 			if(niveauAdherent < niveauMinPlongee){
+				// niveau mini requis : inscription refusée
 				isOk = -1;
 				return isOk;
 			}
@@ -272,6 +280,30 @@ public class PlongeeServiceImpl implements PlongeeService {
 			int nbP1 = plongeursP1.size();
 			List<Adherent> plongeursBATM = adherentDao.getAdherentsInscrits(plongee, "BATM", null);
 			int nbBATM = plongeursBATM.size();
+			
+			// Pour les plongeurs P0, P1
+			if (niveauAdherent > 0 && niveauAdherent < 2){
+				int res = (nbP0 + nbP1) / nbEncadrant;
+				// max 4 P0 ou P1 par encadrant
+				if (res > 4){
+					// Pas assez d'encadrant : liste d'attente
+					isOk = 0;
+					return isOk;
+				}
+			}
+			if (niveauAdherent < 0){
+				int res = nbBATM / nbEncadrant;
+				// max 1 bapteme par encadrant
+				if (res > 1){
+					// Pas assez d'encadrant : liste d'attente
+					isOk = 0;
+					return isOk;
+				}
+			}
+			
+			isOk = 1;
+			return isOk;
+
 			
 		} catch (TechnicalException e) {
 			// TODO Auto-generated catch block

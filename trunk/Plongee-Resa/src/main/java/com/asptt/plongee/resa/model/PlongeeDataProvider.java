@@ -8,7 +8,7 @@ import com.asptt.plongee.resa.service.PlongeeService;
 
 @SuppressWarnings("serial")
 public class PlongeeDataProvider implements IDataProvider<Plongee> {
-	
+
 	PlongeeService plongeeService;
 	
 	public PlongeeDataProvider (PlongeeService plongeeService){
