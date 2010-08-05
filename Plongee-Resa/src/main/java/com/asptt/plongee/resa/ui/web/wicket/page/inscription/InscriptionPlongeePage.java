@@ -24,6 +24,7 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.util.convert.converters.DateConverter;
 
 import com.asptt.plongee.resa.model.Adherent;
+import com.asptt.plongee.resa.model.InscritsPlongeeDataProvider;
 import com.asptt.plongee.resa.model.Plongee;
 import com.asptt.plongee.resa.service.PlongeeService;
 import com.asptt.plongee.resa.ui.web.wicket.page.TemplatePage;
@@ -92,6 +93,15 @@ public class InscriptionPlongeePage extends TemplatePage {
 					listItem.add(new Label("date", dateAffichee));                
 					listItem.add(new Label("type",new PropertyModel<String>(listItem.getDefaultModel(), "type")));
 					listItem.add(new Label("niveauMini",new PropertyModel<String>(listItem.getDefaultModel(), "niveauMinimum")));
+					
+					// Places restantes
+					Plongee plongee = listItem.getModelObject();
+					InscritsPlongeeDataProvider tmpInscrits = new InscritsPlongeeDataProvider(
+							getResaSession().getPlongeeService(), getResaSession()
+							.getAdherentService(), plongee);
+					int reste = plongee.getNbMaxPlaces() - tmpInscrits.size();
+					listItem.add(new Label("placesRestantes", String.valueOf(reste)));
+					tmpInscrits = null;
 				}
 			
 			}.setReuseItems(true);
@@ -100,7 +110,6 @@ public class InscriptionPlongeePage extends TemplatePage {
 		}
 
 		public void onSubmit() {
-			// TODO appeler le service d'inscription
 			Collection<Plongee> list = group.getModelObject();
 			List<Plongee> plongees = new ArrayList<Plongee>(list);
 			for(Plongee plongee : plongees){
@@ -142,28 +151,6 @@ public class InscriptionPlongeePage extends TemplatePage {
 					setResponsePage(new InscriptionFailurePlongeePage(plongee));
 					break;
 				}
-//				if(response == 1){
-//					//on peux inscrire l'adherent à la plongee
-//					getResaSession().getPlongeeService().inscrireAdherent(
-//							plongee, 
-//							getResaSession().getAdherent());
-//					setResponsePage(new InscriptionConfirmationPlongeePage(plongee));
-//				}else{
-//					//on verifie si on peut le mettre en liste Attente
-//					if(getResaSession().getPlongeeService().isOkForListeAttente(
-//							plongee, 
-//							getResaSession().getAdherent())){
-//						//on peut inscrire l'adherent en liste attente
-//						getResaSession().getPlongeeService().inscrireAdherentEnListeAttente(
-//								plongee, 
-//								getResaSession().getAdherent());
-//						setResponsePage(new InscriptionListeAttentePlongeePage(plongee));
-//					}else{
-//						/*
-//						 * Inscription impossible
-//						 */
-//					}
-//				}
 			}
 		}
 

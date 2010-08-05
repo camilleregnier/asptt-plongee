@@ -317,9 +317,9 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 			}
 			if(null != niveauEncadrement){
 				if(niveauEncadrement.equalsIgnoreCase("TOUS")){
-					sb.append(" and a.ENCADREMENT is not null");
+					sb.append(" and a.ENCADRANT is not null");
 				} else{
-					sb.append(" and a.ENCADREMENT = ?");
+					sb.append(" and a.ENCADRANT = ?");
 				}
 			}
 			st = getDataSource().getConnection()
