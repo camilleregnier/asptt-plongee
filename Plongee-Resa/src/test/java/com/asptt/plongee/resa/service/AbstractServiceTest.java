@@ -6,6 +6,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.asptt.plongee.resa.dao.AdherentDao;
+import com.asptt.plongee.resa.dao.PlongeeDao;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations={"classpath:/spring/spring-service-impl.xml", "classpath:/spring/spring-dao-inmemory.xml"})
@@ -17,5 +18,11 @@ public abstract class AbstractServiceTest {
 
 	@Autowired
 	protected AdherentDao adherentDao;
+
+	@Autowired
+	protected PlongeeService plongeeService;
+
+	@Autowired
+	protected PlongeeDao plongeeDao;
 
 }

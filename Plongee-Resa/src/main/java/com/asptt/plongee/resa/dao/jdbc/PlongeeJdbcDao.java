@@ -3,6 +3,7 @@ package com.asptt.plongee.resa.dao.jdbc;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -14,6 +15,7 @@ import com.asptt.plongee.resa.dao.TechnicalException;
 import com.asptt.plongee.resa.model.Adherent;
 import com.asptt.plongee.resa.model.NiveauAutonomie;
 import com.asptt.plongee.resa.model.Plongee;
+import com.asptt.plongee.resa.model.ResaConstants;
 import com.asptt.plongee.resa.model.Plongee.Type;
 import com.asptt.plongee.resa.service.impl.AdherentServiceImpl;
 import com.asptt.plongee.resa.service.impl.PlongeeServiceImpl;
@@ -31,26 +33,27 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements PlongeeDao {
 		try {
 			StringBuffer sb = new StringBuffer();
 			sb.append("INSERT INTO PLONGEE (`DATE`, `DEMIE_JOURNEE`, `OUVERTURE_FORCEE`, `NIVEAU_MINI`, `NB_MAX_PLG`)");
-			sb.append(" VALUES (current_timestamp,?,?,?,?)");
+			sb.append(" VALUES (?,?,?,?,?)");
 			PreparedStatement st = getDataSource().getConnection()
 					.prepareStatement(sb.toString());
-			st.setString(1, obj.getType());
+			Timestamp ts = new Timestamp(obj.getDate().getTime());
+			st.setTimestamp(1, ts);
+			st.setString(2, obj.getType());
 			if (obj.getOuvertureForcee()) {
-				st.setInt(2, 1);
+				st.setInt(3, 1);
 			} else {
-				st.setInt(2, 0);
+				st.setInt(3, 0);
 			}
 			if (null == obj.getNiveauMinimum()) {
-				st.setString(3, null);
+				st.setString(4, null);
 			} else {
-				st.setString(3, obj.getNiveauMinimum().toString());
+				st.setString(4, obj.getNiveauMinimum().toString());
 			}
-			st.setInt(4, obj.getNbMaxPlaces());
+			st.setInt(5, obj.getNbMaxPlaces());
 			if (st.executeUpdate() == 0) {
 				throw new TechnicalException(
 						"La plongée n'a pu être enregistrée");
 			}
-			sb = new StringBuffer();
 			return obj;
 		} catch (SQLException e) {
 			throw new TechnicalException(e);
@@ -112,7 +115,7 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements PlongeeDao {
 	public List<Plongee> findAll() throws TechnicalException {
 		try {
 			PreparedStatement st = getDataSource().getConnection().
-			prepareStatement("SELECT * FROM PLONGEE p  WHERE OUVERTURE_FORCEE=1 and date > CURRENT_TIMESTAMP()");
+			prepareStatement("SELECT * FROM PLONGEE p  WHERE OUVERTURE_FORCEE=1 and date > CURRENT_TIMESTAMP() and date < CURRENT_DATE() + "+ResaConstants.MAX_JOUR_VISIBLE);
 			ResultSet rs = st.executeQuery();
 			List<Plongee> plongees = new ArrayList<Plongee>();
 			while (rs.next()) {

@@ -103,4 +103,28 @@ public class AdherentInMemoryDao implements AdherentDao{
 		return null;
 	}
 
+	@Override
+	public List<Adherent> getAdherentsActifs() throws TechnicalException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Adherent> getAdherentsInactifs() throws TechnicalException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Adherent> getAdherentsTous() throws TechnicalException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Adherent> getExternes() throws TechnicalException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

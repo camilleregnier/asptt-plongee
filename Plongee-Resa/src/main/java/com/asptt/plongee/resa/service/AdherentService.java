@@ -9,9 +9,17 @@ public interface AdherentService {
 
 	public Adherent rechercherAdherentParIdentifiant(String id);
 	
-	public List<Adherent> rechercherAdherentTout();
+	public List<Adherent> rechercherPlongeurs();
 	
-	public List<Adherent> rechercherAdherent(int first, int count);
+	public List<Adherent> rechercherAdherentsTous();
+	
+	public List<Adherent> rechercherAdherentsActifs();
+	
+	public List<Adherent> rechercherAdherentsInactifs();
+	
+	public List<Adherent> rechercherExternes();
+
+	public List<Adherent> rechercherAdherents(int first, int count);
 
 	public List<Adherent> rechercherDPs(List<Adherent> adherents);
 	
@@ -21,4 +29,6 @@ public interface AdherentService {
 	
 	public void updateAdherent(Adherent adherent);
 
+	public void creerExterne(Adherent adherent);
+	
 }

@@ -54,21 +54,24 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 			}
 			sb = new StringBuffer();
 			// gestion des roles
-			Iterator it = adh.getRoles().iterator();
-			while (it.hasNext()) {
-				sb
-						.append("INSERT INTO rel_adherent_roles (`ADHERENT_LICENSE`, `ROLES_idROLES`)");
-				sb.append(" VALUES (?, ?)");
-				st = getDataSource().getConnection().prepareStatement(
-						sb.toString());
-				st.setString(1, adh.getNumeroLicense());
-				int id = getIdRole((String) it.next());
-				st.setInt(2, id);
-				if (st.executeUpdate() == 0) {
-					throw new TechnicalException(
-							"Le role n'a pu être enregistré");
+			if(adh.getActif() == 1){
+				// On gere les role uniquement pour les actifs
+				Iterator it = adh.getRoles().iterator();
+				while (it.hasNext()) {
+					sb
+							.append("INSERT INTO rel_adherent_roles (`ADHERENT_LICENSE`, `ROLES_idROLES`)");
+					sb.append(" VALUES (?, ?)");
+					st = getDataSource().getConnection().prepareStatement(
+							sb.toString());
+					st.setString(1, adh.getNumeroLicense());
+					int id = getIdRole((String) it.next());
+					st.setInt(2, id);
+					if (st.executeUpdate() == 0) {
+						throw new TechnicalException(
+								"Le role n'a pu être enregistré");
+					}
+					sb = new StringBuffer();
 				}
-				sb = new StringBuffer();
 			}
 			return adh;
 		} catch (SQLException e) {
@@ -136,11 +139,12 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 			} else {
 				st.setInt(5, 0);
 			}
-			if (adh.isActif()) {
-				st.setInt(6, 1);
-			} else {
-				st.setInt(6, 0);
-			}
+//			if (adh.isActif()) {
+//				st.setInt(6, 1);
+//			} else {
+//				st.setInt(6, 0);
+//			}
+			st.setInt(6, adh.getActif());
 			st.setString(7, adh.getNumeroLicense());
 			if (st.executeUpdate() == 0) {
 				throw new TechnicalException(
@@ -193,7 +197,106 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 	public List<Adherent> findAll() throws TechnicalException {
 		try {
 			PreparedStatement st = getDataSource().getConnection()
+					.prepareStatement("select * from ADHERENT");
+			ResultSet rs = st.executeQuery();
+			List<Adherent> adherents = new ArrayList<Adherent>();
+			while (rs.next()) {
+				Adherent adherent = wrapAdherent(rs);
+				adherents.add(adherent);
+			}
+			return adherents;
+		} catch (SQLException e) {
+			throw new TechnicalException(e);
+		} finally {
+			try {
+				getDataSource().getConnection().close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+				throw new TechnicalException(
+						"Impossible de cloturer la connexion");
+			}
+		}
+	}
+
+	@Override
+	public List<Adherent> getAdherentsTous() throws TechnicalException {
+		try {
+			PreparedStatement st = getDataSource().getConnection()
+					.prepareStatement("select * from ADHERENT where ACTIF = 1 or ACTIF = 0");
+			ResultSet rs = st.executeQuery();
+			List<Adherent> adherents = new ArrayList<Adherent>();
+			while (rs.next()) {
+				Adherent adherent = wrapAdherent(rs);
+				adherents.add(adherent);
+			}
+			return adherents;
+		} catch (SQLException e) {
+			throw new TechnicalException(e);
+		} finally {
+			try {
+				getDataSource().getConnection().close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+				throw new TechnicalException(
+						"Impossible de cloturer la connexion");
+			}
+		}
+	}
+
+	public List<Adherent> getAdherentsActifs() throws TechnicalException {
+		try {
+			PreparedStatement st = getDataSource().getConnection()
 					.prepareStatement("select * from ADHERENT where ACTIF = 1");
+			ResultSet rs = st.executeQuery();
+			List<Adherent> adherents = new ArrayList<Adherent>();
+			while (rs.next()) {
+				Adherent adherent = wrapAdherent(rs);
+				adherents.add(adherent);
+			}
+			return adherents;
+		} catch (SQLException e) {
+			throw new TechnicalException(e);
+		} finally {
+			try {
+				getDataSource().getConnection().close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+				throw new TechnicalException(
+						"Impossible de cloturer la connexion");
+			}
+		}
+	}
+
+	@Override
+	public List<Adherent> getAdherentsInactifs() throws TechnicalException {
+		try {
+			PreparedStatement st = getDataSource().getConnection()
+					.prepareStatement("select * from ADHERENT where ACTIF = 0");
+			ResultSet rs = st.executeQuery();
+			List<Adherent> adherents = new ArrayList<Adherent>();
+			while (rs.next()) {
+				Adherent adherent = wrapAdherent(rs);
+				adherents.add(adherent);
+			}
+			return adherents;
+		} catch (SQLException e) {
+			throw new TechnicalException(e);
+		} finally {
+			try {
+				getDataSource().getConnection().close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+				throw new TechnicalException(
+						"Impossible de cloturer la connexion");
+			}
+		}
+	}
+
+	@Override
+	public List<Adherent> getExternes() throws TechnicalException {
+		try {
+			PreparedStatement st = getDataSource().getConnection()
+					.prepareStatement("select * from ADHERENT where ACTIF = 2");
 			ResultSet rs = st.executeQuery();
 			List<Adherent> adherents = new ArrayList<Adherent>();
 			while (rs.next()) {
@@ -219,7 +322,7 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 			PreparedStatement st = getDataSource()
 					.getConnection()
 					.prepareStatement(
-							"select * from ADHERENT where LICENSE = ? and ACTIF = 1");
+							"select * from ADHERENT where LICENSE = ? and ACTIF <> 0");
 			st.setString(1, id);
 			ResultSet rs = st.executeQuery();
 			Adherent adherent = null;
@@ -430,7 +533,6 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 			encadrant = Encadrement.valueOf(rs.getString("ENCADRANT"));
 		}
 		int pilote = rs.getInt("PILOTE");
-		int actif = rs.getInt("ACTIF");
 		Adherent adherent = new Adherent();
 		adherent.setNumeroLicense(licence);
 		adherent.setNom(nom);
@@ -440,15 +542,17 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 		adherent.setMail(mail);
 		adherent.setEnumEncadrement(encadrant);
 		adherent.setRoles(getStrRoles(adherent));
+		adherent.setActif(rs.getInt("ACTIF"));
+//		int actif = rs.getInt("ACTIF");
+//		if (actif == 1) {
+//			adherent.setActif(true);
+//		} else {
+//			adherent.setActif(false);
+//		}
 		if (pilote == 1) {
 			adherent.setPilote(true);
 		} else {
 			adherent.setPilote(false);
-		}
-		if (actif == 1) {
-			adherent.setActif(true);
-		} else {
-			adherent.setActif(false);
 		}
 		
 		return adherent;
