@@ -19,7 +19,9 @@ public interface PlongeeService {
 	public List<Adherent> rechercherInscriptions(Plongee plongee, String niveauPlongeur, String niveauEncadrement);
 	public List<Adherent> rechercherListeAttente(Plongee plongee);
 	
-//	public Boolean isOuverte(Plongee plongee);
+	public void creerPlongee(Plongee plongee);
+	public void modifierPlongee(Plongee plongee);
+
 	public Integer getNbPlaceRestante(Plongee plongee);
 	
 	public int isOkForResa(Plongee plongee, Adherent adherent);

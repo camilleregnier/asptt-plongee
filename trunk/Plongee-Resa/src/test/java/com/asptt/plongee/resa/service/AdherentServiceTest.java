@@ -16,7 +16,7 @@ public class AdherentServiceTest extends AbstractServiceTest {
 		Adherent ericGilbert = new Adherent();
 		ericGilbert.setNumeroLicense("111111");
 		ericGilbert.setPrenom("gilbert");
-		adherentDao.create(ericGilbert);
+		//adherentDao.create(ericGilbert);
 		
 		// test de la fonction
 		Adherent eric = adherentService.rechercherAdherentParIdentifiant("111111");

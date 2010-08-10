@@ -15,4 +15,42 @@
 		<property name="adherentDao" ref="adherentDao" />
 	</bean>
 
+
+	<!-- QUARTZ -->
+	<!--  le business manager -->
+ 	<bean id="businessManager" class="com.asptt.plongee.resa.quartz.manager.BusinessManager">
+		<property name="plongeeDao" ref="plongeeDao" />
+	</bean>
+
+	<!-- le POJO job et l’injection du business manager dans ce job -->
+	<bean id="QuartzJob" class="com.asptt.plongee.resa.quartz.job.QuartzJob">
+		<property name="businessManager" ref="businessManager"/>
+	</bean>
+
+	<!-- le lien entre le POJO job et l’API quartz (objet + méthode appelée) -->
+	<bean name="jobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="QuartzJob"/>
+		<property name="targetMethod" value="execute"/>
+	</bean>
+
+	<!-- les paramètres de notre job (fréquence d’exécution) via une cron expression -->
+	<bean id="jobCronScheduler" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="jobDetail"/>
+	<!-- value : sec min heure jourDuMois  mois jourDeSemaine
+  	http://www.quartz-scheduler.org/docs/tutorial/TutorialLesson06.html 
+  		<property name="cronExpression" value="0 00 12 ? * SUN"/> -->
+  		<property name="cronExpression" value="0 0/1 * * * ?" /> 
+	</bean>
+
+	<!-- le lancement de notre job dans lequel on spécifie soit un lancement (implicite) automatique au démarrage par Spring (lazy-init=false), soit un lancement (explicite) manuel à la demande de l’utilisateur (lazy-init=true) -->
+	<bean id="schedulerBean"
+		class="org.springframework.scheduling.quartz.SchedulerFactoryBean"
+		lazy-init="false">
+		<property name="triggers">
+		<list>
+			<ref bean="jobCronScheduler"/>
+		</list>
+		</property>
+	</bean>
+
 </beans>

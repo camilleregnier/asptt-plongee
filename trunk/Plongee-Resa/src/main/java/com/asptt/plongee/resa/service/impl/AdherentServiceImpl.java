@@ -9,30 +9,11 @@ import com.asptt.plongee.resa.dao.AdherentDao;
 import com.asptt.plongee.resa.dao.TechnicalException;
 import com.asptt.plongee.resa.model.Adherent;
 import com.asptt.plongee.resa.model.AdherentComparatorNom;
+import com.asptt.plongee.resa.model.ResaConstants;
 import com.asptt.plongee.resa.service.AdherentService;
 
 public class AdherentServiceImpl implements AdherentService {
 
-	public void creerAdherent(Adherent adherent) {
-		try {
-			adherentDao.create(adherent);
-		} catch (TechnicalException e) {
-			e.printStackTrace();
-			throw new IllegalStateException(e);
-		}
-		
-	}
-	
-	public void updateAdherent(Adherent adherent) {
-		try {
-			adherentDao.update(adherent);
-		} catch (TechnicalException e) {
-			e.printStackTrace();
-			throw new IllegalStateException(e);
-		}
-		
-	}
-	
 	private AdherentDao adherentDao;
 
 	public void setAdherentDao(AdherentDao adherentDao) {
@@ -47,7 +28,7 @@ public class AdherentServiceImpl implements AdherentService {
 		}
 	}
 
-	public List<Adherent> rechercherAdherentTout() {
+	public List<Adherent> rechercherPlongeurs() {
 		try {
 			return adherentDao.findAll();
 		} catch (TechnicalException e) {
@@ -55,10 +36,42 @@ public class AdherentServiceImpl implements AdherentService {
 		}
 	}
 
+	public List<Adherent> rechercherAdherentsTous() {
+		try {
+			return adherentDao.getAdherentsTous();
+		} catch (TechnicalException e) {
+			throw new IllegalStateException(e);
+		}
+	}
+
+	public List<Adherent> rechercherAdherentsActifs() {
+		try {
+			return adherentDao.getAdherentsActifs();
+		} catch (TechnicalException e) {
+			throw new IllegalStateException(e);
+		}
+	}
+
+	public List<Adherent> rechercherAdherentsInactifs() {
+		try {
+			return adherentDao.getAdherentsInactifs();
+		} catch (TechnicalException e) {
+			throw new IllegalStateException(e);
+		}
+	}
+
+	public List<Adherent> rechercherExternes() {
+		try {
+			return adherentDao.getExternes();
+		} catch (TechnicalException e) {
+			throw new IllegalStateException(e);
+		}
+	}
+
 	@Override
-	public List<Adherent> rechercherAdherent(int first, int count) {
+	public List<Adherent> rechercherAdherents(int first, int count) {
 		TreeSet tAdh = new TreeSet(new AdherentComparatorNom());
-		tAdh.addAll(rechercherAdherentTout());
+		tAdh.addAll(rechercherAdherentsActifs());
 		
 		List<Adherent> adhTrie = new ArrayList<Adherent>();
 		adhTrie.addAll(tAdh);
@@ -98,4 +111,39 @@ public class AdherentServiceImpl implements AdherentService {
 //		}
 	}
 
+	public void creerAdherent(Adherent adherent) {
+		try {
+			adherentDao.create(adherent);
+		} catch (TechnicalException e) {
+			e.printStackTrace();
+			throw new IllegalStateException(e);
+		}
+		
+	}
+	
+	public void updateAdherent(Adherent adherent) {
+		try {
+			adherentDao.update(adherent);
+		} catch (TechnicalException e) {
+			e.printStackTrace();
+			throw new IllegalStateException(e);
+		}
+		
+	}
+	
+	public void creerExterne(Adherent adherent) {
+		try {
+			Integer numExt = adherentDao.getExternes().size()+1;
+			adherent.setNumeroLicense(ResaConstants.LICENSE_EXTERNE.concat(numExt.toString()));
+			adherent.setActif(2);
+			adherent.setPilote(false);
+			adherent.setDp(false);
+			adherentDao.create(adherent);
+		} catch (TechnicalException e) {
+			e.printStackTrace();
+			throw new IllegalStateException(e);
+		}
+		
+	}
+	
 }

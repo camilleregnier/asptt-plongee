@@ -51,6 +51,7 @@ public class ConsulterPlongees extends TemplatePage {
 
 		
 		add(new DataView<Plongee>("simple", new PlongeeDataProvider(
+				getResaSession().getAdherent(),
 				getResaSession().getPlongeeService())) {
 			protected void populateItem(final Item<Plongee> item) {
 				Plongee plongee = item.getModelObject();

@@ -39,7 +39,7 @@ public class InscriptionAdherentPlongeePage extends TemplatePage {
 		}
 		
 		List<Adherent> list = getResaSession().getAdherentService()
-				.rechercherAdherentTout();
+				.rechercherAdherentsActifs();
 		
 		ArrayList<Adherent> newList = new ArrayList<Adherent>();
 		for (int i = 0; i < list.size(); i++) {

@@ -10,7 +10,7 @@ import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInst
 import org.apache.wicket.markup.html.basic.Label;
 
 import com.asptt.plongee.resa.model.Adherent;
-import com.asptt.plongee.resa.util.PlongeeMail;
+//import com.asptt.plongee.resa.util.PlongeeMail;
 
 @AuthorizeInstantiation({"USER","ADMIN","SECRETARIAT"})
 public class AccueilPage extends TemplatePage {

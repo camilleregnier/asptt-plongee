@@ -33,6 +33,24 @@ public class PlongeeServiceImpl implements PlongeeService {
 		this.adherentDao = adherentDao;
 	}
 
+	@Override
+	public void creerPlongee(Plongee plongee) {
+		try {
+			plongeeDao.create(plongee);
+		} catch (TechnicalException e) {
+			throw new IllegalStateException(e);
+		}
+	}
+
+	@Override
+	public void modifierPlongee(Plongee plongee) {
+		try {
+			plongeeDao.update(plongee);
+		} catch (TechnicalException e) {
+			throw new IllegalStateException(e);
+		}
+	}
+
 	public Plongee rechercherPlongeeParId(Integer id) {
 		try {
 			return plongeeDao.findById(id);
@@ -134,8 +152,8 @@ public class PlongeeServiceImpl implements PlongeeService {
 	 */
 	public List<Plongee> rechercherPlongeePourInscriptionAdherent(Adherent adherent) {
 		List<Plongee> plongeesForAdherent = new ArrayList<Plongee>();
-		
 		if(null == adherent.getEnumEncadrement()){
+			//l'adherent n'est pas encadrant : affiche que certaines plongées
 			List<Plongee> plongees = rechercherPlongeeProchainJour();
 			for(Plongee plongee : plongees){
 				if(plongee.isOuverte()){
@@ -152,6 +170,7 @@ public class PlongeeServiceImpl implements PlongeeService {
 				}
 			}
 		} else {
+			//l'adherent est encadrant : affiche toutes les plongées (même fermées)
 			plongeesForAdherent.addAll(rechercherPlongeeTout());
 		}
 		return plongeesForAdherent;

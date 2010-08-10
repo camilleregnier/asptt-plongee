@@ -18,15 +18,15 @@ public class AdherentDataProvider implements IDataProvider<Adherent> {
 
 	@Override
 	public Iterator<Adherent> iterator(int first, int count) {
-		return adherentService.rechercherAdherent(first, count).iterator();
+		return adherentService.rechercherAdherents(first, count).iterator();
 	}
 
 	@Override
 	public int size() {
-		if(null == adherentService.rechercherAdherentTout()){
+		if(null == adherentService.rechercherAdherentsActifs()){
 			return 0;
 		} else {			
-			return adherentService.rechercherAdherentTout().size();
+			return adherentService.rechercherAdherentsActifs().size();
 		}
 	}
 
