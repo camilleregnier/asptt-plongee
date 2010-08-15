@@ -36,7 +36,10 @@ public class PlongeeServiceImpl implements PlongeeService {
 	@Override
 	public void creerPlongee(Plongee plongee) {
 		try {
-			plongeeDao.create(plongee);
+			List<Plongee> plongees = rechercherPlongees(plongee.getDate(), plongee.getType());
+			if(plongees.size() == 0){
+				plongeeDao.create(plongee);
+			}
 		} catch (TechnicalException e) {
 			throw new IllegalStateException(e);
 		}
@@ -119,10 +122,6 @@ public class PlongeeServiceImpl implements PlongeeService {
 			
 		} catch (TechnicalException e) {
 			throw new IllegalStateException(e);
-//		} catch (ParseException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//			throw new IllegalStateException(e);
 		}
 	}
 
@@ -176,9 +175,9 @@ public class PlongeeServiceImpl implements PlongeeService {
 		return plongeesForAdherent;
 	}
 
-	public List<Plongee> rechercherPlongeesAdherentInscrit(Adherent adherent) {
+	public List<Plongee> rechercherPlongeesAdherentInscrit(Adherent adherent, int nbHours) {
 		try {
-			return plongeeDao.getPlongeesWhereAdherentIsInscrit(adherent);
+			return plongeeDao.getPlongeesWhereAdherentIsInscrit(adherent, nbHours);
 		} catch (TechnicalException e) {
 			throw new IllegalStateException(e);
 		}
@@ -197,6 +196,15 @@ public class PlongeeServiceImpl implements PlongeeService {
 		return plongeesAttente;
 	}
 	
+	@Override
+	public List<Plongee> rechercherPlongees(Date date, String type) {
+		try {
+			return plongeeDao.getPlongeesWhithSameDate(date, type);
+		} catch (TechnicalException e) {
+			throw new IllegalStateException(e);
+		}
+	}
+
 	public List<Adherent> rechercherInscriptions(Plongee plongee,String niveauPlongeur, String niveauEncadrement) {
 		try {
 			return adherentDao.getAdherentsInscrits(plongee,null,null);
@@ -336,9 +344,9 @@ public class PlongeeServiceImpl implements PlongeeService {
 		return true;
 	}
 
-	public void fairePasserAttenteInscrire(Plongee plongee, Adherent adherent) {
+	public void fairePasserAttenteAInscrit(Plongee plongee, Adherent adherent) {
 		try {
-			plongeeDao.inscrireAdherentAttente(plongee, adherent);
+			plongeeDao.moveAdherentAttenteToInscrit(plongee, adherent);
 		} catch (TechnicalException e) {
 			throw new IllegalStateException(e);
 		}

@@ -1,6 +1,7 @@
 package com.asptt.plongee.resa.dao.inmemory;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.asptt.plongee.resa.dao.PlongeeDao;
@@ -111,5 +112,26 @@ public class PlongeeInMemoryDao implements PlongeeDao {
 			throws TechnicalException {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public List<Plongee> getPlongeesWhithSameDate(Date date, String type)
+			throws TechnicalException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Plongee> getPlongeesWhereAdherentIsInscrit(Adherent adherent,
+			int nbHours) throws TechnicalException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void moveAdherentAttenteToInscrit(Plongee plongee, Adherent adherent)
+			throws TechnicalException {
+		// TODO Auto-generated method stub
+		
 	}
 }

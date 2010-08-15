@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
 
@@ -34,8 +35,31 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements PlongeeDao {
 			StringBuffer sb = new StringBuffer();
 			sb.append("INSERT INTO PLONGEE (`DATE`, `DEMIE_JOURNEE`, `OUVERTURE_FORCEE`, `NIVEAU_MINI`, `NB_MAX_PLG`)");
 			sb.append(" VALUES (?,?,?,?,?)");
-			PreparedStatement st = getDataSource().getConnection()
-					.prepareStatement(sb.toString());
+			PreparedStatement st = getDataSource().getConnection().prepareStatement(sb.toString());
+			//maj de l'heure de la plongée en fonction du type
+			GregorianCalendar gc = new GregorianCalendar();
+			gc.setTime(obj.getDate());
+			if( obj.getType().equalsIgnoreCase(Plongee.Type.MATIN.toString()) ){
+				gc.set(GregorianCalendar.HOUR_OF_DAY, 8);
+				gc.set(GregorianCalendar.MINUTE, 0);
+				gc.set(GregorianCalendar.SECOND, 0);
+				obj.setDate(gc.getTime());
+			} else if( obj.getType().equalsIgnoreCase(Plongee.Type.APRES_MIDI.toString()) ){
+				gc.set(GregorianCalendar.HOUR_OF_DAY, 13);
+				gc.set(GregorianCalendar.MINUTE, 0);
+				gc.set(GregorianCalendar.SECOND, 0);
+				obj.setDate(gc.getTime());
+			} else if( obj.getType().equalsIgnoreCase(Plongee.Type.SOIR.toString()) ){
+				gc.set(GregorianCalendar.HOUR_OF_DAY, 18);
+				gc.set(GregorianCalendar.MINUTE, 0);
+				gc.set(GregorianCalendar.SECOND, 0);
+				obj.setDate(gc.getTime());
+			} else if( obj.getType().equalsIgnoreCase(Plongee.Type.NUIT.toString()) ){
+				gc.set(GregorianCalendar.HOUR_OF_DAY, 21);
+				gc.set(GregorianCalendar.MINUTE, 0);
+				gc.set(GregorianCalendar.SECOND, 0);
+				obj.setDate(gc.getTime());
+			}
 			Timestamp ts = new Timestamp(obj.getDate().getTime());
 			st.setTimestamp(1, ts);
 			st.setString(2, obj.getType());
@@ -50,6 +74,7 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements PlongeeDao {
 				st.setString(4, obj.getNiveauMinimum().toString());
 			}
 			st.setInt(5, obj.getNbMaxPlaces());
+			//on cree la plongée
 			if (st.executeUpdate() == 0) {
 				throw new TechnicalException(
 						"La plongée n'a pu être enregistrée");
@@ -114,8 +139,12 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements PlongeeDao {
 	
 	public List<Plongee> findAll() throws TechnicalException {
 		try {
-			PreparedStatement st = getDataSource().getConnection().
-			prepareStatement("SELECT * FROM PLONGEE p  WHERE OUVERTURE_FORCEE=1 and date > CURRENT_TIMESTAMP() and date < CURRENT_DATE() + "+ResaConstants.MAX_JOUR_VISIBLE);
+			StringBuffer sb = new StringBuffer();
+			sb.append("SELECT * FROM PLONGEE p");
+			sb.append(" WHERE OUVERTURE_FORCEE=1");
+			sb.append(" and date > CURRENT_TIMESTAMP()");
+			sb.append(" and date < CURRENT_DATE() + "+ResaConstants.MAX_JOUR_VISIBLE);
+			PreparedStatement st = getDataSource().getConnection().prepareStatement(sb.toString());
 			ResultSet rs = st.executeQuery();
 			List<Plongee> plongees = new ArrayList<Plongee>();
 			while (rs.next()) {
@@ -187,7 +216,7 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements PlongeeDao {
 		}
 	}
 
-	public List<Plongee> getPlongeesWhereAdherentIsInscrit(Adherent adherent)
+	public List<Plongee> getPlongeesWhereAdherentIsInscrit(Adherent adherent, int nbHours)
 	throws TechnicalException {
 		try {
 			StringBuffer sb = new StringBuffer();
@@ -196,11 +225,12 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements PlongeeDao {
 			sb.append(" WHERE license = ?");
 			sb.append(" AND license = adherent_license");
 			sb.append(" AND plongees_idPlongees = idPlongees");
-			sb.append(" AND date > current_date()");
+			sb.append(" AND date > DATE_ADD(current_date(), INTERVAL ? HOUR)");
 			sb.append(" AND date_annul_plongee is null");
 			PreparedStatement st = getDataSource().getConnection().
 				prepareStatement(sb.toString());
 			st.setString(1, adherent.getNumeroLicense());
+			st.setInt(2, nbHours);
 			ResultSet rs = st.executeQuery();
 			List<Plongee> plongees = new ArrayList<Plongee>();
 			while (rs.next()) {
@@ -219,6 +249,37 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements PlongeeDao {
 			}
 		}
 	}
+
+	@Override
+	public List<Plongee> getPlongeesWhithSameDate(Date date, String type)
+			throws TechnicalException {
+		try {
+			StringBuffer sb = new StringBuffer();
+			sb.append("SELECT * FROM PLONGEE p");
+			sb.append(" WHERE date(DATE) = ? AND DEMIE_JOURNEE = ?");
+			PreparedStatement st = getDataSource().getConnection().prepareStatement(sb.toString());
+			Timestamp ts = new Timestamp(date.getTime());
+			st.setTimestamp(1, ts);
+			st.setString(2, type);
+			ResultSet rs = st.executeQuery();
+			List<Plongee> plongees = new ArrayList<Plongee>();
+			while (rs.next()) {
+				Plongee plongee = wrapPlongee(rs);
+				plongees.add(plongee);
+			}
+			return plongees;
+		} catch (SQLException e) {
+			throw new TechnicalException(e);
+		} finally{
+			try {
+				getDataSource().getConnection().close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+				throw new TechnicalException("Impossible de cloturer la connexion");
+			}
+		}
+	}
+
 
 	public List<Plongee> getListeAttenteForAdherent(Adherent adherent)
 	throws TechnicalException {
@@ -390,10 +451,10 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements PlongeeDao {
 		}
 	}
 
-	public void moveAdherentAttenteFromInscrit(Plongee plongee, Adherent adherent)
+	public void moveAdherentAttenteToInscrit(Plongee plongee, Adherent adherent)
 			throws TechnicalException {
-		// TODO Auto-generated method stub
-		
+			inscrireAdherentPlongee(plongee, adherent);
+			supprimeAdherentAttente(plongee, adherent);
 	}
 
 

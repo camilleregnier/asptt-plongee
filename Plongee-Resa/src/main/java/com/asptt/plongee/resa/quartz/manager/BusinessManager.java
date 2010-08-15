@@ -41,9 +41,6 @@ public class BusinessManager {
 		//Plongée du MERCREDI Aprem
 		gc.add(GregorianCalendar.DATE, +3);
 		plongee.setType(Plongee.Type.APRES_MIDI);
-		gc.set(GregorianCalendar.HOUR_OF_DAY, 13);
-		gc.set(GregorianCalendar.MINUTE, 0);
-		gc.set(GregorianCalendar.SECOND, 0);
 		plongee.setDate(gc.getTime());
 		plongeeDao.create(plongee);
 		System.out.println("Plongée du MERCREDI aprem créee : "+gc.getTime().toString());
@@ -52,9 +49,6 @@ public class BusinessManager {
 		gc.setTime(dateDuJour);
 		gc.add(GregorianCalendar.DATE, +4);
 		plongee.setType(Plongee.Type.SOIR);
-		gc.set(GregorianCalendar.HOUR_OF_DAY, 18);
-		gc.set(GregorianCalendar.MINUTE, 0);
-		gc.set(GregorianCalendar.SECOND, 0);
 		plongee.setDate(gc.getTime());
 		plongeeDao.create(plongee);
 		System.out.println("Plongée du JEUDI soir créee : "+gc.getTime().toString());
@@ -63,9 +57,6 @@ public class BusinessManager {
 		gc.setTime(dateDuJour);
 		gc.add(GregorianCalendar.DATE, +5);
 		plongee.setType(Plongee.Type.APRES_MIDI);
-		gc.set(GregorianCalendar.HOUR_OF_DAY, 13);
-		gc.set(GregorianCalendar.MINUTE, 0);
-		gc.set(GregorianCalendar.SECOND, 0);
 		plongee.setDate(gc.getTime());
 		plongeeDao.create(plongee);
 		System.out.println("Plongée du VENDREDI aprem créee : "+gc.getTime().toString());
@@ -75,17 +66,11 @@ public class BusinessManager {
 		gc.add(GregorianCalendar.DATE, +6);
 
 		plongee.setType(Plongee.Type.MATIN);
-		gc.set(GregorianCalendar.HOUR_OF_DAY, 8);
-		gc.set(GregorianCalendar.MINUTE, 0);
-		gc.set(GregorianCalendar.SECOND, 0);
 		plongee.setDate(gc.getTime());
 		plongeeDao.create(plongee);
 		System.out.println("Plongée du SAMEDI matin créee : "+gc.getTime().toString());
 		//Plongée du SAMEDI aprem
 		plongee.setType(Plongee.Type.APRES_MIDI);
-		gc.set(GregorianCalendar.HOUR_OF_DAY, 13);
-		gc.set(GregorianCalendar.MINUTE, 0);
-		gc.set(GregorianCalendar.SECOND, 0);
 		plongee.setDate(gc.getTime());
 		plongeeDao.create(plongee);
 		System.out.println("Plongée du SAMEDI aprem créee : "+gc.getTime().toString());
@@ -94,9 +79,6 @@ public class BusinessManager {
 		gc.setTime(dateDuJour);
 		gc.add(GregorianCalendar.DATE, +7);
 		plongee.setType(Plongee.Type.MATIN);
-		gc.set(GregorianCalendar.HOUR_OF_DAY, 8);
-		gc.set(GregorianCalendar.MINUTE, 0);
-		gc.set(GregorianCalendar.SECOND, 0);
 		plongee.setDate(gc.getTime());
 		plongeeDao.create(plongee);
 		System.out.println("Plongée du DIMANCHE matin créee : "+gc.getTime().toString());

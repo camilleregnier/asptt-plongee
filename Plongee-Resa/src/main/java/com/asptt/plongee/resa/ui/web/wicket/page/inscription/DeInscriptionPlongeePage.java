@@ -60,7 +60,7 @@ public class DeInscriptionPlongeePage extends TemplatePage {
 			 * Retourne la liste des plongées ouvertes, pour les 7 prochains jours
 			 */
 			data = getResaSession().getPlongeeService().rechercherPlongeesAdherentInscrit( 	
-					getResaSession().getAdherent());
+					getResaSession().getAdherent(), 24);
 
 			ListView<Plongee> list = new ListView<Plongee>("plongeeList", data){
 				public void populateItem(ListItem<Plongee> listItem) {           

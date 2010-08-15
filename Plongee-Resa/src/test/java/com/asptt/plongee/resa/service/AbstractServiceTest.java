@@ -9,7 +9,9 @@ import com.asptt.plongee.resa.dao.AdherentDao;
 import com.asptt.plongee.resa.dao.PlongeeDao;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations={"classpath:/spring/spring-service-impl.xml", "classpath:/spring/spring-dao-inmemory.xml"})
+//@ContextConfiguration(locations={"classpath:/spring/spring-service-impl.xml", "classpath:/spring/spring-dao-inmemory.xml"})
+@ContextConfiguration(locations={"classpath:/spring/spring-service-impl.xml",
+		"classpath:/spring/spring-dao-jdbc.xml", "classpath:/spring/spring-datasource.xml"})
 public abstract class AbstractServiceTest {
 
 
