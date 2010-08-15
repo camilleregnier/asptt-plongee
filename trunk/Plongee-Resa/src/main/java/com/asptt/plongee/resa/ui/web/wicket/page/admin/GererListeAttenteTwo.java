@@ -37,8 +37,7 @@ public class GererListeAttenteTwo extends TemplatePage {
 				IModel modelAdherents  = palette.getDefaultModel();
 				List<Adherent> adherents = (List<Adherent>) modelAdherents.getObject();
 				for(Adherent adherent : adherents){
-					getResaSession().getPlongeeService().inscrireAdherent(plongee, adherent);
-					getResaSession().getPlongeeService().deInscrireAdherentEnListeAttente(plongee, adherent);
+					getResaSession().getPlongeeService().fairePasserAttenteAInscrit(plongee, adherent);
 				}
 			}
 		};
