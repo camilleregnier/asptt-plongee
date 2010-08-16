@@ -478,7 +478,7 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements PlongeeDao {
 		plongee.setId(id);
 		plongee.setDate(date);
 		plongee.setType(demie_journee);
-		plongee.setNiveauMinimum(niveauMini);
+		plongee.setEnumNiveauMinimum(niveauMini);
 		plongee.setNbMaxPlaces(nbMaxPlongeur);
 		if(ouvertForcee == 1){
 			plongee.setOuvertureForcee(true);
