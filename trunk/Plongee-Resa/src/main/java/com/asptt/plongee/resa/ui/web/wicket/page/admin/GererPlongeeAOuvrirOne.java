@@ -82,7 +82,6 @@ public class GererPlongeeAOuvrirOne extends TemplatePage {
 
 		public void onSubmit() {
 			IModel<Plongee>  list = group.getModel();
-			System.out.println("la plongée : " +list.getObject().getId());
 			PageParameters param = new PageParameters();
 			param.put("plongeeAOuvrir", list.getObject());
 			setResponsePage(new GererPlongeeAOuvrirTwo(list.getObject()));

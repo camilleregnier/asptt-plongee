@@ -8,7 +8,6 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
-import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
@@ -23,7 +22,6 @@ import com.asptt.plongee.resa.model.ListeAttentePlongeeDataProvider;
 import com.asptt.plongee.resa.model.Plongee;
 import com.asptt.plongee.resa.model.PlongeeDataProvider;
 import com.asptt.plongee.resa.ui.web.wicket.page.TemplatePage;
-import com.asptt.plongee.resa.ui.web.wicket.page.admin.AdherentPanel;
 
 @AuthorizeInstantiation({"USER", "SECRETARIAT"})
 public class ConsulterPlongees extends TemplatePage {
@@ -34,8 +32,6 @@ public class ConsulterPlongees extends TemplatePage {
 			getResaSession().getPlongeeService(), getResaSession()
 					.getAdherentService(), getSelected());
 
-	private WebMarkupContainer dynamicPanel;
-
 	@SuppressWarnings("serial")
 	public ConsulterPlongees() {
 		
@@ -43,11 +39,6 @@ public class ConsulterPlongees extends TemplatePage {
 		modal2.setTitle("This is modal window with panel content.");
 		modal2.setCookieName("modal-adherent");
 		add(modal2);
-
-//		dynamicPanel = new WebMarkupContainer("dynamicPanel");
-//		dynamicPanel.setOutputMarkupId(true);
-//		add(dynamicPanel);
-
 
 		
 		add(new DataView<Plongee>("simple", new PlongeeDataProvider(
@@ -63,8 +54,6 @@ public class ConsulterPlongees extends TemplatePage {
 				item.add(new AjaxLink("select") {
 					@Override
 					public void onClick(AjaxRequestTarget target) {
-//						replaceEmptyPanel(target,
-//								new ParticipantsPanel("dynamicPanel", item.getModel()));
 						replaceModalWindow(target, item.getModel());
 						modal2.show(target);
 					}
@@ -84,12 +73,7 @@ public class ConsulterPlongees extends TemplatePage {
 				item.add(new Label("niveauMini", plongee.getNiveauMinimum().toString()));
 				
 				// Places restantes
-				InscritsPlongeeDataProvider tmpInscrits = new InscritsPlongeeDataProvider(
-						getResaSession().getPlongeeService(), getResaSession()
-						.getAdherentService(), plongee);
-				int reste = plongee.getNbMaxPlaces() - tmpInscrits.size();
-				item.add(new Label("placesRestantes", String.valueOf(reste)));
-				tmpInscrits = null;
+				item.add(new Label("placesRestantes", getResaSession().getPlongeeService().getNbPlaceRestante(plongee).toString()));
 
 				item.add(new AttributeModifier("class", true,
 						new AbstractReadOnlyModel<String>() {
@@ -128,6 +112,7 @@ public class ConsulterPlongees extends TemplatePage {
 
 	public void setSelected(Plongee selected) {
 		addStateChange(new Change() {
+			private static final long serialVersionUID = -1384730190380850382L;
 			private final Plongee old = ConsulterPlongees.this.selected;
 
 			@Override
@@ -138,14 +123,6 @@ public class ConsulterPlongees extends TemplatePage {
 		});
 		this.selected = selected;
 	}
-
-	private void replaceEmptyPanel(AjaxRequestTarget target, Panel newPanel) {
-
-		this.dynamicPanel.replaceWith(newPanel);
-		this.dynamicPanel = newPanel;
-		target.addComponent(newPanel);
-
-	}
 	
 	private void replaceModalWindow(AjaxRequestTarget target, IModel<Plongee> plongee) {
 		modal2.setContent(new ParticipantsPanel(modal2.getContentId(), plongee));
@@ -153,6 +130,9 @@ public class ConsulterPlongees extends TemplatePage {
 	}
 
 	class ParticipantsPanel extends Panel {
+
+		private static final long serialVersionUID = 6206469268417992518L;
+
 		@SuppressWarnings("serial")
 		public ParticipantsPanel(String id, IModel<Plongee> plongee) {
 			super(id, plongee);
