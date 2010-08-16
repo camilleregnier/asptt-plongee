@@ -221,18 +221,6 @@ public class PlongeeServiceImpl implements PlongeeService {
 		}
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.asptt.plongee.resa.service.PlongeeService#isOuverte(com.asptt.plongee.resa.model.Plongee)
-	public Boolean isOuverte(Plongee plongee) {
-		if(plongee.isOuverte()){
-			return true;
-		} else {
-			return false;
-		}
-	}
-	 */
-
 	public Integer getNbPlaceRestante(Plongee plongee) {
 		try {
 			return plongee.getNbMaxPlaces() - 

@@ -28,4 +28,17 @@ public class AdherentServiceTest extends AbstractServiceTest {
 		Adherent inconnu = adherentService.rechercherAdherentParIdentifiant("identifiant n'existant pas");
 		Assert.assertNull(inconnu);
 	}
+	
+	@Test
+	public void creerExterne() throws TechnicalException {
+		// données pour le test
+		Adherent ext = new Adherent();
+		ext.setNom("EXTERNE");
+		ext.setPrenom("toto");
+		ext.setNiveau("P1");
+		ext.setTelephone("0491707070");
+		ext.setMail("ext@ext.ext");
+		adherentService.creerExterne(ext);
+		
+	}
 }

@@ -81,8 +81,6 @@ public class AdherentServiceImpl implements AdherentService {
 				sousAdhTrie.add(adhTrie.get(first+i));
 			}
 		}
-		
-		// TODO Auto-generated method stub
 		return sousAdhTrie;
 	}
 
@@ -104,11 +102,6 @@ public class AdherentServiceImpl implements AdherentService {
 			}
 		}
 		return pilotes;
-//		try {
-//			return adherentDao.findPilote(adherents);
-//		} catch (TechnicalException e) {
-//			throw new IllegalStateException(e);
-//		}
 	}
 
 	public void creerAdherent(Adherent adherent) {
