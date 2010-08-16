@@ -1,16 +1,9 @@
 package com.asptt.plongee.resa.service.impl;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.Locale;
-
-import org.apache.wicket.util.tester.FormTester;
 
 import com.asptt.plongee.resa.dao.AdherentDao;
 import com.asptt.plongee.resa.dao.PlongeeDao;
@@ -267,7 +260,6 @@ public class PlongeeServiceImpl implements PlongeeService {
 			}
 			// Si DP = P5 => pas de BATM ou de P0
 			String niveauDP = plongee.getDp().getNiveau();
-			String encadrement = plongee.getDp().getEncadrement();
 			if(niveauDP.equalsIgnoreCase("P5")){
 				if(adherent.getNiveau().equalsIgnoreCase(NiveauAutonomie.BATM.toString()) 
 					|| adherent.getNiveau().equalsIgnoreCase(NiveauAutonomie.P0.toString())){
