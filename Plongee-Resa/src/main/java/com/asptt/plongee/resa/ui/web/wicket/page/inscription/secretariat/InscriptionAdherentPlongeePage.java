@@ -5,22 +5,16 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.util.string.Strings;
 import org.wicketstuff.objectautocomplete.AutoCompletionChoicesProvider;
 import org.wicketstuff.objectautocomplete.ObjectAutoCompleteBuilder;
 import org.wicketstuff.objectautocomplete.ObjectAutoCompleteField;
 import org.wicketstuff.objectautocomplete.ObjectAutoCompleteRenderer;
-import org.wicketstuff.objectautocomplete.ObjectAutoCompleteSelectionChangeListener;
 
 import com.asptt.plongee.resa.model.Adherent;
-import com.asptt.plongee.resa.ui.web.wicket.ResaSession;
-import com.asptt.plongee.resa.ui.web.wicket.page.AccueilPage;
 import com.asptt.plongee.resa.ui.web.wicket.page.TemplatePage;
 import com.asptt.plongee.resa.ui.web.wicket.page.inscription.InscriptionPlongeePage;
 

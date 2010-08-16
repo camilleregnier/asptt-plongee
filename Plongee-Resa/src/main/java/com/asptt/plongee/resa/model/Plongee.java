@@ -24,6 +24,10 @@ public class Plongee implements Serializable {
 	private List<Adherent> participants;
 	private List<Adherent> participantsEnAttente;
 	
+	public Plongee(){
+		niveauMinimum = NiveauAutonomie.BATM;
+		ouvertureForcee = true;
+	}
 	
 	public Integer getId() {
 		return id;
@@ -40,17 +44,33 @@ public class Plongee implements Serializable {
 	public void setType(String type){
 		setType(Type.valueOf(type));
 	}
-	public NiveauAutonomie getNiveauMinimum() {
+	public NiveauAutonomie getEnumNiveauMinimum() {
 		return niveauMinimum;
 	}
-	public void setNiveauMinimum(NiveauAutonomie niveauMinimum) {
+	public String getNiveauMinimum() {
+		if(null == niveauMinimum){
+			return NiveauAutonomie.P0.toString();
+		}else{
+			return niveauMinimum.toString();
+		}
+	}
+	public void setEnumNiveauMinimum(NiveauAutonomie niveauMinimum) {
 		this.niveauMinimum = niveauMinimum;
+	}
+	public void setNiveauMinimum(String niveau) {
+		this.niveauMinimum = NiveauAutonomie.valueOf(niveau);
 	}
 	public int getNbMaxPlaces() {
 		return nbMaxPlaces;
 	}
+	public String getMaxPlaces() {
+		return String.valueOf(nbMaxPlaces);
+	}
 	public void setNbMaxPlaces(int nbPlaces) {
 		this.nbMaxPlaces = nbPlaces;
+	}
+	public void setMaxPlaces(String nbPlaces) {
+		this.nbMaxPlaces = Integer.valueOf(nbPlaces);
 	}
 	public String getNiveauDP() {
 		return niveauDP;

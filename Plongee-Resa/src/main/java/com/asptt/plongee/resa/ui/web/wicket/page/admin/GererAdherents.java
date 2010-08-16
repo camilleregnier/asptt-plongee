@@ -68,5 +68,8 @@ public class GererAdherents extends TemplatePage {
 	private void replaceModalWindow(AjaxRequestTarget target, IModel<Adherent> adherent) {
 		modal2.setContent(new AdherentPanel(modal2.getContentId(), adherent));
 		modal2.setTitle("Modifiez les informations à mettre à jour");
+		
+		// Pour éviter le message de disparition de la fenetre lors de la validation
+		target.appendJavascript( "Wicket.Window.unloadConfirmation  = false;");
 		}
 }

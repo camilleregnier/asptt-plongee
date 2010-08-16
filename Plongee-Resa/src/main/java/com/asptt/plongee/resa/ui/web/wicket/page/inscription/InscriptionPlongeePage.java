@@ -1,19 +1,14 @@
 package com.asptt.plongee.resa.ui.web.wicket.page.inscription;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import org.apache.wicket.datetime.markup.html.basic.DateLabel;
 import org.apache.wicket.feedback.IFeedback;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Check;
-import org.apache.wicket.markup.html.form.CheckBox;
-import org.apache.wicket.markup.html.form.CheckBoxMultipleChoice;
 import org.apache.wicket.markup.html.form.CheckGroup;
 import org.apache.wicket.markup.html.form.CheckGroupSelector;
 import org.apache.wicket.markup.html.form.Form;
@@ -21,12 +16,9 @@ import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.PropertyModel;
-import org.apache.wicket.util.convert.converters.DateConverter;
 
 import com.asptt.plongee.resa.model.Adherent;
-import com.asptt.plongee.resa.model.InscritsPlongeeDataProvider;
 import com.asptt.plongee.resa.model.Plongee;
-import com.asptt.plongee.resa.service.PlongeeService;
 import com.asptt.plongee.resa.ui.web.wicket.page.TemplatePage;
 import com.asptt.plongee.resa.ui.web.wicket.page.admin.GererPlongeeAOuvrirTwo;
 
@@ -95,13 +87,7 @@ public class InscriptionPlongeePage extends TemplatePage {
 					listItem.add(new Label("niveauMini",new PropertyModel<String>(listItem.getDefaultModel(), "niveauMinimum")));
 					
 					// Places restantes
-					Plongee plongee = listItem.getModelObject();
-					InscritsPlongeeDataProvider tmpInscrits = new InscritsPlongeeDataProvider(
-							getResaSession().getPlongeeService(), getResaSession()
-							.getAdherentService(), plongee);
-					int reste = plongee.getNbMaxPlaces() - tmpInscrits.size();
-					listItem.add(new Label("placesRestantes", String.valueOf(reste)));
-					tmpInscrits = null;
+					listItem.add(new Label("placesRestantes", getResaSession().getPlongeeService().getNbPlaceRestante(listItem.getModelObject()).toString()));
 				}
 			
 			}.setReuseItems(true);

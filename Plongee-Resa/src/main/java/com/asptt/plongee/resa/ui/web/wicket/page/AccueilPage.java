@@ -1,10 +1,8 @@
 package com.asptt.plongee.resa.ui.web.wicket.page;
 
-import java.io.FileInputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Properties;
 
 import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import org.apache.wicket.markup.html.basic.Label;
@@ -18,6 +16,7 @@ public class AccueilPage extends TemplatePage {
 	public AccueilPage() { 
 		Adherent a = getResaSession().getAdherent();
 	    add(new Label("hello", "Bienvenue:"+a.getPrenom()+", il est : " + calculerDateCourante()));
+	   
 	} 
 
 	private String calculerDateCourante() {
