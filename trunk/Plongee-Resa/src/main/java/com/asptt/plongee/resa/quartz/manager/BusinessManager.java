@@ -8,18 +8,20 @@ import com.asptt.plongee.resa.dao.AdherentDao;
 import com.asptt.plongee.resa.dao.PlongeeDao;
 import com.asptt.plongee.resa.dao.TechnicalException;
 import com.asptt.plongee.resa.model.Plongee;
+import com.asptt.plongee.resa.service.PlongeeService;
 
 public class BusinessManager {
-	private PlongeeDao plongeeDao;
+
+	private PlongeeService plongeeService;
 	
-	public void setPlongeeDao(PlongeeDao plongeeDao) {
-		this.plongeeDao = plongeeDao;
+	public void setPlongeeService(PlongeeService plongeeService) {
+		this.plongeeService = plongeeService;
 	}
 	
 	/**
 	 * Le cron est parametré pour executer cette methode 
 	 * tous les dimanches à 12h00
-	 * on va créer les plongées des :
+	 * on va créer les plongées (pour la semaine prochaine) des :
 	 * Mercredi apres midi
 	 * Jeudi soir
 	 * Vendredi Aprem
@@ -42,45 +44,45 @@ public class BusinessManager {
 		gc.add(GregorianCalendar.DATE, +3);
 		plongee.setType(Plongee.Type.APRES_MIDI);
 		plongee.setDate(gc.getTime());
-		plongeeDao.create(plongee);
+		plongeeService.creerPlongee(plongee);
 		System.out.println("Plongée du MERCREDI aprem créee : "+gc.getTime().toString());
 	
 		//Plongée du JEUDI Soir
 		gc.setTime(dateDuJour);
-		gc.add(GregorianCalendar.DATE, +4);
+		gc.add(GregorianCalendar.DATE, +11);
 		plongee.setType(Plongee.Type.SOIR);
 		plongee.setDate(gc.getTime());
-		plongeeDao.create(plongee);
+		plongeeService.creerPlongee(plongee);
 		System.out.println("Plongée du JEUDI soir créee : "+gc.getTime().toString());
 			
 		//Plongée du VENDREDI Aprem
 		gc.setTime(dateDuJour);
-		gc.add(GregorianCalendar.DATE, +5);
+		gc.add(GregorianCalendar.DATE, +12);
 		plongee.setType(Plongee.Type.APRES_MIDI);
 		plongee.setDate(gc.getTime());
-		plongeeDao.create(plongee);
+		plongeeService.creerPlongee(plongee);
 		System.out.println("Plongée du VENDREDI aprem créee : "+gc.getTime().toString());
 
 		//Plongée du SAMEDI matin
 		gc.setTime(dateDuJour);
-		gc.add(GregorianCalendar.DATE, +6);
+		gc.add(GregorianCalendar.DATE, +13);
 
 		plongee.setType(Plongee.Type.MATIN);
 		plongee.setDate(gc.getTime());
-		plongeeDao.create(plongee);
+		plongeeService.creerPlongee(plongee);
 		System.out.println("Plongée du SAMEDI matin créee : "+gc.getTime().toString());
 		//Plongée du SAMEDI aprem
 		plongee.setType(Plongee.Type.APRES_MIDI);
 		plongee.setDate(gc.getTime());
-		plongeeDao.create(plongee);
+		plongeeService.creerPlongee(plongee);
 		System.out.println("Plongée du SAMEDI aprem créee : "+gc.getTime().toString());
 
 		//Plongée du DIMANCHE matin
 		gc.setTime(dateDuJour);
-		gc.add(GregorianCalendar.DATE, +7);
+		gc.add(GregorianCalendar.DATE, +14);
 		plongee.setType(Plongee.Type.MATIN);
 		plongee.setDate(gc.getTime());
-		plongeeDao.create(plongee);
+		plongeeService.creerPlongee(plongee);
 		System.out.println("Plongée du DIMANCHE matin créee : "+gc.getTime().toString());
 	}
 }

@@ -10,8 +10,10 @@ import java.util.Locale;
 import junit.framework.Assert;
 
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowire;
 
 import com.asptt.plongee.resa.dao.TechnicalException;
+import com.asptt.plongee.resa.model.NiveauAutonomie;
 import com.asptt.plongee.resa.model.Plongee;
 public class PlongeeServiceTest extends AbstractServiceTest {
 	
@@ -58,5 +60,33 @@ public class PlongeeServiceTest extends AbstractServiceTest {
 			e.printStackTrace();
 		}
 		
+	}
+
+	@Test
+	public void testUpdatePlongee() throws TechnicalException {
+		Plongee plongee = new Plongee();
+		plongee.setId(4);
+		plongee.setNbMaxPlaces(15);
+		plongee.setNiveauMinimum(NiveauAutonomie.P3);
+		plongee.setOuvertureForcee(true);
+		plongeeDao.update(plongee);
+	}
+
+	@Test
+	public void testRechercherPlongee() throws TechnicalException {
+		try {
+			GregorianCalendar gc = new GregorianCalendar();
+			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+			Date maDate;
+			maDate = sdf.parse("15/08/2010");
+			gc.setTime(maDate);
+			String maDateAffichee = gc.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.FRANCE);			
+			int monNumJour = gc.get(Calendar.DAY_OF_WEEK);
+			List<Plongee> plongees =plongeeDao.getPlongeesWhithSameDate(maDate, "MATIN");
+			System.out.println("Nombre de plongées trouvées = "+plongees.size());
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

@@ -4,11 +4,14 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 import com.asptt.plongee.resa.dao.AdherentDao;
 import com.asptt.plongee.resa.dao.PlongeeDao;
@@ -103,8 +106,9 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements PlongeeDao {
 			StringBuffer sb = new StringBuffer();
 			sb.append("UPDATE PLONGEE");
 			sb.append(" SET OUVERTURE_FORCEE = ?,");
-			sb.append(" SET NIVEAU_MINI = ?,");
-			sb.append(" SET NB_MAX_PLG = ?");
+			sb.append(" NIVEAU_MINI = ?,");
+			sb.append(" NB_MAX_PLG = ?");
+			sb.append(" WHERE IDPLONGEES = ?");
 			PreparedStatement st = getDataSource().getConnection()
 					.prepareStatement(sb.toString());
 			if (obj.getOuvertureForcee()) {
@@ -118,11 +122,11 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements PlongeeDao {
 				st.setString(2, obj.getNiveauMinimum().toString());
 			}
 			st.setInt(3, obj.getNbMaxPlaces());
+			st.setInt(4, obj.getId());
 			if (st.executeUpdate() == 0) {
 				throw new TechnicalException(
 						"La plongée "+obj.getId()+" n'a pu être modifiée");
 			}
-			sb = new StringBuffer();
 			return obj;
 		} catch (SQLException e) {
 			throw new TechnicalException(e);
@@ -258,8 +262,9 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements PlongeeDao {
 			sb.append("SELECT * FROM PLONGEE p");
 			sb.append(" WHERE date(DATE) = ? AND DEMIE_JOURNEE = ?");
 			PreparedStatement st = getDataSource().getConnection().prepareStatement(sb.toString());
-			Timestamp ts = new Timestamp(date.getTime());
-			st.setTimestamp(1, ts);
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			String laDateRecherchee = sdf.format(date);			
+			st.setString(1, laDateRecherchee);
 			st.setString(2, type);
 			ResultSet rs = st.executeQuery();
 			List<Plongee> plongees = new ArrayList<Plongee>();
@@ -473,7 +478,7 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements PlongeeDao {
 		plongee.setId(id);
 		plongee.setDate(date);
 		plongee.setType(demie_journee);
-		plongee.setEnumNiveauMinimum(niveauMini);
+		plongee.setNiveauMinimum(niveauMini);
 		plongee.setNbMaxPlaces(nbMaxPlongeur);
 		if(ouvertForcee == 1){
 			plongee.setOuvertureForcee(true);

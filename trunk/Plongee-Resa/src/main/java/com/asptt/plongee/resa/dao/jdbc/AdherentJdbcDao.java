@@ -28,8 +28,8 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 	public Adherent create(Adherent adh) throws TechnicalException {
 		try {
 			StringBuffer sb = new StringBuffer();
-			sb.append("INSERT INTO ADHERENT (`LICENSE`, `NOM`, `PRENOM`, `NIVEAU`, `TELEPHONE`, `MAIL`, `ENCADRANT`, `PILOTE`, `DATE_DEBUT`)");
-			sb.append(" VALUES (?, ?, ?, ?, ?, ?, ?, ?, current_timestamp)");
+			sb.append("INSERT INTO ADHERENT (`LICENSE`, `NOM`, `PRENOM`, `NIVEAU`, `TELEPHONE`, `MAIL`, `ENCADRANT`, `PILOTE`, `DATE_DEBUT`, `ACTIF`)");
+			sb.append(" VALUES (?, ?, ?, ?, ?, ?, ?, ?, current_timestamp, ?)");
 			PreparedStatement st = getDataSource().getConnection()
 					.prepareStatement(sb.toString());
 			st.setString(1, adh.getNumeroLicense());
@@ -48,6 +48,7 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 			} else {
 				st.setInt(8, 0);
 			}
+			st.setInt(9, adh.getActif());
 			if (st.executeUpdate() == 0) {
 				throw new TechnicalException(
 						"L'adhérent n'a pu être enregistré");
@@ -139,11 +140,6 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 			} else {
 				st.setInt(5, 0);
 			}
-//			if (adh.isActif()) {
-//				st.setInt(6, 1);
-//			} else {
-//				st.setInt(6, 0);
-//			}
 			st.setInt(6, adh.getActif());
 			st.setString(7, adh.getNumeroLicense());
 			if (st.executeUpdate() == 0) {
@@ -543,12 +539,6 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 		adherent.setEnumEncadrement(encadrant);
 		adherent.setRoles(getStrRoles(adherent));
 		adherent.setActif(rs.getInt("ACTIF"));
-//		int actif = rs.getInt("ACTIF");
-//		if (actif == 1) {
-//			adherent.setActif(true);
-//		} else {
-//			adherent.setActif(false);
-//		}
 		if (pilote == 1) {
 			adherent.setPilote(true);
 		} else {
