@@ -7,6 +7,8 @@ import java.util.List;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.extensions.ajax.markup.html.IndicatingAjaxLink;
+import org.apache.wicket.extensions.ajax.markup.html.IndicatingAjaxSubmitButton;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
@@ -37,7 +39,7 @@ public class InscriptionExterieurPlongeePage extends TemplatePage {
 		modalExterieur.setCookieName("modal-exterieur");
 		add(modalExterieur);
 		
-		add(new AjaxLink("creerExterieur") {
+		add(new IndicatingAjaxLink("creerExterieur") {
 			@Override
 			public void onClick(AjaxRequestTarget target) {
 				replaceModalWindow(target);
@@ -105,11 +107,20 @@ public class InscriptionExterieurPlongeePage extends TemplatePage {
 			adherent.setRequired(true);
 			
 			add(autocompleteField);
+			
+			add(new IndicatingAjaxSubmitButton("valider", this) {
+
+				@Override
+				protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+					setResponsePage(new InscriptionPlongeePage(getResaSession().getAdherentService().rechercherAdherentParIdentifiant(autocompleteField.getConvertedInput())));
+				}
+
+			});
 		}
 		
-		public void onSubmit() {
-			setResponsePage(new InscriptionPlongeePage(getResaSession().getAdherentService().rechercherAdherentParIdentifiant(autocompleteField.getConvertedInput())));
-		}
+//		public void onSubmit() {
+//			setResponsePage(new InscriptionPlongeePage(getResaSession().getAdherentService().rechercherAdherentParIdentifiant(autocompleteField.getConvertedInput())));
+//		}
 		
 	}
 	

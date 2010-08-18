@@ -5,6 +5,8 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.extensions.ajax.markup.html.IndicatingAjaxSubmitButton;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.Model;
@@ -67,7 +69,8 @@ public class InscriptionAdherentPlongeePage extends TemplatePage {
 					return adherent.getNumeroLicense();
 				}
 				protected String getTextValue(Adherent adherent) {
-					String texteAffiche = adherent.getNom() + " " + adherent.getPrenom() + " " + adherent.getNiveau();
+					String texteAffiche = adherent.getNom() + " " + adherent.getPrenom() + " " + ((adherent.getEncadrement() != null) ? adherent
+							.getEncadrement() : adherent.getNiveau());
 					return texteAffiche;
 				}
 			};
@@ -84,12 +87,16 @@ public class InscriptionAdherentPlongeePage extends TemplatePage {
 			
 			
 			add(autocompleteField);
+			
+			add(new IndicatingAjaxSubmitButton("valider", this) {
+
+				@Override
+				protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+					setResponsePage(new InscriptionPlongeePage(getResaSession().getAdherentService().rechercherAdherentParIdentifiant(autocompleteField.getConvertedInput())));
+				}
+
+			});
 		}
-		
-		public void onSubmit() {
-			setResponsePage(new InscriptionPlongeePage(getResaSession().getAdherentService().rechercherAdherentParIdentifiant(autocompleteField.getConvertedInput())));
-		}
-		
 	}
 
 }

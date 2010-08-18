@@ -3,6 +3,7 @@ package com.asptt.plongee.resa.ui.web.wicket.page.admin;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.wicket.ResourceReference;
 import org.apache.wicket.extensions.markup.html.form.palette.Palette;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.Form;
@@ -26,7 +27,15 @@ public class GererListeAttenteTwo extends TemplatePage {
 		final Palette<Adherent> palette = new Palette<Adherent>("palette", 
 				new ListModel<Adherent>(new ArrayList<Adherent>()), 
 				new CollectionModel<Adherent>(persons), 
-				renderer, 10, false);
+				renderer, 10, false){
+			
+			// Modification de la feuille de style
+			// pour agrandir la largeur de la palette
+			protected ResourceReference getCSS() {
+			     return new ResourceReference(GererListeAttenteTwo.class, "PlongeePalette.css");
+			    }
+			
+		};
 
 		Form<?> form = new Form("form")
 		{

@@ -9,6 +9,7 @@ import org.apache.wicket.Page;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.behavior.IBehavior;
+import org.apache.wicket.extensions.ajax.markup.html.IndicatingAjaxLink;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
@@ -64,7 +65,7 @@ public abstract class DesInscriptionPanel extends Panel {
 					nomDP = plongee.getDp().getNom();
 				}
 
-				item.add(new AjaxLink("select") {
+				item.add(new IndicatingAjaxLink("select") {
 					@Override
 					public void onClick(final AjaxRequestTarget target) {						
 						// On exécute la suppression dans la fenêtre principale
@@ -132,7 +133,7 @@ public abstract class DesInscriptionPanel extends Panel {
 			
 			// Le lien qui va fermer la fenêtre de confirmation
 			// et appeler la méthode de désinscription de la page principale (DesInscriptionPlongeePage)
-			add(new AjaxLink("close")
+			add(new IndicatingAjaxLink("close")
 			{
 				private static final long serialVersionUID = 1L;
 
