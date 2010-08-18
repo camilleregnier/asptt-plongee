@@ -30,6 +30,8 @@ import com.asptt.plongee.resa.ui.web.wicket.page.TemplatePage;
 public class GererPlongeeAOuvrirTwo extends TemplatePage {
 
 	private ModalWindow modalPlongee;
+	TextField<Integer> maxPlaces;
+	TextField<Integer> niveauMinimum;
 
 	public GererPlongeeAOuvrirTwo(final Plongee plongee) {
 
@@ -51,7 +53,7 @@ public class GererPlongeeAOuvrirTwo extends TemplatePage {
 
 		final Palette<Adherent> palDp = new Palette<Adherent>("paletteDps",
 				new ListModel<Adherent>(new ArrayList<Adherent>()),
-				new CollectionModel<Adherent>(dps), rendDp, 10, true);
+				new CollectionModel<Adherent>(dps), rendDp, 10, false);
 
 		List<Adherent> pilotes = getResaSession().getAdherentService()
 				.rechercherPilotes(
@@ -63,7 +65,7 @@ public class GererPlongeeAOuvrirTwo extends TemplatePage {
 		final Palette<Adherent> palPilote = new Palette<Adherent>(
 				"palettePilotes", new ListModel<Adherent>(
 						new ArrayList<Adherent>()),
-				new CollectionModel<Adherent>(pilotes), rendPilote, 10, true);
+				new CollectionModel<Adherent>(pilotes), rendPilote, 10, false);
 
 		final Form<Plongee> form = new Form<Plongee>("form") {
 
@@ -118,9 +120,13 @@ public class GererPlongeeAOuvrirTwo extends TemplatePage {
 
 		form.setModel(modelPlongee);
 		// Le nombre max. de places, pour info
-		form.add(new TextField<Integer>("maxPlaces").setEnabled(false));
+		maxPlaces = new TextField<Integer>("maxPlaces");
+		maxPlaces.setOutputMarkupId(true);
+		form.add(maxPlaces.setEnabled(false));
 		// Le niveau mini. des plongeurs, pour info
-		form.add(new TextField<Integer>("niveauMinimum").setEnabled(false));
+		niveauMinimum = new TextField<Integer>("niveauMinimum");
+		niveauMinimum.setOutputMarkupId(true);
+		form.add(niveauMinimum.setEnabled(false));
 		
 		// Ajout des palettes
 		form.add(palDp);
@@ -152,8 +158,14 @@ public class GererPlongeeAOuvrirTwo extends TemplatePage {
 		// validation
 		target.appendJavascript("Wicket.Window.unloadConfirmation  = false;");
 	}
+	
+	private void onSubmitPlongeePanel(AjaxRequestTarget target){
+		target.addComponent(maxPlaces);
+		target.addComponent(niveauMinimum);
+		modalPlongee.close(target);
+	}
 
-	class PlongeePanel extends Panel {
+	public  class PlongeePanel extends Panel {
 
 		private static final long serialVersionUID = -5814508281132946597L;
 
@@ -191,8 +203,9 @@ public class GererPlongeeAOuvrirTwo extends TemplatePage {
 				protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 					Plongee plongee = (Plongee) form.getModelObject();
 
-					// TODO update plongee
+					// Mise à jour de la plongee (nombre de places max et niveau mini)
 					getResaSession().getPlongeeService().modifierPlongee(plongee);
+					onSubmitPlongeePanel(target);
 
 				}
 				

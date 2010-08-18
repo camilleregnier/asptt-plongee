@@ -18,7 +18,6 @@ public class DetachableAdherentModel extends LoadableDetachableModel<Adherent> {
 
 	@Override
 	protected Adherent load() {
-		// TODO Auto-generated method stub
 		return adherentService.rechercherAdherentParIdentifiant(id);
 	}
 

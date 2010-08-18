@@ -15,6 +15,7 @@ import org.apache.wicket.markup.html.form.RequiredTextField;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.validation.validator.EmailAddressValidator;
 
 import com.asptt.plongee.resa.model.Adherent;
@@ -24,7 +25,7 @@ import com.asptt.plongee.resa.ui.web.wicket.page.AccueilPage;
 
 public class AdherentPanel extends Panel {
 	
-	private CompoundPropertyModel model;
+	private CompoundPropertyModel<Adherent> model;
 	
 	public AdherentPanel(String id, IModel<Adherent> adherent) {
 		super(id, adherent);
@@ -40,9 +41,9 @@ public class AdherentPanel extends Panel {
 
 		public AdherentForm(String id, IModel<Adherent> adherent) {
 			super(id,adherent);
-			
-			model = new CompoundPropertyModel(adherent);
+			model = new CompoundPropertyModel<Adherent>(adherent);
 			setModel(model);
+			
 
 			add(new RequiredTextField<String>("nom"));
 			add(new RequiredTextField<String>("prenom"));
@@ -61,11 +62,15 @@ public class AdherentPanel extends Panel {
 			add(new DropDownChoice("niveau", niveaux));
 			
 			// Ajout de la checkbox pilote
-			add(new CheckBox("pilote", model.bind("pilote")));
+			add(new CheckBox("pilote"));
+			
+			// Ajout de la checkbox membre actif (ou pas)
+			add(new CheckBox("actif"));
 
 			// Ajout de la checkbox directeur de plongée
-			final CheckBox checkDp = new CheckBox("dp", model.bind("dp"));
-			checkDp.setOutputMarkupId(true);
+			final CheckBox checkDp = new CheckBox("dp");
+
+			//checkDp.setOutputMarkupId(true);
 			add(checkDp);
 
 			// Ajout de la liste des niveaux d'encadrement
@@ -74,26 +79,23 @@ public class AdherentPanel extends Panel {
 				encadrement.add(e.toString());
 			}
 			DropDownChoice encadrt = new DropDownChoice("encadrement", encadrement);
-			encadrt.add (new AjaxFormComponentUpdatingBehavior("onchange"){
-		            protected void onUpdate(AjaxRequestTarget target) {
-		            	CheckBox check = (CheckBox)get("dp");
-		            	Adherent a = (Adherent) model.getChainedModel().getObject();
-		                if (a.getEncadrement().contains("E"))
-		                	a.setDp(true);
-		                model.setObject(a);
-		                checkDp.setModel(model.bind("dp"));
-		                target.addComponent(checkDp);
-		            }
-				});
+//			encadrt.add (new AjaxFormComponentUpdatingBehavior("onchange"){
+//		            protected void onUpdate(AjaxRequestTarget target) {
+//		            	CheckBox check = (CheckBox)get("dp");
+//		            	Adherent a = (Adherent) model.getChainedModel().getObject();
+//		                if (a.getEncadrement().contains("E"))
+//		                	a.setDp(true);
+//		                model.setObject(a);
+//		                checkDp.setModel(model.bind("dp"));
+//		                target.addComponent(checkDp);
+//		            }
+//				});
 			add(encadrt);
 
 			// Ajout des roles
 			List<String> roles = Arrays.asList(new String[] { "ADMIN", "USER",
 					"SECRETARIAT" });
 			add(new ListMultipleChoice<String>("roles", roles));
-			
-			// Ajout de la checkbox membre actif (ou pas)
-			add(new CheckBox("actif", model.bind("actif")));
 
 		}
 

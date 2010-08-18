@@ -48,14 +48,14 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 			} else {
 				st.setInt(8, 0);
 			}
-			st.setInt(9, adh.getActif());
+			st.setInt(9, adh.getActifInt());
 			if (st.executeUpdate() == 0) {
 				throw new TechnicalException(
 						"L'adhérent n'a pu être enregistré");
 			}
 			sb = new StringBuffer();
 			// gestion des roles
-			if(adh.getActif() == 1){
+			if(adh.getActifInt() == 1){
 				// On gere les role uniquement pour les actifs
 				Iterator it = adh.getRoles().iterator();
 				while (it.hasNext()) {
@@ -140,7 +140,7 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 			} else {
 				st.setInt(5, 0);
 			}
-			st.setInt(6, adh.getActif());
+			st.setInt(6, adh.getActifInt());
 			st.setString(7, adh.getNumeroLicense());
 			if (st.executeUpdate() == 0) {
 				throw new TechnicalException(
@@ -538,7 +538,7 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 		adherent.setMail(mail);
 		adherent.setEnumEncadrement(encadrant);
 		adherent.setRoles(getStrRoles(adherent));
-		adherent.setActif(rs.getInt("ACTIF"));
+		adherent.setActifInt(rs.getInt("ACTIF"));
 		if (pilote == 1) {
 			adherent.setPilote(true);
 		} else {

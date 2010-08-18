@@ -89,6 +89,10 @@ public class DesInscriptionPlongeePage extends TemplatePage {
 				}
 				protected String getTextValue(Adherent adherent) {
 					String texteAffiche = adherent.getNom() + " " + adherent.getPrenom() + " " + adherent.getNiveau();
+					// Pour les externes, le niveau est suffixé par (Ext.)
+					if (adherent.getActifInt() ==2){
+						texteAffiche = texteAffiche + " (Ext.)";
+					}
 					return texteAffiche;
 				}
 			};
@@ -133,10 +137,10 @@ public class DesInscriptionPlongeePage extends TemplatePage {
 			public void onSave(AjaxRequestTarget target, Plongee plongee,
 					Adherent plongeur) {
 				// Desinscription pour cette plongée
-//				ResaSession resaSession = (ResaSession) getApplication()
-//						.getSessionStore().lookup(getRequest());
-//				resaSession.getPlongeeService().deInscrireAdherent(
-//						plongee, plongeur);
+				ResaSession resaSession = (ResaSession) getApplication()
+						.getSessionStore().lookup(getRequest());
+				resaSession.getPlongeeService().deInscrireAdherent(
+						plongee, plongeur);
 				modalPlongees.close(target);
 			}
 			
