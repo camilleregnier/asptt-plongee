@@ -4,9 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.wicket.PageParameters;
+import org.apache.wicket.ResourceReference;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
+import org.apache.wicket.extensions.ajax.markup.html.IndicatingAjaxLink;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.extensions.markup.html.form.palette.Palette;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
@@ -53,7 +54,15 @@ public class GererPlongeeAOuvrirTwo extends TemplatePage {
 
 		final Palette<Adherent> palDp = new Palette<Adherent>("paletteDps",
 				new ListModel<Adherent>(new ArrayList<Adherent>()),
-				new CollectionModel<Adherent>(dps), rendDp, 10, false);
+				new CollectionModel<Adherent>(dps), rendDp, 10, false){
+			
+			// Modification de la feuille de style
+			// pour agrandir la largeur de la palette
+			protected ResourceReference getCSS() {
+			     return new ResourceReference(GererPlongeeAOuvrirTwo.class, "PlongeePalette.css");
+			    }
+			
+		};
 
 		List<Adherent> pilotes = getResaSession().getAdherentService()
 				.rechercherPilotes(
@@ -65,7 +74,15 @@ public class GererPlongeeAOuvrirTwo extends TemplatePage {
 		final Palette<Adherent> palPilote = new Palette<Adherent>(
 				"palettePilotes", new ListModel<Adherent>(
 						new ArrayList<Adherent>()),
-				new CollectionModel<Adherent>(pilotes), rendPilote, 10, false);
+				new CollectionModel<Adherent>(pilotes), rendPilote, 10, false){
+			
+			// Modification de la feuille de style
+			// pour agrandir la largeur de la palette
+			protected ResourceReference getCSS() {
+			     return new ResourceReference(GererPlongeeAOuvrirTwo.class, "PlongeePalette.css");
+			    }
+			
+		};
 
 		final Form<Plongee> form = new Form<Plongee>("form") {
 
@@ -134,7 +151,7 @@ public class GererPlongeeAOuvrirTwo extends TemplatePage {
         
 		add(form);
 
-		form.add(new AjaxLink("change") {
+		form.add(new IndicatingAjaxLink("change") {
 			@Override
 			public void onClick(AjaxRequestTarget target) {
 				replaceModalWindow(target, form.getModel());
