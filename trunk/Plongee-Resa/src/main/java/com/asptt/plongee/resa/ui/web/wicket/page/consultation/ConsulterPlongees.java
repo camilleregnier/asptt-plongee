@@ -153,6 +153,11 @@ public class ConsulterPlongees extends TemplatePage {
 					if (adherent.getEncadrement() != null)
 						niveauAffiche = adherent.getEncadrement();
 					else niveauAffiche = adherent.getNiveau();
+					
+					// Pour les externes, le niveau est suffixé par (Ext.)
+					if (adherent.getActifInt() ==2){
+						niveauAffiche = niveauAffiche + " (Ext.)";
+					}
 						
 					item.add(new Label("niveau", niveauAffiche));
 

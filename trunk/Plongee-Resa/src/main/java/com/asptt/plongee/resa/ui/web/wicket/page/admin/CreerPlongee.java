@@ -42,6 +42,7 @@ public class CreerPlongee extends TemplatePage {
 			setModel(model);
 			
 			DateTextField dateTextFiled = new DateTextField("date", new PropertyModel<Date>(model, "date"), new StyleDateConverter("S-", true));
+			dateTextFiled.setRequired(true);
 			add(dateTextFiled);
 			dateTextFiled.add(new DatePicker());
 			

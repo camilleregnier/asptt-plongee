@@ -26,7 +26,19 @@ public class InscriptionListeAttentePlongeePage extends TemplatePage {
 
 				item.add(new Label("nom", adherent.getNom()));
 				item.add(new Label("prenom", adherent.getPrenom()));
-				item.add(new Label("niveau", adherent.getNiveau()));
+				
+				// Dès que le plongeur est encadrant, on affiche son niveau d'encadrement
+				String niveauAffiche;
+				if (adherent.getEncadrement() != null)
+					niveauAffiche = adherent.getEncadrement();
+				else niveauAffiche = adherent.getNiveau();
+				
+				// Pour les externes, le niveau est suffixé par (Ext.)
+				if (adherent.getActifInt() ==2){
+					niveauAffiche = niveauAffiche + " (Ext.)";
+				}
+				
+				item.add(new Label("niveau", niveauAffiche));
 
 				item.add(new AttributeModifier("class", true,
 						new AbstractReadOnlyModel<String>() {

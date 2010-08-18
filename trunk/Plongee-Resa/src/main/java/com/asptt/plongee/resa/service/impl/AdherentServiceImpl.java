@@ -128,7 +128,7 @@ public class AdherentServiceImpl implements AdherentService {
 		try {
 			Integer numExt = adherentDao.getExternes().size()+1;
 			adherent.setNumeroLicense(ResaConstants.LICENSE_EXTERNE.concat(numExt.toString()));
-			adherent.setActif(2);
+			adherent.setActifInt(2);
 			adherent.setPilote(false);
 			adherent.setDp(false);
 			adherentDao.create(adherent);

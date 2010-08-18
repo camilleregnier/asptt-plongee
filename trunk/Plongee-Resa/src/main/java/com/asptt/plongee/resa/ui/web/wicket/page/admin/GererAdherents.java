@@ -49,7 +49,14 @@ public class GererAdherents extends TemplatePage {
 				item.add(new Label("license", adherent.getNumeroLicense()));
 				item.add(new Label("nom", adherent.getNom()));
 				item.add(new Label("prenom", adherent.getPrenom()));
-				item.add(new Label("niveau", adherent.getNiveau()));
+				
+				// Dès que le plongeur est encadrant, on affiche son niveau d'encadrement
+				String niveauAffiche;
+				if (adherent.getEncadrement() != null)
+					niveauAffiche = adherent.getEncadrement();
+				else niveauAffiche = adherent.getNiveau();
+				
+				item.add(new Label("niveau", niveauAffiche));
 
 				item.add(new AttributeModifier("class", true,
 						new AbstractReadOnlyModel<String>() {
@@ -68,6 +75,7 @@ public class GererAdherents extends TemplatePage {
 	private void replaceModalWindow(AjaxRequestTarget target, IModel<Adherent> adherent) {
 		modal2.setContent(new AdherentPanel(modal2.getContentId(), adherent));
 		modal2.setTitle("Modifiez les informations à mettre à jour");
+		modal2.setUseInitialHeight(true);
 		
 		// Pour éviter le message de disparition de la fenetre lors de la validation
 		target.appendJavascript( "Wicket.Window.unloadConfirmation  = false;");
