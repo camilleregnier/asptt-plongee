@@ -258,8 +258,8 @@ public class PlongeeServiceImpl implements PlongeeService {
 				isOk = -1;
 				return isOk;
 			}
-			// Si DP = P5 => pas de BATM ou de P0
-			String niveauDP = plongee.getDp().getNiveau();
+			// Si DP = P5 et pas encadrant => pas de BATM ou de P0
+			String niveauDP = (plongee.getDp().getEncadrement() != null) ? plongee.getDp().getEncadrement() : plongee.getDp().getNiveau();
 			if(niveauDP.equalsIgnoreCase("P5")){
 				if(adherent.getNiveau().equalsIgnoreCase(NiveauAutonomie.BATM.toString()) 
 					|| adherent.getNiveau().equalsIgnoreCase(NiveauAutonomie.P0.toString())){
