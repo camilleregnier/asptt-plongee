@@ -231,7 +231,7 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements PlongeeDao {
 			sb.append(" WHERE license = ?");
 			sb.append(" AND license = adherent_license");
 			sb.append(" AND plongees_idPlongees = idPlongees");
-			sb.append(" AND date > DATE_ADD(current_date(), INTERVAL ? HOUR)");
+			sb.append(" AND date > DATE_ADD(now(), INTERVAL ? HOUR)");
 			sb.append(" AND date_annul_plongee is null");
 			sb.append(" ORDER BY DATE");
 			PreparedStatement st = getDataSource().getConnection().
