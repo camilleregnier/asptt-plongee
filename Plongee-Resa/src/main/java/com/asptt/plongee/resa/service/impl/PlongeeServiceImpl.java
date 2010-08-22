@@ -11,6 +11,7 @@ import com.asptt.plongee.resa.dao.TechnicalException;
 import com.asptt.plongee.resa.model.Adherent;
 import com.asptt.plongee.resa.model.NiveauAutonomie;
 import com.asptt.plongee.resa.model.Plongee;
+import com.asptt.plongee.resa.model.Adherent.Encadrement;
 import com.asptt.plongee.resa.service.PlongeeService;
 
 public class PlongeeServiceImpl implements PlongeeService {
@@ -68,7 +69,7 @@ public class PlongeeServiceImpl implements PlongeeService {
 		}
 	}
 
-	public List<Plongee> rechercherPlongeeProchainJour() {
+	public List<Plongee> rechercherPlongeeProchainJour(Adherent adherent) {
 		try {
 			List<Plongee> plongees = new ArrayList<Plongee>();
 			int nbJour = 0;
@@ -110,6 +111,10 @@ public class PlongeeServiceImpl implements PlongeeService {
 				nbJour=0;
 				break;
 			}
+			
+			// Les encadrants peuvent visualiser une semaine de plus
+			if (adherent.getEncadrement() != null) nbJour = nbJour + 7;
+			
 			plongees.addAll(plongeeDao.getPlongeesForFewDay(nbJour));
 			return plongees;
 			
@@ -142,29 +147,32 @@ public class PlongeeServiceImpl implements PlongeeService {
 	 * Si l'adherent n'est pas déjà inscrit dans la liste
 	 * de plongées passée en parametre
 	 */
-	public List<Plongee> rechercherPlongeePourInscriptionAdherent(Adherent adherent) {
+	public List<Plongee> rechercherPlongeePourInscriptionAdherent(
+			Adherent adherent) {
 		List<Plongee> plongeesForAdherent = new ArrayList<Plongee>();
-		if(null == adherent.getEnumEncadrement()){
-			//l'adherent n'est pas encadrant : affiche que certaines plongées
-			List<Plongee> plongees = rechercherPlongeeProchainJour();
-			for(Plongee plongee : plongees){
-				if(plongee.isOuverte()){
-					boolean isNotInscrit = true;
-					for(Adherent adh : plongee.getParticipants()){
-						if( adh.getNumeroLicense().equalsIgnoreCase(adherent.getNumeroLicense()) ){
-							isNotInscrit=false;
-							break;
-						}
-					}
-					if(isNotInscrit){
-						plongeesForAdherent.add(plongee);
-					}
+		boolean encadrant = (adherent.getEncadrement() != null) ? true : false;
+		List<Plongee> plongees = rechercherPlongeeProchainJour(adherent);
+		
+		for (Plongee plongee : plongees) {
+			boolean isNotInscrit = true;
+			for (Adherent adh : plongee.getParticipants()) {
+				if (adh.getNumeroLicense().equalsIgnoreCase(
+						adherent.getNumeroLicense())) {
+					isNotInscrit = false;
+					break;
 				}
 			}
-		} else {
-			//l'adherent est encadrant : affiche toutes les plongées (même fermées)
-			plongeesForAdherent.addAll(rechercherPlongeeTout());
+			if (isNotInscrit) {
+				if (plongee.isOuverte()) {
+					plongeesForAdherent.add(plongee);
+				} else {
+					// l'adherent n'est pas encadrant : on affiche aussi les plongées non ouvertes
+					if (encadrant)
+						plongeesForAdherent.add(plongee);
+				}
+			}
 		}
+
 		return plongeesForAdherent;
 	}
 
@@ -258,8 +266,8 @@ public class PlongeeServiceImpl implements PlongeeService {
 				isOk = -1;
 				return isOk;
 			}
-			// Si DP = P5 et pas encadrant => pas de BATM ou de P0
-			String niveauDP = (plongee.getDp().getEncadrement() != null) ? plongee.getDp().getEncadrement() : plongee.getDp().getNiveau();
+			// Si DP = P5 et pas encadrant (plus que E2) => pas de BATM ou de P0
+			String niveauDP = (plongee.getDp().getEncadrement() != null && !plongee.getDp().getEncadrement().equals(Encadrement.E2)) ? plongee.getDp().getEncadrement() : plongee.getDp().getNiveau();
 			if(niveauDP.equalsIgnoreCase("P5")){
 				if(adherent.getNiveau().equalsIgnoreCase(NiveauAutonomie.BATM.toString()) 
 					|| adherent.getNiveau().equalsIgnoreCase(NiveauAutonomie.P0.toString())){
@@ -273,7 +281,11 @@ public class PlongeeServiceImpl implements PlongeeService {
 			if( ! adherent.getNiveau().equalsIgnoreCase(NiveauAutonomie.BATM.toString()) ){
 				niveauAdherent = new Integer(adherent.getNiveau().substring(1)).intValue(); 
 			}
-			int niveauMinPlongee = new Integer(plongee.getNiveauMinimum().toString().substring(1)).intValue(); 
+			// verifier le niveau mini de la plongée
+			int niveauMinPlongee = -1;
+			if (!plongee.getEnumNiveauMinimum().equals(NiveauAutonomie.BATM))
+				niveauMinPlongee = new Integer(plongee.getNiveauMinimum().toString().substring(1)).intValue();
+			
 			if(niveauAdherent < niveauMinPlongee){
 				// niveau mini requis : inscription refusée
 				isOk = -1;

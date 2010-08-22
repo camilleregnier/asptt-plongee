@@ -140,7 +140,7 @@ public abstract class DesInscriptionPanel extends Panel {
 				@Override
 				public void onClick(AjaxRequestTarget target)
 				{
-					//modalConfirm.close(target);
+					modalConfirm.closeCurrent(target);
 					onSave(target, plongee, plongeur);
 				}
 			});

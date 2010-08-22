@@ -67,6 +67,8 @@ public class InscriptionPlongeePage extends TemplatePage {
 			/*
 			 * Retourne la liste des plongées ouvertes, pour les 7 prochains jours
 			 */
+			// Si l'adhérent est inscrit par le secrétariat
+			// on ne prend pas l'adhérent en session
 			data = getResaSession().getPlongeeService().rechercherPlongeePourInscriptionAdherent( 	
 					adhSecretariat != null ? adhSecretariat : getResaSession().getAdherent());
 
@@ -99,9 +101,12 @@ public class InscriptionPlongeePage extends TemplatePage {
 			Collection<Plongee> list = group.getModelObject();
 			List<Plongee> plongees = new ArrayList<Plongee>(list);
 			for(Plongee plongee : plongees){
+				
+				// Si l'adhérent est inscrit par le secrétariat
+				// on ne prend pas l'adhérent en session
 				int response = getResaSession().getPlongeeService().isOkForResa(
 						plongee, 
-						getResaSession().getAdherent());
+						adhSecretariat != null ? adhSecretariat : getResaSession().getAdherent());
 				
 				switch (response) {
 				case 1: //on peux inscrire l'adherent à la plongee

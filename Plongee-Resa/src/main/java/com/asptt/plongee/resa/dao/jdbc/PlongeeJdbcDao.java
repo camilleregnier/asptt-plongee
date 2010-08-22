@@ -147,7 +147,7 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements PlongeeDao {
 			sb.append("SELECT * FROM PLONGEE p");
 			sb.append(" WHERE OUVERTURE_FORCEE=1");
 			sb.append(" and date > CURRENT_TIMESTAMP()");
-			sb.append(" and date < CURRENT_DATE() + "+ResaConstants.MAX_JOUR_VISIBLE);
+			sb.append(" and date < DATE_ADD(CURRENT_DATE(), INTERVAL " + ResaConstants.MAX_JOUR_VISIBLE + " DAY)");
 			sb.append(" ORDER BY DATE");
 			PreparedStatement st = getDataSource().getConnection().prepareStatement(sb.toString());
 			ResultSet rs = st.executeQuery();
@@ -182,9 +182,9 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements PlongeeDao {
 			List<Plongee> plongees = new ArrayList<Plongee>();
 			while (rs.next()) {
 				Plongee plongee = wrapPlongee(rs);
-				if(plongee.isOuverte()) {
+				//if(plongee.isOuverte()) {
 					plongees.add(plongee);
-				}
+				//}
 			}
 			return plongees;
 		} catch (SQLException e) {

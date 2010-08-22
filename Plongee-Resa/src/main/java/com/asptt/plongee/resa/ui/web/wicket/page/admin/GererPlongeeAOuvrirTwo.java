@@ -16,12 +16,15 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.form.RequiredTextField;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.form.ValidationErrorFeedback;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.util.CollectionModel;
 import org.apache.wicket.model.util.ListModel;
+import org.apache.wicket.validation.validator.MinimumValidator;
+
 
 import com.asptt.plongee.resa.model.Adherent;
 import com.asptt.plongee.resa.model.NiveauAutonomie;
@@ -202,8 +205,7 @@ public class GererPlongeeAOuvrirTwo extends TemplatePage {
 			formPlongee.add(feedback);
 			
 			// Nombre de places max
-			formPlongee.add(new RequiredTextField<Integer>("maxPlaces",
-					Integer.class));
+			formPlongee.add(new RequiredTextField<Integer>("maxPlaces", Integer.class).add(new MinimumValidator<Integer>(4)));
 
 			// Ajout de la liste des niveaux
 			List<String> niveaux = new ArrayList<String>();
