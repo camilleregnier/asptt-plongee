@@ -32,7 +32,7 @@ public class GererAdherents extends TemplatePage {
 		DataView<Adherent> dataView = new DataView<Adherent>(
 				"simple",
 				new AdherentDataProvider(getResaSession().getAdherentService()),
-				5) {
+				10) {
 
 			protected void populateItem(final Item<Adherent> item) {
 				Adherent adherent = item.getModelObject();

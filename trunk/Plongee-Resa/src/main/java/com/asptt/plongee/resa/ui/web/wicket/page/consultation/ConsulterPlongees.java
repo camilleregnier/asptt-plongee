@@ -172,7 +172,8 @@ public class ConsulterPlongees extends TemplatePage {
 							}));
 				}
 			});
-			add(new DataView<Adherent>("listeAttente",
+
+			DataView<Adherent> dataView = new DataView<Adherent>("listeAttente",
 					new ListeAttentePlongeeDataProvider(getResaSession()
 							.getPlongeeService(), getResaSession()
 							.getAdherentService(), plongee.getObject())) {
@@ -192,7 +193,9 @@ public class ConsulterPlongees extends TemplatePage {
 								}
 							}));
 				}
-			});
+			};
+			add(dataView);
+			
 		}
 	}
 }
