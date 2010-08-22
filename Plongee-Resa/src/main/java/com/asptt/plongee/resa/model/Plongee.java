@@ -27,6 +27,7 @@ public class Plongee implements Serializable {
 	public Plongee(){
 		niveauMinimum = NiveauAutonomie.BATM;
 		ouvertureForcee = true;
+		nbMaxPlaces = 20;
 	}
 	
 	public Integer getId() {
