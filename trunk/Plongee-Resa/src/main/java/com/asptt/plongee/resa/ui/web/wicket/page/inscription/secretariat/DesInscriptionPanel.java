@@ -142,6 +142,7 @@ public abstract class DesInscriptionPanel extends Panel {
 				{
 					modalConfirm.closeCurrent(target);
 					onSave(target, plongee, plongeur);
+					
 				}
 			});
 

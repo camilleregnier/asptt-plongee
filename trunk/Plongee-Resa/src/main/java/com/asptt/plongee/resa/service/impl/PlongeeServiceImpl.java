@@ -91,7 +91,8 @@ public class PlongeeServiceImpl implements PlongeeService {
 				nbJour=1;
 				break;
 			case 2: //Lundi return pas d'inscription
-				return plongees;
+				nbJour = 0;
+				break;
 			case 3: //Mardi visible = j+2
 				nbJour=3;
 				break;

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import org.apache.wicket.datetime.StyleDateConverter;
 import org.apache.wicket.datetime.markup.html.form.DateTextField;
@@ -15,6 +14,7 @@ import org.apache.wicket.markup.html.form.RequiredTextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.validation.validator.MinimumValidator;
 
 import com.asptt.plongee.resa.model.NiveauAutonomie;
 import com.asptt.plongee.resa.model.Plongee;
@@ -22,8 +22,6 @@ import com.asptt.plongee.resa.ui.web.wicket.page.AccueilPage;
 import com.asptt.plongee.resa.ui.web.wicket.page.TemplatePage;
 
 public class CreerPlongee extends TemplatePage {
-	
-	private static final Locale LOCALE_EN = new Locale("en");
 	
 	public CreerPlongee() {
 		// Constructeur du formulaire et du feedback panel pour renvoyer des messages sur la page
@@ -46,7 +44,7 @@ public class CreerPlongee extends TemplatePage {
 			add(dateTextFiled);
 			dateTextFiled.add(new DatePicker());
 			
-			add(new RequiredTextField<Integer>("nbMaxPlaces", Integer.class));
+			add(new RequiredTextField<Integer>("nbMaxPlaces", Integer.class).add(new MinimumValidator<Integer>(4)));
 			
 			
 			// Ajout de la liste des niveaux
@@ -58,7 +56,7 @@ public class CreerPlongee extends TemplatePage {
 			
 			//Ajout du type de plongee
 			List<String> type = Arrays.asList(new String[] { "MATIN", "APRES_MIDI", "SOIR", "NUIT" });
-			add(new DropDownChoice<String>("type", type));
+			add(new DropDownChoice<String>("type", type).setRequired(true));
 			
 		}
 
