@@ -64,6 +64,12 @@ public class DesInscriptionPlongeePage extends TemplatePage {
 		}
 		return newList;
 	}
+	
+	public void gotoAccueil(){
+
+		// Redirection vers la page d'accueil
+		setResponsePage(AccueilPage.class);
+	}
 
 	class PlongeurADesinscrireForm extends Form {
 
@@ -129,12 +135,6 @@ public class DesInscriptionPlongeePage extends TemplatePage {
 
 			});
 		}
-
-		// public void onSubmit() {
-		// setResponsePage(new
-		// InscriptionPlongeePage(getResaSession().getAdherentService().rechercherAdherentParIdentifiant(autocompleteField.getConvertedInput())));
-		// }
-
 	}
 
 	private void replaceModalWindow(AjaxRequestTarget target, Adherent plongeur) {
