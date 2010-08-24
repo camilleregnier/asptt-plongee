@@ -172,7 +172,7 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements PlongeeDao {
 	public List<Plongee> getPlongeesForFewDay( int nbjour) throws TechnicalException {
 		try {
 			StringBuffer sb = new StringBuffer("SELECT * FROM PLONGEE p  WHERE OUVERTURE_FORCEE=1");
-			sb.append(" and date < CURRENT_DATE() + "+nbjour);
+			sb.append(" and date < DATE_ADD(CURRENT_DATE(), INTERVAL " + nbjour + " DAY)");
 			sb.append(" and date > CURRENT_TIMESTAMP()");
 			sb.append(" ORDER BY DATE");
 			
