@@ -225,8 +225,9 @@ public class PlongeeServiceImpl implements PlongeeService {
 	
 	public Integer getNbPlaceRestante(Plongee plongee) {
 		try {
-			return plongee.getNbMaxPlaces() - 
-			adherentDao.getAdherentsInscrits(plongee,null,null).size();
+			Integer nbPlace =  plongee.getNbMaxPlaces() - adherentDao.getAdherentsInscrits(plongee,null,null).size();		
+			return nbPlace;
+//			return 0;
 		} catch (TechnicalException e) {
 			e.printStackTrace();
 			throw new IllegalStateException(e);
@@ -263,8 +264,8 @@ public class PlongeeServiceImpl implements PlongeeService {
 			}
 			// verifier le nombre d'inscrit
 			if(getNbPlaceRestante(plongee) < 0){
-				// trop de monde : pas inscrit !
-				isOk = -1;
+				// trop de monde : liste d'attente
+				isOk = 0;
 				return isOk;
 			}
 			// Si DP = P5 et pas encadrant (plus que E2) => pas de BATM ou de P0
@@ -345,11 +346,15 @@ public class PlongeeServiceImpl implements PlongeeService {
 		}
 	}
 
-	public void inscrireAdherent(Plongee plongee, Adherent adherent) {
-		try {
-			plongeeDao.inscrireAdherentPlongee(plongee, adherent);
-		} catch (TechnicalException e) {
-			throw new IllegalStateException(e);
+	public synchronized void  inscrireAdherent(Plongee plongee, Adherent adherent) {
+		if(getNbPlaceRestante(plongee) > 0){
+			try {
+				plongeeDao.inscrireAdherentPlongee(plongee, adherent);
+			} catch (TechnicalException e) {
+				throw new IllegalStateException(e);
+			}
+		}else{
+			throw new IllegalArgumentException("Nombre Max de plongeurs atteint");
 		}
 	}
 
