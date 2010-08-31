@@ -338,7 +338,32 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 			}
 		}
 	}
-
+	
+	public Adherent findByIdAll(String id) throws TechnicalException {
+		try {
+			PreparedStatement st = getDataSource()
+					.getConnection()
+					.prepareStatement(
+							"select * from ADHERENT where LICENSE = ? and ACTIF <> 2");
+			st.setString(1, id);
+			ResultSet rs = st.executeQuery();
+			Adherent adherent = null;
+			if (rs.next()) {
+				adherent = wrapAdherent(rs);
+			}
+			return adherent;
+		} catch (SQLException e) {
+			throw new TechnicalException(e);
+		} finally {
+			try {
+				getDataSource().getConnection().close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+				throw new TechnicalException(
+						"Impossible de cloturer la connexion");
+			}
+		}
+	}
 	public List<String> getStrRoles(Adherent adherent)
 			throws TechnicalException {
 		PreparedStatement st;

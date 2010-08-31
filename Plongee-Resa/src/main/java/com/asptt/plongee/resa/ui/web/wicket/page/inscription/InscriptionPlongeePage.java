@@ -110,11 +110,15 @@ public class InscriptionPlongeePage extends TemplatePage {
 				
 				switch (response) {
 				case 1: //on peux inscrire l'adherent à la plongee
-					getResaSession().getPlongeeService().inscrireAdherent(
-							plongee, 
-							adhSecretariat != null ?  adhSecretariat : getResaSession().getAdherent());
-					setResponsePage(new InscriptionConfirmationPlongeePage(plongee));
-					break;
+					try {
+						getResaSession().getPlongeeService().inscrireAdherent(
+								plongee, 
+								adhSecretariat != null ?  adhSecretariat : getResaSession().getAdherent());
+						setResponsePage(new InscriptionConfirmationPlongeePage(plongee));
+						break;
+					} catch (IllegalArgumentException e) {
+						// ça passe directement à l'inscription en liste d'attente (ci-dessous) car pas de break
+					}
 				case 0: //on inscrit l'adherent en liste d'attente
 					if(getResaSession().getPlongeeService().isOkForListeAttente(
 							plongee, 

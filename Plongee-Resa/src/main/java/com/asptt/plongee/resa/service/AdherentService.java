@@ -9,6 +9,8 @@ public interface AdherentService {
 
 	public Adherent rechercherAdherentParIdentifiant(String id);
 	
+	public Adherent rechercherAdherentParIdentifiantTous(String id);
+	
 	public List<Adherent> rechercherPlongeurs();
 	
 	public List<Adherent> rechercherAdherentsTous();

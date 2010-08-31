@@ -27,6 +27,14 @@ public class AdherentServiceImpl implements AdherentService {
 			throw new IllegalStateException(e);
 		}
 	}
+	
+	public Adherent rechercherAdherentParIdentifiantTous(String id) {
+		try {
+			return adherentDao.findByIdAll(id);
+		} catch (TechnicalException e) {
+			throw new IllegalStateException(e);
+		}
+	}
 
 	public List<Adherent> rechercherPlongeurs() {
 		try {
@@ -71,12 +79,12 @@ public class AdherentServiceImpl implements AdherentService {
 	@Override
 	public List<Adherent> rechercherAdherents(int first, int count) {
 		TreeSet tAdh = new TreeSet(new AdherentComparatorNom());
-		tAdh.addAll(rechercherAdherentsActifs());
+		tAdh.addAll(rechercherAdherentsTous());
 		
 		List<Adherent> adhTrie = new ArrayList<Adherent>();
 		adhTrie.addAll(tAdh);
 		List<Adherent> sousAdhTrie = new ArrayList<Adherent>();
-		for (int i = 0 ; i <= count ; i++){
+		for (int i = 0 ; i < count ; i++){
 			if (first+i < adhTrie.size()){
 				sousAdhTrie.add(adhTrie.get(first+i));
 			}

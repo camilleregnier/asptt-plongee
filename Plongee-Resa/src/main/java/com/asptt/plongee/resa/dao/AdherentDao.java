@@ -25,4 +25,6 @@ public interface AdherentDao extends GenericDao<Adherent, String> {
 	public List<Adherent> getAdherentsWaiting(Plongee plongee) throws TechnicalException;
 	
 	public List<Adherent> getAdherentsLikeName(String name) throws TechnicalException;
+	
+	public Adherent findByIdAll(String id) throws TechnicalException;
 }
