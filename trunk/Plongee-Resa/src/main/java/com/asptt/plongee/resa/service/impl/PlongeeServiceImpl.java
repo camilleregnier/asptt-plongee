@@ -263,7 +263,7 @@ public class PlongeeServiceImpl implements PlongeeService {
 				return isOk;
 			}
 			// verifier le nombre d'inscrit
-			if(getNbPlaceRestante(plongee) < 0){
+			if(getNbPlaceRestante(plongee) <= 0){
 				// trop de monde : liste d'attente
 				isOk = 0;
 				return isOk;
@@ -303,8 +303,8 @@ public class PlongeeServiceImpl implements PlongeeService {
 			int nbBATM = plongeursBATM.size();
 			
 			// Pour les plongeurs P0, P1
-			if (niveauAdherent > 0 && niveauAdherent < 2){
-				int res = (nbP0 + nbP1) / nbEncadrant;
+			if (niveauAdherent >= 0 && niveauAdherent < 2){
+				int res = ((nbP0 + nbP1) + 1) / nbEncadrant;
 				// max 4 P0 ou P1 par encadrant
 				if (res > 4){
 					// Pas assez d'encadrant : liste d'attente
@@ -313,7 +313,7 @@ public class PlongeeServiceImpl implements PlongeeService {
 				}
 			}
 			if (niveauAdherent < 0){
-				int res = nbBATM / nbEncadrant;
+				int res = (nbBATM + 1) / nbEncadrant;
 				// max 1 bapteme par encadrant
 				if (res > 1){
 					// Pas assez d'encadrant : liste d'attente

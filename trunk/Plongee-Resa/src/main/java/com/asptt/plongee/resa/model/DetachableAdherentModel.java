@@ -18,7 +18,7 @@ public class DetachableAdherentModel extends LoadableDetachableModel<Adherent> {
 
 	@Override
 	protected Adherent load() {
-		return adherentService.rechercherAdherentParIdentifiant(id);
+		return adherentService.rechercherAdherentParIdentifiantTous(id);
 	}
 
 }

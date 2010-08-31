@@ -23,10 +23,10 @@ public class AdherentDataProvider implements IDataProvider<Adherent> {
 
 	@Override
 	public int size() {
-		if(null == adherentService.rechercherAdherentsActifs()){
+		if(null == adherentService.rechercherAdherentsTous()){
 			return 0;
-		} else {			
-			return adherentService.rechercherAdherentsActifs().size();
+		} else {
+			return adherentService.rechercherAdherentsTous().size();
 		}
 	}
 
