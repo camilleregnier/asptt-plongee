@@ -1,5 +1,8 @@
 <wicket:panel>
 	<form wicket:id="inputForm" id="inputForm"> 
+			<div id="feedbackPanel"> 
+		    	<span wicket:id="feedback"/> 
+		    </div>
              <div id="corps" align="left"> 
                  <table> 
                          <tr> 
@@ -38,6 +41,6 @@
   
                  </table>     
              </div> 
-             <input type="submit" value="Valider" /> 
+             <input type="submit" value="Valider" wicket:id="validPlongee"/>
 	</form>
 </wicket:panel>

@@ -89,6 +89,10 @@ public class CreerAdherent extends TemplatePage {
 		public void onSubmit() {
 			Adherent adherent = (Adherent) getModelObject();
 			
+			// Mise au format des noms et prénom
+			adherent.setNom(adherent.getNom().toUpperCase());
+			adherent.setPrenom((adherent.getPrenom().substring(0, 1).toUpperCase()) + (adherent.getPrenom().substring(1).toLowerCase()));
+			
 			getResaSession().getAdherentService().creerAdherent(adherent);
 
 			setResponsePage(AccueilPage.class);
