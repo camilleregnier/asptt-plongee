@@ -72,7 +72,7 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements PlongeeDao {
 				st.setInt(3, 0);
 			}
 			if (null == obj.getNiveauMinimum()) {
-				st.setString(4, null);
+				st.setString(4, NiveauAutonomie.BATM.toString());
 			} else {
 				st.setString(4, obj.getNiveauMinimum().toString());
 			}

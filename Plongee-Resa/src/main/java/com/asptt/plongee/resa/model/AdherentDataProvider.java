@@ -38,7 +38,7 @@ public class AdherentDataProvider implements IDataProvider<Adherent> {
 	@Override
 	public IModel<Adherent> model(Adherent adherent) {
 		// TODO Auto-generated method stub
-		return new DetachableAdherentModel(adherentService, adherent.getNumeroLicense());
+		return new DetachableAdherentModel(adherentService, adherent.getNumeroLicense(), adherent);
 	}
 
 }
