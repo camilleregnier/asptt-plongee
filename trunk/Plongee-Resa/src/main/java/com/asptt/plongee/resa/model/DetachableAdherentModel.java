@@ -9,16 +9,22 @@ import com.asptt.plongee.resa.service.impl.PlongeeServiceImpl;
 public class DetachableAdherentModel extends LoadableDetachableModel<Adherent> {
 	private final String id;
 	private AdherentService adherentService;
+	private Adherent adherent;
 	
-	public DetachableAdherentModel(AdherentService adherentService, String id) {
+	public DetachableAdherentModel(AdherentService adherentService, String id, Adherent adherent) {
 		super();
 		this.id = id;
 		this.adherentService = adherentService;
+		this.adherent = adherent;
 	}
 
 	@Override
 	protected Adherent load() {
-		return adherentService.rechercherAdherentParIdentifiantTous(id);
+		if(null != adherent){
+			return adherent;
+		} else {
+			return adherentService.rechercherAdherentParIdentifiantTous(id);
+		}
 	}
 
 }

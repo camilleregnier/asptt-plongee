@@ -344,7 +344,8 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 			PreparedStatement st = getDataSource()
 					.getConnection()
 					.prepareStatement(
-							"select * from ADHERENT where LICENSE = ? and ACTIF <> 2");
+//							"select * from ADHERENT where LICENSE = ? and ACTIF <> 2");
+							"select * from ADHERENT where LICENSE = ? ");
 			st.setString(1, id);
 			ResultSet rs = st.executeQuery();
 			Adherent adherent = null;
