@@ -1,5 +1,7 @@
 package com.asptt.plongee.resa.ui.web.wicket.page.admin;
 
+import java.util.List;
+
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
@@ -27,14 +29,15 @@ public class GererAdherents extends TemplatePage {
 		modal2.setTitle("This is modal window with panel content.");
 		modal2.setCookieName("modal-adherent");
 		add(modal2);
-
+		
+		List<Adherent> adherents = getResaSession().getAdherentService().rechercherAdherentsTous();
+		
 		// On construit la liste des adhérents (avec pagination)
 		DataView<Adherent> dataView = new DataView<Adherent>(
 				"simple",
-				new AdherentDataProvider(getResaSession().getAdherentService()),
-				10) {
+				new AdherentDataProvider(adherents), 10) {
 
-			protected void populateItem(final Item<Adherent> item) {
+				protected void populateItem(final Item<Adherent> item) {
 				Adherent adherent = item.getModelObject();
 				
 				item.add(new IndicatingAjaxLink("select")
@@ -53,9 +56,11 @@ public class GererAdherents extends TemplatePage {
 				
 				// Dès que le plongeur est encadrant, on affiche son niveau d'encadrement
 				String niveauAffiche;
-				if (adherent.getEncadrement() != null)
+				if (adherent.getEncadrement() != null){
 					niveauAffiche = adherent.getEncadrement();
-				else niveauAffiche = adherent.getNiveau();
+				}else{
+					niveauAffiche = adherent.getNiveau();
+				}
 				
 				item.add(new Label("niveau", niveauAffiche));
 

@@ -6,13 +6,17 @@
              <div id="corps" align="left"> 
                  <table> 
                          <tr> 
+                              <td colspan="2">
+                                 Licence : <span wicket:id="numeroLicense"/>
+                                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+                                 Actif : <input type="checkbox" wicket:id="actif"/>
+                              </td> 
+                         </tr> 
+                         <tr> 
                                  <td>Nom</td><td><input type="text" wicket:id="nom"/></td> 
                          </tr> 
                          <tr> 
                                  <td>Prenom</td><td><input type="text" wicket:id="prenom"/></td> 
-                         </tr> 
-                         <tr> 
-                                 <td>Licence</td><td><input type="text" wicket:id="numeroLicense"/></td> 
                          </tr> 
                          <tr> 
                                  <td>Telephone</td><td><input type="text" wicket:id="telephone"/></td> 
@@ -21,10 +25,11 @@
                                  <td>Mail</td><td><input type="text" wicket:id="mail"/></td> 
                          </tr> 
                          <tr> 
-                                 <td>Pilote</td><td><input type="checkbox" wicket:id="pilote"/></td> 
-                         </tr> 
-                         <tr> 
-                                 <td>DP</td><td><input type="checkbox" wicket:id="dp"/></td> 
+                              <td colspan="2">
+                                 Pilote : <input type="checkbox" wicket:id="pilote"/> 
+                                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+                                 DP : <input type="checkbox" wicket:id="dp"/>
+                              </td> 
                          </tr> 
                          <tr> 
                                  <td>Encadrement</td><td><select wicket:id="encadrement"/></td> 
@@ -35,12 +40,12 @@
                          <tr> 
                                  <td>Roles</td><td><select wicket:id="roles"/></td> 
                          </tr>
-                         <tr> 
-                                 <td>Actif</td><td><input type="checkbox" wicket:id="actif"/></td> 
-                         </tr>
-  
                  </table>     
              </div> 
-             <input type="submit" value="Valider" wicket:id="validPlongee"/>
+             <div align="center">
+	             <input type="submit" value="Annuler" wicket:id="cancel"/>
+	             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	             <input type="submit" value="Valider" wicket:id="validPlongee"/>
+             </div>
 	</form>
 </wicket:panel>

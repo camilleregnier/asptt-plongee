@@ -1,6 +1,6 @@
 package com.asptt.plongee.resa.quartz.job;
 
-import com.asptt.plongee.resa.dao.TechnicalException;
+import com.asptt.plongee.resa.exception.TechnicalException;
 import com.asptt.plongee.resa.quartz.manager.BusinessManager;
 
 public class QuartzJob {

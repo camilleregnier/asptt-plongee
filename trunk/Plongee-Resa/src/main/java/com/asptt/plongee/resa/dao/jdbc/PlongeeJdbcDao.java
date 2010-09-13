@@ -15,7 +15,7 @@ import java.util.Locale;
 
 import com.asptt.plongee.resa.dao.AdherentDao;
 import com.asptt.plongee.resa.dao.PlongeeDao;
-import com.asptt.plongee.resa.dao.TechnicalException;
+import com.asptt.plongee.resa.exception.TechnicalException;
 import com.asptt.plongee.resa.model.Adherent;
 import com.asptt.plongee.resa.model.NiveauAutonomie;
 import com.asptt.plongee.resa.model.Plongee;

@@ -1,5 +1,7 @@
 package com.asptt.plongee.resa.ui.web.wicket.page.inscription;
 
+import java.util.List;
+
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.repeater.Item;
@@ -17,10 +19,9 @@ public class InscriptionListeAttentePlongeePage extends TemplatePage {
 	public InscriptionListeAttentePlongeePage(Plongee plongee) {
 		
 		// On affiche la liste d'attente pour information
+		List<Adherent> adhereAttente = getResaSession().getPlongeeService().rechercherListeAttente(plongee);
 		add(new DataView<Adherent>("listeAttente",
-				new ListeAttentePlongeeDataProvider(getResaSession()
-						.getPlongeeService(), getResaSession()
-						.getAdherentService(), plongee)) {
+				new ListeAttentePlongeeDataProvider(adhereAttente)) {
 			protected void populateItem(final Item<Adherent> item) {
 				Adherent adherent = item.getModelObject();
 

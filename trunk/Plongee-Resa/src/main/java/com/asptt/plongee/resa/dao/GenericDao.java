@@ -6,6 +6,8 @@ import java.util.List;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.asptt.plongee.resa.exception.TechnicalException;
+
 /**
  * L'interface GenericDao d�finit les fonctions �l�mentaires � toute interface DAO ("CRUDS").
  * <p>Ces fonctions sont :

@@ -5,7 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.asptt.plongee.resa.dao.PlongeeDao;
-import com.asptt.plongee.resa.dao.TechnicalException;
+import com.asptt.plongee.resa.exception.TechnicalException;
 import com.asptt.plongee.resa.model.Adherent;
 import com.asptt.plongee.resa.model.Plongee;
 

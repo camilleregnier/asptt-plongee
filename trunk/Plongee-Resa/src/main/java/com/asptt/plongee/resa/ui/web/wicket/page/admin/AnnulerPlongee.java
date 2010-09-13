@@ -1,6 +1,7 @@
 package com.asptt.plongee.resa.ui.web.wicket.page.admin;
 
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 
 import org.apache.wicket.AttributeModifier;
@@ -14,10 +15,14 @@ import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 
+import com.asptt.plongee.resa.exception.ResaException;
+import com.asptt.plongee.resa.exception.TechnicalException;
 import com.asptt.plongee.resa.model.Adherent;
 import com.asptt.plongee.resa.model.Plongee;
 import com.asptt.plongee.resa.model.PlongeeDataProvider;
 import com.asptt.plongee.resa.ui.web.wicket.page.AccueilPage;
+import com.asptt.plongee.resa.ui.web.wicket.page.ErreurTechniquePage;
+import com.asptt.plongee.resa.ui.web.wicket.page.ErrorPage;
 import com.asptt.plongee.resa.ui.web.wicket.page.TemplatePage;
 
 public class AnnulerPlongee extends TemplatePage {
@@ -40,52 +45,60 @@ public class AnnulerPlongee extends TemplatePage {
 		
 		// TODO, voir si on ajoute pas cela dans un panel
 		// pour une mise à jour dynamique lors de l'annulation de la plongée
-		dataPlongees = new DataView<Plongee>("simple", new PlongeeDataProvider(
-				getResaSession().getAdherent(),
-				getResaSession().getPlongeeService())) {
-			protected void populateItem(final Item<Plongee> item) {
-				Plongee plongee = item.getModelObject();
-				String nomDP = "Aucun";
-				if (null != plongee.getDp()) {
-					nomDP = plongee.getDp().getNom();
-				}
+		try {
+			List<Plongee> plongees = getResaSession().getPlongeeService().rechercherPlongeeProchainJour(getResaSession().getAdherent());
+			
+			PlongeeDataProvider pDataProvider = new PlongeeDataProvider(plongees);
 
-				item.add(new IndicatingAjaxLink("annuler") {
-					@Override
-					public void onClick(AjaxRequestTarget target) {
-						replaceModalWindow(target, item.getModel());
-						modalPlongee.show(target);
+			dataPlongees = new DataView<Plongee>("simple", pDataProvider) {
+				protected void populateItem(final Item<Plongee> item) {
+					Plongee plongee = item.getModelObject();
+					String nomDP = "Aucun";
+					if (null != plongee.getDp()) {
+						nomDP = plongee.getDp().getNom();
 					}
-				});
 
-				// Mise en forme de la date
-				Calendar cal = Calendar.getInstance();
-				cal.setTime(plongee.getDate());
-				String dateAffichee = cal.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.FRANCE) + " ";
-				dateAffichee = dateAffichee + cal.get(Calendar.DAY_OF_MONTH) + " ";
-				dateAffichee = dateAffichee + cal.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.FRANCE) + " ";
-				dateAffichee = dateAffichee + cal.get(Calendar.YEAR);
-				
-				item.add(new Label("date", dateAffichee));
-				item.add(new Label("dp", nomDP));
-				item.add(new Label("type", plongee.getType()));
-				item.add(new Label("niveauMini", plongee.getNiveauMinimum().toString()));
-				
-				// Places restantes
-				item.add(new Label("placesRestantes", getResaSession().getPlongeeService().getNbPlaceRestante(plongee).toString()));
+					item.add(new IndicatingAjaxLink("annuler") {
+						@Override
+						public void onClick(AjaxRequestTarget target) {
+							replaceModalWindow(target, item.getModel());
+							modalPlongee.show(target);
+						}
+					});
 
-				item.add(new AttributeModifier("class", true,
-						new AbstractReadOnlyModel<String>() {
-							@Override
-							public String getObject() {
-								return (item.getIndex() % 2 == 1) ? "even"
-										: "odd";
-							}
-						}));
-			}
-		};
-		dataPlongees.setOutputMarkupId(true);
-		add(dataPlongees);
+					// Mise en forme de la date
+					Calendar cal = Calendar.getInstance();
+					cal.setTime(plongee.getDate());
+					String dateAffichee = cal.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.FRANCE) + " ";
+					dateAffichee = dateAffichee + cal.get(Calendar.DAY_OF_MONTH) + " ";
+					dateAffichee = dateAffichee + cal.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.FRANCE) + " ";
+					dateAffichee = dateAffichee + cal.get(Calendar.YEAR);
+					
+					item.add(new Label("date", dateAffichee));
+					item.add(new Label("dp", nomDP));
+					item.add(new Label("type", plongee.getType()));
+					item.add(new Label("niveauMini", plongee.getNiveauMinimum().toString()));
+					
+					// Places restantes
+					item.add(new Label("placesRestantes", getResaSession().getPlongeeService().getNbPlaceRestante(plongee).toString()));
+
+					item.add(new AttributeModifier("class", true,
+							new AbstractReadOnlyModel<String>() {
+								@Override
+								public String getObject() {
+									return (item.getIndex() % 2 == 1) ? "even"
+											: "odd";
+								}
+							}));
+				}
+			};
+			dataPlongees.setOutputMarkupId(true);
+			add(dataPlongees);
+		} catch (TechnicalException e) {
+			e.printStackTrace();
+			ErreurTechniquePage etp = new ErreurTechniquePage(e);
+			setResponsePage(etp);
+		}
 	}
 	
 	private void replaceModalWindow(AjaxRequestTarget target, IModel<Plongee> plongee) {

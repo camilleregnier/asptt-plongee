@@ -1,6 +1,7 @@
 package com.asptt.plongee.resa.ui.web.wicket;
 
 import org.apache.wicket.Request;
+import org.apache.wicket.RequestCycle;
 import org.apache.wicket.Response;
 import org.apache.wicket.Session;
 import org.apache.wicket.authentication.AuthenticatedWebApplication;
@@ -74,4 +75,6 @@ public class PlongeeApplication extends AuthenticatedWebApplication {
 	protected Class<? extends AuthenticatedWebSession> getWebSessionClass() {
 		return ResaSession.class;
 	}
+
+	
 }

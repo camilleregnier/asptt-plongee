@@ -8,23 +8,29 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.behavior.BehaviorsUtil;
+import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.ListMultipleChoice;
 import org.apache.wicket.markup.html.form.RequiredTextField;
+import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.validation.validator.EmailAddressValidator;
 
+import com.asptt.plongee.resa.exception.TechnicalException;
 import com.asptt.plongee.resa.model.Adherent;
 import com.asptt.plongee.resa.model.NiveauAutonomie;
 import com.asptt.plongee.resa.model.Plongee;
 import com.asptt.plongee.resa.ui.web.wicket.ResaSession;
 import com.asptt.plongee.resa.ui.web.wicket.page.AccueilPage;
+import com.asptt.plongee.resa.ui.web.wicket.page.ErreurTechniquePage;
 
 public class AdherentPanel extends Panel {
 	
@@ -50,10 +56,10 @@ public class AdherentPanel extends Panel {
 			final FeedbackPanel feedback = new FeedbackPanel("feedback");
 			feedback.setOutputMarkupId(true);
 			add(feedback);
-			
 			add(new RequiredTextField<String>("nom"));
 			add(new RequiredTextField<String>("prenom"));
-			add(new RequiredTextField<Integer>("numeroLicense", Integer.class));
+			//add(new RequiredTextField<Integer>("numeroLicense", Integer.class));
+			add(new Label("numeroLicense",adherent.getObject().getNumeroLicense()));
 
 			// TODO à modifier plus tard pour validation
 			add(new RequiredTextField<Integer>("telephone", Integer.class));
@@ -116,11 +122,18 @@ public class AdherentPanel extends Panel {
 					adherent.setPrenom((adherent.getPrenom().substring(0, 1).toUpperCase()) + (adherent.getPrenom().substring(1).toLowerCase()));
 
 					// Mise à jour de l'adhérent
-					ResaSession resaSession = (ResaSession) getApplication()
-							.getSessionStore().lookup(getRequest());
-					resaSession.getAdherentService().updateAdherent(adherent);
+					try {
+						ResaSession resaSession = (ResaSession) getApplication()
+								.getSessionStore().lookup(getRequest());
+						resaSession.getAdherentService().updateAdherent(adherent);
 
-					setResponsePage(AccueilPage.class);
+						setResponsePage(AccueilPage.class);
+						
+					} catch (TechnicalException e) {
+						e.printStackTrace();
+						ErreurTechniquePage etp = new ErreurTechniquePage(e);
+						setResponsePage(etp);
+					}
 
 				}
 				
@@ -132,6 +145,7 @@ public class AdherentPanel extends Panel {
 
 			});
 
+            add(new Button("cancel", new ResourceModel("button.cancel")));
 		}
 
 //		public void onSubmit() {

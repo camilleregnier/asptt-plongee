@@ -26,9 +26,13 @@ import org.apache.wicket.model.util.ListModel;
 import org.apache.wicket.validation.validator.MinimumValidator;
 
 
+import com.asptt.plongee.resa.exception.ResaException;
+import com.asptt.plongee.resa.exception.TechnicalException;
 import com.asptt.plongee.resa.model.Adherent;
 import com.asptt.plongee.resa.model.NiveauAutonomie;
 import com.asptt.plongee.resa.model.Plongee;
+import com.asptt.plongee.resa.ui.web.wicket.page.ErreurTechniquePage;
+import com.asptt.plongee.resa.ui.web.wicket.page.ErrorPage;
 import com.asptt.plongee.resa.ui.web.wicket.page.TemplatePage;
 
 public class GererPlongeeAOuvrirTwo extends TemplatePage {
@@ -47,121 +51,129 @@ public class GererPlongeeAOuvrirTwo extends TemplatePage {
 		CompoundPropertyModel<Plongee> modelPlongee = new CompoundPropertyModel<Plongee>(
 				plongee);
 
-		List<Adherent> dps = getResaSession().getAdherentService()
-				.rechercherDPs(
-						getResaSession().getAdherentService()
-								.rechercherAdherentsActifs());
-		IChoiceRenderer<Adherent> rendDp = new ChoiceRenderer<Adherent>("nom",
+		List<Adherent> dps;
+//		try {
+			dps = getResaSession().getAdherentService()
+					.rechercherDPs(
+							getResaSession().getAdherentService()
+									.rechercherAdherentsActifs());
+		
+			IChoiceRenderer<Adherent> rendDp = new ChoiceRenderer<Adherent>("nom",
 				"nom");
 		
 
-		final Palette<Adherent> palDp = new Palette<Adherent>("paletteDps",
+			final Palette<Adherent> palDp = new Palette<Adherent>("paletteDps",
 				new ListModel<Adherent>(new ArrayList<Adherent>()),
 				new CollectionModel<Adherent>(dps), rendDp, 10, false){
-			
-			// Modification de la feuille de style
-			// pour agrandir la largeur de la palette
-			protected ResourceReference getCSS() {
-			     return new ResourceReference(GererPlongeeAOuvrirTwo.class, "PlongeePalette.css");
+				// Modification de la feuille de style
+				// pour agrandir la largeur de la palette
+				protected ResourceReference getCSS() {
+					return new ResourceReference(GererPlongeeAOuvrirTwo.class, "PlongeePalette.css");
 			    }
+			};
+
+			List<Adherent> pilotes = getResaSession().getAdherentService()
+				.rechercherPilotes(getResaSession().getAdherentService().rechercherAdherentsActifs());
 			
-		};
+			IChoiceRenderer<Adherent> rendPilote = new ChoiceRenderer<Adherent>("nom", "nom");
 
-		List<Adherent> pilotes = getResaSession().getAdherentService()
-				.rechercherPilotes(
-						getResaSession().getAdherentService()
-								.rechercherAdherentsActifs());
-		IChoiceRenderer<Adherent> rendPilote = new ChoiceRenderer<Adherent>(
-				"nom", "nom");
-
-		final Palette<Adherent> palPilote = new Palette<Adherent>(
+			final Palette<Adherent> palPilote = new Palette<Adherent>(
 				"palettePilotes", new ListModel<Adherent>(
-						new ArrayList<Adherent>()),
+				new ArrayList<Adherent>()),
 				new CollectionModel<Adherent>(pilotes), rendPilote, 10, false){
-			
-			// Modification de la feuille de style
-			// pour agrandir la largeur de la palette
-			protected ResourceReference getCSS() {
-			     return new ResourceReference(GererPlongeeAOuvrirTwo.class, "PlongeePalette.css");
-			    }
-			
-		};
-
-		final Form<Plongee> form = new Form<Plongee>("form") {
-
-			private static final long serialVersionUID = 4611593854191923422L;
-
-			@Override
-			protected void onSubmit() {
-
-				IModel<?> modelDps = palDp.getDefaultModel();
-				List<Adherent> dps = (List<Adherent>) modelDps.getObject();
-
-				IModel<?> modelPilotes = palPilote.getDefaultModel();
-				List<Adherent> pilotes = (List<Adherent>) modelPilotes
-						.getObject();
-				/*
-				 * Impossible de gerer les doublons avec un HashSet Alors on le
-				 * fait 'à la main'
-				 */
-				List<String> idInscrits = new ArrayList<String>();
-				for (Adherent adherent : dps) {
-					if (!idInscrits.contains(adherent.getNumeroLicense())) {
-						idInscrits.add(adherent.getNumeroLicense());
+					// Modification de la feuille de style
+					// pour agrandir la largeur de la palette
+					protected ResourceReference getCSS() {
+						return new ResourceReference(GererPlongeeAOuvrirTwo.class, "PlongeePalette.css");
 					}
-				}
-				for (Adherent adherent : pilotes) {
-					if (!idInscrits.contains(adherent.getNumeroLicense())) {
-						idInscrits.add(adherent.getNumeroLicense());
+			};
+			
+			final Form<Plongee> form = new Form<Plongee>("form") {
+
+				private static final long serialVersionUID = 4611593854191923422L;
+
+				@Override
+				protected void onSubmit() {
+
+					IModel<?> modelDps = palDp.getDefaultModel();
+					List<Adherent> dps = (List<Adherent>) modelDps.getObject();
+	
+					IModel<?> modelPilotes = palPilote.getDefaultModel();
+					List<Adherent> pilotes = (List<Adherent>) modelPilotes
+							.getObject();
+					/*
+					 * Impossible de gerer les doublons avec un HashSet Alors on le
+					 * fait 'à la main'
+					 */
+					List<String> idInscrits = new ArrayList<String>();
+					for (Adherent adherent : dps) {
+						if (!idInscrits.contains(adherent.getNumeroLicense())) {
+							idInscrits.add(adherent.getNumeroLicense());
+						}
 					}
-				}
-				/*
-				 * Maintenant qu'on à la liste des id on reconstitue une liste
-				 * d'adherent
-				 */
-				List<Adherent> adhInscrits = new ArrayList<Adherent>();
-				for (String id : idInscrits) {
-					adhInscrits.add(getResaSession().getAdherentService()
-							.rechercherAdherentParIdentifiant(id));
-				}
-				/*
-				 * Reste plus qu'a inscrire...
-				 */
-				for (Adherent adh : adhInscrits) {
-					getResaSession().getPlongeeService().inscrireAdherent(
-							plongee, adh);
-				}
-				PageParameters param = new PageParameters();
-				param.put("plongeeAOuvrir", plongee);
-				param.put("inscrits", adhInscrits);
-				setResponsePage(new GererPlongeeAOuvrirThree(plongee));
-			}
-		};
+					for (Adherent adherent : pilotes) {
+						if (!idInscrits.contains(adherent.getNumeroLicense())) {
+							idInscrits.add(adherent.getNumeroLicense());
+						}
+					}
+					/*
+					 * Maintenant qu'on à la liste des id on reconstitue une liste
+					 * d'adherent
+					 */
+					List<Adherent> adhInscrits = new ArrayList<Adherent>();
+					for (String id : idInscrits) {
+						adhInscrits.add(getResaSession().getAdherentService()
+								.rechercherAdherentParIdentifiant(id));
+					}
+					/*
+					 * Reste plus qu'a inscrire...
+					 */
+					for (Adherent adh : adhInscrits) {
+						try {
+							getResaSession().getPlongeeService().inscrireAdherent(
+									plongee, adh);
+						} catch (ResaException e) {
+							e.printStackTrace();
+							ErrorPage ep = new ErrorPage(e);
+							setResponsePage(ep);
+						}
+					}
+					PageParameters param = new PageParameters();
+					param.put("plongeeAOuvrir", plongee);
+					param.put("inscrits", adhInscrits);
+					setResponsePage(new GererPlongeeAOuvrirThree(plongee));
+				}//fin du onSubmit()
+			};
 
-		form.setModel(modelPlongee);
-		// Le nombre max. de places, pour info
-		maxPlaces = new TextField<Integer>("maxPlaces");
-		maxPlaces.setOutputMarkupId(true);
-		form.add(maxPlaces.setEnabled(false));
-		// Le niveau mini. des plongeurs, pour info
-		niveauMinimum = new TextField<Integer>("niveauMinimum");
-		niveauMinimum.setOutputMarkupId(true);
-		form.add(niveauMinimum.setEnabled(false));
-		
-		// Ajout des palettes
-		form.add(palDp);
-        form.add(palPilote);
-        
-		add(form);
+			form.setModel(modelPlongee);
+			// Le nombre max. de places, pour info
+			maxPlaces = new TextField<Integer>("maxPlaces");
+			maxPlaces.setOutputMarkupId(true);
+			form.add(maxPlaces.setEnabled(false));
+			// Le niveau mini. des plongeurs, pour info
+			niveauMinimum = new TextField<Integer>("niveauMinimum");
+			niveauMinimum.setOutputMarkupId(true);
+			form.add(niveauMinimum.setEnabled(false));
+			
+			// Ajout des palettes
+			form.add(palDp);
+	        form.add(palPilote);
+	        
+			add(form);
+	
+			form.add(new IndicatingAjaxLink("change") {
+				@Override
+				public void onClick(AjaxRequestTarget target) {
+					replaceModalWindow(target, form.getModel());
+					modalPlongee.show(target);
+				}
+			});
 
-		form.add(new IndicatingAjaxLink("change") {
-			@Override
-			public void onClick(AjaxRequestTarget target) {
-				replaceModalWindow(target, form.getModel());
-				modalPlongee.show(target);
-
-			}
-		});
+//		} catch (TechnicalException e) {
+//			e.printStackTrace();
+//			ErreurTechniquePage etp = new ErreurTechniquePage(e);
+//			setResponsePage(etp);
+//		}
 
 	}
 

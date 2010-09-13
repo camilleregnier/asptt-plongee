@@ -1,36 +1,32 @@
 <wicket:extend>
         <div id="wrapper">
             <div id="corps">
-            	<div>
-					<span wicket:id="message"/>
-				</div>
-				<form wicket:id="inputForm" id="inputForm">
-						<fieldset>
-						<span wicket:id="group">
-							<legend>Choix des plong&eacute;es</legend>
-							<input type="checkbox" wicket:id="groupselector"> tout selectionner / d&eacute;selectionner</input>
-							<table>
-							<tr>
-								<th>Choix</th>
-								<th>Date</th>
-								<th>Type</th>
-								<th>Niveau Mini.</th>
-							</tr>
-							<tr wicket:id="plongeeList">
-								<td><input type="checkbox" wicket:id="check"/></td>
-								<td width="200px><span wicket:id="date"/></td>
-								<td width="100px><span wicket:id="type"/></td>
-								<td align="center" width="100px"><span wicket:id="niveauMini"/></td>
-							</tr>
-							</table>
-							<input type="submit" value="Valider" />
-						</span>
-						</fieldset>
-				</form>
+            <div>
+				<span wicket:id="message"/>
+			</div>
+			  <table cellspacing="0" class="dataview">
+				<tr>
+					<th>Action</th>
+					<th>Date</th>
+					<th>DP</th>
+					<th>Type</th>
+					<th>Niveau Mini.</th>
+					<th>Places Rest.</th>
+				</tr>
+				<tr wicket:id="simple">
+					<td><a href="#" wicket:id="select">DeInscrire</a></td>
+					<td><span wicket:id="date">[date]</span></td>
+					<td><span wicket:id="dp">[dp]</span></td>
+					<td><span wicket:id="type">[type]</span></td>
+					<td><span wicket:id="niveauMini">[niveauMini]</span></td>
+					<td><span wicket:id="placesRestantes">[placesRestantes]</span></td>
+				</tr>
+			  </table>
 				<div>
 					<span wicket:id="feedback" />
 				</div>
 				<div id="errorsDiv" class="innerError" />
             </div>
         </div>
+        
 </wicket:extend>

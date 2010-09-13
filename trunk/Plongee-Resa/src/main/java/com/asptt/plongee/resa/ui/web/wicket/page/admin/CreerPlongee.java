@@ -16,9 +16,13 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.validation.validator.MinimumValidator;
 
+import com.asptt.plongee.resa.exception.ResaException;
+import com.asptt.plongee.resa.exception.TechnicalException;
 import com.asptt.plongee.resa.model.NiveauAutonomie;
 import com.asptt.plongee.resa.model.Plongee;
 import com.asptt.plongee.resa.ui.web.wicket.page.AccueilPage;
+import com.asptt.plongee.resa.ui.web.wicket.page.ErreurTechniquePage;
+import com.asptt.plongee.resa.ui.web.wicket.page.ErrorPage;
 import com.asptt.plongee.resa.ui.web.wicket.page.TemplatePage;
 
 public class CreerPlongee extends TemplatePage {
@@ -63,9 +67,19 @@ public class CreerPlongee extends TemplatePage {
 		public void onSubmit() {
 			Plongee plongee = (Plongee) getModelObject();
 			
-			getResaSession().getPlongeeService().creerPlongee(plongee);
+			try {
+				getResaSession().getPlongeeService().creerPlongee(plongee);
 
-			setResponsePage(AccueilPage.class);
+				setResponsePage(AccueilPage.class);
+			} catch (ResaException e) {
+				e.printStackTrace();
+				ErrorPage ep = new ErrorPage(e);
+				setResponsePage(ep);
+			} catch (TechnicalException e) {
+				e.printStackTrace();
+				ErreurTechniquePage etp = new ErreurTechniquePage(e);
+				setResponsePage(etp);
+			}
 		}
 
 	}

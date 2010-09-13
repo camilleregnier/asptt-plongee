@@ -4,12 +4,13 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
 
+import com.asptt.plongee.resa.exception.ResaException;
+import com.asptt.plongee.resa.exception.TechnicalException;
 import com.asptt.plongee.resa.model.Adherent;
 import com.asptt.plongee.resa.model.Plongee;
 
 public interface PlongeeService {
 
-	public Plongee rechercherPlongeeParId(String id);
 	public Plongee rechercherPlongeeParId(Integer id);
 	public List<Plongee> rechercherPlongeeTout();
 	public List<Plongee> rechercherPlongeeProchainJour(Adherent adherent);
@@ -22,15 +23,16 @@ public interface PlongeeService {
 	public List<Adherent> rechercherInscriptions(Plongee plongee, String niveauPlongeur, String niveauEncadrement);
 	public List<Adherent> rechercherListeAttente(Plongee plongee);
 	
-	public void creerPlongee(Plongee plongee);
+	public void creerPlongee(Plongee plongee) throws ResaException, TechnicalException;
 	public void modifierPlongee(Plongee plongee);
 
 	public Integer getNbPlaceRestante(Plongee plongee);
 	
-	public int isOkForResa(Plongee plongee, Adherent adherent);
+	public int isOkForResa(Plongee plongee, Adherent adherent) throws ResaException;
 	public boolean isOkForListeAttente(Plongee plongee, Adherent adherent);
+	public boolean isEnoughEncadrant(Plongee plongee) throws TechnicalException;
 	
-	public void inscrireAdherent(Plongee plongee, Adherent adherent);
+	public void inscrireAdherent(Plongee plongee, Adherent adherent) throws ResaException;
 	public void inscrireAdherentEnListeAttente(Plongee plongee, Adherent adherent);
 	public void fairePasserAttenteAInscrit(Plongee plongee, Adherent adherent);
 

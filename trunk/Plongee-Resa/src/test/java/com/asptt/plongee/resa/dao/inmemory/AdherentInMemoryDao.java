@@ -7,7 +7,7 @@ import java.util.List;
 import org.apache.wicket.authorization.strategies.role.Roles;
 
 import com.asptt.plongee.resa.dao.AdherentDao;
-import com.asptt.plongee.resa.dao.TechnicalException;
+import com.asptt.plongee.resa.exception.TechnicalException;
 import com.asptt.plongee.resa.model.Adherent;
 import com.asptt.plongee.resa.model.Plongee;
 
@@ -123,6 +123,19 @@ public class AdherentInMemoryDao implements AdherentDao{
 
 	@Override
 	public List<Adherent> getExternes() throws TechnicalException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Adherent findByIdAll(String id) throws TechnicalException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Adherent> getAdherentsLikeRole(String role)
+			throws TechnicalException {
 		// TODO Auto-generated method stub
 		return null;
 	}

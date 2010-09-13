@@ -7,7 +7,8 @@ import java.util.List;
 
 import com.asptt.plongee.resa.dao.AdherentDao;
 import com.asptt.plongee.resa.dao.PlongeeDao;
-import com.asptt.plongee.resa.dao.TechnicalException;
+import com.asptt.plongee.resa.exception.ResaException;
+import com.asptt.plongee.resa.exception.TechnicalException;
 import com.asptt.plongee.resa.model.Adherent;
 import com.asptt.plongee.resa.model.NiveauAutonomie;
 import com.asptt.plongee.resa.model.Plongee;
@@ -28,49 +29,48 @@ public class PlongeeServiceImpl implements PlongeeService {
 	}
 
 	@Override
-	public void creerPlongee(Plongee plongee) {
-		try {
+	public void creerPlongee(Plongee plongee) throws ResaException,TechnicalException {
+//		try {
 			List<Plongee> plongees = rechercherPlongees(plongee.getDate(), plongee.getType());
+//			List<Plongee> plongees =new ArrayList<Plongee>();
 			if(plongees.size() == 0){
 				plongeeDao.create(plongee);
 			}
-		} catch (TechnicalException e) {
-			throw new IllegalStateException(e);
-		}
+			else{
+				throw new ResaException("Cette Plongée existe déjà");
+			}
+//		} catch (TechnicalException e) {
+//			throw new IllegalStateException(e);
+//		}
 	}
 
 	@Override
-	public void modifierPlongee(Plongee plongee) {
-		try {
+	public void modifierPlongee(Plongee plongee) throws TechnicalException{
+//		try {
 			plongeeDao.update(plongee);
-		} catch (TechnicalException e) {
-			throw new IllegalStateException(e);
-		}
+//		} catch (TechnicalException e) {
+//			throw new IllegalStateException(e);
+//		}
 	}
 
-	public Plongee rechercherPlongeeParId(Integer id) {
-		try {
+	public Plongee rechercherPlongeeParId(Integer id) throws TechnicalException{
+//		try {
 			return plongeeDao.findById(id);
-		} catch (TechnicalException e) {
-			throw new IllegalStateException(e);
-		}
+//		} catch (TechnicalException e) {
+//			throw new IllegalStateException(e);
+//		}
 	}
 
-	public Plongee rechercherPlongeeParId(String id) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public List<Plongee> rechercherPlongeeTout() {
-		try {
+	public List<Plongee> rechercherPlongeeTout()  throws TechnicalException{
+//		try {
 			return plongeeDao.findAll();
-		} catch (TechnicalException e) {
-			throw new IllegalStateException(e);
-		}
+//		} catch (TechnicalException e) {
+//			throw new IllegalStateException(e);
+//		}
 	}
 
-	public List<Plongee> rechercherPlongeeProchainJour(Adherent adherent) {
-		try {
+	public List<Plongee> rechercherPlongeeProchainJour(Adherent adherent)  throws TechnicalException{
+//		try {
 			List<Plongee> plongees = new ArrayList<Plongee>();
 			int nbJour = 0;
 			
@@ -119,12 +119,13 @@ public class PlongeeServiceImpl implements PlongeeService {
 			plongees.addAll(plongeeDao.getPlongeesForFewDay(nbJour));
 			return plongees;
 			
-		} catch (TechnicalException e) {
-			throw new IllegalStateException(e);
-		}
+//		} catch (TechnicalException e) {
+//			throw new IllegalStateException(e);
+//		}
 	}
 
-	public List<Plongee> rechercherPlongeeAOuvrir(List<Plongee> plongees) {
+	public List<Plongee> rechercherPlongeeAOuvrir(List<Plongee> plongees) throws TechnicalException{
+		
 		List<Plongee> plongeesFermees = new ArrayList<Plongee>();
 		for(Plongee plongee : plongees){
 			if(!plongee.isOuverte()){
@@ -134,7 +135,8 @@ public class PlongeeServiceImpl implements PlongeeService {
 		return plongeesFermees;
 	}
 
-	public List<Plongee> rechercherPlongeeOuverteTout(List<Plongee> plongees) {
+	public List<Plongee> rechercherPlongeeOuverteTout(List<Plongee> plongees) throws TechnicalException{
+		
 		List<Plongee> plongeesOuvertes = new ArrayList<Plongee>();
 		for(Plongee plongee : plongees){
 			if(plongee.isOuverte()){
@@ -148,8 +150,8 @@ public class PlongeeServiceImpl implements PlongeeService {
 	 * Si l'adherent n'est pas déjà inscrit dans la liste
 	 * de plongées passée en parametre
 	 */
-	public List<Plongee> rechercherPlongeePourInscriptionAdherent(
-			Adherent adherent) {
+	public List<Plongee> rechercherPlongeePourInscriptionAdherent(Adherent adherent) throws TechnicalException{
+		
 		List<Plongee> plongeesForAdherent = new ArrayList<Plongee>();
 		boolean encadrant = (adherent.getEncadrement() != null) ? true : false;
 		List<Plongee> plongees = rechercherPlongeeProchainJour(adherent);
@@ -177,16 +179,17 @@ public class PlongeeServiceImpl implements PlongeeService {
 		return plongeesForAdherent;
 	}
 
-	public List<Plongee> rechercherPlongeesAdherentInscrit(Adherent adherent, int nbHours) {
-		try {
+	public List<Plongee> rechercherPlongeesAdherentInscrit(Adherent adherent, int nbHours)  throws TechnicalException{
+//		try {
 			return plongeeDao.getPlongeesWhereAdherentIsInscrit(adherent, nbHours);
-		} catch (TechnicalException e) {
-			throw new IllegalStateException(e);
-		}
+//		} catch (TechnicalException e) {
+//			throw new IllegalStateException(e);
+//		}
 	}
 
 	public List<Plongee> rechercherPlongeesOuvertesWithAttente(
-			List<Plongee> plongees) {
+			List<Plongee> plongees) throws TechnicalException{
+		
 		List<Plongee> plongeesAttente = new ArrayList<Plongee>();
 		for(Plongee plongee : plongees){
 			if(plongee.isOuverte()){
@@ -199,38 +202,80 @@ public class PlongeeServiceImpl implements PlongeeService {
 	}
 	
 	@Override
-	public List<Plongee> rechercherPlongees(Date date, String type) {
-		try {
+	public List<Plongee> rechercherPlongees(Date date, String type)  throws TechnicalException{
+//		try {
 			return plongeeDao.getPlongeesWhithSameDate(date, type);
-		} catch (TechnicalException e) {
-			throw new IllegalStateException(e);
-		}
+//		} catch (TechnicalException e) {
+//			throw new IllegalStateException(e);
+//		}
 	}
 
-	public List<Adherent> rechercherInscriptions(Plongee plongee,String niveauPlongeur, String niveauEncadrement) {
-		try {
+	public List<Adherent> rechercherInscriptions(Plongee plongee,String niveauPlongeur, String niveauEncadrement)  throws TechnicalException{
+//		try {
 			return adherentDao.getAdherentsInscrits(plongee,null,null);
-		} catch (TechnicalException e) {
-			throw new IllegalStateException(e);
-		}
+//		} catch (TechnicalException e) {
+//			throw new IllegalStateException(e);
+//		}
 	}
 
-	public List<Adherent> rechercherListeAttente(Plongee plongee) {
-		try {
+	public List<Adherent> rechercherListeAttente(Plongee plongee)  throws TechnicalException{
+//		try {
 			return adherentDao.getAdherentsWaiting(plongee);
-		} catch (TechnicalException e) {
-			throw new IllegalStateException(e);
-		}
+//		} catch (TechnicalException e) {
+//			throw new IllegalStateException(e);
+//		}
 	}
 	
-	public Integer getNbPlaceRestante(Plongee plongee) {
-		try {
+	public Integer getNbPlaceRestante(Plongee plongee)  throws TechnicalException{
+//		try {
 			Integer nbPlace =  plongee.getNbMaxPlaces() - adherentDao.getAdherentsInscrits(plongee,null,null).size();		
 			return nbPlace;
 //			return 0;
-		} catch (TechnicalException e) {
-			e.printStackTrace();
-			throw new IllegalStateException(e);
+//		} catch (TechnicalException e) {
+//			e.printStackTrace();
+//			throw new IllegalStateException(e);
+//		}
+	}
+
+	public boolean isEnoughEncadrant(Plongee plongee) throws  TechnicalException {
+		boolean isOk = true;
+		List<Adherent> encadrants = adherentDao.getAdherentsInscrits(plongee, null, "TOUS");
+		int nbEncadrant = encadrants.size();
+		
+		if (nbEncadrant <= 1){
+			//C'est le dernier encadrant => MAIL
+			isOk = false;
+			return isOk;
+		} else {
+			// il en reste au moins 1...
+			List<Adherent> plongeursP0 = adherentDao.getAdherentsInscrits(plongee, "P0", null);
+			int nbP0 = plongeursP0.size();
+			List<Adherent> plongeursP1 = adherentDao.getAdherentsInscrits(plongee, "P1", null);
+			int nbP1 = plongeursP1.size();
+			List<Adherent> plongeursBATM = adherentDao.getAdherentsInscrits(plongee, "BATM", null);
+			int nbBATM = plongeursBATM.size();
+			
+			//cas pour les P0, P1
+			if (nbP0 + nbP1 > 0){
+				int res = ((nbP0 + nbP1)) / nbEncadrant - 1;
+				// max 4 P0 ou P1 par encadrant
+				if (res > 4){
+					// Pas assez d'encadrant : envoie d'un mail
+					isOk = false;
+					return isOk;
+				}
+			}
+			//cas pour les BATM
+			if (nbBATM > 0){
+				int res = (nbBATM) / nbEncadrant - 1;
+				// max 1 bapteme par encadrant
+				if (res > 1){
+					// Pas assez d'encadrant : liste d'attente
+					isOk = false;
+					return isOk;
+				}
+			}
+			return isOk;
 		}
 	}
 
@@ -241,14 +286,14 @@ public class PlongeeServiceImpl implements PlongeeService {
 	 * 2 ouvrir plongee
 	 * -1 si ko
 	 */
-	public int isOkForResa(Plongee plongee, Adherent adherent) {
+	public int isOkForResa(Plongee plongee, Adherent adherent) throws ResaException, TechnicalException {
 		// TODO : Si inscription d'un P2,P3,P4 => pas d'autres controles
 		// TODO : Inscription P0, P1
 		//		Si E2,E3,E4 => 4 x P0,P1 et/ou BATM
 		//		Si BATM => 1 x E2,E3,E4
 
 		int isOk = 1;
-		try {
+//		try {
 			// SI encadrant veux reserver une plongée pas encore ouverte:
 			// si DP + Pilote > le brancher sur ouvrirplongee
 			// sinon > impossible
@@ -258,7 +303,8 @@ public class PlongeeServiceImpl implements PlongeeService {
 					isOk = 2;
 				} else {
 					// pas de assez de compétences pour ouvrir la plongée : pas inscrit !
-					isOk = -1;
+					//isOk = -1;
+					throw new ResaException("Inscription impossible sur cette plongée : Cette plongée n'est pas ouverte");
 				}
 				return isOk;
 			}
@@ -274,8 +320,9 @@ public class PlongeeServiceImpl implements PlongeeService {
 				if(adherent.getNiveau().equalsIgnoreCase(NiveauAutonomie.BATM.toString()) 
 					|| adherent.getNiveau().equalsIgnoreCase(NiveauAutonomie.P0.toString())){
 					// inscription refusée
-					isOk = -1;
-					return isOk;
+					// isOk = -1;
+					// return isOk;
+					throw new ResaException("Inscription impossible sur cette plongée : Les BATM ou P0 ne sont pas admis avec un DP P5");
 				}
 			}
 			// verifier le niveau mini
@@ -290,8 +337,10 @@ public class PlongeeServiceImpl implements PlongeeService {
 			
 			if(niveauAdherent < niveauMinPlongee){
 				// niveau mini requis : inscription refusée
-				isOk = -1;
-				return isOk;
+				//isOk = -1;
+				//return isOk;
+				throw new ResaException("Inscription impossible sur cette plongée : Niveau insuffisant");
+				
 			}
 			List<Adherent> encadrants = adherentDao.getAdherentsInscrits(plongee, null, "TOUS");
 			int nbEncadrant = encadrants.size();
@@ -326,62 +375,60 @@ public class PlongeeServiceImpl implements PlongeeService {
 			return isOk;
 
 			
-		} catch (TechnicalException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return isOk;
+//		} catch (TechnicalException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		return isOk;
 	}
 
-	public boolean isOkForListeAttente(Plongee plongee, Adherent adherent) {
+	public boolean isOkForListeAttente(Plongee plongee, Adherent adherent) throws TechnicalException{
 		// TODO Auto-generated method stub
 		return true;
 	}
 
-	public void fairePasserAttenteAInscrit(Plongee plongee, Adherent adherent) {
-		try {
+	public void fairePasserAttenteAInscrit(Plongee plongee, Adherent adherent)  throws TechnicalException{
+//		try {
 			plongeeDao.moveAdherentAttenteToInscrit(plongee, adherent);
-		} catch (TechnicalException e) {
-			throw new IllegalStateException(e);
-		}
+//		} catch (TechnicalException e) {
+//			throw new IllegalStateException(e);
+//		}
 	}
 
-	public synchronized void  inscrireAdherent(Plongee plongee, Adherent adherent) {
+	public synchronized void  inscrireAdherent(Plongee plongee, Adherent adherent) throws ResaException, TechnicalException {
 		if(getNbPlaceRestante(plongee) > 0){
-			try {
+//			try {
 				plongeeDao.inscrireAdherentPlongee(plongee, adherent);
-			} catch (TechnicalException e) {
-				throw new IllegalStateException(e);
-			}
+//			} catch (TechnicalException e) {
+//				throw new IllegalStateException(e);
+//			}
 		}else{
-			throw new IllegalArgumentException("Nombre Max de plongeurs atteint");
+			throw new ResaException("Nombre Max de plongeurs atteint");
 		}
 	}
 
-	public void inscrireAdherentEnListeAttente(Plongee plongee,
-			Adherent adherent) {
-		try {
+	public void inscrireAdherentEnListeAttente(Plongee plongee,	Adherent adherent)   throws TechnicalException{
+//		try {
 			plongeeDao.inscrireAdherentAttente(plongee, adherent);
-		} catch (TechnicalException e) {
-			throw new IllegalStateException(e);
-		}
+//		} catch (TechnicalException e) {
+//			throw new IllegalStateException(e);
+//		}
 	}
 
-	public void deInscrireAdherent(Plongee plongee, Adherent adherent) {
-		try {
+	public void deInscrireAdherent(Plongee plongee, Adherent adherent)   throws TechnicalException{
+//		try {
 			plongeeDao.supprimeAdherentPlongee(plongee, adherent);
-		} catch (TechnicalException e) {
-			throw new IllegalStateException(e);
-		}
+//		} catch (TechnicalException e) {
+//			throw new IllegalStateException(e);
+//		}
 	}
 
-	public void deInscrireAdherentEnListeAttente(Plongee plongee,
-			Adherent adherent) {
-		try {
+	public void deInscrireAdherentEnListeAttente(Plongee plongee, Adherent adherent)  throws TechnicalException {
+//		try {
 			plongeeDao.supprimeAdherentAttente(plongee, adherent);
-		} catch (TechnicalException e) {
-			throw new IllegalStateException(e);
-		}
+//		} catch (TechnicalException e) {
+//			throw new IllegalStateException(e);
+//		}
 	}
 	
 }
