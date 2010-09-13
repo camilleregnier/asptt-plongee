@@ -5,6 +5,7 @@ import java.util.Iterator;
 import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.model.IModel;
 
+import com.asptt.plongee.resa.exception.TechnicalException;
 import com.asptt.plongee.resa.service.PlongeeService;
 
 @SuppressWarnings("serial")
@@ -19,12 +20,12 @@ public class PlongeesAdherentDataProvider implements IDataProvider<Plongee> {
 	}
 
 	@Override
-	public Iterator<Plongee> iterator(int first, int count) {
+	public Iterator<Plongee> iterator(int first, int count) throws TechnicalException{
 		return plongeeService.rechercherPlongeesAdherentInscrit(adherent, 0).iterator();
 	}
 
 	@Override
-	public int size() {
+	public int size() throws TechnicalException{
 		return plongeeService.rechercherPlongeesAdherentInscrit(adherent, 0).size();
 	}
 
@@ -38,7 +39,7 @@ public class PlongeesAdherentDataProvider implements IDataProvider<Plongee> {
 	public IModel<Plongee> model(Plongee plongee) {
 		// TODO Auto-generated method stub
 		
-		return new DetachablePlongeeModel(plongeeService, plongee.getId());
+		return new DetachablePlongeeModel(plongee);
 	}
 
 }

@@ -23,6 +23,8 @@ public interface AdherentService {
 
 	public List<Adherent> rechercherAdherents(int first, int count);
 
+	public List<Adherent> rechercherAdherentsRole(String roles);
+
 	public List<Adherent> rechercherDPs(List<Adherent> adherents);
 	
 	public List<Adherent> rechercherPilotes(List<Adherent> adherents);

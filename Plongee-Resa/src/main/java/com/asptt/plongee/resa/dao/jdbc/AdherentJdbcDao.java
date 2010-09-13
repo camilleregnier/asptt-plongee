@@ -9,7 +9,7 @@ import java.util.List;
 
 import com.asptt.plongee.resa.dao.AdherentDao;
 import com.asptt.plongee.resa.dao.PlongeeDao;
-import com.asptt.plongee.resa.dao.TechnicalException;
+import com.asptt.plongee.resa.exception.TechnicalException;
 import com.asptt.plongee.resa.model.Adherent;
 import com.asptt.plongee.resa.model.NiveauAutonomie;
 import com.asptt.plongee.resa.model.Plongee;
@@ -122,7 +122,9 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 			sb.append(" MAIL = ?,");
 			sb.append(" ENCADRANT = ?,");
 			sb.append(" PILOTE = ?,");
-			sb.append(" ACTIF = ?");
+			sb.append(" ACTIF = ?,");
+			sb.append(" NOM = ?,");
+			sb.append(" PRENOM = ?");
 			sb.append(" WHERE license = ?");
 
 			PreparedStatement st = getDataSource().getConnection()
@@ -141,7 +143,10 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 				st.setInt(5, 0);
 			}
 			st.setInt(6, adh.getActifInt());
-			st.setString(7, adh.getNumeroLicense());
+			st.setString(7, adh.getNom());
+			st.setString(8, adh.getPrenom());
+//			st.setString(9, adh.getNumeroLicense());
+			st.setString(9, adh.getNom());
 			if (st.executeUpdate() == 0) {
 				throw new TechnicalException(
 						"L'adhérent n'a pu être enregistré");
@@ -193,7 +198,7 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 	public List<Adherent> findAll() throws TechnicalException {
 		try {
 			PreparedStatement st = getDataSource().getConnection()
-					.prepareStatement("select * from ADHERENT");
+					.prepareStatement("select * from ADHERENT order by NOM");
 			ResultSet rs = st.executeQuery();
 			List<Adherent> adherents = new ArrayList<Adherent>();
 			while (rs.next()) {
@@ -218,7 +223,7 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 	public List<Adherent> getAdherentsTous() throws TechnicalException {
 		try {
 			PreparedStatement st = getDataSource().getConnection()
-					.prepareStatement("select * from ADHERENT where ACTIF = 1 or ACTIF = 0");
+					.prepareStatement("select * from ADHERENT where ACTIF = 1 or ACTIF = 0 order by NOM");
 			ResultSet rs = st.executeQuery();
 			List<Adherent> adherents = new ArrayList<Adherent>();
 			while (rs.next()) {
@@ -242,7 +247,7 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 	public List<Adherent> getAdherentsActifs() throws TechnicalException {
 		try {
 			PreparedStatement st = getDataSource().getConnection()
-					.prepareStatement("select * from ADHERENT where ACTIF = 1");
+					.prepareStatement("select * from ADHERENT where ACTIF = 1 order by NOM");
 			ResultSet rs = st.executeQuery();
 			List<Adherent> adherents = new ArrayList<Adherent>();
 			while (rs.next()) {
@@ -267,7 +272,7 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 	public List<Adherent> getAdherentsInactifs() throws TechnicalException {
 		try {
 			PreparedStatement st = getDataSource().getConnection()
-					.prepareStatement("select * from ADHERENT where ACTIF = 0");
+					.prepareStatement("select * from ADHERENT where ACTIF = 0 order by NOM");
 			ResultSet rs = st.executeQuery();
 			List<Adherent> adherents = new ArrayList<Adherent>();
 			while (rs.next()) {
@@ -292,7 +297,7 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 	public List<Adherent> getExternes() throws TechnicalException {
 		try {
 			PreparedStatement st = getDataSource().getConnection()
-					.prepareStatement("select * from ADHERENT where ACTIF = 2");
+					.prepareStatement("select * from ADHERENT where ACTIF = 2 order by NOM");
 			ResultSet rs = st.executeQuery();
 			List<Adherent> adherents = new ArrayList<Adherent>();
 			while (rs.next()) {
@@ -344,7 +349,6 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 			PreparedStatement st = getDataSource()
 					.getConnection()
 					.prepareStatement(
-//							"select * from ADHERENT where LICENSE = ? and ACTIF <> 2");
 							"select * from ADHERENT where LICENSE = ? ");
 			st.setString(1, id);
 			ResultSet rs = st.executeQuery();
@@ -405,9 +409,39 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 			generiqueName.concat("%");
 			StringBuffer sb = new StringBuffer("select LICENSE, NOM, PRENOM, NIVEAU, TELEPHONE, MAIL, ENCADRANT, PILOTE, ACTIF ");
 			sb.append(" from adherent a ");
-			sb.append(" where NOM LIKE ?");
+			sb.append(" where NOM LIKE ? order by NOM");
 			st = getDataSource().getConnection().prepareStatement(sb.toString());
 			st.setString(1, generiqueName);
+			ResultSet rs = st.executeQuery();
+			List<Adherent> adherents = new ArrayList<Adherent>();
+			while (rs.next()) {
+				Adherent adherent = wrapAdherent(rs);
+				adherents.add(adherent);
+			}
+			return adherents;
+		} catch (SQLException e) {
+			throw new TechnicalException(e);
+		} finally {
+			try {
+				getDataSource().getConnection().close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+				throw new TechnicalException("Impossible de cloturer la connexion");
+			}
+		}
+	}
+
+	public List<Adherent> getAdherentsLikeRole(String role)
+	throws TechnicalException {
+		PreparedStatement st;
+		try {
+			StringBuffer sb = new StringBuffer("select LICENSE, NOM, PRENOM, NIVEAU, TELEPHONE, MAIL, ENCADRANT, PILOTE, ACTIF ");
+			sb.append(" FROM adherent a, rel_adherent_roles rel, roles r");
+			sb.append(" where a.license = rel.adherent_license");
+			sb.append(" and rel.roles_idRoles = r.idroles");
+			sb.append(" and r.libelle = ? order by NOM");
+			st = getDataSource().getConnection().prepareStatement(sb.toString());
+			st.setString(1, role);
 			ResultSet rs = st.executeQuery();
 			List<Adherent> adherents = new ArrayList<Adherent>();
 			while (rs.next()) {

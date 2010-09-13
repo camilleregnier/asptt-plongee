@@ -1,6 +1,7 @@
 package com.asptt.plongee.resa.ui.web.wicket.page.admin;
 
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 
 import org.apache.wicket.AttributeModifier;
@@ -20,9 +21,10 @@ public class GererPlongeeAOuvrirThree extends TemplatePage {
 
 	@SuppressWarnings("serial")
 	public GererPlongeeAOuvrirThree(Plongee plongee) {
-		DataView<Adherent> dataView = new DataView<Adherent>("pageable", new InscritsPlongeeDataProvider(getResaSession()
-				.getPlongeeService(), getResaSession()
-				.getAdherentService(), plongee)) {
+		
+		List<Adherent> adherentsInscrits = getResaSession().getPlongeeService().rechercherInscriptions(plongee, null, null);
+		
+		DataView<Adherent> dataView = new DataView<Adherent>("pageable", new InscritsPlongeeDataProvider(adherentsInscrits)) {
 
 			@SuppressWarnings("serial")
 			protected void populateItem(final Item<Adherent> item) {

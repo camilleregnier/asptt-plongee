@@ -1,33 +1,32 @@
 package com.asptt.plongee.resa.model;
 
 import java.util.Iterator;
+import java.util.List;
 
 import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.model.IModel;
 
+import com.asptt.plongee.resa.exception.TechnicalException;
 import com.asptt.plongee.resa.service.PlongeeService;
 
 @SuppressWarnings("serial")
 public class PlongeeDataProvider implements IDataProvider<Plongee> {
 
-	PlongeeService plongeeService;
-	Adherent adherent;
+	List<Plongee> plongees;
 	
-	public PlongeeDataProvider (Adherent adherent, PlongeeService plongeeService){
-		this.plongeeService = plongeeService;
-		this.adherent = adherent;
+
+	public PlongeeDataProvider (List<Plongee> plongees) {
+		this.plongees = plongees;
 	}
 
 	@Override
-	public Iterator<Plongee> iterator(int first, int count) {
-		// TODO à remplacer par la bonne méthode de plongeeService
-		return plongeeService.rechercherPlongeeProchainJour(adherent).iterator();
+	public Iterator<Plongee> iterator(int first, int count){
+			return plongees.subList(first, first+count).iterator();
 	}
 
 	@Override
 	public int size() {
-		// TODO Auto-generated method stub
-		return plongeeService.rechercherPlongeeProchainJour(adherent).size();
+		return plongees.size();
 	}
 
 	@Override
@@ -37,10 +36,8 @@ public class PlongeeDataProvider implements IDataProvider<Plongee> {
 	}
 
 	@Override
-	public IModel<Plongee> model(Plongee plongee) {
-		// TODO Auto-generated method stub
-		
-		return new DetachablePlongeeModel(plongeeService, plongee.getId());
+	public IModel<Plongee> model(Plongee plongee) throws TechnicalException{
+		return new DetachablePlongeeModel(plongee);
 	}
 
 }

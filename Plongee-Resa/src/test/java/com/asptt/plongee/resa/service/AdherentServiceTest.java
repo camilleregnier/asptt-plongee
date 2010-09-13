@@ -1,11 +1,18 @@
 package com.asptt.plongee.resa.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.mail.MessagingException;
+
 import junit.framework.Assert;
 
 import org.junit.Test;
 import org.springframework.dao.support.DaoSupport;
 
-import com.asptt.plongee.resa.dao.TechnicalException;
+import com.asptt.plongee.resa.exception.ResaException;
+import com.asptt.plongee.resa.exception.TechnicalException;
+import com.asptt.plongee.resa.mail.PlongeeMail;
 import com.asptt.plongee.resa.model.Adherent;
 
 public class AdherentServiceTest extends AbstractServiceTest {
@@ -41,4 +48,29 @@ public class AdherentServiceTest extends AbstractServiceTest {
 		adherentService.creerExterne(ext);
 		
 	}
+
+	@Test
+	public void envoyerMail() throws TechnicalException {
+		// données pour le test
+		PlongeeMail pMail;
+		try {
+			pMail = new PlongeeMail();
+		
+			pMail.setSubject("gestion de file d'attente");
+			pMail.setMsg("Des personnes sont en file d'attente sur la plongée du BlaBla de NUIT, et une place vient de se libérer");
+			List<String> destis = new ArrayList<String>();
+			destis.add("eric.simon28@orange.fr");
+			pMail.setDestis(destis);
+			pMail.sendMail();
+		
+		} catch (ResaException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (MessagingException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+	}
+
 }

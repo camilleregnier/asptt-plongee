@@ -5,6 +5,7 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 
+import com.asptt.plongee.resa.exception.TechnicalException;
 import com.asptt.plongee.resa.model.Adherent;
 
 public class AdherentDaoTest extends AbstractDaoTest {

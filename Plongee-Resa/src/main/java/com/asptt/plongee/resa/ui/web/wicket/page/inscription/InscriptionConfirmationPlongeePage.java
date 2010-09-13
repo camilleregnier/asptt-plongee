@@ -1,5 +1,7 @@
 package com.asptt.plongee.resa.ui.web.wicket.page.inscription;
 
+import java.util.List;
+
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.repeater.Item;
@@ -17,10 +19,9 @@ public class InscriptionConfirmationPlongeePage extends TemplatePage {
 	public InscriptionConfirmationPlongeePage(Plongee plongee) {
 		
 		// On affiche la liste des participants en guise de confirmation
-		add(new DataView<Adherent>("participants",
-				new InscritsPlongeeDataProvider(getResaSession()
-						.getPlongeeService(), getResaSession()
-						.getAdherentService(), plongee)) {
+		List<Adherent> adherentsInscrit = getResaSession().getPlongeeService().rechercherInscriptions(plongee,null,null);
+		
+		add(new DataView<Adherent>("participants",new InscritsPlongeeDataProvider(adherentsInscrit)) {
 			
 			protected void populateItem(final Item<Adherent> item) {
 				Adherent adherent = item.getModelObject();

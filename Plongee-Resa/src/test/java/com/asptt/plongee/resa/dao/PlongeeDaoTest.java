@@ -5,6 +5,7 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 
+import com.asptt.plongee.resa.exception.TechnicalException;
 import com.asptt.plongee.resa.model.Adherent;
 import com.asptt.plongee.resa.model.Plongee;
 

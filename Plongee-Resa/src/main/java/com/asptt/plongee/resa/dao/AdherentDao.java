@@ -2,6 +2,7 @@ package com.asptt.plongee.resa.dao;
 
 import java.util.List;
 
+import com.asptt.plongee.resa.exception.TechnicalException;
 import com.asptt.plongee.resa.model.Adherent;
 import com.asptt.plongee.resa.model.Plongee;
 
@@ -25,6 +26,8 @@ public interface AdherentDao extends GenericDao<Adherent, String> {
 	public List<Adherent> getAdherentsWaiting(Plongee plongee) throws TechnicalException;
 	
 	public List<Adherent> getAdherentsLikeName(String name) throws TechnicalException;
+	
+	public List<Adherent> getAdherentsLikeRole(String role) throws TechnicalException;
 	
 	public Adherent findByIdAll(String id) throws TechnicalException;
 }
