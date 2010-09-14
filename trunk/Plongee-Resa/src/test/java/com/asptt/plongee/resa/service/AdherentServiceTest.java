@@ -7,6 +7,8 @@ import javax.mail.MessagingException;
 
 import junit.framework.Assert;
 
+import org.apache.commons.mail.Email;
+import org.apache.commons.mail.SimpleEmail;
 import org.junit.Test;
 import org.springframework.dao.support.DaoSupport;
 
@@ -52,16 +54,15 @@ public class AdherentServiceTest extends AbstractServiceTest {
 	@Test
 	public void envoyerMail() throws TechnicalException {
 		// données pour le test
-		PlongeeMail pMail;
 		try {
-			pMail = new PlongeeMail();
-		
-			pMail.setSubject("gestion de file d'attente");
-			pMail.setMsg("Des personnes sont en file d'attente sur la plongée du BlaBla de NUIT, et une place vient de se libérer");
+			Email eMail = new SimpleEmail();
+			eMail.setSubject("gestion de file d'attente");
+			eMail.setMsg("Des personnes sont en file d'attente sur la plongée du BlaBla de NUIT, et une place vient de se libérer");
 			List<String> destis = new ArrayList<String>();
 			destis.add("eric.simon28@orange.fr");
-			pMail.setDestis(destis);
-			pMail.sendMail();
+			
+			PlongeeMail pMail = new PlongeeMail(eMail);
+			pMail.sendMail(destis);
 		
 		} catch (ResaException e) {
 			// TODO Auto-generated catch block
