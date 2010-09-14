@@ -115,7 +115,7 @@ public class DeInscriptionPlongeePage extends TemplatePage {
 				//ENVOI d'un Mail
 				try {
 					PlongeeMail pMail = new PlongeeMail();
-					pMail.sendMail();
+//					pMail.sendMail();
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
