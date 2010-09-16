@@ -26,8 +26,17 @@ public class Adherent implements Serializable {
 	private String mail;
 	private Roles roles;
 	private String role;
+	private String password;
 
 	
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
 	public Adherent() {
 		// valeurs par défaut
 		pilote = false;
