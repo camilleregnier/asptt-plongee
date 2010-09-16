@@ -21,62 +21,119 @@
 </head>
 
 <body>
-<div id="wrapper">
-	<div id="en tete">
-                <div id="bandeau">
-                    <img src="/medias/images/logoAsptt.gif">
-                </div>
-    </div>
-    
-	<div wicket:id="menuUser">
-		<wicket:link>
-			<a href="AccueilPage.html">Accueil -> Adherent</a>
-			<a href="inscription/InscriptionPlongeePage.html">R&eacute;server plong&eacute;e(s)</a>
-			<a href="inscription/DeInscriptionPlongeePage.html">DeInscrire plong&eacute;e(s)</a>
-			<a href="consultation/ConsulterPlongees.html">Consulter Plong&eacute;es</a>
- 		</wicket:link>
- 	</div>
- 	<div wicket:id="menuSecretariat">
-		<wicket:link>
-			<a href="AccueilPage.html">Accueil -> Secretariat</a>
-			<a href="inscription/secretariat/InscriptionAdherentPlongeePage.html">Inscrire un adh&eacute;rent</a>
-			<a href="inscription/secretariat/InscriptionExterieurPlongeePage.html">Inscrire un ext&eacute;rieur</a>
-			<a href="inscription/secretariat/DesInscriptionPlongeePage.html">D&eacute;sinscrire un plongeur</a>
-			<a href="consultation/ConsulterPlongees.html">Consulter Plong&eacute;es</a>
- 		</wicket:link>
- 	</div>
-	<div wicket:id="menuAdmin">
-		<wicket:link>
-			<a href="AccueilPage.html">Accueil -> Admin</a>
-			<a href="admin/CreerPlongee.html">Cr&eacute;er une plong&eacute;e</a>
-			<a href="admin/AnnulerPlongee.html">Annuler une plong&eacute;e</a>
-			<a href="admin/GererPlongeeAOuvrirOne.html">Ouvrir une plong&eacute;e</a>
-			<a href="admin/GererListeAttenteOne.html">G&eacute;rer les listes d'attente</a>
-			<a href="admin/CreerAdherent.html">Cr&eacute;er un adh&eacute;rent</a>
-			<a href="admin/GererAdherents.html">G&eacute;rer les adh&eacute;rents</a>
-		</wicket:link>
+<div class="global">
+
+	<div class="header"> <img src="/medias/images/logoAsptt.gif"> </div>
+	
+	<div class="corps"> 
+	
+		<div class="menu"> 
+			<div wicket:id="menuUser">
+				<h1>ADHERENT</h1>
+				<ul title="Menu Adherent">
+					<li>
+					<a href="consultation/ConsulterPlongees" title="ConsulterPlongee" wicket:id="consultPlongee">
+						<img src="/medias/images/bouton_consulter_plongee_150.png" class="no_cadre" alt="Consulter les plong&eacute;es"/>
+					</a></li>
+					<li>
+					<a href="inscription/InscriptionPlongeePage.html" title="ReserverPlongee" wicket:id="reservPlongee">
+						<img src="/medias/images/bouton_reserver_plongee_150.png" class="no_cadre" alt="R&eacute;server une Plong&eacute;e"/>
+					</a></li>
+					<li>
+					<a href="inscription/DeInscriptionPlongeePage.html" title="DeInscrirePlongee" wicket:id="deInscrirePlongee">
+						<img src="/medias/images/bouton_de_inscrire_plongee_150.png" class="no_cadre" alt="Se de-inscrire d'une Plong&eacute;e"/>
+					</a></li>
+				</ul>
+				<hr />
+				<br />
+				<br />
+		 	</div>
+		 	<div wicket:id="menuAdmin">
+				<h1>ADMIN</h1>
+				<h3>gestion Plong&eacute;es</h3>
+				<ul>
+					<li>
+					<a href="admin/CreerPlongee.html" title="CreerPlongee" wicket:id="creerPlongee">
+						<img src="/medias/images/bouton_creer_plongee_150.png" class="no_cadre" alt="Cr&eacute;er une plong&eacute;e"/>
+					</a></li>
+					<li>
+					<a href="admin/AnnulerPlongee.html.html" title="AnnulerPlongee" wicket:id="annulerPlongee">
+						<img src="/medias/images/bouton_annuler_plongee_150.png" class="no_cadre" alt="Annuler une Plong&eacute;e"/>
+					</a></li>
+					<li>
+					<a href="admin/GererPlongeeAOuvrirOne.html" title="OuvrirPlongee" wicket:id="ouvrirPlongee">
+						<img src="/medias/images/bouton_ouvrir_plongee_150.png" class="no_cadre" alt="Ouvrir une Plong&eacute;e"/>
+					</a></li>
+					<li>
+					<a href="admin/GererListeAttenteOne.html" title="ListeAttentPlongee" wicket:id="listeAttentePlongee">
+						<img src="/medias/images/bouton_liste_attente_plongee_150.png" class="no_cadre" alt="G&eacute;rer la liste d'attente d'une Plong&eacute;e"/>
+					</a></li>
+				</ul>
+				<h3>gestion Adh&eacute;rent</h3>
+				<ul>
+					<li>
+					<a href="admin/CreerAdherent.html" title="CreerAdherent" wicket:id="creerAdherent">
+						<img src="/medias/images/bouton_creer_plongee_150.png" class="no_cadre" alt="Cr&eacute;er un Adh&eacute;rent"/>
+					</a></li>
+					<li>
+					<a href="admin/GererAdherents.html" title="GererAdherent" wicket:id="gererAdherent">
+						<img src="/medias/images/bouton_visu_modif_150.png" class="no_cadre" alt="G&eacute;rer les Adh&eacute;rents"/>
+					</a></li>
+				</ul>
+				<br />
+				<hr />
+				<br />
+		 	</div>
+			<div wicket:id="menuSecretariat">
+				<h1>SECRETARIAT</h1>
+				<h3>Inscription</h3>
+				<ul>
+					<li>
+					<a href="inscription/secretariat/InscriptionAdherentPlongeePage.html" title="InscrireAdherent" wicket:id="inscrireAdherent">
+						<img src="/medias/images/bouton_inscrire_adherent_150.png" class="no_cadre" alt="Inscrire un Adh&eacute;rent"/>
+					</a></li>
+					<li>
+					<a href="inscription/secretariat/InscriptionExterieurPlongeePage.html" title="InscrireExterne" wicket:id="inscrireExterne">
+						<img src="/medias/images/bouton_inscrire_externe_150.png" class="no_cadre" alt="Inscrire un Externe"/>
+					</a></li>
+				</ul>
+				<h3>Gestion</h3>
+				<ul>
+					<li>
+					<a href="inscription/secretariat/DesInscriptionPlongeePage.html" title="DeInscrirePlongee" wicket:id="secretDeInscrirePlongee">
+						<img src="/medias/images/bouton_de_inscrire_plongee_150.png" class="no_cadre" alt="De-inscrire d'une Plong&eacute;e"/>
+					</a></li>
+					<li>
+					<a href="consultation/ConsulterPlongees" title="ConsulterPlongee" wicket:id="secretConsultPlongee">
+						<img src="/medias/images/bouton_consulter_plongee_150.png" class="no_cadre" alt="Consulter les plong&eacute;es"/>
+					</a></li>
+				</ul>
+		 	</div>
+	
+		</div>
+	
+		<div class="content"> 
+			
+			<wicket:child />
+		</div>
+	
 	</div>
-	<div id="corps">
-	<!-- 
-		<a href="#" title="ConsulterPlongee" class="bouton" wicket:id="lienConsult">
-			<img src="/medias/images/recherche.png" alt="consult"/>
-		</a>
-	 -->
-		<wicket:child />
+	
+	
+	<div class="footer">
+		<div>
+			<p id="legal">
+				<a href="http://pagesperso-orange.fr/marseille.plongee/">Asptt Plong&eacute;e</a>
+			<wicket:link>
+				<a href="LogoutPage.html">Deconnexion</a>
+	 		</wicket:link>
+				Copyright&copy; 2010
+			</p>
+		</div>
+		<div> <img src="/medias/images/piedPageAsptt.gif"> </div>
 	</div>
 </div>
-<div id="footer">
-		<p id="legal">
-			<a href="http://pagesperso-orange.fr/marseille.plongee/">Asptt Plong&eacute;e</a>
-		<wicket:link>
-			<a href="LogoutPage.html">Deconnexion</a>
- 		</wicket:link>
-			Copyright&copy; 2010
-		</p>
-	</div>
-<div id="pied">
-	<img src="/medias/images/piedPageAsptt.gif">   
-</div>
+
 
 </body>
 
