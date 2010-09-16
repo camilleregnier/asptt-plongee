@@ -407,7 +407,7 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 			String generiqueName = "%";
 			generiqueName.concat(name);
 			generiqueName.concat("%");
-			StringBuffer sb = new StringBuffer("select LICENSE, NOM, PRENOM, NIVEAU, TELEPHONE, MAIL, ENCADRANT, PILOTE, ACTIF ");
+			StringBuffer sb = new StringBuffer("select LICENSE, NOM, PRENOM, NIVEAU, TELEPHONE, MAIL, ENCADRANT, PILOTE, ACTIF, PASSWORD ");
 			sb.append(" from adherent a ");
 			sb.append(" where NOM LIKE ? order by NOM");
 			st = getDataSource().getConnection().prepareStatement(sb.toString());
@@ -435,7 +435,7 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 	throws TechnicalException {
 		PreparedStatement st;
 		try {
-			StringBuffer sb = new StringBuffer("select LICENSE, NOM, PRENOM, NIVEAU, TELEPHONE, MAIL, ENCADRANT, PILOTE, ACTIF ");
+			StringBuffer sb = new StringBuffer("select LICENSE, NOM, PRENOM, NIVEAU, TELEPHONE, MAIL, ENCADRANT, PILOTE, ACTIF, PASSWORD ");
 			sb.append(" FROM adherent a, rel_adherent_roles rel, roles r");
 			sb.append(" where a.license = rel.adherent_license");
 			sb.append(" and rel.roles_idRoles = r.idroles");
@@ -465,7 +465,7 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 			throws TechnicalException {
 		PreparedStatement st;
 		try {
-			StringBuffer sb = new StringBuffer("select LICENSE, NOM, PRENOM, NIVEAU, TELEPHONE, MAIL, ENCADRANT, PILOTE, ACTIF ");
+			StringBuffer sb = new StringBuffer("select LICENSE, NOM, PRENOM, NIVEAU, TELEPHONE, MAIL, ENCADRANT, PILOTE, ACTIF, PASSWORD ");
 			sb.append(" from plongee p, inscription_plongee i, adherent a ");
 			sb.append(" where idPLONGEES = ?");
 			sb.append(" and idPLONGEES = PLONGEES_idPLONGEES ");
@@ -519,7 +519,7 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 		PreparedStatement st;
 		try {
 			StringBuffer sb = new StringBuffer(
-					"select LICENSE, NOM, PRENOM, NIVEAU, TELEPHONE, MAIL, ENCADRANT, PILOTE, ACTIF ");
+					"select LICENSE, NOM, PRENOM, NIVEAU, TELEPHONE, MAIL, ENCADRANT, PILOTE, ACTIF, PASSWORD ");
 			sb.append(" from plongee p, liste_attente la, adherent a ");
 			sb.append(" where idPLONGEES = ?");
 			sb.append(" and idPLONGEES = PLONGEES_idPLONGEES ");
@@ -604,6 +604,7 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 		} else {
 			adherent.setPilote(false);
 		}
+		adherent.setPassword(rs.getString("PASSWORD"));
 		
 		return adherent;
 	}

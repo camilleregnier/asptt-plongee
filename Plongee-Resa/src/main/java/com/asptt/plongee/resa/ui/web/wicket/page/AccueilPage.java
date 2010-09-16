@@ -9,12 +9,19 @@ import org.apache.wicket.markup.html.basic.Label;
 
 import com.asptt.plongee.resa.model.Adherent;
 //import com.asptt.plongee.resa.util.PlongeeMail;
+import com.asptt.plongee.resa.ui.web.wicket.ResaSession;
 
 @AuthorizeInstantiation({"USER","ADMIN","SECRETARIAT"})
 public class AccueilPage extends TemplatePage {
 	
 	public AccueilPage() { 
 		Adherent a = getResaSession().getAdherent();
+		
+		// Si l'adhérent est identifié mais qu'il n'a pas changé son password (password = licence)
+		if (getResaSession().getAdherent().getNumeroLicense().equalsIgnoreCase(getResaSession().getAdherent().getPassword())){
+			setResponsePage(ModifPasswordPage.class);
+		}
+
 	    add(new Label("hello", "Bienvenue:"+a.getPrenom()+", il est : " + calculerDateCourante()));
 	   
 	} 
