@@ -145,8 +145,7 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 			st.setInt(6, adh.getActifInt());
 			st.setString(7, adh.getNom());
 			st.setString(8, adh.getPrenom());
-//			st.setString(9, adh.getNumeroLicense());
-			st.setString(9, adh.getNom());
+			st.setString(9, adh.getNumeroLicense());
 			if (st.executeUpdate() == 0) {
 				throw new TechnicalException(
 						"L'adhérent n'a pu être enregistré");
