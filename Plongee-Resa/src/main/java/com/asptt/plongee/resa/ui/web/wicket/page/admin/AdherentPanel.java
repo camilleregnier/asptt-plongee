@@ -23,6 +23,8 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.validation.validator.EmailAddressValidator;
+import org.apache.wicket.validation.validator.PatternValidator;
+import org.apache.wicket.validation.validator.StringValidator.ExactLengthValidator;
 
 import com.asptt.plongee.resa.exception.TechnicalException;
 import com.asptt.plongee.resa.model.Adherent;
@@ -58,11 +60,14 @@ public class AdherentPanel extends Panel {
 			add(feedback);
 			add(new RequiredTextField<String>("nom"));
 			add(new RequiredTextField<String>("prenom"));
-			//add(new RequiredTextField<Integer>("numeroLicense", Integer.class));
 			add(new Label("numeroLicense",adherent.getObject().getNumeroLicense()));
 
-			// TODO à modifier plus tard pour validation
-			add(new RequiredTextField<Integer>("telephone", Integer.class));
+			// numéro de téléphone au bon format (10 caractères numériques)
+			RequiredTextField<String> telephone = new RequiredTextField<String>("telephone", String.class);
+			telephone.add(ExactLengthValidator.exactLength(10));
+			telephone.add(new PatternValidator("\\d{10}"));
+			add(telephone);
+			
 			add(new RequiredTextField<String>("mail").add(EmailAddressValidator
 					.getInstance()));
 
