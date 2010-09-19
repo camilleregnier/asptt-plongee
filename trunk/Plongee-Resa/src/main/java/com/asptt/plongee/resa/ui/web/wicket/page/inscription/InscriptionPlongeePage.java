@@ -7,10 +7,14 @@ import java.util.List;
 import java.util.Locale;
 
 import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.Component;
+import org.apache.wicket.ResourceReference;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.behavior.IBehavior;
 import org.apache.wicket.extensions.ajax.markup.html.IndicatingAjaxLink;
 import org.apache.wicket.feedback.IFeedback;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
@@ -79,14 +83,15 @@ public class InscriptionPlongeePage extends TemplatePage {
 					nomDP = plongee.getDp().getNom();
 				}
 
-				item.add(new IndicatingAjaxLink("select") {
+				IndicatingAjaxLink link = new IndicatingAjaxLink("select") {
 					@Override
 					public void onClick(AjaxRequestTarget target) {
 //						replaceModalWindow(target, item.getModel());
 //						modal2.show(target);
 						inscrire(target, item.getModel());
 					}
-				});
+				};
+				item.add(link);
 
 				// Mise en forme de la date
 				Calendar cal = Calendar.getInstance();
