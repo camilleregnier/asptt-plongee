@@ -22,7 +22,7 @@ public class AccueilPage extends TemplatePage {
 			setResponsePage(ModifPasswordPage.class);
 		}
 
-	    add(new Label("hello", "Bienvenue:"+a.getPrenom()+", il est : " + calculerDateCourante()));
+	    add(new Label("hello", "Bienvenue:"+a.getPrenom()+", nous sommes le : " + calculerDateCourante()));
 	   
 	} 
 
