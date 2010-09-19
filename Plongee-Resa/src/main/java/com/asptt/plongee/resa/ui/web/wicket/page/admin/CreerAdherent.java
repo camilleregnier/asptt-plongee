@@ -54,7 +54,7 @@ public class CreerAdherent extends TemplatePage {
 
 			add(new RequiredTextField<String>("nom"));
 			add(new RequiredTextField<String>("prenom"));
-			add(new RequiredTextField<Integer>("numeroLicense",Integer.class));
+			add(new RequiredTextField<String>("numeroLicense",String.class).add(new PatternValidator("\\d{6}")));
 			
 			// numéro de téléphone au bon format (10 caractères numériques)
 			RequiredTextField<String> telephone = new RequiredTextField<String>("telephone", String.class);
