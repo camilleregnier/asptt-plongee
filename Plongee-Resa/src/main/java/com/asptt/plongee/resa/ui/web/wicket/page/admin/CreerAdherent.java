@@ -6,6 +6,8 @@ import java.util.Collection;
 import java.util.Enumeration;
 import java.util.List;
 
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.authorization.strategies.role.Roles;
 import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import org.apache.wicket.markup.html.form.CheckBox;
@@ -15,6 +17,7 @@ import org.apache.wicket.markup.html.form.ListChoice;
 import org.apache.wicket.markup.html.form.ListMultipleChoice;
 import org.apache.wicket.markup.html.form.RequiredTextField;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
@@ -23,8 +26,11 @@ import org.apache.wicket.validation.validator.EmailAddressValidator;
 import org.apache.wicket.validation.validator.PatternValidator;
 import org.apache.wicket.validation.validator.StringValidator.ExactLengthValidator;
 
+import com.asptt.plongee.resa.exception.ResaException;
+import com.asptt.plongee.resa.exception.TechnicalException;
 import com.asptt.plongee.resa.model.Adherent;
 import com.asptt.plongee.resa.model.NiveauAutonomie;
+import com.asptt.plongee.resa.model.Plongee;
 import com.asptt.plongee.resa.model.Adherent.Encadrement;
 import com.asptt.plongee.resa.ui.web.wicket.page.AccueilPage;
 import com.asptt.plongee.resa.ui.web.wicket.page.TemplatePage;
@@ -33,9 +39,11 @@ import com.asptt.plongee.resa.ui.web.wicket.page.inscription.InscriptionConfirma
 @AuthorizeInstantiation("ADMIN")
 public class CreerAdherent extends TemplatePage {
 
+	FeedbackPanel feedback = new FeedbackPanel("feedback");
+	
 	public CreerAdherent() {
 		// Constructeur du formulaire et du feedback panel pour renvoyer des messages sur la page
-		final FeedbackPanel feedback = new FeedbackPanel("feedback");
+		feedback.setOutputMarkupId(true);
 		add(feedback);
 		add(new MyForm("inputForm"));
 	}
@@ -89,19 +97,48 @@ public class CreerAdherent extends TemplatePage {
 			List<String> roles = Arrays.asList(new String[] { "ADMIN", "USER", "SECRETARIAT" });
 			add(new ListMultipleChoice<String>("roles", roles));
 			
+			add(new AjaxButton("validAdherent") {
+
+				@Override
+				protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+					Adherent adherent = (Adherent) form.getModelObject();
+					try {
+						getResaSession().getAdherentService().creerAdherent(adherent);
+
+						setResponsePage(AccueilPage.class);
+					}  catch (TechnicalException e) {
+						e.printStackTrace();
+						error(e.getKey());
+					}
+
+				}
+				// L'implémentation de cette méthode est nécessaire pour voir
+				// les messages d'erreur dans le feedBackPanel
+				protected void onError(AjaxRequestTarget target, Form<?> form) {
+					target.addComponent(feedback);
+				}
+			});
+			
+			add(new Link("cancel") {
+				@Override
+				public void onClick() {
+					setResponsePage(AccueilPage.class);
+				}
+			});
+			
 		}
 
-		public void onSubmit() {
-			Adherent adherent = (Adherent) getModelObject();
-			
-			// Mise au format des noms et prénom
-			adherent.setNom(adherent.getNom().toUpperCase());
-			adherent.setPrenom((adherent.getPrenom().substring(0, 1).toUpperCase()) + (adherent.getPrenom().substring(1).toLowerCase()));
-			
-			getResaSession().getAdherentService().creerAdherent(adherent);
-
-			setResponsePage(AccueilPage.class);
-		}
+//		public void onSubmit() {
+//			Adherent adherent = (Adherent) getModelObject();
+//			
+//			// Mise au format des noms et prénom
+//			adherent.setNom(adherent.getNom().toUpperCase());
+//			adherent.setPrenom((adherent.getPrenom().substring(0, 1).toUpperCase()) + (adherent.getPrenom().substring(1).toLowerCase()));
+//			
+//			getResaSession().getAdherentService().creerAdherent(adherent);
+//
+//			setResponsePage(AccueilPage.class);
+//		}
 
 	}
 
