@@ -7,6 +7,8 @@ import com.asptt.plongee.resa.model.Adherent;
 
 public interface AdherentService {
 
+	public Adherent authentifierAdherent(String id, String pwd);
+
 	public Adherent rechercherAdherentParIdentifiant(String id);
 	
 	public Adherent rechercherAdherentParIdentifiantTous(String id);
@@ -32,6 +34,8 @@ public interface AdherentService {
 	public void creerAdherent(Adherent adherent);
 	
 	public void updateAdherent(Adherent adherent);
+
+	public void updatePasswordAdherent(Adherent adherent);
 
 	public void creerExterne(Adherent adherent);
 	

@@ -140,4 +140,17 @@ public class AdherentInMemoryDao implements AdherentDao{
 		return null;
 	}
 
+	@Override
+	public Adherent updatePassword(Adherent adherent) throws TechnicalException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Adherent authenticateAdherent(String id, String pwd)
+			throws TechnicalException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

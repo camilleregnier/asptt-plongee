@@ -9,6 +9,7 @@ import org.apache.wicket.markup.html.image.resource.DefaultButtonImageResource;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.link.ResourceLink;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.Model;
 
 import com.asptt.plongee.resa.ui.web.wicket.ResaSession;
@@ -25,9 +26,9 @@ import com.asptt.plongee.resa.ui.web.wicket.page.inscription.secretariat.DesInsc
 import com.asptt.plongee.resa.ui.web.wicket.page.inscription.secretariat.InscriptionAdherentPlongeePage;
 import com.asptt.plongee.resa.ui.web.wicket.page.inscription.secretariat.InscriptionExterieurPlongeePage;
 
+
 public abstract class TemplatePage extends WebPage {
 	
-    
 	MarkupContainer userMenus = new MarkupContainer("menuUser"){  
 		  @Override  
 		  public boolean isVisible() {  

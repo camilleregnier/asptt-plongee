@@ -28,8 +28,8 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 	public Adherent create(Adherent adh) throws TechnicalException {
 		try {
 			StringBuffer sb = new StringBuffer();
-			sb.append("INSERT INTO ADHERENT (`LICENSE`, `NOM`, `PRENOM`, `NIVEAU`, `TELEPHONE`, `MAIL`, `ENCADRANT`, `PILOTE`, `DATE_DEBUT`, `ACTIF`)");
-			sb.append(" VALUES (?, ?, ?, ?, ?, ?, ?, ?, current_timestamp, ?)");
+			sb.append("INSERT INTO AD-HERENT (`LICENSE`, `NOM`, `PRENOM`, `NIVEAU`, `TELEPHONE`, `MAIL`, `ENCADRANT`, `PILOTE`, `DATE_DEBUT`, `ACTIF`, `PASSWORD`");
+			sb.append(" VALUES (?, ?, ?, ?, ?, ?, ?, ?, current_timestamp, ?, ?)");
 			PreparedStatement st = getDataSource().getConnection()
 					.prepareStatement(sb.toString());
 			st.setString(1, adh.getNumeroLicense());
@@ -49,6 +49,7 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 				st.setInt(8, 0);
 			}
 			st.setInt(9, adh.getActifInt());
+			st.setString(10, adh.getNumeroLicense());
 			if (st.executeUpdate() == 0) {
 				throw new TechnicalException(
 						"L'adhérent n'a pu être enregistré");
@@ -179,6 +180,35 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 				}
 				sb = null;
 				sb = new StringBuffer();
+			}
+			return adh;
+		} catch (SQLException e) {
+			throw new TechnicalException(e);
+		} finally {
+			try {
+				getDataSource().getConnection().close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+				throw new TechnicalException(
+						"Impossible de cloturer la connexion");
+			}
+		}
+	}
+
+	public Adherent updatePassword(Adherent adh) throws TechnicalException {
+		try {
+			StringBuffer sb = new StringBuffer();
+			sb.append("UPDATE ADHERENT");
+			sb.append(" SET PASSWORD = ?");
+			sb.append(" WHERE license = ?");
+
+			PreparedStatement st = getDataSource().getConnection()
+					.prepareStatement(sb.toString());
+			st.setString(1, adh.getPassword());
+			st.setString(2, adh.getNumeroLicense());
+			if (st.executeUpdate() == 0) {
+				throw new TechnicalException(
+						"Le mot de passe de l'adhérent n'a pu être modifié");
 			}
 			return adh;
 		} catch (SQLException e) {
@@ -368,6 +398,34 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 			}
 		}
 	}
+
+	public Adherent authenticateAdherent(String id, String pwd) throws TechnicalException {
+		try {
+			PreparedStatement st = getDataSource()
+					.getConnection()
+					.prepareStatement(
+							"select * from ADHERENT where LICENSE = ?  and PASSWORD = ? and ACTIF <> 0");
+			st.setString(1, id);
+			st.setString(2, pwd);
+			ResultSet rs = st.executeQuery();
+			Adherent adherent = null;
+			if (rs.next()) {
+				adherent = wrapAdherent(rs);
+			}
+			return adherent;
+		} catch (SQLException e) {
+			throw new TechnicalException(e);
+		} finally {
+			try {
+				getDataSource().getConnection().close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+				throw new TechnicalException(
+						"Impossible de cloturer la connexion");
+			}
+		}
+	}
+	
 	public List<String> getStrRoles(Adherent adherent)
 			throws TechnicalException {
 		PreparedStatement st;

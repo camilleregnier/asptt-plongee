@@ -52,7 +52,6 @@ public class GererPlongeeAOuvrirTwo extends TemplatePage {
 				plongee);
 
 		List<Adherent> dps;
-//		try {
 			dps = getResaSession().getAdherentService()
 					.rechercherDPs(
 							getResaSession().getAdherentService()
@@ -169,11 +168,6 @@ public class GererPlongeeAOuvrirTwo extends TemplatePage {
 				}
 			});
 
-//		} catch (TechnicalException e) {
-//			e.printStackTrace();
-//			ErreurTechniquePage etp = new ErreurTechniquePage(e);
-//			setResponsePage(etp);
-//		}
 
 	}
 

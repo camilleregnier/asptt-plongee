@@ -43,8 +43,7 @@ public class ModifPasswordPage extends WebPage {
 			add(newPassword1.setRequired(true));
 			add(newPassword2.setRequired(true));
 
-			add(new AjaxButton("validPlongee") {
-
+			add(new AjaxButton("validPassword") {
 				@Override
 				protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 
@@ -61,6 +60,9 @@ public class ModifPasswordPage extends WebPage {
 								// Mise à jour du mot de passe
 								((ResaSession) getSession()).getAdherent()
 										.setPassword(newPassword1.getValue());
+								// Appel du service
+								((ResaSession) getSession()).getAdherentService().updatePasswordAdherent(
+										((ResaSession) getSession()).getAdherent());
 
 								// Redirection vers l'accueil
 								setResponsePage(AccueilPage.class);
@@ -84,9 +86,11 @@ public class ModifPasswordPage extends WebPage {
 				protected void onError(AjaxRequestTarget target, Form<?> form) {
 					target.addComponent(feedback);
 				}
-			});
-		}
-
-	}
+				
+			});//Fin du add
+		
+		}//Fin du constructeur de l'inner class ModifPasswordForm
+		
+	}//Fin de la class ModifPasswordForm
 
 }

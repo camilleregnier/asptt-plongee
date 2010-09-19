@@ -59,7 +59,7 @@ public class ResaSession extends AuthenticatedWebSession {
 
 	public boolean authenticate(String username, String password) {
 		// FIXME a changer des que la clé primaire de l'adhérent aura été choisie
-		adherent = getAdherentService().rechercherAdherentParIdentifiant(password);
+		adherent = getAdherentService().authentifierAdherent(username, password);
 		return (adherent != null);
 	}
 }

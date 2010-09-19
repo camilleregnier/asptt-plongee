@@ -118,10 +118,6 @@ public class InscriptionExterieurPlongeePage extends TemplatePage {
 			});
 		}
 		
-//		public void onSubmit() {
-//			setResponsePage(new InscriptionPlongeePage(getResaSession().getAdherentService().rechercherAdherentParIdentifiant(autocompleteField.getConvertedInput())));
-//		}
-		
 	}
 	
 	private void replaceModalWindow(AjaxRequestTarget target) {

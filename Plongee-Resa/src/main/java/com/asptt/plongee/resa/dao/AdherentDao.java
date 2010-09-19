@@ -30,4 +30,8 @@ public interface AdherentDao extends GenericDao<Adherent, String> {
 	public List<Adherent> getAdherentsLikeRole(String role) throws TechnicalException;
 	
 	public Adherent findByIdAll(String id) throws TechnicalException;
+
+	public Adherent updatePassword(Adherent adherent) throws TechnicalException;
+
+	public Adherent authenticateAdherent(String id, String pwd) throws TechnicalException;
 }

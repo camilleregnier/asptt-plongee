@@ -136,8 +136,7 @@ public class AdherentPanel extends Panel {
 						
 					} catch (TechnicalException e) {
 						e.printStackTrace();
-						ErreurTechniquePage etp = new ErreurTechniquePage(e);
-						setResponsePage(etp);
+						error(e.getKey());
 					}
 
 				}
@@ -152,21 +151,6 @@ public class AdherentPanel extends Panel {
 
             add(new Button("cancel", new ResourceModel("button.cancel")));
 		}
-
-//		public void onSubmit() {
-//			Adherent adherent = (Adherent) getModelObject();
-//			
-//			// Mise au format des noms et prénom
-//			adherent.setNom(adherent.getNom().toUpperCase());
-//			adherent.setPrenom((adherent.getPrenom().substring(0, 1).toUpperCase()) + (adherent.getPrenom().substring(1).toLowerCase()));
-//
-//			// Mise à jour de l'adhérent
-//			ResaSession resaSession = (ResaSession) getApplication()
-//					.getSessionStore().lookup(getRequest());
-//			resaSession.getAdherentService().updateAdherent(adherent);
-//
-//			setResponsePage(AccueilPage.class);
-//		}
 
 	}
 }
