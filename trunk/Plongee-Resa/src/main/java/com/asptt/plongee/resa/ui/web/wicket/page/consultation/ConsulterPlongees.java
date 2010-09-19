@@ -34,10 +34,6 @@ public class ConsulterPlongees extends TemplatePage {
 	private Plongee selected;
 	private ModalWindow modal2;
 
-//	InscritsPlongeeDataProvider inscrit = new InscritsPlongeeDataProvider(
-//			getResaSession().getPlongeeService(), getResaSession()
-//					.getAdherentService(), getSelected());
-
 	@SuppressWarnings("serial")
 	public ConsulterPlongees() {
 		

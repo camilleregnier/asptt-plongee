@@ -20,60 +20,36 @@ public class AdherentServiceImpl implements AdherentService {
 		this.adherentDao = adherentDao;
 	}
 
+	public Adherent authentifierAdherent(String id, String pwd) throws TechnicalException{
+		return adherentDao.authenticateAdherent(id, pwd);
+	}
+	
 	public Adherent rechercherAdherentParIdentifiant(String id) throws TechnicalException{
-//		try {
 			return adherentDao.findById(id);
-//		} catch (TechnicalException e) {
-//			throw new IllegalStateException(e);
-//		}
 	}
 	
 	public Adherent rechercherAdherentParIdentifiantTous(String id) throws TechnicalException{
-//		try {
 			return adherentDao.findByIdAll(id);
-//		} catch (TechnicalException e) {
-//			throw new IllegalStateException(e);
-//		}
 	}
 
 	public List<Adherent> rechercherPlongeurs() throws TechnicalException{
-//		try {
 			return adherentDao.findAll();
-//		} catch (TechnicalException e) {
-//			throw new IllegalStateException(e);
-//		}
 	}
 
 	public List<Adherent> rechercherAdherentsTous() throws TechnicalException{
-//		try {
 			return adherentDao.getAdherentsTous();
-//		} catch (TechnicalException e) {
-//			throw new IllegalStateException(e);
-//		}
 	}
 
 	public List<Adherent> rechercherAdherentsActifs() throws TechnicalException{
-//		try {
 			return adherentDao.getAdherentsActifs();
-//		} catch (TechnicalException e) {
-//			throw new IllegalStateException(e);
-//		}
 	}
 
 	public List<Adherent> rechercherAdherentsInactifs() throws TechnicalException{
-//		try {
 			return adherentDao.getAdherentsInactifs();
-//		} catch (TechnicalException e) {
-//			throw new IllegalStateException(e);
-//		}
 	}
 
 	public List<Adherent> rechercherExternes() throws TechnicalException{
-//		try {
 			return adherentDao.getExternes();
-//		} catch (TechnicalException e) {
-//			throw new IllegalStateException(e);
-//		}
 	}
 
 	/**
@@ -117,48 +93,28 @@ public class AdherentServiceImpl implements AdherentService {
 	}
 
 	public List<Adherent> rechercherAdherentsRole(String role) throws TechnicalException{
-//		try {
 			return adherentDao.getAdherentsLikeRole(role);
-//		} catch (TechnicalException e) {
-//			e.printStackTrace();
-//			throw new IllegalStateException(e);
-//		}
-		
 	}
 	
 	public void creerAdherent(Adherent adherent) throws TechnicalException{
-//		try {
 			adherentDao.create(adherent);
-//		} catch (TechnicalException e) {
-//			e.printStackTrace();
-//			throw new IllegalStateException(e);
-//		}
-		
 	}
 	
 	public void updateAdherent(Adherent adherent) throws TechnicalException{
-//		try {
-			adherentDao.update(adherent);
-//		} catch (TechnicalException e) {
-//			e.printStackTrace();
-//			throw new IllegalStateException(e);
-//		}
-		
+			adherentDao.update(adherent);	
+	}
+	
+	public void updatePasswordAdherent(Adherent adherent) throws TechnicalException{
+			adherentDao.updatePassword(adherent);
 	}
 	
 	public void creerExterne(Adherent adherent) throws TechnicalException{
-//		try {
 			Integer numExt = adherentDao.getExternes().size()+1;
 			adherent.setNumeroLicense(ResaConstants.LICENSE_EXTERNE.concat(numExt.toString()));
 			adherent.setActifInt(2);
 			adherent.setPilote(false);
 			adherent.setDp(false);
 			adherentDao.create(adherent);
-//		} catch (TechnicalException e) {
-//			e.printStackTrace();
-//			throw new IllegalStateException(e);
-//		}
-		
 	}
 	
 }

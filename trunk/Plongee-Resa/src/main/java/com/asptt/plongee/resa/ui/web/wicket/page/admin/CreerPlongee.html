@@ -1,39 +1,25 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml" 
-         xmlns:wicket="http://wicket.apache.org" xml:lang="fr"> 
-  
-     <head> 
-         <title>Creer Plongee</title> 
-         <link rel="stylesheet" type="text/css" href="/medias/css/plongee.css" /> 
-     </head> 
-     <body> 
-         <wicket:extend> 
-         <div id="wrapper"> 
-                 <div id="feedbackPanel"> 
-                                 <span wicket:id="feedback"/> 
-                 </div> 
-             <form wicket:id="inputForm" id="inputForm"> 
-             <div id="corps" align="left"> 
-                 <table> 
-                         <tr> 
-                                 <td>Date</td><td><input type="text" wicket:id="date"/></td> 
-                         </tr> 
-                         <tr> 
-                                 <td>Nombre de places</td><td><input type="text" wicket:id="nbMaxPlaces"/></td> 
-                         </tr>
-                         <tr> 
-                                 <td>Niveau</td><td><select wicket:id="niveauMinimum"/></td> 
-                         </tr> 
-                         <tr> 
-                                 <td>Type de plong&eacute;e</td><td><select wicket:id="type"/></td> 
-                         </tr>
-                 </table>     
-             </div> 
-             <input type="submit" value="Valider" /> 
-             </form> 
-         </div> 
-         </wicket:extend> 
-     </body> 
- </html>    
- 
+<wicket:extend> 
+	<div id="feedbackPanel"> 
+		<span wicket:id="feedback" />
+	</div> 
+	<form wicket:id="inputForm" id="inputForm"> 
+		<table> 
+			<tr> 
+				<td>Date</td><td><input type="text" wicket:id="date"/></td> 
+			</tr> 
+			<tr>
+				<td>Nombre de places</td><td><input type="text" wicket:id="nbMaxPlaces"/></td> 
+			</tr>
+			<tr>
+				<td>Niveau</td><td><select wicket:id="niveauMinimum"/></td> 
+            </tr>
+            <tr>
+            	<td>Type de plong&eacute;e</td><td><select wicket:id="type"/></td>
+            </tr>
+            <tr>
+            	<td><input type="submit" name="submit" wicket:id="validPlongee"	value="Valide la plongee" /></td>
+            	<td><input type="button" wicket:id="cancel" value="Annuler"/></td>
+            </tr>
+		</table>     
+	</form> 
+</wicket:extend>

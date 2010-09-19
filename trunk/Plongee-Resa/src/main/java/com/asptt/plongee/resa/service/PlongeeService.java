@@ -29,7 +29,7 @@ public interface PlongeeService {
 	public Integer getNbPlaceRestante(Plongee plongee);
 	
 	public int isOkForResa(Plongee plongee, Adherent adherent) throws ResaException;
-	public boolean isOkForListeAttente(Plongee plongee, Adherent adherent);
+	public boolean isOkForListeAttente(Plongee plongee, Adherent adherent) throws TechnicalException, ResaException;
 	public boolean isEnoughEncadrant(Plongee plongee) throws TechnicalException;
 	
 	public void inscrireAdherent(Plongee plongee, Adherent adherent) throws ResaException;
