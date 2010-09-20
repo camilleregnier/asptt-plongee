@@ -8,6 +8,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import javax.mail.MessagingException;
+
+import org.apache.commons.mail.Email;
+import org.apache.commons.mail.SimpleEmail;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.datetime.markup.html.basic.DateLabel;
@@ -21,6 +25,7 @@ import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 
 import com.asptt.plongee.resa.exception.MailException;
+import com.asptt.plongee.resa.exception.ResaException;
 import com.asptt.plongee.resa.exception.TechnicalException;
 import com.asptt.plongee.resa.mail.PlongeeMail;
 import com.asptt.plongee.resa.model.Adherent;
@@ -28,6 +33,7 @@ import com.asptt.plongee.resa.model.Plongee;
 import com.asptt.plongee.resa.model.PlongeeDataProvider;
 import com.asptt.plongee.resa.service.PlongeeService;
 import com.asptt.plongee.resa.ui.web.wicket.page.ErreurTechniquePage;
+import com.asptt.plongee.resa.ui.web.wicket.page.ErrorPage;
 import com.asptt.plongee.resa.ui.web.wicket.page.TemplatePage;
 
 public class DeInscriptionPlongeePage extends TemplatePage {
@@ -113,29 +119,47 @@ public class DeInscriptionPlongeePage extends TemplatePage {
 			//S'il y a des personnes en liste d'attente => mail
 			if(getResaSession().getPlongeeService().rechercherListeAttente(plongee).size() > 0){
 				//ENVOI d'un Mail
-				try {
-					PlongeeMail pMail = new PlongeeMail();
-//					pMail.sendMail();
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+					Email eMail = new SimpleEmail();
+					eMail.setSubject("gestion de file d'attente");
+					eMail.setMsg("Des personnes sont en file d'attente sur la plongée du "+plongee.getDate().toString()+" de "+plongee.getType()+", et une place vient de se libérer");
+					List<String> destis = new ArrayList<String>();
+					destis.add("eric.simon28@orange.fr");
+					destis.add("camille.regnier@gmail.com");
+
+					PlongeeMail pMail = new PlongeeMail(eMail);
+					pMail.sendMail(destis);
 			}
 			//SI c'est un encadrant il faut verifier s'il en reste assez
 			//et sinon envoyer un mail 
-			if(adherent.getEncadrement() == null){						
+			if(adherent.getEncadrement() == null){	
+				//Ce n'est pas un encadrant : on desinscrit
 				getResaSession().getPlongeeService().deInscrireAdherent(
 						plongee, 
 						getResaSession().getAdherent());
+				
 				setResponsePage(new InscriptionConfirmationPlongeePage(plongee));
 			} else {
+				//C'est un encadrant : on regarde s'il en reste assez
 				if(getResaSession().getPlongeeService().isEnoughEncadrant(plongee)){
 					getResaSession().getPlongeeService().deInscrireAdherent(
 							plongee, 
 							getResaSession().getAdherent());
 					setResponsePage(new InscriptionConfirmationPlongeePage(plongee));
 				} else {
+					// Il en reste pas assez ; mail
 					//TODO SI CONFIRMATION DESINSCRIRE + MAIL
+					// On desinscrit
+					getResaSession().getPlongeeService().deInscrireAdherent(
+							plongee, 
+							getResaSession().getAdherent());
+					//Envoi du mail
+					Email eMail = new SimpleEmail();
+					eMail.setSubject("Encadrement de la plongée du : "+plongee.getDate().toString());
+					eMail.setMsg("Un encadrant viens de se de-inscrire de la plongée du "+plongee.getDate().toString()+" de "+plongee.getType()+"\n" +
+							"Il n'y a pas assez d'encadrant pour assurer la plongée");
+					List<String> destis = new ArrayList<String>();
+					destis.add("eric.simon28@orange.fr");
+					destis.add("camille.regnier@gmail.com");
 				}
 				
 			}
@@ -143,6 +167,15 @@ public class DeInscriptionPlongeePage extends TemplatePage {
 			e.printStackTrace();
 			ErreurTechniquePage etp = new ErreurTechniquePage(e);
 			setResponsePage(etp);
+		}  catch (MessagingException e) {
+			e.printStackTrace();
+			ResaException re = new ResaException(e.getMessage());
+			ErrorPage errPage = new ErrorPage(re);
+			setResponsePage(errPage);
+		} catch (ResaException e) {
+			e.printStackTrace();
+			ErrorPage errPage = new ErrorPage(e);
+			setResponsePage(errPage);
 		}
 	}
 
