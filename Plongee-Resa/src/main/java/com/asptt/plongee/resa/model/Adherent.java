@@ -91,8 +91,8 @@ public class Adherent implements Serializable {
 	}
 	
 	public void setEncadrement(String encadrement) {
-		if(encadrement.equals(Encadrement.E3.toString())
-				|| encadrement.equals(Encadrement.E4.toString())){
+		if(encadrement.equals("E3")
+				|| encadrement.equals("E4")){
 			setDp(true);
 		}
 		setEnumEncadrement(Encadrement.valueOf(encadrement));
@@ -158,8 +158,8 @@ public class Adherent implements Serializable {
 			return true;
 		}else{
 			if(getEncadrement() != null){
-				if(getEncadrement().equals(Encadrement.E3)
-						|| getEncadrement().equals(Encadrement.E4) ){
+				if(getEnumEncadrement().equals(Encadrement.E3)
+						|| getEnumEncadrement().equals(Encadrement.E4) ){
 					return true;
 				}
 			}
