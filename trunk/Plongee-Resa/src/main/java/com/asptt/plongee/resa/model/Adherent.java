@@ -14,8 +14,6 @@ public class Adherent implements Serializable {
 	private String nom;
 	private String prenom;
 	private Encadrement encadrement;
-//	private NiveauAutonomie n = NiveauAutonomie.P0;
-//	private String niveau = NiveauAutonomie.P0.toString();
 	private NiveauAutonomie niveau;
 	private boolean pilote;
 	private boolean dp;
@@ -84,11 +82,19 @@ public class Adherent implements Serializable {
 		if(null == encadrement){
 			this.encadrement = null;
 		}else{
+			if(encadrement.equals(Encadrement.E3)
+					|| encadrement.equals(Encadrement.E4)){
+				setDp(true);
+			}
 			this.encadrement = encadrement;
 		}
 	}
 	
 	public void setEncadrement(String encadrement) {
+		if(encadrement.equals(Encadrement.E3.toString())
+				|| encadrement.equals(Encadrement.E4.toString())){
+			setDp(true);
+		}
 		setEnumEncadrement(Encadrement.valueOf(encadrement));
 	}
 
@@ -151,6 +157,12 @@ public class Adherent implements Serializable {
 		if(getEnumNiveau().equals(NiveauAutonomie.P5)){
 			return true;
 		}else{
+			if(getEncadrement() != null){
+				if(getEncadrement().equals(Encadrement.E3)
+						|| getEncadrement().equals(Encadrement.E4) ){
+					return true;
+				}
+			}
 			return false;
 		}
 	}
@@ -196,17 +208,6 @@ public class Adherent implements Serializable {
 		}
 		return roles;
 	}
-
-//	public String[] getTabRoles() {
-//		if(null == roles){
-//			roles = new Roles();
-//		}
-//		String[] tabRoles = new String[roles.size()];
-//		for(int i =0; i< roles.size(); i++){
-//			tabRoles[i] = roles.get(i);
-//		}
-//		return tabRoles;
-//	
 
 	public String getNomComplet(){
 		return nom + " " + prenom + " " + niveau + " (" + telephone + ")";
