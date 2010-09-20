@@ -1,9 +1,12 @@
 <wicket:extend>
+	<div id="feedbackPanel"> 
+    	<span wicket:id="feedback"/> 
+    </div>
 	<form wicket:id="form">
 		<span wicket:id="palette">
 		</span>
 		<br/>
-	   <input type="submit" value="valider" />
+		<input type="submit" name="submit" wicket:id="valid" value="valide la liste d'attente" />
+        <input type="button" wicket:id="cancel" value="Annuler"/>
 	 </form>
-	 <span wicket:id="feedback">feedbackmessages will be put here</span>
 </wicket:extend>
