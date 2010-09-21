@@ -73,13 +73,13 @@ public class InscriptionPlongeePage extends TemplatePage {
 					nomDP = plongee.getDp().getNom();
 				}
 
-				item.add(new IndicatingAjaxLink("select") {
+				IndicatingAjaxLink link = new IndicatingAjaxLink("select") {
 					@Override
 					public void onClick(AjaxRequestTarget target) {
 						inscrire(target, item.getModel());
 					}
-				});
-
+				};
+				item.add(link);
 				// Mise en forme de la date
 				Calendar cal = Calendar.getInstance();
 				cal.setTime(plongee.getDate());
