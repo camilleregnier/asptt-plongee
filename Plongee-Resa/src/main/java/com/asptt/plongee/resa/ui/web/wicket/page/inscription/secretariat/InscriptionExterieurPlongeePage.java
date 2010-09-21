@@ -27,6 +27,8 @@ import com.asptt.plongee.resa.ui.web.wicket.page.inscription.InscriptionPlongeeP
 public class InscriptionExterieurPlongeePage extends TemplatePage {
 	
 	private ModalWindow modalExterieur;
+	
+	private List<Adherent> list;
 
 	public InscriptionExterieurPlongeePage() {
 		super();
@@ -56,8 +58,9 @@ public class InscriptionExterieurPlongeePage extends TemplatePage {
 			return emptyList;
 		}
 		
-		List<Adherent> list = getResaSession().getAdherentService()
-				.rechercherExternes();
+		if (list == null){
+			list = getResaSession().getAdherentService().rechercherExternes();
+		}
 		
 		ArrayList<Adherent> newList = new ArrayList<Adherent>();
 		for (int i = 0; i < list.size(); i++) {
@@ -69,7 +72,8 @@ public class InscriptionExterieurPlongeePage extends TemplatePage {
 	}
 	
 	class ExterieurForm extends Form{
-		
+
+		private static final long serialVersionUID = 994213660801872L;
 		ObjectAutoCompleteField<Adherent, String> autocompleteField ;
 
 		public ExterieurForm(String id) {
