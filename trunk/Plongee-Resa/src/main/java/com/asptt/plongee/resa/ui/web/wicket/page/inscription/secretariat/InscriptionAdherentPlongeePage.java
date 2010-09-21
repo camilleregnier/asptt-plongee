@@ -17,10 +17,13 @@ import org.wicketstuff.objectautocomplete.ObjectAutoCompleteField;
 import org.wicketstuff.objectautocomplete.ObjectAutoCompleteRenderer;
 
 import com.asptt.plongee.resa.model.Adherent;
+import com.asptt.plongee.resa.model.AdherentDataProvider;
 import com.asptt.plongee.resa.ui.web.wicket.page.TemplatePage;
 import com.asptt.plongee.resa.ui.web.wicket.page.inscription.InscriptionPlongeePage;
 
 public class InscriptionAdherentPlongeePage extends TemplatePage {
+	
+	private List<Adherent> list;
 
 	public InscriptionAdherentPlongeePage() {
 		super();
@@ -34,8 +37,10 @@ public class InscriptionAdherentPlongeePage extends TemplatePage {
 			return emptyList;
 		}
 		
-		List<Adherent> list = getResaSession().getAdherentService()
+		if (list == null) {
+			list = getResaSession().getAdherentService()
 				.rechercherAdherentsActifs();
+		}
 		
 		ArrayList<Adherent> newList = new ArrayList<Adherent>();
 		for (int i = 0; i < list.size(); i++) {
@@ -47,12 +52,12 @@ public class InscriptionAdherentPlongeePage extends TemplatePage {
 	}
 	
 	class AdherentForm extends Form{
-		
+
+		private static final long serialVersionUID = 5529259540931669786L;
 		ObjectAutoCompleteField<Adherent, String> autocompleteField ;
 
 		public AdherentForm(String id) {
 			super(id);
-			
 			
 			AutoCompletionChoicesProvider<Adherent> provider = new AutoCompletionChoicesProvider<Adherent>() {
 				private static final long serialVersionUID = 1L;
