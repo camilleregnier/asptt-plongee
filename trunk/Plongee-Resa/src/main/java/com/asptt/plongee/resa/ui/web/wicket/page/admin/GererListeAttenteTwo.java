@@ -21,6 +21,7 @@ import com.asptt.plongee.resa.model.Adherent;
 import com.asptt.plongee.resa.model.Plongee;
 import com.asptt.plongee.resa.ui.web.wicket.page.AccueilPage;
 import com.asptt.plongee.resa.ui.web.wicket.page.TemplatePage;
+import com.asptt.plongee.resa.ui.web.wicket.page.inscription.InscriptionConfirmationPlongeePage;
 
 public class GererListeAttenteTwo extends TemplatePage {
 	
@@ -52,17 +53,6 @@ public class GererListeAttenteTwo extends TemplatePage {
 		{
 
 			
-//			@Override
-//			protected void onSubmit()
-//			{
-//				info("selected person(s): " + palette.getDefaultModelObjectAsString());
-//				IModel modelAdherents  = palette.getDefaultModel();
-//				List<Adherent> adherents = (List<Adherent>) modelAdherents.getObject();
-//				for(Adherent adherent : adherents){
-//					getResaSession().getPlongeeService().fairePasserAttenteAInscrit(plongee, adherent);
-//				}
-//			}
-			
 		};
 
 		AjaxButton valid = new AjaxButton("valid") {
@@ -74,7 +64,7 @@ public class GererListeAttenteTwo extends TemplatePage {
 				for(Adherent adherent : adherents){
 					getResaSession().getPlongeeService().fairePasserAttenteAInscrit(plongee, adherent);
 				}
-				setResponsePage(AccueilPage.class);
+				setResponsePage(new InscriptionConfirmationPlongeePage(plongee));
 			}
 			
 			// L'implémentation de cette méthode est nécessaire pour voir
@@ -95,8 +85,6 @@ public class GererListeAttenteTwo extends TemplatePage {
 		form.add(cancel);
 		add(form);
 		form.add(palette);
-
-//		add(new FeedbackPanel("feedback"));
 	}
 
 }
