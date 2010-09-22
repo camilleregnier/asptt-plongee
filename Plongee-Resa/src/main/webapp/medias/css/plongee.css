@@ -66,10 +66,6 @@ ne pas modifier les valeurs*/
 	text-decoration: underline;
 }
 
-#corpsOri{
-	margin : 20px;
-}
-
 #feedbackPanel{
 	margin: 20px;
 	padding-top: 10px;
@@ -90,6 +86,7 @@ table.dataview {
 	border-bottom: 1px solid #0079d6;
 	font-size: 1em;
 	font-family: arial;
+	padding-top: 20px;
 	}
 	
 table.dataview caption { text-align: left; }
@@ -127,126 +124,77 @@ table.palette td.pane choices {
 	vertical-align: middle;
 }
 /*
-
 ------------------------------------------------------------
-
 Début Organisation Page
-
 ------------------------------------------------------------
-
 */
 
-
 .global{
-
 margin-left:auto;
-
 margin-right:auto;
-
 max-width:82.5em;
-
 min-width:64.5em;
-
 position:relative;
-
 text-align:left;
-
 width:98.5%;
-
 background-color: #FFFFFF;
-
 }
-
 
 .header {
-
 margin: 0px; 
-
 margin-top: 15px;
-
 padding: 0px; 
-
 text-align: center; 
-
 }
-
 
 .corps{
-
 clear:both;
-
 margin-top:0.5em;
-
 width:100%;
-
 }
-
 
 .menu{
-
 padding-top:20px;
-
-padding-bottom:0px; 
-
+padding-bottom:5px; 
 padding-left: 5px;
-
 float: left;
-
-width:250px;
-
+width:180px;
+}
+.menu ul{
+	list-style-type: none;
 }
 
+.menu li{
+	display: inline;
+}
 
 .content{
-
 padding-left:10px;
-
 padding-top:20px;
-
 width: 69%;
-
 float: left;
 
+	height: 100%;
+	margin: 0 auto;/* -66px; /* 66px=hauteur du footer*/
 }
 
 .home{
-
 padding-left:30px;
-
 padding-right:50px; 
-
 padding-top:20px;
-
 width: 75%;
-
 margin-left: 10%; 
-
 }
-
 
 .footer{
-
 text-align: center;
-
 margin-top:20px;
-
 margin-bottom:20px; 
-
 clear: both;
-
 }
 
-
- 
-
 /*
-
 ------------------------------------------------------------
-
 Fin Organisation Page
-
 ------------------------------------------------------------
-
 */
-
-
