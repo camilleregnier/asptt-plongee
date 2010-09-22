@@ -24,6 +24,7 @@ public interface PlongeeService {
 	public List<Adherent> rechercherListeAttente(Plongee plongee);
 	
 	public void creerPlongee(Plongee plongee) throws ResaException, TechnicalException;
+	public void supprimerPlongee(Plongee plongee) throws TechnicalException;
 	public void modifierPlongee(Plongee plongee);
 
 	public Integer getNbPlaceRestante(Plongee plongee);

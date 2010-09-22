@@ -30,6 +30,7 @@ public class PlongeeServiceImpl implements PlongeeService {
 
 	@Override
 	public void creerPlongee(Plongee plongee) throws ResaException,TechnicalException {
+		//On verifie d'abord qu'elle n'existe pas déjà
 		List<Plongee> plongees = rechercherPlongees(plongee.getDate(), plongee.getType());
 		if(plongees.size() == 0){
 			plongeeDao.create(plongee);
@@ -37,6 +38,11 @@ public class PlongeeServiceImpl implements PlongeeService {
 		else{
 			throw new ResaException("Cette Plongée existe déjà");
 		}
+	}
+
+	@Override
+	public void supprimerPlongee(Plongee plongee) throws TechnicalException {
+		plongeeDao.delete(plongee);
 	}
 
 	@Override
