@@ -1,15 +1,12 @@
 package com.asptt.plongee.resa.ui.web.wicket.page.inscription;
 
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.ajax.markup.html.IndicatingAjaxLink;
-import org.apache.wicket.feedback.IFeedback;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.repeater.Item;
@@ -22,8 +19,6 @@ import com.asptt.plongee.resa.exception.TechnicalException;
 import com.asptt.plongee.resa.model.Adherent;
 import com.asptt.plongee.resa.model.Plongee;
 import com.asptt.plongee.resa.model.PlongeeDataProvider;
-import com.asptt.plongee.resa.ui.web.wicket.page.ErreurTechniquePage;
-import com.asptt.plongee.resa.ui.web.wicket.page.ErrorPage;
 import com.asptt.plongee.resa.ui.web.wicket.page.TemplatePage;
 import com.asptt.plongee.resa.ui.web.wicket.page.admin.GererPlongeeAOuvrirTwo;
 
@@ -59,8 +54,6 @@ public class InscriptionPlongeePage extends TemplatePage {
 		} catch (TechnicalException e) {
 			e.printStackTrace();
 			error(e.getKey());
-//			ErreurTechniquePage etp = new ErreurTechniquePage(e);
-//			setResponsePage(etp);
 		}
 		
 		PlongeeDataProvider pDataProvider = new PlongeeDataProvider(plongees);
@@ -73,13 +66,13 @@ public class InscriptionPlongeePage extends TemplatePage {
 					nomDP = plongee.getDp().getNom();
 				}
 
-				IndicatingAjaxLink link = new IndicatingAjaxLink("select") {
+				item.add(new IndicatingAjaxLink("select") {
 					@Override
 					public void onClick(AjaxRequestTarget target) {
 						inscrire(target, item.getModel());
 					}
-				};
-				item.add(link);
+				});
+
 				// Mise en forme de la date
 				Calendar cal = Calendar.getInstance();
 				cal.setTime(plongee.getDate());
@@ -120,6 +113,8 @@ public class InscriptionPlongeePage extends TemplatePage {
 					plongee, 
 					adh != null ? adh : getResaSession().getAdherent());
 			
+			
+			
 			switch (response) {
 			case 1: //on peux inscrire l'adherent à la plongee
 				getResaSession().getPlongeeService().inscrireAdherent(
@@ -147,14 +142,12 @@ public class InscriptionPlongeePage extends TemplatePage {
 
 		} catch (ResaException e) {
 			e.printStackTrace();
-//			error(e.getKey());
-			ErrorPage ep = new ErrorPage(e);
-			setResponsePage(ep);
+			error(e.getKey());
 		} catch (TechnicalException e) {
 			e.printStackTrace();
 			error(e.getKey());
-//			ErreurTechniquePage etp = new ErreurTechniquePage(e);
-//			setResponsePage(etp);
+		} finally {
+			target.addComponent(feedback);
 		}
 	}
 		
