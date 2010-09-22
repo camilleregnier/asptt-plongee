@@ -210,7 +210,18 @@ public class Adherent implements Serializable {
 	}
 
 	public String getNomComplet(){
-		return nom + " " + prenom + " " + niveau + " (" + telephone + ")";
+		// Dès que le plongeur est encadrant, on affiche son niveau d'encadrement
+		String niveauAffiche;
+		if (getEncadrement() != null)
+			niveauAffiche = getEncadrement();
+		else niveauAffiche = getNiveau();
+		
+		// Pour les externes, le niveau est suffixé par (Ext.)
+		if (getActifInt() == 2){
+			niveauAffiche = niveauAffiche + " (Ext.)";
+		}
+		
+		return nom + " " + prenom + " " + niveauAffiche + " (" + telephone + ")";
 	}
 
 	public void setRoles(List<String> roles) {

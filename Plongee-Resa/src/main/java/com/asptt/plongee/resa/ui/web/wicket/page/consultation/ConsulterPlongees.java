@@ -1,5 +1,6 @@
 package com.asptt.plongee.resa.ui.web.wicket.page.consultation;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
@@ -37,6 +38,8 @@ public class ConsulterPlongees extends TemplatePage {
 	@SuppressWarnings("serial")
 	public ConsulterPlongees() {
 		
+		add(new Label("message", getResaSession().getAdherent().getPrenom() + ", ci-dessous les plongées auxquelles tu as accès"));
+		
 		modal2 = new ModalWindow("modal2");
 		modal2.setTitle("This is modal window with panel content.");
 		modal2.setCookieName("modal-adherent");
@@ -49,7 +52,7 @@ public class ConsulterPlongees extends TemplatePage {
 
 			add(new DataView<Plongee>("simple", pDataProvider) {
 				protected void populateItem(final Item<Plongee> item) {
-					Plongee plongee = item.getModelObject();
+					final Plongee plongee = item.getModelObject();
 					String nomDP = "Aucun";
 					if (null != plongee.getDp()) {
 						nomDP = plongee.getDp().getNom();
@@ -83,8 +86,18 @@ public class ConsulterPlongees extends TemplatePage {
 							new AbstractReadOnlyModel<String>() {
 								@Override
 								public String getObject() {
-									return (item.getIndex() % 2 == 1) ? "even"
-											: "odd";
+									String cssClass;
+									if (item.getIndex() % 2 == 1){
+										cssClass = "even";
+									} else {
+										cssClass = "odd";
+									}
+									for (Adherent adh : plongee.getParticipants()){
+										if (adh.getNumeroLicense().equals(getResaSession().getAdherent().getNumeroLicense())){
+											cssClass = cssClass + " inscrit";
+										}
+									}
+									return cssClass;
 								}
 							}));
 				}
@@ -192,7 +205,19 @@ public class ConsulterPlongees extends TemplatePage {
 	
 								item.add(new Label("nom", adherent.getNom()));
 								item.add(new Label("prenom", adherent.getPrenom()));
-								item.add(new Label("niveau", adherent.getNiveau()));
+								
+								// Dès que le plongeur est encadrant, on affiche son niveau d'encadrement
+								String niveauAffiche;
+								if (adherent.getEncadrement() != null)
+									niveauAffiche = adherent.getEncadrement();
+								else niveauAffiche = adherent.getNiveau();
+								
+								// Pour les externes, le niveau est suffixé par (Ext.)
+								if (adherent.getActifInt() ==2){
+									niveauAffiche = niveauAffiche + " (Ext.)";
+								}
+								
+								item.add(new Label("niveau", niveauAffiche));
 	
 								item.add(new AttributeModifier("class", true,
 								new AbstractReadOnlyModel<String>() {

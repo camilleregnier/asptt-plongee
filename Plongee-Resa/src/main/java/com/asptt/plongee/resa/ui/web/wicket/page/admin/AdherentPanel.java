@@ -84,29 +84,12 @@ public class AdherentPanel extends Panel {
 			// Ajout de la checkbox membre actif (ou pas)
 			add(new CheckBox("actif"));
 
-			// Ajout de la checkbox directeur de plongée
-			final CheckBox checkDp = new CheckBox("dp");
-
-			//checkDp.setOutputMarkupId(true);
-			add(checkDp);
-
 			// Ajout de la liste des niveaux d'encadrement
 			List<String> encadrement = new ArrayList<String>();
 			for (Adherent.Encadrement e : Adherent.Encadrement.values()) {
 				encadrement.add(e.toString());
 			}
 			DropDownChoice encadrt = new DropDownChoice("encadrement", encadrement);
-//			encadrt.add (new AjaxFormComponentUpdatingBehavior("onchange"){
-//		            protected void onUpdate(AjaxRequestTarget target) {
-//		            	CheckBox check = (CheckBox)get("dp");
-//		            	Adherent a = (Adherent) model.getChainedModel().getObject();
-//		                if (a.getEncadrement().contains("E"))
-//		                	a.setDp(true);
-//		                model.setObject(a);
-//		                checkDp.setModel(model.bind("dp"));
-//		                target.addComponent(checkDp);
-//		            }
-//				});
 			add(encadrt);
 
 			// Ajout des roles

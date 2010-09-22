@@ -34,6 +34,7 @@ import com.asptt.plongee.resa.model.Plongee;
 import com.asptt.plongee.resa.ui.web.wicket.page.ErreurTechniquePage;
 import com.asptt.plongee.resa.ui.web.wicket.page.ErrorPage;
 import com.asptt.plongee.resa.ui.web.wicket.page.TemplatePage;
+import com.asptt.plongee.resa.ui.web.wicket.page.inscription.InscriptionConfirmationPlongeePage;
 
 public class GererPlongeeAOuvrirTwo extends TemplatePage {
 
@@ -140,7 +141,8 @@ public class GererPlongeeAOuvrirTwo extends TemplatePage {
 					PageParameters param = new PageParameters();
 					param.put("plongeeAOuvrir", plongee);
 					param.put("inscrits", adhInscrits);
-					setResponsePage(new GererPlongeeAOuvrirThree(plongee));
+					//setResponsePage(new GererPlongeeAOuvrirThree(plongee));
+					setResponsePage(new InscriptionConfirmationPlongeePage(plongee));
 				}//fin du onSubmit()
 			};
 
