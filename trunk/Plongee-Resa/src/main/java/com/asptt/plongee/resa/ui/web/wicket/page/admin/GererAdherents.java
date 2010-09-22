@@ -38,7 +38,7 @@ public class GererAdherents extends TemplatePage {
 				new AdherentDataProvider(adherents), 10) {
 
 				protected void populateItem(final Item<Adherent> item) {
-				Adherent adherent = item.getModelObject();
+				final Adherent adherent = item.getModelObject();
 				
 				item.add(new IndicatingAjaxLink("select")
 				{
@@ -68,8 +68,16 @@ public class GererAdherents extends TemplatePage {
 						new AbstractReadOnlyModel<String>() {
 							@Override
 							public String getObject() {
-								return (item.getIndex() % 2 == 1) ? "even"
-										: "odd";
+								String cssClass;
+								if (item.getIndex() % 2 == 1){
+									cssClass = "even";
+								} else {
+									cssClass = "odd";
+								}
+								if (!adherent.isActif()){
+									cssClass = cssClass + " inactif";
+								}
+								return cssClass;
 							}
 						}));
 			}

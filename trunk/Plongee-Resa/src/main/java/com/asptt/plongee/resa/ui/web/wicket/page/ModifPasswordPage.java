@@ -5,6 +5,7 @@ import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.PasswordTextField;
+import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.validation.validator.StringValidator.ExactLengthValidator;
@@ -42,6 +43,13 @@ public class ModifPasswordPage extends WebPage {
 			add(oldPassword.setRequired(true));
 			add(newPassword1.setRequired(true));
 			add(newPassword2.setRequired(true));
+			
+			add(new Link("cancel") {
+				@Override
+				public void onClick() {
+					setResponsePage(LoginPage.class);
+				}
+			});
 
 			add(new AjaxButton("validPassword") {
 				@Override

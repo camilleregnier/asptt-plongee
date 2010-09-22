@@ -89,10 +89,6 @@ public class CreerAdherent extends TemplatePage {
 			// Ajout de la checkbox pilote
 			add(new CheckBox("pilote", model.bind("pilote")));
 			
-			
-			// Ajout de la checkbox directeur de plongée
-			add(new CheckBox("dp", model.bind("dp")));
-			
 			//Ajout des roles
 			List<String> roles = Arrays.asList(new String[] { "ADMIN", "USER", "SECRETARIAT" });
 			add(new ListMultipleChoice<String>("roles", roles));

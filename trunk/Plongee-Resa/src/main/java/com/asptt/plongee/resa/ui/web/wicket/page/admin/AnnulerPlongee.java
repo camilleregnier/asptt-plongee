@@ -119,6 +119,12 @@ public class AnnulerPlongee extends TemplatePage {
 
 	}
 	
+	private void onClickNo(AjaxRequestTarget target){
+
+		modalPlongee.close(target);
+
+	}
+	
 	public  class PlongeePanel extends Panel {
 
 		private static final long serialVersionUID = 8737443673255555616L;
@@ -138,7 +144,7 @@ public class AnnulerPlongee extends TemplatePage {
 			
 			// Le lien qui va fermer la fenêtre de confirmation
 			// et appeler la méthode de désinscription de la page principale (DesInscriptionPlongeePage)
-			add(new IndicatingAjaxLink("close")
+			add(new IndicatingAjaxLink("yes")
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -146,6 +152,17 @@ public class AnnulerPlongee extends TemplatePage {
 				public void onClick(AjaxRequestTarget target)
 				{
 					onClickPlongeePanel(target, plongee);
+				}
+			});
+			
+			add(new IndicatingAjaxLink("no")
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public void onClick(AjaxRequestTarget target)
+				{
+					onClickNo(target);
 				}
 			});
 		}
