@@ -108,11 +108,14 @@ public class AnnulerPlongee extends TemplatePage {
 		target.appendJavascript( "Wicket.Window.unloadConfirmation  = false;");
 	}
 	
-	private void onClickPlongeePanel(AjaxRequestTarget target){
+	private void onClickPlongeePanel(AjaxRequestTarget target, Plongee plongee){
 
 		modalPlongee.close(target);
 		
-		// TODO appel du service d'annulation de la plongée;
+		// appel du service d'annulation de la plongée;
+		getResaSession().getPlongeeService().supprimerPlongee(plongee);
+		
+		setResponsePage(AccueilPage.class);
 
 	}
 	
@@ -125,7 +128,7 @@ public class AnnulerPlongee extends TemplatePage {
 			setOutputMarkupId(true);
 			setDefaultModel(plongeeModel);
 			
-			Plongee plongee = plongeeModel.getObject();
+			final Plongee plongee = plongeeModel.getObject();
 			
 			// Informations précisant la plongeur concerné et la plongée
 			// dans la fenêtre de confirmation de désinscription
@@ -142,7 +145,7 @@ public class AnnulerPlongee extends TemplatePage {
 				@Override
 				public void onClick(AjaxRequestTarget target)
 				{
-					onClickPlongeePanel(target);
+					onClickPlongeePanel(target, plongee);
 				}
 			});
 		}

@@ -97,8 +97,29 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements PlongeeDao {
 	}
 
 	public void delete(Plongee obj) throws TechnicalException {
-		// TODO Auto-generated method stub
-
+		try {
+			StringBuffer sb = new StringBuffer();
+			sb.append("UPDATE PLONGEE");
+			sb.append(" SET OUVERTURE_FORCEE = 0");
+			sb.append(" WHERE IDPLONGEES = ?");
+			PreparedStatement st = getDataSource().getConnection()
+					.prepareStatement(sb.toString());
+			st.setInt(1, obj.getId());
+			if (st.executeUpdate() == 0) {
+				throw new TechnicalException(
+						"La plongée "+obj.getId()+" n'a pu être annulée");
+			}
+		} catch (SQLException e) {
+			throw new TechnicalException(e);
+		} finally {
+			try {
+				getDataSource().getConnection().close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+				throw new TechnicalException(
+						"Impossible de cloturer la connexion");
+			}
+		}
 	}
 
 	public Plongee update(Plongee obj) throws TechnicalException {
@@ -148,6 +169,7 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements PlongeeDao {
 			sb.append(" WHERE OUVERTURE_FORCEE=1");
 			sb.append(" and date > CURRENT_TIMESTAMP()");
 			sb.append(" and date < DATE_ADD(CURRENT_DATE(), INTERVAL " + ResaConstants.MAX_JOUR_VISIBLE + " DAY)");
+			sb.append(" and OUVERTURE_FORCEE = 1");
 			sb.append(" ORDER BY DATE");
 			PreparedStatement st = getDataSource().getConnection().prepareStatement(sb.toString());
 			ResultSet rs = st.executeQuery();
@@ -174,6 +196,7 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements PlongeeDao {
 			StringBuffer sb = new StringBuffer("SELECT * FROM PLONGEE p  WHERE OUVERTURE_FORCEE=1");
 			sb.append(" and date < DATE_ADD(CURRENT_DATE(), INTERVAL " + nbjour + " DAY)");
 			sb.append(" and date > CURRENT_TIMESTAMP()");
+			sb.append(" and OUVERTURE_FORCEE = 1");
 			sb.append(" ORDER BY DATE");
 			
 			PreparedStatement st = getDataSource().getConnection().prepareStatement(sb.toString());
@@ -233,6 +256,7 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements PlongeeDao {
 			sb.append(" AND plongees_idPlongees = idPlongees");
 			sb.append(" AND date > DATE_ADD(now(), INTERVAL ? HOUR)");
 			sb.append(" AND date_annul_plongee is null");
+			sb.append(" and OUVERTURE_FORCEE = 1");
 			sb.append(" ORDER BY DATE");
 			PreparedStatement st = getDataSource().getConnection().
 				prepareStatement(sb.toString());
@@ -264,6 +288,7 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements PlongeeDao {
 			StringBuffer sb = new StringBuffer();
 			sb.append("SELECT * FROM PLONGEE p");
 			sb.append(" WHERE date(DATE) = ? AND DEMIE_JOURNEE = ?");
+			sb.append(" and OUVERTURE_FORCEE = 1");
 			PreparedStatement st = getDataSource().getConnection().prepareStatement(sb.toString());
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 			String laDateRecherchee = sdf.format(date);			
@@ -299,6 +324,7 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements PlongeeDao {
 			sb.append(" AND license = adherent_license");
 			sb.append(" AND plongees_idPlongees = idPlongees");
 			sb.append(" AND date < current_date()");
+			sb.append(" and OUVERTURE_FORCEE = 1");
 			PreparedStatement st = getDataSource().getConnection().
 				prepareStatement(sb.toString());
 			st.setString(1, adherent.getNumeroLicense());
