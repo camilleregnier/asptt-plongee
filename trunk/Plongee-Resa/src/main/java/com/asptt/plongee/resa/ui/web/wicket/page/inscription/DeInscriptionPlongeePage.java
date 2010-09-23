@@ -116,19 +116,6 @@ public class DeInscriptionPlongeePage extends TemplatePage {
 		try {
 			Adherent adherent = getResaSession().getAdherent();
 			
-			//S'il y a des personnes en liste d'attente => mail
-			if(getResaSession().getPlongeeService().rechercherListeAttente(plongee).size() > 0){
-				//ENVOI d'un Mail
-					Email eMail = new SimpleEmail();
-					eMail.setSubject("gestion de file d'attente");
-					eMail.setMsg("Des personnes sont en file d'attente sur la plongée du "+plongee.getDate().toString()+" de "+plongee.getType()+", et une place vient de se libérer");
-					List<String> destis = new ArrayList<String>();
-					destis.add("eric.simon28@orange.fr");
-					destis.add("camille.regnier@gmail.com");
-
-					PlongeeMail pMail = new PlongeeMail(eMail);
-					pMail.sendMail(destis);
-			}
 			//SI c'est un encadrant il faut verifier s'il en reste assez
 			//et sinon envoyer un mail 
 			if(adherent.getEncadrement() == null){	
@@ -138,12 +125,39 @@ public class DeInscriptionPlongeePage extends TemplatePage {
 						getResaSession().getAdherent());
 				
 				setResponsePage(new InscriptionConfirmationPlongeePage(plongee));
+				//S'il y a des personnes en liste d'attente => mail
+				if(getResaSession().getPlongeeService().rechercherListeAttente(plongee).size() > 0){
+					//ENVOI d'un Mail
+					Email eMail = new SimpleEmail();
+					eMail.setSubject("gestion de file d'attente");
+					eMail.setMsg("Des personnes sont en file d'attente sur la plongée du "+plongee.getDate().toString()+" de "+plongee.getType()+", et une place vient de se libérer");
+					List<String> destis = new ArrayList<String>();
+					destis.add("eric.simon28@orange.fr");
+					destis.add("camille.regnier@gmail.com");
+					
+					PlongeeMail pMail = new PlongeeMail(eMail);
+					pMail.sendMail(destis);
+				}
+				setResponsePage(new InscriptionConfirmationPlongeePage(plongee));
 			} else {
 				//C'est un encadrant : on regarde s'il en reste assez
 				if(getResaSession().getPlongeeService().isEnoughEncadrant(plongee)){
 					getResaSession().getPlongeeService().deInscrireAdherent(
 							plongee, 
 							getResaSession().getAdherent());
+					//S'il y a des personnes en liste d'attente => mail
+					if(getResaSession().getPlongeeService().rechercherListeAttente(plongee).size() > 0){
+						//ENVOI d'un Mail
+						Email eMail = new SimpleEmail();
+						eMail.setSubject("gestion de file d'attente");
+						eMail.setMsg("Des personnes sont en file d'attente sur la plongée du "+plongee.getDate().toString()+" de "+plongee.getType()+", et une place vient de se libérer");
+						List<String> destis = new ArrayList<String>();
+						destis.add("eric.simon28@orange.fr");
+						destis.add("camille.regnier@gmail.com");
+						
+						PlongeeMail pMail = new PlongeeMail(eMail);
+						pMail.sendMail(destis);
+					}
 					setResponsePage(new InscriptionConfirmationPlongeePage(plongee));
 				} else {
 					// Il en reste pas assez ; mail
@@ -160,8 +174,11 @@ public class DeInscriptionPlongeePage extends TemplatePage {
 					List<String> destis = new ArrayList<String>();
 					destis.add("eric.simon28@orange.fr");
 					destis.add("camille.regnier@gmail.com");
+
+					PlongeeMail pMail = new PlongeeMail(eMail);
+					pMail.sendMail(destis);
+					setResponsePage(new InscriptionConfirmationPlongeePage(plongee));
 				}
-				
 			}
 		} catch (TechnicalException e) {
 			e.printStackTrace();
