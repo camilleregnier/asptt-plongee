@@ -40,6 +40,7 @@ public class DeInscriptionPlongeePage extends TemplatePage {
 
 	private Adherent adh = null;
 	private List<Plongee> plongees;
+	private final FeedbackPanel feedback;
 	
 	public DeInscriptionPlongeePage() {
 
@@ -47,7 +48,7 @@ public class DeInscriptionPlongeePage extends TemplatePage {
 		
 		add(new Label("message", adh.getPrenom() + ", voici les plongées auxquelles tu es inscrit(e)"));
 		
-		final FeedbackPanel feedback = new FeedbackPanel("feedback");
+		feedback = new FeedbackPanel("feedback");
 		add(feedback);
 		init();
 	}
@@ -75,8 +76,6 @@ public class DeInscriptionPlongeePage extends TemplatePage {
 				item.add(new IndicatingAjaxLink("select") {
 					@Override
 					public void onClick(AjaxRequestTarget target) {
-//						replaceModalWindow(target, item.getModel());
-//						modal2.show(target);
 						deInscrire(target, item.getModel());
 					}
 				});
@@ -182,17 +181,15 @@ public class DeInscriptionPlongeePage extends TemplatePage {
 			}
 		} catch (TechnicalException e) {
 			e.printStackTrace();
-			ErreurTechniquePage etp = new ErreurTechniquePage(e);
-			setResponsePage(etp);
+			error(e.getKey());
 		}  catch (MessagingException e) {
 			e.printStackTrace();
-			ResaException re = new ResaException(e.getMessage());
-			ErrorPage errPage = new ErrorPage(re);
-			setResponsePage(errPage);
+			error(e.getMessage());
 		} catch (ResaException e) {
 			e.printStackTrace();
-			ErrorPage errPage = new ErrorPage(e);
-			setResponsePage(errPage);
+			error(e.getKey());
+		} finally {
+			target.addComponent(feedback);
 		}
 	}
 
