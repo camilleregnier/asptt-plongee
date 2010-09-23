@@ -13,12 +13,12 @@ table.palette td.header {
 }
 
 table.palette td.pane {
-	width: 400px;
+	width: 300px;
 	text-align: center;
 }
 
 table.palette td.pane select {
-	width: 400px;
+	width: 300px;
 }
 
 table.palette td.buttons { 
