@@ -148,7 +148,7 @@ public class GererPlongeeAOuvrirTwo extends TemplatePage {
 
 			form.setModel(modelPlongee);
 			// Le nombre max. de places, pour info
-			maxPlaces = new TextField<Integer>("maxPlaces");
+			maxPlaces = new TextField<Integer>("nbMaxPlaces");
 			maxPlaces.setOutputMarkupId(true);
 			form.add(maxPlaces.setEnabled(false));
 			// Le niveau mini. des plongeurs, pour info
@@ -213,7 +213,7 @@ public class GererPlongeeAOuvrirTwo extends TemplatePage {
 			formPlongee.add(feedback);
 			
 			// Nombre de places max
-			formPlongee.add(new RequiredTextField<Integer>("maxPlaces", Integer.class).add(new MinimumValidator<Integer>(4)));
+			formPlongee.add(new RequiredTextField<Integer>("nbMaxPlaces", Integer.class).add(new MinimumValidator<Integer>(4)));
 
 			// Ajout de la liste des niveaux
 			List<String> niveaux = new ArrayList<String>();
