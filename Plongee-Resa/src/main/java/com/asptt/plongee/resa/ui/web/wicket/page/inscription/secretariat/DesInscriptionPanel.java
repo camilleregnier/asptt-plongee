@@ -131,9 +131,9 @@ public abstract class DesInscriptionPanel extends Panel {
 			
 			// Le lien qui va fermer la fenêtre de confirmation
 			// et appeler la méthode de désinscription de la page principale (DesInscriptionPlongeePage)
-			add(new IndicatingAjaxLink("close")
+			add(new IndicatingAjaxLink("yes")
 			{
-				private static final long serialVersionUID = 1L;
+				private static final long serialVersionUID = -8801329059174173909L;
 
 				@Override
 				public void onClick(AjaxRequestTarget target)
@@ -143,8 +143,17 @@ public abstract class DesInscriptionPanel extends Panel {
 					
 				}
 			});
+			
+			add(new IndicatingAjaxLink("no")
+			{
+				private static final long serialVersionUID = 7770018649246290638L;
 
-
+				@Override
+				public void onClick(AjaxRequestTarget target)
+				{
+					modalConfirm.close(target);
+				}
+			});
 		}
 
 	}
