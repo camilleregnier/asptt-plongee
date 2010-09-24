@@ -1,46 +1,48 @@
 package com.asptt.plongee.resa.ui.web.wicket.page.inscription;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
 import javax.mail.MessagingException;
+import javax.smartcardio.ATR;
 
 import org.apache.commons.mail.Email;
 import org.apache.commons.mail.SimpleEmail;
 import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.Page;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.datetime.markup.html.basic.DateLabel;
 import org.apache.wicket.extensions.ajax.markup.html.IndicatingAjaxLink;
-import org.apache.wicket.feedback.IFeedback;
+import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
+import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow.WindowClosedCallback;
+import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 
-import com.asptt.plongee.resa.exception.MailException;
 import com.asptt.plongee.resa.exception.ResaException;
 import com.asptt.plongee.resa.exception.TechnicalException;
 import com.asptt.plongee.resa.mail.PlongeeMail;
 import com.asptt.plongee.resa.model.Adherent;
 import com.asptt.plongee.resa.model.Plongee;
 import com.asptt.plongee.resa.model.PlongeeDataProvider;
-import com.asptt.plongee.resa.service.PlongeeService;
+import com.asptt.plongee.resa.ui.web.wicket.page.AccueilPage;
 import com.asptt.plongee.resa.ui.web.wicket.page.ErreurTechniquePage;
-import com.asptt.plongee.resa.ui.web.wicket.page.ErrorPage;
 import com.asptt.plongee.resa.ui.web.wicket.page.TemplatePage;
+import com.asptt.plongee.resa.ui.web.wicket.page.admin.AdherentPanel;
 
 public class DeInscriptionPlongeePage extends TemplatePage {
 
 	private Adherent adh = null;
 	private List<Plongee> plongees;
 	private final FeedbackPanel feedback;
+	
+	private ModalWindow modalConfirm;
 	
 	public DeInscriptionPlongeePage() {
 
@@ -49,7 +51,23 @@ public class DeInscriptionPlongeePage extends TemplatePage {
 		add(new Label("message", adh.getPrenom() + ", voici les plongées auxquelles tu es inscrit(e)"));
 		
 		feedback = new FeedbackPanel("feedback");
+		feedback.setOutputMarkupId(true);
 		add(feedback);
+		
+		// Initialisation de la fenêtre modal de confirmation d'annulation
+		add(modalConfirm = new ModalWindow("modalConfirm"));
+		//modalConfirm.setPageMapName("modal-2");
+
+		modalConfirm.setTitle("Confirmation");
+
+		modalConfirm.setResizable(false);
+		modalConfirm.setInitialWidth(30);
+		modalConfirm.setInitialHeight(15);
+		modalConfirm.setWidthUnit("em");
+		modalConfirm.setHeightUnit("em");
+
+		modalConfirm.setCssClassName(ModalWindow.CSS_CLASS_BLUE);
+		
 		init();
 	}
 
@@ -111,7 +129,7 @@ public class DeInscriptionPlongeePage extends TemplatePage {
 
 	public void deInscrire(AjaxRequestTarget target, IModel<Plongee> iModel) {
 		
-		Plongee plongee = iModel.getObject();
+		final Plongee plongee = iModel.getObject();
 		try {
 			Adherent adherent = getResaSession().getAdherent();
 			
@@ -159,24 +177,11 @@ public class DeInscriptionPlongeePage extends TemplatePage {
 					}
 					setResponsePage(new InscriptionConfirmationPlongeePage(plongee));
 				} else {
-					// Il en reste pas assez ; mail
-					//TODO SI CONFIRMATION DESINSCRIRE + MAIL
-					// On desinscrit
-					getResaSession().getPlongeeService().deInscrireAdherent(
-							plongee, 
-							getResaSession().getAdherent());
-					//Envoi du mail
-					Email eMail = new SimpleEmail();
-					eMail.setSubject("Encadrement de la plongée du : "+plongee.getDate().toString());
-					eMail.setMsg("Un encadrant viens de se de-inscrire de la plongée du "+plongee.getDate().toString()+" de "+plongee.getType()+"\n" +
-							"Il n'y a pas assez d'encadrant pour assurer la plongée");
-					List<String> destis = new ArrayList<String>();
-					destis.add("eric.simon28@orange.fr");
-					destis.add("camille.regnier@gmail.com");
-
-					PlongeeMail pMail = new PlongeeMail(eMail);
-					pMail.sendMail(destis);
-					setResponsePage(new InscriptionConfirmationPlongeePage(plongee));
+					// Il en reste pas assez
+					
+					// Fenêtre de confirmation
+					replaceModalWindow(target, plongee);
+					modalConfirm.show(target);
 				}
 			}
 		} catch (TechnicalException e) {
@@ -192,5 +197,83 @@ public class DeInscriptionPlongeePage extends TemplatePage {
 			target.addComponent(feedback);
 		}
 	}
+	
+	private void replaceModalWindow(AjaxRequestTarget target, Plongee plongee) {
+		modalConfirm.setContent(new ConfirmSelectionModal(modalConfirm.getContentId(), plongee));
+		modalConfirm.setTitle("Modifiez les informations à mettre à jour");
+		modalConfirm.setUseInitialHeight(true);
+		
+		// Pour éviter le message de disparition de la fenetre lors de la validation
+		target.appendJavascript( "Wicket.Window.unloadConfirmation  = false;");
+	}
+
+	public class ConfirmSelectionModal extends Panel
+	{
+		public ConfirmSelectionModal(String id, final Plongee plongee)
+		{
+			super(id);
+			
+			// Informations précisant la plongeur concerné et la plongée
+			// dans la fenêtre de confirmation de désinscription
+			add(new Label("infoPlongeur", "Etes-vous sûr de vouloir vous désinscrire : il ne reste plus assez d'encadrant"));
+			add(new Label("infoPlongee", " à la plongée du " + plongee.getDate() + " " + plongee.getType() + " ?"));
+			
+			// Le lien qui va fermer la fenêtre de confirmation
+			// et appeler la méthode de désinscription de la page principale (DesInscriptionPlongeePage)
+			add(new IndicatingAjaxLink("yes")
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public void onClick(AjaxRequestTarget target)
+				{
+					//TODO SI CONFIRMATION DESINSCRIRE + MAIL
+					// On desinscrit
+					getResaSession().getPlongeeService().deInscrireAdherent(
+							plongee, 
+							getResaSession().getAdherent());
+					//Envoi du mail
+					try{
+						Email eMail = new SimpleEmail();
+						eMail.setSubject("Encadrement de la plongée du : "+plongee.getDate().toString());
+						eMail.setMsg("Un encadrant viens de se de-inscrire de la plongée du "+plongee.getDate().toString()+" de "+plongee.getType()+"\n" +
+								"Il n'y a pas assez d'encadrant pour assurer la plongée");
+						List<String> destis = new ArrayList<String>();
+						destis.add("eric.simon28@orange.fr");
+						destis.add("camille.regnier@gmail.com");
+	
+						PlongeeMail pMail = new PlongeeMail(eMail);
+						pMail.sendMail(destis);
+						setResponsePage(DeInscriptionPlongeePage.class);
+					} 
+						catch (ResaException e) {
+						e.printStackTrace();
+						error(e.getMessage());
+					} 
+					catch (MessagingException e) {
+						e.printStackTrace();
+						error(e.getMessage());
+					} finally {
+						target.addComponent(feedback);
+					}
+
+				}
+			});
+			
+			add(new IndicatingAjaxLink("no")
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public void onClick(AjaxRequestTarget target)
+				{
+					modalConfirm.close(target);
+				}
+			});
+
+		}
+
+	}
+
 
 }
