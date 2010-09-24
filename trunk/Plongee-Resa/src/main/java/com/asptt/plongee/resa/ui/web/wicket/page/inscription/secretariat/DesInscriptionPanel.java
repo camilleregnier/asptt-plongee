@@ -68,8 +68,6 @@ public abstract class DesInscriptionPanel extends Panel {
 				item.add(new IndicatingAjaxLink("select") {
 					@Override
 					public void onClick(final AjaxRequestTarget target) {						
-						// On exécute la suppression dans la fenêtre principale
-						//onSave(target, plongee, plongeur);
 						
 						modalConfirm.setPageCreator(new ModalWindow.PageCreator()
 						{
