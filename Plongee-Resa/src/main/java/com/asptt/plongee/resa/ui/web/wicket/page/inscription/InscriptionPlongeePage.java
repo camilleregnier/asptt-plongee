@@ -1,9 +1,15 @@
 package com.asptt.plongee.resa.ui.web.wicket.page.inscription;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
+import javax.mail.MessagingException;
+
+import org.apache.commons.mail.Email;
+import org.apache.commons.mail.SimpleEmail;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.ajax.markup.html.IndicatingAjaxLink;
@@ -16,6 +22,7 @@ import org.apache.wicket.model.IModel;
 
 import com.asptt.plongee.resa.exception.ResaException;
 import com.asptt.plongee.resa.exception.TechnicalException;
+import com.asptt.plongee.resa.mail.PlongeeMail;
 import com.asptt.plongee.resa.model.Adherent;
 import com.asptt.plongee.resa.model.Plongee;
 import com.asptt.plongee.resa.model.PlongeeDataProvider;
@@ -116,14 +123,7 @@ public class InscriptionPlongeePage extends TemplatePage {
 			
 			
 			switch (response) {
-			case 1: //on peux inscrire l'adherent à la plongee
-				getResaSession().getPlongeeService().inscrireAdherent(
-						plongee, 
-						adh != null ?  adh : getResaSession().getAdherent());
-				setResponsePage(new InscriptionConfirmationPlongeePage(plongee));
-				break;
-
-			case 0: //on inscrit l'adherent en liste d'attente
+			case 0: //on inscrit l'adherent en liste d'attente sans envoi de mail
 				if(getResaSession().getPlongeeService().isOkForListeAttente(
 						plongee, 
 						getResaSession().getAdherent())){
@@ -133,6 +133,50 @@ public class InscriptionPlongeePage extends TemplatePage {
 							adh != null ?  adh : getResaSession().getAdherent());
 					setResponsePage(new InscriptionListeAttentePlongeePage(plongee));
 				}
+				break;
+			case 4: //on inscrit l'adherent en liste d'attente avec envoi d'un mail
+				if(getResaSession().getPlongeeService().isOkForListeAttente(
+						plongee, 
+						getResaSession().getAdherent())){
+					//on peut inscrire l'adherent en liste attente
+					getResaSession().getPlongeeService().inscrireAdherentEnListeAttente(
+							plongee, 
+							adh != null ?  adh : getResaSession().getAdherent());
+					
+					// Mise en forme de la date
+					SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+					String dateAffichee = sdf.format(plongee.getDate());
+					//Envoi du mail
+					Email eMail = new SimpleEmail();
+					eMail.setSubject("Manque d'encadrement - plongée du : "+dateAffichee);
+					StringBuffer sb = new StringBuffer("Bonjour,\n");
+					sb.append("Nous avons un manque d'encadrant sur la plongée du "+dateAffichee+" de "+plongee.getType()+"\n");
+					sb.append("Si vous êtes disponible, votre inscription est la bienvenue.\n");
+					sb.append("\n");
+					sb.append("-----------------------------------------------------------\n");
+					sb.append("ATTENTION : dans ce cas AVERTISSEZ les administrateurs \n");
+					sb.append("pour qu'ils inscrivent les personnes en liste d'attente.\n");
+					sb.append("-----------------------------------------------------------\n");
+					sb.append("\n");
+					sb.append("Cordialement\n");
+					
+					eMail.setMsg(sb.toString());
+					List<String> destis = new ArrayList<String>();
+					destis.add("eric.simon28@orange.fr");
+					destis.add("camille.regnier@gmail.com");
+
+					PlongeeMail pMail = new PlongeeMail(eMail);
+					pMail.sendMail("ENCADRANT");
+					
+					
+					setResponsePage(new InscriptionListeAttentePlongeePage(plongee));
+				}
+				break;
+			case 1: //on peux inscrire l'adherent à la plongee
+				getResaSession().getPlongeeService().inscrireAdherent(
+						plongee, 
+						adh != null ?  adh : getResaSession().getAdherent());
+				setResponsePage(new InscriptionConfirmationPlongeePage(plongee));
 				break;
 
 			case 2: // ouvrir la plongée
@@ -146,6 +190,10 @@ public class InscriptionPlongeePage extends TemplatePage {
 		} catch (TechnicalException e) {
 			e.printStackTrace();
 			error(e.getKey());
+		} catch (MessagingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			error(e.getCause().getMessage());
 		} finally {
 			target.addComponent(feedback);
 		}
