@@ -14,24 +14,26 @@ import com.asptt.plongee.resa.exception.ResaException;
 import com.asptt.plongee.resa.model.Plongee;
 import com.asptt.plongee.resa.util.Parameters;
 
-public class PlongeeMail {
+public final class PlongeeMail {
 
 
 	private static PlongeeMail instance = null;
 	private Email email = null;
-
+	private String hostName = null;
+	private String from = null;
+	
 	public PlongeeMail() throws MessagingException {
 		super();
 		this.email.setDebug(true);
-		this.email.setHostName("smtp.orange.fr");
-		this.email.setFrom("eric.simon28@orange.fr");
+		this.email.setHostName(getHostName());
+		this.email.setFrom(getFrom());
 	}
 	
 	public PlongeeMail(Email email) throws MessagingException {
 		this.email = email;
 		this.email.setDebug(true);
-		this.email.setHostName("smtp.orange.fr");
-		this.email.setFrom("eric.simon28@orange.fr");
+		this.email.setHostName(getHostName());
+		this.email.setFrom(getFrom());
 	}
 	
 	public PlongeeMail getInstance() throws MessagingException {
@@ -41,6 +43,10 @@ public class PlongeeMail {
 		return instance;
 	}
 	
+	public static void setInstance(PlongeeMail instance){
+		PlongeeMail.instance = instance;
+	}
+
 	public void sendMail(String destinataire) throws ResaException{
 		List<String> destis = null;
 		try {
@@ -112,5 +118,27 @@ public class PlongeeMail {
 //		destis.add("hamou.zerrifi@orange-ftgroup.com");//HAMOU
 		return destis;
 	}
-	
+
+	public String getHostName() {
+		if (null == hostName){
+			hostName = Parameters.getString("mail.smtp.host");
+		}
+		return hostName;
+	}
+
+	public void setHostName(String hostName) {
+		this.hostName = hostName;
+	}
+
+	public String getFrom() {
+		if(null == from){
+			from = Parameters.getString("mail.smtp.from");
+		}
+		return from;
+	}
+
+	public void setFrom(String from) {
+		this.from = from;
+	}
+
 }
