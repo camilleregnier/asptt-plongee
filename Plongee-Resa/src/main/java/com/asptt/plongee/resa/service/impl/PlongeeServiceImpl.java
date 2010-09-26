@@ -102,8 +102,13 @@ public class PlongeeServiceImpl implements PlongeeService {
 		}
 		
 		// Les encadrants peuvent visualiser une semaine de plus
-		if (adherent.getEncadrement() != null) nbJour = nbJour + 7;
+//		if (adherent.getEncadrement() != null) nbJour = nbJour + 7;
+		if (adherent.getEncadrement() != null) nbJour = 15;
 		
+		/**
+		 * Pour le tests
+		nbJour = 7;
+		 */
 		plongees.addAll(plongeeDao.getPlongeesForFewDay(nbJour));
 		return plongees;
 			
@@ -221,7 +226,7 @@ public class PlongeeServiceImpl implements PlongeeService {
 			
 			//cas pour les P0, P1
 			if (nbP0 + nbP1 > 0){
-				int res = ((nbP0 + nbP1)) / nbEncadrant - 1;
+				int res = ((nbP0 + nbP1)) / (nbEncadrant - 1);
 				// max 4 P0 ou P1 par encadrant
 				if (res > 4){
 					// Pas assez d'encadrant : envoie d'un mail
@@ -231,7 +236,7 @@ public class PlongeeServiceImpl implements PlongeeService {
 			}
 			//cas pour les BATM
 			if (nbBATM > 0){
-				int res = (nbBATM) / nbEncadrant - 1;
+				int res = (nbBATM) / (nbEncadrant - 1);
 				// max 1 bapteme par encadrant
 				if (res > 1){
 					// Pas assez d'encadrant : liste d'attente
@@ -251,10 +256,10 @@ public class PlongeeServiceImpl implements PlongeeService {
 	 * -1 si ko
 	 */
 	public int isOkForResa(Plongee plongee, Adherent adherent) throws ResaException, TechnicalException {
-		// TODO : Si inscription d'un P2,P3,P4 => pas d'autres controles
-		// TODO : Inscription P0, P1
-		//		Si E2,E3,E4 => 4 x P0,P1 et/ou BATM
-		//		Si BATM => 1 x E2,E3,E4
+		// Si inscription d'un P2,P3,P4 => pas d'autres controles
+		// Inscription P0, P1
+		//	Si E2,E3,E4 => 4 x P0,P1 et/ou BATM
+		//	Si BATM => 1 x E2,E3,E4
 
 		int isOk = 1;
 		// SI encadrant veux reserver une plongée pas encore ouverte:
@@ -266,14 +271,13 @@ public class PlongeeServiceImpl implements PlongeeService {
 				isOk = 2;
 			} else {
 				// pas de assez de compétences pour ouvrir la plongée : pas inscrit !
-				//isOk = -1;
 				throw new ResaException("Inscription impossible sur cette plongée : Cette plongée n'est pas ouverte");
 			}
 			return isOk;
 		}
 		// verifier le nombre d'inscrit
 		if(getNbPlaceRestante(plongee) <= 0){
-			// trop de monde : liste d'attente
+			// trop de monde : inscription en liste d'attente
 			isOk = 0;
 			return isOk;
 		}
@@ -283,8 +287,6 @@ public class PlongeeServiceImpl implements PlongeeService {
 			if(adherent.getNiveau().equalsIgnoreCase(NiveauAutonomie.BATM.toString()) 
 				|| adherent.getNiveau().equalsIgnoreCase(NiveauAutonomie.P0.toString())){
 				// inscription refusée
-				// isOk = -1;
-				// return isOk;
 				throw new ResaException("Inscription impossible sur cette plongée : Les BATM ou P0 ne sont pas admis avec un DP P5");
 			}
 		}
@@ -300,11 +302,9 @@ public class PlongeeServiceImpl implements PlongeeService {
 		
 		if(niveauAdherent < niveauMinPlongee){
 			// niveau mini requis : inscription refusée
-			//isOk = -1;
-			//return isOk;
 			throw new ResaException("Inscription impossible sur cette plongée : Niveau insuffisant");
-			
 		}
+
 		//On inscrit pas qqlun si il est dejà en liste d'attente
 		List<Adherent> enAttente = adherentDao.getAdherentsWaiting(plongee);
 		for(Adherent attente : enAttente){
@@ -312,6 +312,7 @@ public class PlongeeServiceImpl implements PlongeeService {
 				throw new ResaException("Inscription impossible sur cette plongée : Vous etes déjà en liste d'attente.");
 			}
 		}
+
 		List<Adherent> encadrants = adherentDao.getAdherentsInscrits(plongee, null, "TOUS");
 		int nbEncadrant = encadrants.size();
 		List<Adherent> plongeursP0 = adherentDao.getAdherentsInscrits(plongee, "P0", null);
@@ -326,8 +327,8 @@ public class PlongeeServiceImpl implements PlongeeService {
 			int res = ((nbP0 + nbP1) + 1) / nbEncadrant;
 			// max 4 P0 ou P1 par encadrant
 			if (res > 4){
-				// Pas assez d'encadrant : liste d'attente
-				isOk = 0;
+				// Pas assez d'encadrant : liste d'attente avec envoi de mail
+				isOk = 4;
 				return isOk;
 			}
 		}
@@ -335,12 +336,13 @@ public class PlongeeServiceImpl implements PlongeeService {
 			int res = (nbBATM + 1) / nbEncadrant;
 			// max 1 bapteme par encadrant
 			if (res > 1){
-				// Pas assez d'encadrant : liste d'attente
-				isOk = 0;
+				// Pas assez d'encadrant : liste d'attente avec envoi de mail
+				isOk = 4;
 				return isOk;
 			}
 		}
 		
+		// SI on est arrivé jusqu'ici : c'est bon => on inscrit
 		isOk = 1;
 		return isOk;
 
@@ -354,7 +356,6 @@ public class PlongeeServiceImpl implements PlongeeService {
 				throw new ResaException("Inscription impossible enliste d'attente : Vous êtes déjà inscrit à la plongée.");
 			}
 		}
-		// TODO Auto-generated method stub
 		return true;
 	}
 
