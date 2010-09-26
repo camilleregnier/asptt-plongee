@@ -57,12 +57,12 @@ public class AdherentServiceTest extends AbstractServiceTest {
 		try {
 			Email eMail = new SimpleEmail();
 			eMail.setSubject("gestion de file d'attente");
-			eMail.setMsg("Des personnes sont en file d'attente sur la plongée du BlaBla de NUIT, et une place vient de se libérer");
+			eMail.setMsg("Mille excuses...\n ca se voulait un test de liste de diffusion, mais ça n'aurait pas du partir...\n A bientot \n Eric");
 			List<String> destis = new ArrayList<String>();
 			destis.add("eric.simon28@orange.fr");
 			
 			PlongeeMail pMail = new PlongeeMail(eMail);
-			pMail.sendMail(destis);
+			pMail.sendMail("ENCADRANT");
 		
 		} catch (ResaException e) {
 			// TODO Auto-generated catch block
