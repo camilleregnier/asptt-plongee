@@ -75,25 +75,29 @@ public class PlongeeServiceImpl implements PlongeeService {
 		int numJour = cal.get(Calendar.DAY_OF_WEEK);			
 
 		switch (numJour) {
-		case 1: //Dimanche visible = j
+		case 1: //Dimanche visible = j : dimanche
 			nbJour=1;
 			break;
 		case 2: //Lundi return pas d'inscription
-			nbJour = 0;
+			/**
+			 * Pour le test de lundi soir
+			 */
+			nbJour = 1;
+//			nbJour = 0;
 			break;
-		case 3: //Mardi visible = j+2
-			nbJour=3;
-			break;
-		case 4: //Mercredi visible = j+1
-			nbJour=2;
-			break;
-		case 5: //Jeudi visible = j+4
-			nbJour=5;
-			break;
-		case 6: //Vendredi visible = j+3
+		case 3: //Mardi visible = j+3 : mardi, mercredi, jeudi
 			nbJour=4;
 			break;
-		case 7: //Samedi visible = j+2
+		case 4: //Mercredi visible = j+2 : mercredi, jeudi 
+			nbJour=3;
+			break;
+		case 5: //Jeudi visible = j+4 : jeudi, vendredi, samedi, dimanche
+			nbJour=5;
+			break;
+		case 6: //Vendredi visible = j+3 : vendredi, samedi, dimanche
+			nbJour=4;
+			break;
+		case 7: //Samedi visible = j+2 : samedi, dimanche
 			nbJour=3;
 			break;
 		default:
@@ -101,14 +105,10 @@ public class PlongeeServiceImpl implements PlongeeService {
 			break;
 		}
 		
-		// Les encadrants peuvent visualiser une semaine de plus
-//		if (adherent.getEncadrement() != null) nbJour = nbJour + 7;
+		// reunion du 27/09/2010
+		// Les encadrant peuvent visualiser les 15 jours suivants
 		if (adherent.getEncadrement() != null) nbJour = 15;
 		
-		/**
-		 * Pour le tests
-		nbJour = 7;
-		 */
 		plongees.addAll(plongeeDao.getPlongeesForFewDay(nbJour));
 		return plongees;
 			
@@ -118,7 +118,7 @@ public class PlongeeServiceImpl implements PlongeeService {
 		
 		List<Plongee> plongeesFermees = new ArrayList<Plongee>();
 		for(Plongee plongee : plongees){
-			if(!plongee.isOuverte()){
+			if(!isOuverte(plongee)){
 				plongeesFermees.add(plongee);
 			}
 		}
@@ -129,7 +129,7 @@ public class PlongeeServiceImpl implements PlongeeService {
 		
 		List<Plongee> plongeesOuvertes = new ArrayList<Plongee>();
 		for(Plongee plongee : plongees){
-			if(plongee.isOuverte()){
+			if(isOuverte(plongee)){
 				plongeesOuvertes.add(plongee);
 			}
 		}
@@ -156,7 +156,7 @@ public class PlongeeServiceImpl implements PlongeeService {
 				}
 			}
 			if (isNotInscrit) {
-				if (plongee.isOuverte()) {
+				if (isOuverte(plongee)) {
 					plongeesForAdherent.add(plongee);
 				} else {
 					// l'adherent n'est pas encadrant : on affiche aussi les plongées non ouvertes
@@ -178,7 +178,7 @@ public class PlongeeServiceImpl implements PlongeeService {
 		
 		List<Plongee> plongeesAttente = new ArrayList<Plongee>();
 		for(Plongee plongee : plongees){
-			if(plongee.isOuverte()){
+			if(isOuverte(plongee)){
 				if( plongee.getParticipantsEnAttente().size() > 0 && plongee.getParticipants().size() < plongee.getNbMaxPlaces()){
 					plongeesAttente.add(plongee);
 				}
@@ -192,8 +192,8 @@ public class PlongeeServiceImpl implements PlongeeService {
 		return plongeeDao.getPlongeesWhithSameDate(date, type);
 	}
 
-	public List<Adherent> rechercherInscriptions(Plongee plongee,String niveauPlongeur, String niveauEncadrement)  throws TechnicalException{
-		return adherentDao.getAdherentsInscrits(plongee,null,null);
+	public List<Adherent> rechercherInscriptions(Plongee plongee,String niveauPlongeur, String niveauEncadrement, String trie)  throws TechnicalException{
+		return adherentDao.getAdherentsInscrits(plongee,null,null,trie);
 	}
 
 	public List<Adherent> rechercherListeAttente(Plongee plongee)  throws TechnicalException{
@@ -201,14 +201,14 @@ public class PlongeeServiceImpl implements PlongeeService {
 	}
 	
 	public Integer getNbPlaceRestante(Plongee plongee)  throws TechnicalException{
-		Integer nbPlace =  plongee.getNbMaxPlaces() - adherentDao.getAdherentsInscrits(plongee,null,null).size();		
+		Integer nbPlace =  plongee.getNbMaxPlaces() - adherentDao.getAdherentsInscrits(plongee,null,null,null).size();		
 		return nbPlace;
 //		return 0;
 	}
 
 	public boolean isEnoughEncadrant(Plongee plongee) throws  TechnicalException {
 		boolean isOk = true;
-		List<Adherent> encadrants = adherentDao.getAdherentsInscrits(plongee, null, "TOUS");
+		List<Adherent> encadrants = adherentDao.getAdherentsInscrits(plongee, null, "TOUS", null);
 		int nbEncadrant = encadrants.size();
 		
 		if (nbEncadrant <= 1){
@@ -217,11 +217,11 @@ public class PlongeeServiceImpl implements PlongeeService {
 			return isOk;
 		} else {
 			// il en reste au moins 1...
-			List<Adherent> plongeursP0 = adherentDao.getAdherentsInscrits(plongee, "P0", null);
+			List<Adherent> plongeursP0 = adherentDao.getAdherentsInscrits(plongee, "P0", null, null);
 			int nbP0 = plongeursP0.size();
-			List<Adherent> plongeursP1 = adherentDao.getAdherentsInscrits(plongee, "P1", null);
+			List<Adherent> plongeursP1 = adherentDao.getAdherentsInscrits(plongee, "P1", null, null);
 			int nbP1 = plongeursP1.size();
-			List<Adherent> plongeursBATM = adherentDao.getAdherentsInscrits(plongee, "BATM", null);
+			List<Adherent> plongeursBATM = adherentDao.getAdherentsInscrits(plongee, "BATM", null, null);
 			int nbBATM = plongeursBATM.size();
 			
 			//cas pour les P0, P1
@@ -251,7 +251,9 @@ public class PlongeeServiceImpl implements PlongeeService {
 	/**
 	 * retourne
 	 * 1 si ok
-	 * 0 pour liste d'attente
+	 * 0 pour liste d'attente sans mail
+	 * 4 pour liste d'attente avec mail
+	 * 3 inscription d'un encadrant ou P4 à une plongée fermée => envoi de mail
 	 * 2 ouvrir plongee
 	 * -1 si ko
 	 */
@@ -265,10 +267,13 @@ public class PlongeeServiceImpl implements PlongeeService {
 		// SI encadrant veux reserver une plongée pas encore ouverte:
 		// si DP + Pilote > le brancher sur ouvrirplongee
 		// sinon > impossible
-		if( ! plongee.isOuverte()){
+		if( ! isOuverte(plongee)){
 			if(adherent.isDp() && adherent.isPilote()){
 				// ouvrir plongée
 				isOk = 2;
+			} else if(adherent.getEncadrement()!= null || adherent.getNiveau().equalsIgnoreCase("P4")){
+				// C'est un encadrant ou P4 il peut s'inscrire à la plongée même si elle est fermée
+				isOk = 3;
 			} else {
 				// pas de assez de compétences pour ouvrir la plongée : pas inscrit !
 				throw new ResaException("Inscription impossible sur cette plongée : Cette plongée n'est pas ouverte");
@@ -313,13 +318,13 @@ public class PlongeeServiceImpl implements PlongeeService {
 			}
 		}
 
-		List<Adherent> encadrants = adherentDao.getAdherentsInscrits(plongee, null, "TOUS");
+		List<Adherent> encadrants = adherentDao.getAdherentsInscrits(plongee, null, "TOUS", null);
 		int nbEncadrant = encadrants.size();
-		List<Adherent> plongeursP0 = adherentDao.getAdherentsInscrits(plongee, "P0", null);
+		List<Adherent> plongeursP0 = adherentDao.getAdherentsInscrits(plongee, "P0", null, null);
 		int nbP0 = plongeursP0.size();
-		List<Adherent> plongeursP1 = adherentDao.getAdherentsInscrits(plongee, "P1", null);
+		List<Adherent> plongeursP1 = adherentDao.getAdherentsInscrits(plongee, "P1", null, null);
 		int nbP1 = plongeursP1.size();
-		List<Adherent> plongeursBATM = adherentDao.getAdherentsInscrits(plongee, "BATM", null);
+		List<Adherent> plongeursBATM = adherentDao.getAdherentsInscrits(plongee, "BATM", null, null);
 		int nbBATM = plongeursBATM.size();
 		
 		// Pour les plongeurs P0, P1
@@ -350,13 +355,31 @@ public class PlongeeServiceImpl implements PlongeeService {
 
 	public boolean isOkForListeAttente(Plongee plongee, Adherent adherent) throws TechnicalException, ResaException{
 		//On inscrit pas qqlun en liste d'attente si il est dejà inscrit
-		List<Adherent> inscrits = adherentDao.getAdherentsInscrits(plongee, null, "TOUS");
+		List<Adherent> inscrits = adherentDao.getAdherentsInscrits(plongee, null, "TOUS", null);
 		for(Adherent inscrit : inscrits){
 			if(inscrit.getNumeroLicense().equalsIgnoreCase(adherent.getNumeroLicense())){
 				throw new ResaException("Inscription impossible enliste d'attente : Vous êtes déjà inscrit à la plongée.");
 			}
 		}
 		return true;
+	}
+
+	/**
+	 * Une plongée est ouverte s'il existe 
+	 *  - au moins un DP et un pilote (ça peut-être la même personne)
+	 *  reunion du 27/09/2010
+	 *  - que le nombre de participants (inscrit + liste d'attente)
+	 *  soit inferieure au nombre de plongeurs max
+	 *  ceci pour bloquer l'inscription en cas de liste d'attente sur plongée pleine
+	 */
+	public boolean isOuverte(Plongee plongee){
+		if(  plongee.isExistDP() && plongee.isExistPilote()
+				&& ((plongee.getParticipants().size() + plongee.getParticipantsEnAttente().size()) < plongee.getNbMaxPlaces()) 
+				){
+			return true;
+		} else{
+			return false;
+		}
 	}
 
 	public void fairePasserAttenteAInscrit(Plongee plongee, Adherent adherent)  throws TechnicalException{

@@ -75,10 +75,8 @@ public class DeInscriptionPlongeePage extends TemplatePage {
 
 	private void init() {
 		try{
-//			plongees = getResaSession().getPlongeeService().rechercherPlongeesAdherentInscrit( 	
-//					getResaSession().getAdherent(), 24);
 			plongees = getResaSession().getPlongeeService().rechercherPlongeesAdherentInscrit( 	
-					getResaSession().getAdherent(), 0);
+					getResaSession().getAdherent(), 24);
 		} catch (TechnicalException e) {
 			e.printStackTrace();
 			ErreurTechniquePage etp = new ErreurTechniquePage(e);

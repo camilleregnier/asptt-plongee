@@ -20,7 +20,7 @@ public interface PlongeeService {
 	public List<Plongee> rechercherPlongeesAdherentInscrit(Adherent adherent, int nbHours);
 	public List<Plongee> rechercherPlongeesOuvertesWithAttente(List<Plongee> plongees);
 	public List<Plongee> rechercherPlongees(Date date, String type);
-	public List<Adherent> rechercherInscriptions(Plongee plongee, String niveauPlongeur, String niveauEncadrement);
+	public List<Adherent> rechercherInscriptions(Plongee plongee, String niveauPlongeur, String niveauEncadrement, String trie);
 	public List<Adherent> rechercherListeAttente(Plongee plongee);
 	
 	public void creerPlongee(Plongee plongee) throws ResaException, TechnicalException;
@@ -32,6 +32,7 @@ public interface PlongeeService {
 	public int isOkForResa(Plongee plongee, Adherent adherent) throws ResaException;
 	public boolean isOkForListeAttente(Plongee plongee, Adherent adherent) throws TechnicalException, ResaException;
 	public boolean isEnoughEncadrant(Plongee plongee) throws TechnicalException;
+	public boolean isOuverte(Plongee plongee);
 	
 	public void inscrireAdherent(Plongee plongee, Adherent adherent) throws ResaException;
 	public void inscrireAdherentEnListeAttente(Plongee plongee, Adherent adherent);

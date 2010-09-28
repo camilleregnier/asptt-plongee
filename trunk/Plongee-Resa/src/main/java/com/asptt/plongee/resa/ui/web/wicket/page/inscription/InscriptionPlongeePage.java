@@ -172,6 +172,36 @@ public class InscriptionPlongeePage extends TemplatePage {
 					setResponsePage(new InscriptionListeAttentePlongeePage(plongee));
 				}
 				break;
+			case 3: //on inscrit l'encadrant ou P4 en liste d'attente avec envoi d'un mail aux admins
+				getResaSession().getPlongeeService().inscrireAdherent(
+						plongee, 
+						adh != null ?  adh : getResaSession().getAdherent());
+					
+					// Mise en forme de la date
+					SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+					String dateAffichee = sdf.format(plongee.getDate());
+					//Envoi du mail
+					Email eMail = new SimpleEmail();
+					eMail.setSubject("Inscription sur la plongée du : "+dateAffichee+" encore fermée");
+					StringBuffer sb = new StringBuffer("Bonjour,\n");
+					sb.append("l'encadrant/P4 "+adh.getNom()+" , "+adh.getPrenom()+" \n");
+					sb.append("Viens de s'inscrire à la plongée du "+dateAffichee+" de "+plongee.getType()+"\n");
+					sb.append("\n");
+					sb.append("Cette plongée est encore fermée.\n");
+					sb.append("\n");
+					sb.append("Pouvez-vous l'ouvrir en trouvant un DP et/ou un pilote?.\n");
+					sb.append("Cordialement\n");
+					
+					eMail.setMsg(sb.toString());
+					List<String> destis = new ArrayList<String>();
+					destis.add("eric.simon28@orange.fr");
+					destis.add("camille.regnier@gmail.com");
+
+					PlongeeMail pMail = new PlongeeMail(eMail);
+					pMail.sendMail("ADMIN");
+					
+					setResponsePage(new InscriptionConfirmationPlongeePage(plongee));
+				break;
 			case 1: //on peux inscrire l'adherent à la plongee
 				getResaSession().getPlongeeService().inscrireAdherent(
 						plongee, 

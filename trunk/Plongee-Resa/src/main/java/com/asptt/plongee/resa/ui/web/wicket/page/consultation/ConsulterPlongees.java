@@ -162,7 +162,7 @@ public class ConsulterPlongees extends TemplatePage {
 			
 			try {
 			
-				List<Adherent> adherentsInscrit = getResaSession().getPlongeeService().rechercherInscriptions(plongee.getObject(),null,null);
+				List<Adherent> adherentsInscrit = getResaSession().getPlongeeService().rechercherInscriptions(plongee.getObject(),null,null,"date");
 	
 				add(new DataView<Adherent>("participants",
 						new InscritsPlongeeDataProvider(adherentsInscrit)) {

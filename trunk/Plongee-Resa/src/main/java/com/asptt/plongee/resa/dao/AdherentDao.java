@@ -21,7 +21,7 @@ public interface AdherentDao extends GenericDao<Adherent, String> {
 
 	public List<Adherent> getExternes() throws TechnicalException;
 
-	public List<Adherent> getAdherentsInscrits(Plongee plongee, String niveauPlongeur, String niveauEncadrement) throws TechnicalException;
+	public List<Adherent> getAdherentsInscrits(Plongee plongee, String niveauPlongeur, String niveauEncadrement, String trie) throws TechnicalException;
 
 	public List<Adherent> getAdherentsWaiting(Plongee plongee) throws TechnicalException;
 	

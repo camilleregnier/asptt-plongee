@@ -514,7 +514,7 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements PlongeeDao {
 		} else {
 			plongee.setOuvertureForcee(false);
 		}
-		List<Adherent> participants = adherentDao.getAdherentsInscrits(plongee,null,null);
+		List<Adherent> participants = adherentDao.getAdherentsInscrits(plongee,null,null,null);
 		plongee.setParticipants(participants);
 		for(Adherent a : participants){
 			if(a.isDp()){
