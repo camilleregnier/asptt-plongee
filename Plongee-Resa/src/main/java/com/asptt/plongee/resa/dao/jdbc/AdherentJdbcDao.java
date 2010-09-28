@@ -517,8 +517,16 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 			}
 		}
 	}
-
-	public List<Adherent> getAdherentsInscrits(Plongee plongee,  String niveauPlongeur, String niveauEncadrement)
+	
+	/**
+	 * Recherche les adherents inscrits à la plongée
+	 * filtre sur niveau plongeur si non null
+	 * filtre sur encadrement si non null
+	 * trie donne l'ordre de tri : 
+	 * 	"nom" = nom du plongeur
+	 *  "date" ou null = ordre d'inscription à la plongée
+	 */
+	public List<Adherent> getAdherentsInscrits(Plongee plongee,  String niveauPlongeur, String niveauEncadrement, String trie)
 			throws TechnicalException {
 		PreparedStatement st;
 		try {
@@ -537,6 +545,11 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 				} else{
 					sb.append(" and a.ENCADRANT = ?");
 				}
+			}
+			if(null == trie || trie.equalsIgnoreCase("date")){
+				sb.append(" order by DATE_INSCRIPTION");
+			} else if(trie.equalsIgnoreCase("nom")){
+				sb.append(" order by NOM");
 			}
 			st = getDataSource().getConnection()
 					.prepareStatement(sb.toString());
@@ -570,7 +583,12 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 			}
 		}
 	}
-
+	
+	/**
+	 * Retourne la liste des adherents en liste d'attente
+	 * sur la plongée
+	 * trie par le rang
+	 */
 	public List<Adherent> getAdherentsWaiting(Plongee plongee)
 			throws TechnicalException {
 		PreparedStatement st;
@@ -582,6 +600,7 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 			sb.append(" and idPLONGEES = PLONGEES_idPLONGEES ");
 			sb.append(" and ADHERENT_LICENSE = LICENSE ");
 			sb.append(" and DATE_INSCRIPTION is null");
+			sb.append(" order by RANG");
 			st = getDataSource().getConnection()
 					.prepareStatement(sb.toString());
 			st.setInt(1, plongee.getId());

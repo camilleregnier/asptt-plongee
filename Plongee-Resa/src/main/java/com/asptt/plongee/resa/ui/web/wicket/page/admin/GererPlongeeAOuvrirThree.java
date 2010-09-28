@@ -22,7 +22,7 @@ public class GererPlongeeAOuvrirThree extends TemplatePage {
 	@SuppressWarnings("serial")
 	public GererPlongeeAOuvrirThree(Plongee plongee) {
 		
-		List<Adherent> adherentsInscrits = getResaSession().getPlongeeService().rechercherInscriptions(plongee, null, null);
+		List<Adherent> adherentsInscrits = getResaSession().getPlongeeService().rechercherInscriptions(plongee, null, null,"date");
 		
 		DataView<Adherent> dataView = new DataView<Adherent>("pageable", new InscritsPlongeeDataProvider(adherentsInscrits)) {
 

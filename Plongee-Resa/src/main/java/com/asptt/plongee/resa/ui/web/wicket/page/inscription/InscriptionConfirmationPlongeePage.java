@@ -19,7 +19,7 @@ public class InscriptionConfirmationPlongeePage extends TemplatePage {
 	public InscriptionConfirmationPlongeePage(Plongee plongee) {
 		
 		// On affiche la liste des participants en guise de confirmation
-		List<Adherent> adherentsInscrit = getResaSession().getPlongeeService().rechercherInscriptions(plongee,null,null);
+		List<Adherent> adherentsInscrit = getResaSession().getPlongeeService().rechercherInscriptions(plongee,null,null,"date");
 		
 		add(new DataView<Adherent>("participants",new InscritsPlongeeDataProvider(adherentsInscrit)) {
 			

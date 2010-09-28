@@ -143,12 +143,22 @@ public class Plongee implements Serializable {
 			return false;
 		}
 	}
-
+	
+	/**
+	 * Une plongée est ouverte s'il existe 
+	 *  - au moins un DP et un pilote (ça peut-être la même personne)
+	 *  reunion du 2709/2010
+	 *  - que le nombre de participants (inscrit + liste d'attente)
+	 *  soit inferieure au nombre de plongeurs max
+	 *  ceci pour bloquer l'inscription en cas de liste d'attente sur plongée pleine
 	public boolean isOuverte(){
-		if(isExistDP() && isExistPilote()){
+		if(  isExistDP() && isExistPilote()
+				&& ((getParticipants().size() + getParticipantsEnAttente().size()) < getNbMaxPlaces()) 
+				){
 			return true;
 		} else{
 			return false;
 		}
 	}
+	 */
 }
