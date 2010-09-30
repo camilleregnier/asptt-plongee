@@ -13,8 +13,10 @@ import org.apache.commons.mail.SimpleEmail;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.ajax.markup.html.IndicatingAjaxLink;
+import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.AbstractReadOnlyModel;
@@ -34,6 +36,8 @@ public class InscriptionPlongeePage extends TemplatePage {
 	private Adherent adh = null;
 	private List<Plongee> plongees = null;
 	private FeedbackPanel feedback = new FeedbackPanel("feedback");
+	
+	private ModalWindow modalConfirm;
 	
 	
 	public InscriptionPlongeePage(){
@@ -57,6 +61,21 @@ public class InscriptionPlongeePage extends TemplatePage {
 	private void init() {
 
 		try{
+			// Initialisation de la fenêtre modal de confirmation d'annulation
+			add(modalConfirm = new ModalWindow("modalConfirm"));
+			//modalConfirm.setPageMapName("modal-2");
+
+			modalConfirm.setTitle("Confirmation");
+
+			modalConfirm.setResizable(false);
+			modalConfirm.setInitialWidth(30);
+			modalConfirm.setInitialHeight(15);
+			modalConfirm.setWidthUnit("em");
+			modalConfirm.setHeightUnit("em");
+
+			modalConfirm.setCssClassName(ModalWindow.CSS_CLASS_BLUE);
+			
+			
 			plongees = getResaSession().getPlongeeService().rechercherPlongeePourInscriptionAdherent(adh);
 		} catch (TechnicalException e) {
 			e.printStackTrace();
@@ -66,6 +85,10 @@ public class InscriptionPlongeePage extends TemplatePage {
 		PlongeeDataProvider pDataProvider = new PlongeeDataProvider(plongees);
 
 		add(new DataView<Plongee>("simple", pDataProvider) {
+
+			private static final long serialVersionUID = 4247578422439877902L;
+
+			@SuppressWarnings("unchecked")
 			protected void populateItem(final Item<Plongee> item) {
 				Plongee plongee = item.getModelObject();
 				String nomDP = "Aucun";
@@ -74,6 +97,8 @@ public class InscriptionPlongeePage extends TemplatePage {
 				}
 
 				item.add(new IndicatingAjaxLink("select") {
+					private static final long serialVersionUID = 4442484995694176106L;
+
 					@Override
 					public void onClick(AjaxRequestTarget target) {
 						inscrire(target, item.getModel());
@@ -98,6 +123,8 @@ public class InscriptionPlongeePage extends TemplatePage {
 
 				item.add(new AttributeModifier("class", true,
 					new AbstractReadOnlyModel<String>() {
+						private static final long serialVersionUID = 5259097512265622750L;
+
 						@Override
 						public String getObject() {
 							return (item.getIndex() % 2 == 1) ? "even"
@@ -127,22 +154,16 @@ public class InscriptionPlongeePage extends TemplatePage {
 				if(getResaSession().getPlongeeService().isOkForListeAttente(
 						plongee, 
 						getResaSession().getAdherent())){
-					//on peut inscrire l'adherent en liste attente
-					getResaSession().getPlongeeService().inscrireAdherentEnListeAttente(
-							plongee, 
-							adh != null ?  adh : getResaSession().getAdherent());
-					setResponsePage(new InscriptionListeAttentePlongeePage(plongee));
+					// On demande confirmation pour l'inscriptions en liste attente
+					replaceModalWindow(target, plongee, null);
+					modalConfirm.show(target);
 				}
 				break;
 			case 4: //on inscrit l'adherent en liste d'attente avec envoi d'un mail
 				if(getResaSession().getPlongeeService().isOkForListeAttente(
 						plongee, 
 						getResaSession().getAdherent())){
-					//on peut inscrire l'adherent en liste attente
-					getResaSession().getPlongeeService().inscrireAdherentEnListeAttente(
-							plongee, 
-							adh != null ?  adh : getResaSession().getAdherent());
-					
+				
 					// Mise en forme de la date
 					SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 					String dateAffichee = sdf.format(plongee.getDate());
@@ -166,10 +187,10 @@ public class InscriptionPlongeePage extends TemplatePage {
 					destis.add("camille.regnier@gmail.com");
 
 					PlongeeMail pMail = new PlongeeMail(eMail);
-					pMail.sendMail("ENCADRANT");
 					
-					
-					setResponsePage(new InscriptionListeAttentePlongeePage(plongee));
+					// On demande confirmation pour l'inscription en liste d'attente
+					replaceModalWindow(target, plongee, pMail);
+					modalConfirm.show(target);
 				}
 				break;
 			case 3: //on inscrit l'encadrant ou P4 en liste d'attente avec envoi d'un mail aux admins
@@ -221,12 +242,80 @@ public class InscriptionPlongeePage extends TemplatePage {
 			e.printStackTrace();
 			error(e.getKey());
 		} catch (MessagingException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			error(e.getCause().getMessage());
 		} finally {
 			target.addComponent(feedback);
 		}
 	}
+	
+	private void replaceModalWindow(AjaxRequestTarget target, Plongee plongee, PlongeeMail mail) {
+		modalConfirm.setContent(new ConfirmSelectionModal(modalConfirm.getContentId(), plongee, mail));
+		modalConfirm.setTitle("Modifiez les informations à mettre à jour");
+		modalConfirm.setUseInitialHeight(true);
+		
+		// Pour éviter le message de disparition de la fenetre lors de la validation
+		target.appendJavascript( "Wicket.Window.unloadConfirmation  = false;");
+	}
+	
+	public class ConfirmSelectionModal extends Panel
+	{
+		private static final long serialVersionUID = 196724625616748115L;
+
+		@SuppressWarnings("unchecked")
+		public ConfirmSelectionModal(String id, final Plongee plongee, final PlongeeMail mail)
+		{
+			super(id);
+			
+			// Informations précisant que le plongeur est en liste d'attente
+			add(new Label("infoPlongeur", "Etes-vous sûr de vouloir vous inscrire : vous êtes en liste d'attente"));
+			add(new Label("infoPlongee", " pour la plongée du " + plongee.getDate() + " " + plongee.getType() + " ?"));
+			
+			// Le lien qui va fermer la fenêtre de confirmation
+			// et appeler la méthode de d'inscription en liste d'attente si nécessaire
+			add(new IndicatingAjaxLink("yes")
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public void onClick(AjaxRequestTarget target)
+				{
+					try{
+						// On inscrit en liste d'attente
+						getResaSession().getPlongeeService().inscrireAdherentEnListeAttente(
+						plongee, 
+						adh != null ?  adh : getResaSession().getAdherent());
+						
+						// On envoie le mail si il existe
+						if (mail != null){
+							mail.sendMail("ENCADRANT");
+						}
+						setResponsePage(new InscriptionListeAttentePlongeePage(plongee));
+					} catch (ResaException e) {
+						e.printStackTrace();
+						error(e.getMessage());
+					} finally {
+						target.addComponent(feedback);
+					}
+
+				}
+			});
+			
+			// Le lien qui va juste fermer la fenêtre de confirmation
+			add(new IndicatingAjaxLink("no")
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public void onClick(AjaxRequestTarget target)
+				{
+					modalConfirm.close(target);
+				}
+			});
+
+		}
+
+	}
+
 		
 }
