@@ -147,15 +147,13 @@ public class InscriptionPlongeePage extends TemplatePage {
 					plongee, 
 					adh != null ? adh : getResaSession().getAdherent());
 			
-			
-			
 			switch (response) {
 			case 0: //on inscrit l'adherent en liste d'attente sans envoi de mail
 				if(getResaSession().getPlongeeService().isOkForListeAttente(
 						plongee, 
 						getResaSession().getAdherent())){
 					// On demande confirmation pour l'inscriptions en liste attente
-					replaceModalWindow(target, plongee, null);
+					replaceModalWindow(target, plongee);
 					modalConfirm.show(target);
 				}
 				break;
@@ -163,70 +161,23 @@ public class InscriptionPlongeePage extends TemplatePage {
 				if(getResaSession().getPlongeeService().isOkForListeAttente(
 						plongee, 
 						getResaSession().getAdherent())){
-				
-					// Mise en forme de la date
-					SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-					String dateAffichee = sdf.format(plongee.getDate());
-					//Envoi du mail
-					Email eMail = new SimpleEmail();
-					eMail.setSubject("Manque d'encadrement - plongée du : "+dateAffichee);
-					StringBuffer sb = new StringBuffer("Bonjour,\n");
-					sb.append("Nous avons un manque d'encadrant sur la plongée du "+dateAffichee+" de "+plongee.getType()+"\n");
-					sb.append("Si vous êtes disponible, votre inscription est la bienvenue.\n");
-					sb.append("\n");
-					sb.append("-----------------------------------------------------------\n");
-					sb.append("ATTENTION : dans ce cas AVERTISSEZ les administrateurs \n");
-					sb.append("pour qu'ils inscrivent les personnes en liste d'attente.\n");
-					sb.append("-----------------------------------------------------------\n");
-					sb.append("\n");
-					sb.append("Cordialement\n");
-					
-					eMail.setMsg(sb.toString());
-					List<String> destis = new ArrayList<String>();
-					destis.add("eric.simon28@orange.fr");
-					destis.add("camille.regnier@gmail.com");
-
-					PlongeeMail pMail = new PlongeeMail(eMail);
 					
 					// On demande confirmation pour l'inscription en liste d'attente
-					replaceModalWindow(target, plongee, pMail);
+					replaceModalWindow(target, plongee);
 					modalConfirm.show(target);
 				}
 				break;
-			case 3: //on inscrit l'encadrant ou P4 en liste d'attente avec envoi d'un mail aux admins
+			case 3: //on inscrit un pilote ou un dp sur une plongée fermée avec envoi d'un mail aux admins
 				getResaSession().getPlongeeService().inscrireAdherent(
 						plongee, 
-						adh != null ?  adh : getResaSession().getAdherent());
-					
-					// Mise en forme de la date
-					SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-					String dateAffichee = sdf.format(plongee.getDate());
-					//Envoi du mail
-					Email eMail = new SimpleEmail();
-					eMail.setSubject("Inscription sur la plongée du : "+dateAffichee+" encore fermée");
-					StringBuffer sb = new StringBuffer("Bonjour,\n");
-					sb.append("l'encadrant/P4 "+adh.getNom()+" , "+adh.getPrenom()+" \n");
-					sb.append("Viens de s'inscrire à la plongée du "+dateAffichee+" de "+plongee.getType()+"\n");
-					sb.append("\n");
-					sb.append("Cette plongée est encore fermée.\n");
-					sb.append("\n");
-					sb.append("Pouvez-vous l'ouvrir en trouvant un DP et/ou un pilote?.\n");
-					sb.append("Cordialement\n");
-					
-					eMail.setMsg(sb.toString());
-					List<String> destis = new ArrayList<String>();
-					destis.add("eric.simon28@orange.fr");
-					destis.add("camille.regnier@gmail.com");
-
-					PlongeeMail pMail = new PlongeeMail(eMail);
-					pMail.sendMail("ADMIN");
+						adh != null ?  adh : getResaSession().getAdherent(), PlongeeMail.MAIL_INSCRIPTION_SUR_PLONGEE_FERMEE);
 					
 					setResponsePage(new InscriptionConfirmationPlongeePage(plongee));
 				break;
 			case 1: //on peux inscrire l'adherent à la plongee
 				getResaSession().getPlongeeService().inscrireAdherent(
 						plongee, 
-						adh != null ?  adh : getResaSession().getAdherent());
+						adh != null ?  adh : getResaSession().getAdherent(), -1);
 				setResponsePage(new InscriptionConfirmationPlongeePage(plongee));
 				break;
 
@@ -241,16 +192,13 @@ public class InscriptionPlongeePage extends TemplatePage {
 		} catch (TechnicalException e) {
 			e.printStackTrace();
 			error(e.getKey());
-		} catch (MessagingException e) {
-			e.printStackTrace();
-			error(e.getCause().getMessage());
-		} finally {
+		}  finally {
 			target.addComponent(feedback);
 		}
 	}
 	
-	private void replaceModalWindow(AjaxRequestTarget target, Plongee plongee, PlongeeMail mail) {
-		modalConfirm.setContent(new ConfirmSelectionModal(modalConfirm.getContentId(), plongee, mail));
+	private void replaceModalWindow(AjaxRequestTarget target, Plongee plongee) {
+		modalConfirm.setContent(new ConfirmSelectionModal(modalConfirm.getContentId(), plongee));
 		modalConfirm.setTitle("Modifiez les informations à mettre à jour");
 		modalConfirm.setUseInitialHeight(true);
 		
@@ -263,13 +211,13 @@ public class InscriptionPlongeePage extends TemplatePage {
 		private static final long serialVersionUID = 196724625616748115L;
 
 		@SuppressWarnings("unchecked")
-		public ConfirmSelectionModal(String id, final Plongee plongee, final PlongeeMail mail)
+		public ConfirmSelectionModal(String id, final Plongee plongee)
 		{
 			super(id);
 			
 			// Informations précisant que le plongeur est en liste d'attente
-			add(new Label("infoPlongeur", "Etes-vous sûr de vouloir vous inscrire : vous êtes en liste d'attente"));
-			add(new Label("infoPlongee", " pour la plongée du " + plongee.getDate() + " " + plongee.getType() + " ?"));
+			add(new Label("infoPlongeur", "Vous allez êtres en liste d'attente en position " + (plongee.getParticipantsEnAttente().size()+1) + "."));
+			add(new Label("infoPlongee", " Confirmez-vous votre inscription pour la plongée du " + plongee.getDate() + " " + plongee.getType() + " ?"));
 			
 			// Le lien qui va fermer la fenêtre de confirmation
 			// et appeler la méthode de d'inscription en liste d'attente si nécessaire
@@ -284,12 +232,8 @@ public class InscriptionPlongeePage extends TemplatePage {
 						// On inscrit en liste d'attente
 						getResaSession().getPlongeeService().inscrireAdherentEnListeAttente(
 						plongee, 
-						adh != null ?  adh : getResaSession().getAdherent());
+						adh != null ?  adh : getResaSession().getAdherent(), PlongeeMail.MAIL_PAS_ASSEZ_ENCADRANT);
 						
-						// On envoie le mail si il existe
-						if (mail != null){
-							mail.sendMail("ENCADRANT");
-						}
 						setResponsePage(new InscriptionListeAttentePlongeePage(plongee));
 					} catch (ResaException e) {
 						e.printStackTrace();

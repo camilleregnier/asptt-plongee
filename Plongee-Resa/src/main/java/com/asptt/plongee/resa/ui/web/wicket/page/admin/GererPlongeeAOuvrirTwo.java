@@ -131,7 +131,7 @@ public class GererPlongeeAOuvrirTwo extends TemplatePage {
 					for (Adherent adh : adhInscrits) {
 						try {
 							getResaSession().getPlongeeService().inscrireAdherent(
-									plongee, adh);
+									plongee, adh, -1);
 						} catch (ResaException e) {
 							e.printStackTrace();
 							ErrorPage ep = new ErrorPage(e);
