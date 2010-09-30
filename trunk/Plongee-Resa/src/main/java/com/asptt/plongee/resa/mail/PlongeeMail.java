@@ -17,6 +17,11 @@ import com.asptt.plongee.resa.util.Parameters;
 public final class PlongeeMail {
 
 
+	public static int MAIL_PLUS_ASSEZ_ENCADRANT = 0;
+	public static int MAIL_PAS_ASSEZ_ENCADRANT = 3;
+	public static int MAIL_INSCRIPTION_SUR_PLONGEE_FERMEE = 1;
+	public static int MAIL_PLACES_LIBRES = 2;
+	
 	private static PlongeeMail instance = null;
 	private Email email = null;
 	private String hostName = null;

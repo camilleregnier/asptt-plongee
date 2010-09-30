@@ -4,6 +4,8 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
 
+import javax.mail.MessagingException;
+
 import com.asptt.plongee.resa.exception.ResaException;
 import com.asptt.plongee.resa.exception.TechnicalException;
 import com.asptt.plongee.resa.model.Adherent;
@@ -34,10 +36,10 @@ public interface PlongeeService {
 	public boolean isEnoughEncadrant(Plongee plongee) throws TechnicalException;
 	public boolean isOuverte(Plongee plongee);
 	
-	public void inscrireAdherent(Plongee plongee, Adherent adherent) throws ResaException;
-	public void inscrireAdherentEnListeAttente(Plongee plongee, Adherent adherent);
+	public void inscrireAdherent(Plongee plongee, Adherent adherent, int typeMail) throws ResaException;
+	public void inscrireAdherentEnListeAttente(Plongee plongee, Adherent adherent, int typeMail) throws ResaException;
 	public void fairePasserAttenteAInscrit(Plongee plongee, Adherent adherent);
 
-	public void deInscrireAdherent(Plongee plongee, Adherent adherent);
-	public void deInscrireAdherentEnListeAttente(Plongee plongee, Adherent adherent);
+	public void deInscrireAdherent(Plongee plongee, Adherent adherent, int typeMail) throws ResaException;
+	public void deInscrireAdherentEnListeAttente(Plongee plongee, Adherent adherent) throws ResaException;
 }

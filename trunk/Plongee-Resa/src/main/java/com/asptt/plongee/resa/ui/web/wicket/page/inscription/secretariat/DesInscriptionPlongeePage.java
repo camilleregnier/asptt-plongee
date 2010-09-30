@@ -18,6 +18,7 @@ import org.wicketstuff.objectautocomplete.ObjectAutoCompleteBuilder;
 import org.wicketstuff.objectautocomplete.ObjectAutoCompleteField;
 import org.wicketstuff.objectautocomplete.ObjectAutoCompleteRenderer;
 
+import com.asptt.plongee.resa.exception.ResaException;
 import com.asptt.plongee.resa.model.Adherent;
 import com.asptt.plongee.resa.model.Plongee;
 import com.asptt.plongee.resa.ui.web.wicket.ResaSession;
@@ -149,8 +150,14 @@ public class DesInscriptionPlongeePage extends TemplatePage {
 				// Desinscription pour cette plongée
 				ResaSession resaSession = (ResaSession) getApplication()
 						.getSessionStore().lookup(getRequest());
-				resaSession.getPlongeeService().deInscrireAdherent(plongee,
-						plongeur);
+				
+				try {
+					resaSession.getPlongeeService().deInscrireAdherent(plongee,
+							plongeur, -1);
+				} catch (ResaException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				modalPlongees.close(target);
 			}
 

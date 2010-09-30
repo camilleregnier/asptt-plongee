@@ -139,64 +139,32 @@ public class DeInscriptionPlongeePage extends TemplatePage {
 			//et sinon envoyer un mail 
 			if(adherent.getEncadrement() == null){	
 				//Ce n'est pas un encadrant : on desinscrit
-				getResaSession().getPlongeeService().deInscrireAdherent(
-						plongee, 
-						getResaSession().getAdherent());
 				
-				setResponsePage(new InscriptionConfirmationPlongeePage(plongee));
 				//S'il y a des personnes en liste d'attente => mail aux ADMIN
 				if(getResaSession().getPlongeeService().rechercherListeAttente(plongee).size() > 0){
-					// Mise en forme de la date
-					SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-					String dateAffichee = sdf.format(plongee.getDate());
-					//ENVOI d'un Mail
-					Email eMail = new SimpleEmail();
-					eMail.setSubject("Gestion de file d'attente - plongée du : "+dateAffichee);
-					StringBuffer sb = new StringBuffer("Bonjour,\n");
-					sb.append("Des personnes sont en file d'attente sur la plongée du "+dateAffichee+" du "+plongee.getType()+"\n");
-					sb.append("\n");
-					sb.append("Une place vient de se libérer.\n");
-					sb.append("\n");
-					sb.append("Cordialement\n");
+					getResaSession().getPlongeeService().deInscrireAdherent(
+							plongee, 
+							getResaSession().getAdherent(), PlongeeMail.MAIL_PLACES_LIBRES);
 					
-					eMail.setMsg(sb.toString());
-					List<String> destis = new ArrayList<String>();
-					destis.add("eric.simon28@orange.fr");
-					destis.add("camille.regnier@gmail.com");
-					
-					PlongeeMail pMail = new PlongeeMail(eMail);
-					pMail.sendMail("ADMIN");
+				} else {
+					getResaSession().getPlongeeService().deInscrireAdherent(
+							plongee, 
+							getResaSession().getAdherent(), -1);
 				}
 				setResponsePage(new InscriptionConfirmationPlongeePage(plongee));
 			} else {
 				//C'est un encadrant : on regarde s'il en reste assez
 				if(getResaSession().getPlongeeService().isEnoughEncadrant(plongee)){
-					getResaSession().getPlongeeService().deInscrireAdherent(
-							plongee, 
-							getResaSession().getAdherent());
 					//S'il y a des personnes en liste d'attente => mail
 					if(getResaSession().getPlongeeService().rechercherListeAttente(plongee).size() > 0){
-						// Mise en forme de la date
-						SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-						String dateAffichee = sdf.format(plongee.getDate());
-						//ENVOI d'un Mail
-						Email eMail = new SimpleEmail();
-						eMail.setSubject("Gestion de file d'attente - plongée du : "+dateAffichee);
+						getResaSession().getPlongeeService().deInscrireAdherent(
+								plongee, 
+								getResaSession().getAdherent(), PlongeeMail.MAIL_PLACES_LIBRES);
 						
-						StringBuffer sb = new StringBuffer("Bonjour,\n");
-						sb.append("Des personnes sont en file d'attente sur la plongée du "+dateAffichee+" du "+plongee.getType()+"\n");
-						sb.append("\n");
-						sb.append("Une place vient de se libérer.\n");
-						sb.append("\n");
-						sb.append("Cordialement\n");
-						
-						eMail.setMsg(sb.toString());
-						List<String> destis = new ArrayList<String>();
-						destis.add("eric.simon28@orange.fr");
-						destis.add("camille.regnier@gmail.com");
-						
-						PlongeeMail pMail = new PlongeeMail(eMail);
-						pMail.sendMail("ADMIN");
+					} else {
+						getResaSession().getPlongeeService().deInscrireAdherent(
+								plongee, 
+								getResaSession().getAdherent(), -1);
 					}
 					setResponsePage(new InscriptionConfirmationPlongeePage(plongee));
 				} else {
@@ -209,9 +177,6 @@ public class DeInscriptionPlongeePage extends TemplatePage {
 		} catch (TechnicalException e) {
 			e.printStackTrace();
 			error(e.getKey());
-		}  catch (MessagingException e) {
-			e.printStackTrace();
-			error(e.getMessage());
 		} catch (ResaException e) {
 			e.printStackTrace();
 			error(e.getKey());
@@ -250,37 +215,13 @@ public class DeInscriptionPlongeePage extends TemplatePage {
 				public void onClick(AjaxRequestTarget target)
 				{
 					// On desinscrit
-					getResaSession().getPlongeeService().deInscrireAdherent(
-							plongee, 
-							getResaSession().getAdherent());
 					try{
-						// Mise en forme de la date
-						SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-						String dateAffichee = sdf.format(plongee.getDate());
-						//Envoi du mail
-						Email eMail = new SimpleEmail();
-						eMail.setSubject("Encadrement de la plongée du : "+dateAffichee);
-						StringBuffer sb = new StringBuffer("Bonjour,\n");
-						sb.append("Un encadrant vient de se désinscrire de la plongée du "+dateAffichee+" du "+plongee.getType()+"\n");
-						sb.append("\n");
-						sb.append("Il n'y a plus assez d'encadrant pour assurer la plongée.\n");
-						sb.append("\n");
-						sb.append("Cordialement\n");
+						getResaSession().getPlongeeService().deInscrireAdherent(
+								plongee, 
+								getResaSession().getAdherent(), PlongeeMail.MAIL_PLUS_ASSEZ_ENCADRANT);
 						
-						eMail.setMsg(sb.toString());
-						List<String> destis = new ArrayList<String>();
-						destis.add("eric.simon28@orange.fr");
-						destis.add("camille.regnier@gmail.com");
-	
-						PlongeeMail pMail = new PlongeeMail(eMail);
-						pMail.sendMail("ADMIN");
 						setResponsePage(DeInscriptionPlongeePage.class);
-					} 
-						catch (ResaException e) {
-						e.printStackTrace();
-						error(e.getMessage());
-					} 
-					catch (MessagingException e) {
+					} catch (ResaException e) {
 						e.printStackTrace();
 						error(e.getMessage());
 					} finally {

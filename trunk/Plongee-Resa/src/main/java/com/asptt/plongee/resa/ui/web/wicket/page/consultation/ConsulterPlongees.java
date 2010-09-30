@@ -12,6 +12,7 @@ import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInst
 import org.apache.wicket.extensions.ajax.markup.html.IndicatingAjaxLink;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
@@ -26,6 +27,7 @@ import com.asptt.plongee.resa.model.InscritsPlongeeDataProvider;
 import com.asptt.plongee.resa.model.ListeAttentePlongeeDataProvider;
 import com.asptt.plongee.resa.model.Plongee;
 import com.asptt.plongee.resa.model.PlongeeDataProvider;
+import com.asptt.plongee.resa.ui.web.wicket.page.AccueilPage;
 import com.asptt.plongee.resa.ui.web.wicket.page.ErreurTechniquePage;
 import com.asptt.plongee.resa.ui.web.wicket.page.ErrorPage;
 import com.asptt.plongee.resa.ui.web.wicket.page.TemplatePage;
@@ -61,7 +63,11 @@ public class ConsulterPlongees extends TemplatePage {
 					item.add(new IndicatingAjaxLink("select") {
 						@Override
 						public void onClick(AjaxRequestTarget target) {
-							replaceModalWindow(target, item.getModel());
+							if (getResaSession().getAdherent().getEncadrement() == null){
+								replaceModalWindow(target, item.getModel());
+							} else {
+								replaceModalWindowEncadrant(target, item.getModel());
+							}
 							modal2.show(target);
 						}
 					});
@@ -150,6 +156,13 @@ public class ConsulterPlongees extends TemplatePage {
 		modal2.setContent(new ParticipantsPanel(modal2.getContentId(), plongee));
 		modal2.setTitle("Liste des participants");
 	}
+	private void replaceModalWindowEncadrant(AjaxRequestTarget target, IModel<Plongee> plongee) {
+		modal2.setContent(new EncadrantParticipantsPanel(modal2.getContentId(), plongee));
+		modal2.setTitle("Liste des participants");
+		
+		// Pour éviter le message de disparition de la fenetre lors de la validation
+		target.appendJavascript( "Wicket.Window.unloadConfirmation  = false;");
+	}
 
 	class ParticipantsPanel extends Panel {
 
@@ -230,6 +243,103 @@ public class ConsulterPlongees extends TemplatePage {
 						}
 				};
 				add(dataView);
+			} catch (TechnicalException e) {
+				e.printStackTrace();
+				ErreurTechniquePage etp = new ErreurTechniquePage(e);
+				setResponsePage(etp);
+			}
+			
+		}
+	}
+	
+	class EncadrantParticipantsPanel extends Panel {
+
+		private static final long serialVersionUID = 6206469268417992518L;
+
+		@SuppressWarnings("serial")
+		public EncadrantParticipantsPanel(String id, final IModel<Plongee> plongee) {
+			super(id, plongee);
+			setOutputMarkupId(true);
+			
+			try {
+			
+				List<Adherent> adherentsInscrit = getResaSession().getPlongeeService().rechercherInscriptions(plongee.getObject(),null,null,"date");
+	
+				add(new DataView<Adherent>("participants",
+						new InscritsPlongeeDataProvider(adherentsInscrit)) {
+					protected void populateItem(final Item<Adherent> item) {
+						Adherent adherent = item.getModelObject();
+	
+						item.add(new Label("nom", adherent.getNom()));
+						item.add(new Label("prenom", adherent.getPrenom()));
+						
+						// Dès que le plongeur est encadrant, on affiche son niveau d'encadrement
+						String niveauAffiche;
+						if (adherent.getEncadrement() != null)
+							niveauAffiche = adherent.getEncadrement();
+						else niveauAffiche = adherent.getNiveau();
+						
+						// Pour les externes, le niveau est suffixé par (Ext.)
+						if (adherent.getActifInt() ==2){
+							niveauAffiche = niveauAffiche + " (Ext.)";
+						}
+							
+						item.add(new Label("niveau", niveauAffiche));
+						item.add(new Label("telephone", adherent.getTelephone()));
+	
+						item.add(new AttributeModifier("class", true,
+								new AbstractReadOnlyModel<String>() {
+									@Override
+									public String getObject() {
+										return (item.getIndex() % 2 == 1) ? "even"
+												: "odd";
+									}
+								}));
+					}
+				});
+			
+				List<Adherent> adhereAttente = getResaSession().getPlongeeService().rechercherListeAttente(plongee.getObject());
+				
+				DataView<Adherent> dataView = new DataView<Adherent>("listeAttente",
+						new ListeAttentePlongeeDataProvider(adhereAttente)) {
+							protected void populateItem(final Item<Adherent> item) {
+								Adherent adherent = item.getModelObject();
+	
+								item.add(new Label("nom", adherent.getNom()));
+								item.add(new Label("prenom", adherent.getPrenom()));
+								
+								// Dès que le plongeur est encadrant, on affiche son niveau d'encadrement
+								String niveauAffiche;
+								if (adherent.getEncadrement() != null)
+									niveauAffiche = adherent.getEncadrement();
+								else niveauAffiche = adherent.getNiveau();
+								
+								// Pour les externes, le niveau est suffixé par (Ext.)
+								if (adherent.getActifInt() ==2){
+									niveauAffiche = niveauAffiche + " (Ext.)";
+								}
+								
+								item.add(new Label("niveau", niveauAffiche));
+								item.add(new Label("telephone", adherent.getTelephone()));
+	
+								item.add(new AttributeModifier("class", true,
+								new AbstractReadOnlyModel<String>() {
+									@Override
+									public String getObject() {
+										return (item.getIndex() % 2 == 1) ? "even"
+												: "odd";
+									}
+								}));
+						}
+				};
+				add(dataView);
+				
+				add(new Link("print") {
+					@Override
+					public void onClick() {
+						setResponsePage(new ImpressionPlongee(plongee.getObject()));
+					}
+				});
 			} catch (TechnicalException e) {
 				e.printStackTrace();
 				ErreurTechniquePage etp = new ErreurTechniquePage(e);
