@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.asptt.plongee.resa.model.Adherent.Encadrement;
+
 public class Plongee implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -98,6 +100,18 @@ public class Plongee implements Serializable {
 		this.ouvertureForcee = ouvertureForcee;
 	}
 	public Adherent getDp() {
+		List<Adherent> participants = getParticipants();
+		for(Adherent adherent : participants){
+			if(adherent.isDp()){
+				if(adherent.getNiveau().equalsIgnoreCase("P5")){
+					dp=adherent;
+				} else if(adherent.getEnumEncadrement().equals(Encadrement.E2)){
+					dp=adherent;
+				} else if(adherent.getEnumEncadrement().equals(Encadrement.E3)){
+					dp=adherent;
+				}
+			}
+		}
 		return dp;
 	}
 	public void setDp(Adherent dp) {

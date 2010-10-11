@@ -16,6 +16,7 @@ import com.asptt.plongee.resa.exception.ResaException;
 import com.asptt.plongee.resa.exception.TechnicalException;
 import com.asptt.plongee.resa.mail.PlongeeMail;
 import com.asptt.plongee.resa.model.Adherent;
+import com.asptt.plongee.resa.model.Plongee;
 
 public class AdherentServiceTest extends AbstractServiceTest {
 
@@ -55,14 +56,18 @@ public class AdherentServiceTest extends AbstractServiceTest {
 	public void envoyerMail() throws TechnicalException {
 		// données pour le test
 		try {
-			Email eMail = new SimpleEmail();
-			eMail.setSubject("gestion de file d'attente");
-			eMail.setMsg("Mille excuses...\n ca se voulait un test de liste de diffusion, mais ça n'aurait pas du partir...\n A bientot \n Eric");
-			List<String> destis = new ArrayList<String>();
-			destis.add("eric.simon28@orange.fr");
+			Adherent adherent = adherentService.rechercherAdherentParIdentifiant("444444");
+			Plongee plongee = plongeeService.rechercherPlongeeParId(26);
 			
-			PlongeeMail pMail = new PlongeeMail(eMail);
-			pMail.sendMail("ENCADRANT");
+//			Email eMail = new SimpleEmail();
+//			eMail.setSubject("gestion de file d'attente");
+//			eMail.setMsg("Mille excuses...\n ca se voulait un test de liste de diffusion, mais ça n'aurait pas du partir...\n A bientot \n Eric");
+			
+//			List<String> destis = new ArrayList<String>();
+//			destis.add("eric.simon28@orange.fr");
+			
+			PlongeeMail pMail = new PlongeeMail(PlongeeMail.MAIL_INSCRIPTION_SUR_PLONGEE_FERMEE, plongee, adherent);
+			pMail.sendMail("ADMIN");
 		
 		} catch (ResaException e) {
 			// TODO Auto-generated catch block

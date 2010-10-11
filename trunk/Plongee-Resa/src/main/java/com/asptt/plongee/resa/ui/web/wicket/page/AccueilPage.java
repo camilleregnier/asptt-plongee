@@ -16,25 +16,15 @@ import com.asptt.plongee.resa.ui.web.wicket.ResaSession;
 public class AccueilPage extends TemplatePage {
 	
 	public AccueilPage() { 
+
 		Adherent a = getResaSession().getAdherent();
 		
-		Date dateDuJour = new Date();
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(dateDuJour);
-		int heure = cal.get(Calendar.HOUR_OF_DAY);
-		//Test s'il est bien 9h00
-		if( heure >= 9){
-			// Si l'adhérent est identifié mais qu'il n'a pas changé son password (password = licence)
-			if (getResaSession().getAdherent().getNumeroLicense().equalsIgnoreCase(getResaSession().getAdherent().getPassword())){
-				setResponsePage(ModifPasswordPage.class);
-			}
-			
-			add(new Label("hello", "Bienvenue:"+a.getPrenom()+", nous sommes le : " + calculerDateCourante()));
-		} else {
-			LogoutPage lp = new LogoutPage(getResaSession().getAdherent(), "toLate");
-			setResponsePage(lp);
+		// Si l'adhérent est identifié mais qu'il n'a pas changé son password (password = licence)
+		if (getResaSession().getAdherent().getNumeroLicense().equalsIgnoreCase(getResaSession().getAdherent().getPassword())){
+			setResponsePage(ModifPasswordPage.class);
 		}
 		
+		add(new Label("hello", "Bienvenue:"+a.getPrenom()+", nous sommes le : " + calculerDateCourante()));
 	   
 	} 
 

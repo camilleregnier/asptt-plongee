@@ -587,7 +587,7 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 	/**
 	 * Retourne la liste des adherents en liste d'attente
 	 * sur la plongée
-	 * trie par le rang
+	 * trie par le DATE_ATTENTE
 	 */
 	public List<Adherent> getAdherentsWaiting(Plongee plongee)
 			throws TechnicalException {
@@ -600,7 +600,7 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 			sb.append(" and idPLONGEES = PLONGEES_idPLONGEES ");
 			sb.append(" and ADHERENT_LICENSE = LICENSE ");
 			sb.append(" and DATE_INSCRIPTION is null");
-			sb.append(" order by RANG");
+			sb.append(" order by DATE_ATTENTE");
 			st = getDataSource().getConnection()
 					.prepareStatement(sb.toString());
 			st.setInt(1, plongee.getId());

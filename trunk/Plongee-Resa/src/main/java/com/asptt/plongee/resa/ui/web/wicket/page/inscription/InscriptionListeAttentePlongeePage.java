@@ -16,8 +16,8 @@ import com.asptt.plongee.resa.ui.web.wicket.page.TemplatePage;
 public class InscriptionListeAttentePlongeePage extends TemplatePage {
 
 	@SuppressWarnings("serial")
-	public InscriptionListeAttentePlongeePage(Plongee plongee) {
-		
+	public InscriptionListeAttentePlongeePage(Plongee plongee, String message) {
+		add(new Label("lib", message));
 		// On affiche la liste d'attente pour information
 		List<Adherent> adhereAttente = getResaSession().getPlongeeService().rechercherListeAttente(plongee);
 		add(new DataView<Adherent>("listeAttente",

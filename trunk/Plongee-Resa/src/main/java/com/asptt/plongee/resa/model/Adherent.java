@@ -167,6 +167,16 @@ public class Adherent implements Serializable {
 		}
 	}
 
+	/**
+	 * Une veste rouge peut-être : 
+	 * Un encadrant, un DP ou u Pilote
+	 * Mais pas un externe => le test : et actif =1
+	 * @return
+	 */
+	public boolean isVesteRouge() {
+		return ( (getEncadrement()!= null || isDp() || isPilote())&& getActifInt()==1 );
+	}
+
 	public void setDp(boolean dp) {
 		this.dp = dp;
 	}

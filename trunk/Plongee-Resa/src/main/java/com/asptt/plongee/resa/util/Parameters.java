@@ -18,15 +18,11 @@ public final class Parameters {
 	/**
 	* Return the value of the key If this key has no value, returns '!' + key +
 	* '!'
-	* 
 	* @param key
 	* @return
 	*/
-	
 	public static String getString(String key) {
 		try {
-			//System.out.println("LOCALE getString : " + FacesContext.getCurrentInstance().getViewRoot().getLocale());
-//			return ResourceBundle.getBundle(BUNDLE_NAME, FacesContext.getCurrentInstance().getViewRoot().getLocale()).getString(key);
 			return ResourceBundle.getBundle(BUNDLE_NAME).getString(key);
 		} catch (MissingResourceException e) {
 			return '!' + key + '!';
@@ -37,19 +33,30 @@ public final class Parameters {
 	
 	/**
 	* Return the value of the key If this key has no value, returns null
-	* 
 	* @param key
 	* @return
 	*/
-	
 	public static String getExactString(String key) {
 		try {
-			//System.out.println("LOCALE getExactString : " + FacesContext.getCurrentInstance().getViewRoot().getLocale());
-//			return ResourceBundle.getBundle(BUNDLE_NAME, FacesContext.getCurrentInstance().getViewRoot().getLocale()).getString(key);
 			return ResourceBundle.getBundle(BUNDLE_NAME).getString(key);
 		} catch (MissingResourceException e) {
 			return null;
 		}
+	}
+
+	/**
+	* Return the value of the key If this key has no value, returns -1
+	* @param key
+	* @return
+	*/
+	public static int getInt(String key) {
+		try {
+			String sKey = ResourceBundle.getBundle(BUNDLE_NAME).getString(key);
+			return new Integer(sKey).intValue();
+		} catch (MissingResourceException e) {
+			return -1;
+		}
+	
 	}
 
 }
