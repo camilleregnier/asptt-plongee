@@ -23,6 +23,7 @@ import com.asptt.plongee.resa.model.ResaConstants;
 import com.asptt.plongee.resa.model.Plongee.Type;
 import com.asptt.plongee.resa.service.impl.AdherentServiceImpl;
 import com.asptt.plongee.resa.service.impl.PlongeeServiceImpl;
+import com.asptt.plongee.resa.util.Parameters;
 
 public class PlongeeJdbcDao extends AbstractJdbcDao implements PlongeeDao {
 	
@@ -168,10 +169,13 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements PlongeeDao {
 			sb.append("SELECT * FROM PLONGEE p");
 			sb.append(" WHERE OUVERTURE_FORCEE=1");
 			sb.append(" and date > CURRENT_TIMESTAMP()");
-			sb.append(" and date < DATE_ADD(CURRENT_DATE(), INTERVAL " + ResaConstants.MAX_JOUR_VISIBLE + " DAY)");
+			sb.append(" and date < DATE_ADD(CURRENT_DATE(), INTERVAL ? DAY)");
 			sb.append(" and OUVERTURE_FORCEE = 1");
 			sb.append(" ORDER BY DATE");
 			PreparedStatement st = getDataSource().getConnection().prepareStatement(sb.toString());
+			
+			st.setString(1, Parameters.getString("visible.max"));
+			
 			ResultSet rs = st.executeQuery();
 			List<Plongee> plongees = new ArrayList<Plongee>();
 			while (rs.next()) {
@@ -191,15 +195,20 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements PlongeeDao {
 		}
 	}
 	
-	public List<Plongee> getPlongeesForFewDay( int nbjour) throws TechnicalException {
+	/**
+	 * Retourne les plongées à partir du lendemain
+	 */
+	public List<Plongee> getPlongeesForFewDay( int aPartir, int nbjour) throws TechnicalException {
 		try {
-			StringBuffer sb = new StringBuffer("SELECT * FROM PLONGEE p  WHERE OUVERTURE_FORCEE=1");
-			sb.append(" and date < DATE_ADD(CURRENT_DATE(), INTERVAL " + nbjour + " DAY)");
-			sb.append(" and date > CURRENT_TIMESTAMP()");
-			sb.append(" and OUVERTURE_FORCEE = 1");
+			StringBuffer sb = new StringBuffer("SELECT * FROM PLONGEE p");
+			sb.append(" WHERE OUVERTURE_FORCEE=1");
+			sb.append(" and date < DATE_ADD(CURRENT_DATE(), INTERVAL ? DAY)");
+			sb.append(" and date > DATE_ADD(CURRENT_TIMESTAMP(), INTERVAL ? DAY)");
 			sb.append(" ORDER BY DATE");
 			
 			PreparedStatement st = getDataSource().getConnection().prepareStatement(sb.toString());
+			st.setInt(1, nbjour);
+			st.setInt(2, aPartir);
 			
 			ResultSet rs = st.executeQuery();
 			List<Plongee> plongees = new ArrayList<Plongee>();
@@ -404,35 +413,35 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements PlongeeDao {
 
 	public void inscrireAdherentAttente(Plongee plongee,
 			Adherent adherent) throws TechnicalException {
-		int rang = 0;
+//		int rang = 0;
+//		try {
+//			StringBuffer sb = new StringBuffer();
+//			sb.append("select MAX(RANG) from LISTE_ATTENTE where plongees_idplongees = ?");
+//			PreparedStatement st = getDataSource().getConnection().
+//				prepareStatement(sb.toString());
+//			st.setInt(1, plongee.getId());
+//			ResultSet rs = st.executeQuery();
+//			while (rs.next()) {
+//				if(0 == rs.getInt(1)){
+//					rang =1;
+//				}else{
+//					rang = rs.getInt(1) + 1;
+//				}
+//			}
+//		} catch (SQLException e) {
+//			throw new TechnicalException(e);
+//		} finally{
+//			try {
+//				getDataSource().getConnection().close();
+//			} catch (SQLException e) {
+//				e.printStackTrace();
+//				throw new TechnicalException("Impossible de cloturer la connexion");
+//			}
+//		}
 		try {
 			StringBuffer sb = new StringBuffer();
-			sb.append("select MAX(RANG) from LISTE_ATTENTE where plongees_idplongees = ?");
-			PreparedStatement st = getDataSource().getConnection().
-				prepareStatement(sb.toString());
-			st.setInt(1, plongee.getId());
-			ResultSet rs = st.executeQuery();
-			while (rs.next()) {
-				if(0 == rs.getInt(1)){
-					rang =1;
-				}else{
-					rang = rs.getInt(1) + 1;
-				}
-			}
-		} catch (SQLException e) {
-			throw new TechnicalException(e);
-		} finally{
-			try {
-				getDataSource().getConnection().close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-				throw new TechnicalException("Impossible de cloturer la connexion");
-			}
-		}
-		try {
-			StringBuffer sb = new StringBuffer();
-			sb.append("INSERT INTO LISTE_ATTENTE (ADHERENT_LICENSE, PLONGEES_idPLONGEES, RANG, DATE_ATTENTE)");
-			sb.append(" VALUES (?, ?, "+rang+",current_timestamp)");
+			sb.append("INSERT INTO LISTE_ATTENTE (ADHERENT_LICENSE, PLONGEES_idPLONGEES, DATE_ATTENTE)");
+			sb.append(" VALUES (?, ?, current_timestamp)");
 			PreparedStatement st = getDataSource().getConnection().
 				prepareStatement(sb.toString());
 			st.setString(1, adherent.getNumeroLicense());

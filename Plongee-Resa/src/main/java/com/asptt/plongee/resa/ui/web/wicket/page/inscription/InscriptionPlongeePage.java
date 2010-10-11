@@ -3,6 +3,7 @@ package com.asptt.plongee.resa.ui.web.wicket.page.inscription;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -30,12 +31,14 @@ import com.asptt.plongee.resa.model.Plongee;
 import com.asptt.plongee.resa.model.PlongeeDataProvider;
 import com.asptt.plongee.resa.ui.web.wicket.page.TemplatePage;
 import com.asptt.plongee.resa.ui.web.wicket.page.admin.GererPlongeeAOuvrirTwo;
+import com.asptt.plongee.resa.util.Parameters;
 
 public class InscriptionPlongeePage extends TemplatePage {
 	
 	private Adherent adh = null;
 	private List<Plongee> plongees = null;
 	private FeedbackPanel feedback = new FeedbackPanel("feedback");
+	private int typeMail;
 	
 	private ModalWindow modalConfirm;
 	
@@ -143,12 +146,31 @@ public class InscriptionPlongeePage extends TemplatePage {
 		// Si l'adhérent est inscrit par le secrétariat
 		// on ne prend pas l'adhérent en session
 		try {
+			//Verification de l'heure d'ouverture
+			Date dateDuJour = new Date();
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(dateDuJour);
+			int heureCourante = cal.get(Calendar.HOUR_OF_DAY);
+			int heureOuverture = getHeureOuverture(cal, adh);
+			//test actif == 1 ==> ok c un adherent
+			// sinon c un externe donc inscription par secretatiat
+			if ( adh.isVesteRouge() && adh.getActifInt()==1 ){
+				//C'est un encadrant un Dp ou un pilote
+				//L'inscription est ouverte à tous moments
+			} else {
+				//On regarde l'heure avant de donner accès à l'inscription
+				if( heureCourante < heureOuverture ){
+					throw new ResaException("Désolé "+adh.getPrenom()+" mais l'inscription ouvre à partir de : "+heureOuverture+" heures.");
+				}
+			}
+			//Appel au service de verification des RGs pour inscrire le plongeur
 			int response = getResaSession().getPlongeeService().isOkForResa(
 					plongee, 
 					adh != null ? adh : getResaSession().getAdherent());
-			
+			//Analyse le retour de service
 			switch (response) {
 			case 0: //on inscrit l'adherent en liste d'attente sans envoi de mail
+				typeMail=-1;
 				if(getResaSession().getPlongeeService().isOkForListeAttente(
 						plongee, 
 						getResaSession().getAdherent())){
@@ -158,6 +180,7 @@ public class InscriptionPlongeePage extends TemplatePage {
 				}
 				break;
 			case 4: //on inscrit l'adherent en liste d'attente avec envoi d'un mail
+				typeMail=PlongeeMail.MAIL_PAS_ASSEZ_ENCADRANT;
 				if(getResaSession().getPlongeeService().isOkForListeAttente(
 						plongee, 
 						getResaSession().getAdherent())){
@@ -168,6 +191,7 @@ public class InscriptionPlongeePage extends TemplatePage {
 				}
 				break;
 			case 3: //on inscrit un pilote ou un dp sur une plongée fermée avec envoi d'un mail aux admins
+				typeMail=PlongeeMail.MAIL_INSCRIPTION_SUR_PLONGEE_FERMEE;
 				getResaSession().getPlongeeService().inscrireAdherent(
 						plongee, 
 						adh != null ?  adh : getResaSession().getAdherent(), PlongeeMail.MAIL_INSCRIPTION_SUR_PLONGEE_FERMEE);
@@ -175,6 +199,7 @@ public class InscriptionPlongeePage extends TemplatePage {
 					setResponsePage(new InscriptionConfirmationPlongeePage(plongee));
 				break;
 			case 1: //on peux inscrire l'adherent à la plongee
+				typeMail=-1;
 				getResaSession().getPlongeeService().inscrireAdherent(
 						plongee, 
 						adh != null ?  adh : getResaSession().getAdherent(), -1);
@@ -182,6 +207,7 @@ public class InscriptionPlongeePage extends TemplatePage {
 				break;
 
 			case 2: // ouvrir la plongée
+				typeMail=-1;
 				setResponsePage(new GererPlongeeAOuvrirTwo(plongee));
 				break;
 			}
@@ -197,6 +223,69 @@ public class InscriptionPlongeePage extends TemplatePage {
 		}
 	}
 	
+	public int getHeureOuverture(Calendar cal, Adherent adh){
+
+		int numJour = cal.get(Calendar.DAY_OF_WEEK);			
+		int heure;
+		switch (numJour) {
+			case 1: //Dimanche
+				//test actif == 1 ==> ok c un adherent
+				// sinon c un externe donc inscription par secretatiat
+				if(adh.getActifInt()==1){
+					heure=Parameters.getInt("ouverture.dimanche.adh");
+				} else {
+					heure=Parameters.getInt("ouverture.dimanche.sct");
+				}
+				break;
+			case 2: //Lundi
+				if(adh.getActifInt()== 1){
+					heure=Parameters.getInt("ouverture.lundi.adh");
+				} else {
+					heure=Parameters.getInt("ouverture.lundi.sct");
+				}
+				break;
+			case 3: //Mardi
+				if(adh.getActifInt()== 1){
+					heure=Parameters.getInt("ouverture.mardi.adh");
+				} else {
+					heure=Parameters.getInt("ouverture.mardi.sct");
+				}
+				break;
+			case 4: //Mercredi 
+				if(adh.getActifInt()== 1){
+				heure=Parameters.getInt("ouverture.mercredi.adh");
+				} else {
+					heure=Parameters.getInt("ouverture.mercredi.sct");
+				}
+				break;
+			case 5: //Jeudi
+				if(adh.getActifInt()== 1){
+				heure=Parameters.getInt("ouverture.jeudi.adh");
+				} else {
+					heure=Parameters.getInt("ouverture.jeudi.sct");
+				}
+				break;
+			case 6: //Vendredi
+				if(adh.getActifInt()== 1){
+				heure=Parameters.getInt("ouverture.vendredi.adh");
+				} else {
+					heure=Parameters.getInt("ouverture.vendredi.sct");
+				}
+				break;
+			case 7: //Samedi
+				if(adh.getActifInt()== 1){
+					heure=Parameters.getInt("ouverture.samedi.adh");
+				} else {
+					heure=Parameters.getInt("ouverture.samedi.sct");
+				}
+				break;
+			default:
+				heure=0;
+				break;
+		}
+		return heure;
+	}
+
 	private void replaceModalWindow(AjaxRequestTarget target, Plongee plongee) {
 		modalConfirm.setContent(new ConfirmSelectionModal(modalConfirm.getContentId(), plongee));
 		modalConfirm.setTitle("Modifiez les informations à mettre à jour");
@@ -210,13 +299,18 @@ public class InscriptionPlongeePage extends TemplatePage {
 	{
 		private static final long serialVersionUID = 196724625616748115L;
 
+		String message = "La plongée est complète";
+		
 		@SuppressWarnings("unchecked")
 		public ConfirmSelectionModal(String id, final Plongee plongee)
 		{
 			super(id);
 			
+			if(typeMail == PlongeeMail.MAIL_PAS_ASSEZ_ENCADRANT){
+				message = "Il n'y a pas assez d'encadrant";
+			}
 			// Informations précisant que le plongeur est en liste d'attente
-			add(new Label("infoPlongeur", "Vous allez êtres en liste d'attente en position " + (plongee.getParticipantsEnAttente().size()+1) + "."));
+			add(new Label("infoPlongeur", message+"<br>Vous allez êtres en liste d'attente en position " + (plongee.getParticipantsEnAttente().size()+1) + "."));
 			add(new Label("infoPlongee", " Confirmez-vous votre inscription pour la plongée du " + plongee.getDate() + " " + plongee.getType() + " ?"));
 			
 			// Le lien qui va fermer la fenêtre de confirmation
@@ -232,12 +326,14 @@ public class InscriptionPlongeePage extends TemplatePage {
 						// On inscrit en liste d'attente
 						getResaSession().getPlongeeService().inscrireAdherentEnListeAttente(
 						plongee, 
-						adh != null ?  adh : getResaSession().getAdherent(), PlongeeMail.MAIL_PAS_ASSEZ_ENCADRANT);
-						
-						setResponsePage(new InscriptionListeAttentePlongeePage(plongee));
+						adh != null ?  adh : getResaSession().getAdherent(), typeMail);
+					
+						setResponsePage(new InscriptionListeAttentePlongeePage(plongee,message));
+
 					} catch (ResaException e) {
 						e.printStackTrace();
-						error(e.getMessage());
+						error(e.getKey());
+						setResponsePage(new InscriptionListeAttentePlongeePage(plongee,message));
 					} finally {
 						target.addComponent(feedback);
 					}

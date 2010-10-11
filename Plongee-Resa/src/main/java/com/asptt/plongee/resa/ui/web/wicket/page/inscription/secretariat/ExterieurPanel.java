@@ -13,6 +13,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.validation.validator.EmailAddressValidator;
 
+import com.asptt.plongee.resa.exception.TechnicalException;
 import com.asptt.plongee.resa.model.Adherent;
 import com.asptt.plongee.resa.model.NiveauAutonomie;
 import com.asptt.plongee.resa.ui.web.wicket.ResaSession;
@@ -66,13 +67,21 @@ public class ExterieurPanel extends Panel {
 				// http://yeswicket.com/index.php?post/2010/04/26/G%C3%A9rer-facilement-les-fen%C3%AAtres-modales-avec-Wicket
 				protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 					Adherent adherent = (Adherent) form.getModelObject();
+					try {
+						// Création de l'exterieur
+						ResaSession resaSession = (ResaSession) getApplication()
+								.getSessionStore().lookup(getRequest());
+						
+						resaSession.getAdherentService().creerExterne(adherent);
+	
+						setResponsePage(new InscriptionPlongeePage(adherent));
 
-					// Création de l'exterieur
-					ResaSession resaSession = (ResaSession) getApplication()
-							.getSessionStore().lookup(getRequest());
-					resaSession.getAdherentService().creerExterne(adherent);
-
-					setResponsePage(new InscriptionPlongeePage(adherent));
+					} catch ( TechnicalException e) {
+						e.printStackTrace();
+						error(e.getKey());
+					}  finally {
+						target.addComponent(feedback);
+					}
 
 				}
 

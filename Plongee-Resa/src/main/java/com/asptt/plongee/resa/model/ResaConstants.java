@@ -11,6 +11,6 @@ public interface ResaConstants {
 		
 	
 	// Pour les plongées
-	public static final String MAX_JOUR_VISIBLE = "10";
+	//public static final String MAX_JOUR_VISIBLE = "10";
 
 }

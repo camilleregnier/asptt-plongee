@@ -223,7 +223,7 @@ public class DeInscriptionPlongeePage extends TemplatePage {
 						setResponsePage(DeInscriptionPlongeePage.class);
 					} catch (ResaException e) {
 						e.printStackTrace();
-						error(e.getMessage());
+						error(e.getKey());
 					} finally {
 						target.addComponent(feedback);
 					}

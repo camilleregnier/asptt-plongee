@@ -79,7 +79,7 @@ public class AdherentInMemoryDao implements AdherentDao{
 		return null;
 	}
 
-	public List<Adherent> getAdherentsInscrits(Plongee plongee, String niveauPlongeur, String niveauEncadrement)
+	public List<Adherent> getAdherentsInscrits(Plongee plongee, String niveauPlongeur, String niveauEncadrement, String trie)
 			throws TechnicalException {
 		// TODO Auto-generated method stub
 		return null;

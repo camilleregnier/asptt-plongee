@@ -21,6 +21,7 @@ import com.asptt.plongee.resa.model.NiveauAutonomie;
 import com.asptt.plongee.resa.model.Plongee;
 import com.asptt.plongee.resa.model.Adherent.Encadrement;
 import com.asptt.plongee.resa.service.PlongeeService;
+import com.asptt.plongee.resa.util.Parameters;
 
 public class PlongeeServiceImpl implements PlongeeService {
 
@@ -66,8 +67,16 @@ public class PlongeeServiceImpl implements PlongeeService {
 	}
 
 	public List<Plongee> rechercherPlongeeProchainJour(Adherent adherent)  throws TechnicalException{
+
 		List<Plongee> plongees = new ArrayList<Plongee>();
+		
+		//nombre de jour pour la visiblité des plongées
 		int nbJour = 0;
+		
+		//jour 'a partir' de la date courante visible 
+		// 0 = le jour même, 1 = le lendemain,  etc
+		// initialisé pour le jour même (cas de l'adherent l'ambda)
+		int aPartir = 0;
 		
 //			GregorianCalendar gc = new GregorianCalendar();
 //			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
@@ -82,45 +91,44 @@ public class PlongeeServiceImpl implements PlongeeService {
 		int numJour = cal.get(Calendar.DAY_OF_WEEK);			
 
 		switch (numJour) {
-		case 1: //Dimanche visible = j : dimanche
-			nbJour=1;
+		case 1: //Dimanche visible j+3 = lundi mardi
+			nbJour = Parameters.getInt("visible.dimanche");
 			break;
-		case 2: //Lundi return pas d'inscription
-			/**
-			 * Pour le test de lundi soir
-			 */
-			nbJour = 1;
-//			nbJour = 0;
+		case 2: //Lundi visible j+2 = mardi
+			nbJour = Parameters.getInt("visible.lundi");
 			break;
-		case 3: //Mardi visible = j+3 : mardi, mercredi, jeudi
-			nbJour=4;
+		case 3: //Mardi visible = j+3 : mercredi, jeudi
+			nbJour = Parameters.getInt("visible.mardi");
 			break;
-		case 4: //Mercredi visible = j+2 : mercredi, jeudi 
-			nbJour=3;
+		case 4: //Mercredi visible = j+2 : jeudi 
+			nbJour = Parameters.getInt("visible.mercredi");
 			break;
-		case 5: //Jeudi visible = j+4 : jeudi, vendredi, samedi, dimanche
-			nbJour=5;
+		case 5: //Jeudi visible = j+6 : vendredi, samedi, dimanche, lundi , mardi
+			nbJour = Parameters.getInt("visible.jeudi");;
 			break;
-		case 6: //Vendredi visible = j+3 : vendredi, samedi, dimanche
-			nbJour=4;
+		case 6: //Vendredi visible = j+5 : samedi, dimanche, lundi , mardi
+			nbJour = Parameters.getInt("visible.vendredi");;
 			break;
-		case 7: //Samedi visible = j+2 : samedi, dimanche
-			nbJour=3;
+		case 7: //Samedi visible = j+4 : dimanche, lundi , mardi
+			nbJour = Parameters.getInt("visible.samedi");;
 			break;
 		default:
-			nbJour=0;
+			//on voit le lendemain
+			nbJour=2;
 			break;
 		}
 		
 		// reunion du 27/09/2010
-		// Les encadrant peuvent visualiser les 15 jours suivants
-		if (adherent.getEncadrement() != null || adherent.isDp() || adherent.isPilote()) {
-			nbJour = 15;
+		// Les encadrant peuvent visualiser les 15 jours suivants à partir du jour même 
+//		if (adherent.getEncadrement() != null || adherent.isDp() || adherent.isPilote()) {
+		if (adherent.isVesteRouge()) {
+			nbJour = Parameters.getInt("visible.max");
+			aPartir = 0;
 		}
-
-		List<Plongee> plongeeTrouvees = plongeeDao.getPlongeesForFewDay(nbJour);
+		//Appel au service DAO
+		List<Plongee> plongeeTrouvees = plongeeDao.getPlongeesForFewDay(aPartir, nbJour);
 		for(Plongee plongee: plongeeTrouvees){
-			if(adherent.getEncadrement()!= null || adherent.isDp() || adherent.isPilote() ){
+			if(adherent.isVesteRouge() ){
 				plongees.add(plongee);
 			} else {
 				if(isOuverte(plongee)){
@@ -219,7 +227,11 @@ public class PlongeeServiceImpl implements PlongeeService {
 	}
 	
 	public Integer getNbPlaceRestante(Plongee plongee)  throws TechnicalException{
-		Integer nbPlace =  plongee.getNbMaxPlaces() - adherentDao.getAdherentsInscrits(plongee,null,null,null).size();		
+		Integer nbPlace =  plongee.getNbMaxPlaces() - adherentDao.getAdherentsInscrits(plongee,null,null,null).size();
+		//Pour ne pas afficher de nombre negatif
+//		if (nbPlace < 0){
+//			nbPlace = 0;
+//		}
 		return nbPlace;
 //		return 0;
 	}
@@ -227,7 +239,7 @@ public class PlongeeServiceImpl implements PlongeeService {
 	public boolean isEnoughEncadrant(Plongee plongee) throws  TechnicalException {
 		boolean isOk = true;
 		List<Adherent> encadrants = adherentDao.getAdherentsInscrits(plongee, null, "TOUS", null);
-		int nbEncadrant = encadrants.size();
+		float nbEncadrant = encadrants.size();
 		
 		if (nbEncadrant <= 1){
 			//C'est le dernier encadrant => MAIL
@@ -244,7 +256,7 @@ public class PlongeeServiceImpl implements PlongeeService {
 			
 			//cas pour les P0, P1
 			if (nbP0 + nbP1 > 0){
-				int res = ((nbP0 + nbP1)) / (nbEncadrant - 1);
+				float res = ((nbP0 + nbP1)) / (nbEncadrant - 1);
 				// max 4 P0 ou P1 par encadrant
 				if (res > 4){
 					// Pas assez d'encadrant : envoie d'un mail
@@ -254,7 +266,7 @@ public class PlongeeServiceImpl implements PlongeeService {
 			}
 			//cas pour les BATM
 			if (nbBATM > 0){
-				int res = (nbBATM) / (nbEncadrant - 1);
+				float res = (nbBATM) / (nbEncadrant - 1);
 				// max 1 bapteme par encadrant
 				if (res > 1){
 					// Pas assez d'encadrant : liste d'attente
@@ -281,20 +293,10 @@ public class PlongeeServiceImpl implements PlongeeService {
 		//	Si E2,E3,E4 => 4 x P0,P1 et/ou BATM
 		//	Si BATM => 1 x E2,E3,E4
 
-//		if( plongee.getParticipantsEnAttente().size()<= 0 ){
-//			//il y a personne en liste d'attente : onprend laplace à degun => ouverte
-//			return true;
-//		} else {
-			if(plongee.getParticipants().size() < plongee.getNbMaxPlaces() && ((plongee.getParticipants().size() + plongee.getParticipantsEnAttente().size() ) >= plongee.getNbMaxPlaces())){
-				// il y a des gens en liste d'attente, mais reste plus de place sur le bateau ==> fermée
-				throw new ResaException("Pas glop");
-//			}else{
-				//il y a des gens en liste d'attente, mais reste encore des places sur le bateau ==> ouverte
-//				return true;
-			}
-//		}
-		
-		
+		if(plongee.getParticipants().size() < plongee.getNbMaxPlaces() && ((plongee.getParticipants().size() + plongee.getParticipantsEnAttente().size() ) >= plongee.getNbMaxPlaces())){
+			// il y a des gens en liste d'attente, mais reste plus de place sur le bateau ==> fermée
+			throw new ResaException("Pas glop");
+		}
 		
 		int isOk = 1;
 		// SI encadrant veux reserver une plongée pas encore ouverte:
@@ -304,7 +306,7 @@ public class PlongeeServiceImpl implements PlongeeService {
 			if(adherent.isDp() && adherent.isPilote()){
 				// ouvrir plongée
 				isOk = 2;
-			} else if(adherent.getEncadrement()!= null || adherent.isDp() || adherent.isPilote() ){
+			} else if(adherent.isVesteRouge()){
 				// Encadrant ou DP ou Pilote : il peut s'inscrire à la plongée même si elle est fermée
 				isOk = 3;
 			} else {
@@ -352,7 +354,7 @@ public class PlongeeServiceImpl implements PlongeeService {
 		}
 
 		List<Adherent> encadrants = adherentDao.getAdherentsInscrits(plongee, null, "TOUS", null);
-		int nbEncadrant = encadrants.size();
+		float nbEncadrant = encadrants.size();
 		List<Adherent> plongeursP0 = adherentDao.getAdherentsInscrits(plongee, "P0", null, null);
 		int nbP0 = plongeursP0.size();
 		List<Adherent> plongeursP1 = adherentDao.getAdherentsInscrits(plongee, "P1", null, null);
@@ -362,7 +364,7 @@ public class PlongeeServiceImpl implements PlongeeService {
 		
 		// Pour les plongeurs P0, P1
 		if (niveauAdherent >= 0 && niveauAdherent < 2){
-			int res = ((nbP0 + nbP1) + 1) / nbEncadrant;
+			float res = ((nbP0 + nbP1) + 1) / nbEncadrant;
 			// max 4 P0 ou P1 par encadrant
 			if (res > 4){
 				// Pas assez d'encadrant : liste d'attente avec envoi de mail
@@ -371,7 +373,7 @@ public class PlongeeServiceImpl implements PlongeeService {
 			}
 		}
 		if (niveauAdherent < 0){
-			int res = (nbBATM + 1) / nbEncadrant;
+			float res = (nbBATM + 1) / nbEncadrant;
 			// max 1 bapteme par encadrant
 			if (res > 1){
 				// Pas assez d'encadrant : liste d'attente avec envoi de mail
@@ -418,65 +420,33 @@ public class PlongeeServiceImpl implements PlongeeService {
 	}
 
 	public synchronized void  inscrireAdherent(Plongee plongee, Adherent adherent, int typeMail) throws ResaException, TechnicalException {
-		if(getNbPlaceRestante(plongee) > 0){
-			plongeeDao.inscrireAdherentPlongee(plongee, adherent);
-			
-			if (typeMail == PlongeeMail.MAIL_INSCRIPTION_SUR_PLONGEE_FERMEE){
-				// Mise en forme de la date
-				SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-				String dateAffichee = sdf.format(plongee.getDate());
-				//Envoi du mail
-				Email eMail = new SimpleEmail();
-				eMail.setSubject("Inscription sur la plongée du : "+dateAffichee+" encore fermée");
-				StringBuffer sb = new StringBuffer("Bonjour,\n");
-				sb.append("l'encadrant/P4 "+adherent.getNom()+" , "+adherent.getPrenom()+" \n");
-				sb.append("Viens de s'inscrire à la plongée du "+dateAffichee+" de "+plongee.getType()+"\n");
-				sb.append("\n");
-				sb.append("Cette plongée est encore fermée.\n");
-				sb.append("\n");
-				sb.append("Pouvez-vous l'ouvrir en trouvant un DP et/ou un pilote?.\n");
-				sb.append("Cordialement\n");
-				
-				try {
-					eMail.setMsg(sb.toString());
 		
-					PlongeeMail pMail = new PlongeeMail(eMail);
+		if(getNbPlaceRestante(plongee) > 0){
+			//Appel DAO
+			plongeeDao.inscrireAdherentPlongee(plongee, adherent);
+			//Envoi mail
+			if (typeMail == PlongeeMail.MAIL_INSCRIPTION_SUR_PLONGEE_FERMEE){
+				try {
+					PlongeeMail pMail = new PlongeeMail( PlongeeMail.MAIL_INSCRIPTION_SUR_PLONGEE_FERMEE,
+							plongee, adherent );
 					pMail.sendMail("ADMIN");
 				} catch (MessagingException e) {
 					e.printStackTrace();
 				}
 			}
-			
 		}else{
 			throw new ResaException("Nombre Max de plongeurs atteint");
 		}
 	}
 
 	public void inscrireAdherentEnListeAttente(Plongee plongee,	Adherent adherent, int typeMail)   throws ResaException, TechnicalException{
+		//Appel DAO
 		plongeeDao.inscrireAdherentAttente(plongee, adherent);
-		
+		//Envoi d'un mail
 		if (typeMail == PlongeeMail.MAIL_PAS_ASSEZ_ENCADRANT){
-			// Mise en forme de la date
-			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-			String dateAffichee = sdf.format(plongee.getDate());
-			//Envoi du mail
-			Email eMail = new SimpleEmail();
-			eMail.setSubject("Manque d'encadrement - plongée du : "+dateAffichee);
-			StringBuffer sb = new StringBuffer("Bonjour,\n");
-			sb.append("Nous avons un manque d'encadrant sur la plongée du "+dateAffichee+" de "+plongee.getType()+"\n");
-			sb.append("Si vous êtes disponible, votre inscription est la bienvenue.\n");
-			sb.append("\n");
-			sb.append("-----------------------------------------------------------\n");
-			sb.append("ATTENTION : dans ce cas AVERTISSEZ les administrateurs \n");
-			sb.append("pour qu'ils inscrivent les personnes en liste d'attente.\n");
-			sb.append("-----------------------------------------------------------\n");
-			sb.append("\n");
-			sb.append("Cordialement\n");
-			
 			try {
-				eMail.setMsg(sb.toString());
-		
-				PlongeeMail pMail = new PlongeeMail(eMail);
+				PlongeeMail pMail = new PlongeeMail(PlongeeMail.MAIL_PAS_ASSEZ_ENCADRANT,
+						plongee, adherent);
 				pMail.sendMail("ENCADRANT");
 			} catch (MessagingException e) {
 				e.printStackTrace();
@@ -486,56 +456,23 @@ public class PlongeeServiceImpl implements PlongeeService {
 	}
 
 	public void deInscrireAdherent(Plongee plongee, Adherent adherent, int typeMail)   throws ResaException, TechnicalException{
+		//Appel DAO
 		plongeeDao.supprimeAdherentPlongee(plongee, adherent);
-		
+		//Envoi mail
 		if (typeMail == PlongeeMail.MAIL_PLACES_LIBRES){
-			// Mise en forme de la date
-			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-			String dateAffichee = sdf.format(plongee.getDate());
-			//ENVOI d'un Mail
-			Email eMail = new SimpleEmail();
-			eMail.setSubject("Gestion de file d'attente - plongée du : "+dateAffichee);
-			
-			StringBuffer sb = new StringBuffer("Bonjour,\n");
-			sb.append("Des personnes sont en file d'attente sur la plongée du "+dateAffichee+" du "+plongee.getType()+"\n");
-			sb.append("\n");
-			sb.append("Une place vient de se libérer.\n");
-			sb.append("\n");
-			sb.append("Cordialement\n");
-			
 			try {
-				eMail.setMsg(sb.toString());
-				List<String> destis = new ArrayList<String>();
-				destis.add("eric.simon28@orange.fr");
-				destis.add("camille.regnier@gmail.com");
 				
-				PlongeeMail pMail = new PlongeeMail(eMail);
+				PlongeeMail pMail = new PlongeeMail(PlongeeMail.MAIL_PLACES_LIBRES,
+						plongee, adherent);
 				pMail.sendMail("ADMIN");
 			} catch (MessagingException e) {
 				e.printStackTrace();
 			}
 		}
 		if (typeMail == PlongeeMail.MAIL_PLUS_ASSEZ_ENCADRANT){
-			// Mise en forme de la date
-			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-			String dateAffichee = sdf.format(plongee.getDate());
-			//Envoi du mail
-			Email eMail = new SimpleEmail();
-			eMail.setSubject("Encadrement de la plongée du : "+dateAffichee);
-			StringBuffer sb = new StringBuffer("Bonjour,\n");
-			sb.append("Un encadrant vient de se désinscrire de la plongée du "+dateAffichee+" du "+plongee.getType()+"\n");
-			sb.append("\n");
-			sb.append("Il n'y a plus assez d'encadrant pour assurer la plongée.\n");
-			sb.append("\n");
-			sb.append("Cordialement\n");
-			
 			try {
-				eMail.setMsg(sb.toString());
-				List<String> destis = new ArrayList<String>();
-				destis.add("eric.simon28@orange.fr");
-				destis.add("camille.regnier@gmail.com");
-	
-				PlongeeMail pMail = new PlongeeMail(eMail);
+				PlongeeMail pMail = new PlongeeMail(PlongeeMail.MAIL_PLUS_ASSEZ_ENCADRANT,
+						plongee, adherent);
 				pMail.sendMail("ADMIN");
 			} catch (MessagingException e) {
 				// TODO Auto-generated catch block
