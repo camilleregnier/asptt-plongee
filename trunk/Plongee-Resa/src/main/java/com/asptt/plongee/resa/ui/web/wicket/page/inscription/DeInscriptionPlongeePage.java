@@ -187,7 +187,7 @@ public class DeInscriptionPlongeePage extends TemplatePage {
 	
 	private void replaceModalWindow(AjaxRequestTarget target, Plongee plongee) {
 		modalConfirm.setContent(new ConfirmSelectionModal(modalConfirm.getContentId(), plongee));
-		modalConfirm.setTitle("Modifiez les informations à mettre à jour");
+		modalConfirm.setTitle("Confirmation de désinscription à une plongée");
 		modalConfirm.setUseInitialHeight(true);
 		
 		// Pour éviter le message de disparition de la fenetre lors de la validation
