@@ -281,24 +281,41 @@ public class PlongeeServiceImpl implements PlongeeService {
 	/**
 	 * retourne
 	 * 1 si ok
+	 * 
 	 * 0 pour liste d'attente sans mail car plongée complète
-	 * 4 pour liste d'attente avec mail car pas assez d'encadrant
-	 * 3 inscription d'un encadrant ou P4 à une plongée fermée => envoi de mail
-	 * 2 ouvrir plongee
+	 * 2 plongeur est DP et Pilote => ouvrir plongee
+	 * 3 inscription d'un encadrant ou P4 à une plongée fermée => envoi de mail à l'admin
+	 * 4 inscription en liste d'attente avec mail : pas assez d'encadrant
+	 * 5 inscription en liste d'attente avec mail : Liste d'attente déjà ouverte
+	 * 
 	 * -1 si ko
 	 */
 	public int isOkForResa(Plongee plongee, Adherent adherent) throws ResaException, TechnicalException {
-		// Si inscription d'un P2,P3,P4 => pas d'autres controles
-		// Inscription P0, P1
-		//	Si E2,E3,E4 => 4 x P0,P1 et/ou BATM
-		//	Si BATM => 1 x E2,E3,E4
 
-		if(plongee.getParticipants().size() < plongee.getNbMaxPlaces() && ((plongee.getParticipants().size() + plongee.getParticipantsEnAttente().size() ) >= plongee.getNbMaxPlaces())){
-			// il y a des gens en liste d'attente, mais reste plus de place sur le bateau ==> fermée
-			throw new ResaException("Pas glop");
+		//initialisation du retour par defaut à 1 CàD : on inscrit
+		int isOk = 1;
+		
+		// verifier le nombre d'inscrit
+		if(getNbPlaceRestante(plongee) <= 0){
+			// trop de monde : inscription en liste d'attente avec msg 'bateau plein'
+			isOk = 0;
+			return isOk;
+		}
+
+		//Test abandonné on inscrit en liste d'attente dès qu'il y en a une
+//		if(plongee.getParticipants().size() < plongee.getNbMaxPlaces() 
+//				&& ((plongee.getParticipants().size() + plongee.getParticipantsEnAttente().size() ) >= plongee.getNbMaxPlaces())){
+//			// il y a des gens en liste d'attente, mais reste plus de place sur le bateau ==> fermée
+//			throw new ResaException("Pas glop");
+//		}
+		
+		//Si il y a des gens en liste d'attente on empile dans la liste d'attente
+		if(plongee.getParticipantsEnAttente().size() > 0){
+			// il y a des gens en liste d'attente, 
+			isOk = 5;
+			return isOk;
 		}
 		
-		int isOk = 1;
 		// SI encadrant veux reserver une plongée pas encore ouverte:
 		// si DP + Pilote > le brancher sur ouvrirplongee
 		// sinon > impossible
@@ -315,12 +332,7 @@ public class PlongeeServiceImpl implements PlongeeService {
 			}
 			return isOk;
 		}
-		// verifier le nombre d'inscrit
-		if(getNbPlaceRestante(plongee) <= 0){
-			// trop de monde : inscription en liste d'attente
-			isOk = 0;
-			return isOk;
-		}
+		
 		// Si DP = P5 et pas encadrant (plus que E2) => pas de BATM ou de P0
 		String niveauDP = (plongee.getDp().getEncadrement() != null && !plongee.getDp().getEncadrement().equals(Encadrement.E2)) ? plongee.getDp().getEncadrement() : plongee.getDp().getNiveau();
 		if(niveauDP.equalsIgnoreCase("P5")){
@@ -330,16 +342,18 @@ public class PlongeeServiceImpl implements PlongeeService {
 				throw new ResaException("Inscription impossible sur cette plongée : Les BATM ou P0 ne sont pas admis avec un DP P5");
 			}
 		}
+		
 		// verifier le niveau mini
 		int niveauAdherent = -1;
 		if( ! adherent.getNiveau().equalsIgnoreCase(NiveauAutonomie.BATM.toString()) ){
 			niveauAdherent = new Integer(adherent.getNiveau().substring(1)).intValue(); 
 		}
+		
 		// verifier le niveau mini de la plongée
 		int niveauMinPlongee = -1;
-		if (!plongee.getEnumNiveauMinimum().equals(NiveauAutonomie.BATM))
+		if (!plongee.getEnumNiveauMinimum().equals(NiveauAutonomie.BATM)){
 			niveauMinPlongee = new Integer(plongee.getNiveauMinimum().toString().substring(1)).intValue();
-		
+		}
 		if(niveauAdherent < niveauMinPlongee){
 			// niveau mini requis : inscription refusée
 			throw new ResaException("Inscription impossible sur cette plongée : Niveau insuffisant");
@@ -362,6 +376,8 @@ public class PlongeeServiceImpl implements PlongeeService {
 		List<Adherent> plongeursBATM = adherentDao.getAdherentsInscrits(plongee, "BATM", null, null);
 		int nbBATM = plongeursBATM.size();
 		
+		
+		// Calcul du nombre d'encadrant
 		// Pour les plongeurs P0, P1
 		if (niveauAdherent >= 0 && niveauAdherent < 2){
 			float res = ((nbP0 + nbP1) + 1) / nbEncadrant;
@@ -372,6 +388,7 @@ public class PlongeeServiceImpl implements PlongeeService {
 				return isOk;
 			}
 		}
+		//Pour les BATM
 		if (niveauAdherent < 0){
 			float res = (nbBATM + 1) / nbEncadrant;
 			// max 1 bapteme par encadrant

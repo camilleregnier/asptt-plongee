@@ -190,6 +190,17 @@ public class InscriptionPlongeePage extends TemplatePage {
 					modalConfirm.show(target);
 				}
 				break;
+			case 5: //on inscrit l'adherent en liste d'attente avec envoi d'un mail
+				typeMail=PlongeeMail.MAIL_LISTE_ATTENTE_EXIST;
+				if(getResaSession().getPlongeeService().isOkForListeAttente(
+						plongee, 
+						getResaSession().getAdherent())){
+					
+					// On demande confirmation pour l'inscription en liste d'attente
+					replaceModalWindow(target, plongee);
+					modalConfirm.show(target);
+				}
+				break;
 			case 3: //on inscrit un pilote ou un dp sur une plongée fermée avec envoi d'un mail aux admins
 				typeMail=PlongeeMail.MAIL_INSCRIPTION_SUR_PLONGEE_FERMEE;
 				getResaSession().getPlongeeService().inscrireAdherent(
@@ -288,7 +299,7 @@ public class InscriptionPlongeePage extends TemplatePage {
 
 	private void replaceModalWindow(AjaxRequestTarget target, Plongee plongee) {
 		modalConfirm.setContent(new ConfirmSelectionModal(modalConfirm.getContentId(), plongee));
-		modalConfirm.setTitle("Modifiez les informations à mettre à jour");
+		modalConfirm.setTitle("Confirmation d'inscription en liste d'attente");
 		modalConfirm.setUseInitialHeight(true);
 		
 		// Pour éviter le message de disparition de la fenetre lors de la validation
@@ -308,9 +319,11 @@ public class InscriptionPlongeePage extends TemplatePage {
 			
 			if(typeMail == PlongeeMail.MAIL_PAS_ASSEZ_ENCADRANT){
 				message = "Il n'y a pas assez d'encadrant";
-			}
+			}else if(typeMail == PlongeeMail.MAIL_LISTE_ATTENTE_EXIST){
+				message = "Cette plongée demande l'intervention d'un administrateur pour la gestion des palanquées";
+			} 
 			// Informations précisant que le plongeur est en liste d'attente
-			add(new Label("infoPlongeur", message+"<br>Vous allez êtres en liste d'attente en position " + (plongee.getParticipantsEnAttente().size()+1) + "."));
+			add(new Label("infoPlongeur", message+"\n Vous allez êtres en liste d'attente en position " + (plongee.getParticipantsEnAttente().size()+1) + "."));
 			add(new Label("infoPlongee", " Confirmez-vous votre inscription pour la plongée du " + plongee.getDate() + " " + plongee.getType() + " ?"));
 			
 			// Le lien qui va fermer la fenêtre de confirmation

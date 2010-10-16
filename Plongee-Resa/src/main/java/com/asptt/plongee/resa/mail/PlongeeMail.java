@@ -23,19 +23,13 @@ public final class PlongeeMail {
 	public static final int MAIL_PAS_ASSEZ_ENCADRANT = 3;
 	public static final int MAIL_INSCRIPTION_SUR_PLONGEE_FERMEE = 1;
 	public static final int MAIL_PLACES_LIBRES = 2;
+	public static final int MAIL_LISTE_ATTENTE_EXIST = 5;
 	
 	private Email email = null;
 	private String hostName = null;
 	private String from = null;
 	private Plongee plongee = null;
 	private Adherent adherent = null;
-	
-//	public PlongeeMail() throws MessagingException {
-//		super();
-//		this.email.setDebug(true);
-//		this.email.setHostName(getHostName());
-//		this.email.setFrom(getFrom());
-//	}
 	
 	public PlongeeMail(int type, Plongee plongee, Adherent adherent) throws MessagingException {
 		this.plongee = plongee;
@@ -196,8 +190,19 @@ public final class PlongeeMail {
 			sb.append("Cordialement\n");
 			this.email.setMsg(sb.toString());
 			break;
+		case MAIL_LISTE_ATTENTE_EXIST: 
+			this.email.setSubject("Gestion de file d'attente : "+dateAffichee);
+			sb = new StringBuffer("Bonjour,\n");
+			sb.append("Un nouveau plongeur vient d'être inscrit en liste d'attente \n");
+			sb.append("à la plongée du "+dateAffichee+" du "+plongee.getType()+" \n");
+			sb.append("\n");
+			sb.append("Votre intervention est requise pour gérer cette file d'attente.\n");
+			sb.append("\n");
+			sb.append("Cordialement\n");
+			this.email.setMsg(sb.toString());
+			break;
 		default:
-			//on voit le lendemain
+			//???
 			break;
 		}
 	}
