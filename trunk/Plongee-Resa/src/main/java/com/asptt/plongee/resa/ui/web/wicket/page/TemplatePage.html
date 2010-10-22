@@ -8,33 +8,34 @@
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 	<meta name="author" content="Zenika" />
+	 <wicket:link> 
 	<link rel="stylesheet" type="text/css" href="medias/css/plongee.css" />
+	 </wicket:link> 
 </head>
 
 <body>
 <div class="global">
 	<div class="header"> 
       <div id="bandeau">
-		<img src="medias/images/logoAsptt.gif"> 
+			<img wicket:message="src:logo"> 
 	  </div>
 	</div>
 	<div class="corps"> 
-	
 		<div class="menu"> 
 			<div wicket:id="menuUser">
 				<h3>ADHERENT</h3>
 				<ul>
 					<li>
 					<a href="consultation/ConsulterPlongees" title="ConsulterPlongee" wicket:id="consultPlongee">
-						<img src="medias/images/bouton_consulter_plongee_150.png" class="no_cadre" alt="Consulter les plong&eacute;es"/>
+						<img wicket:message="src:bouton_consulter" class="no_cadre" alt="Consulter les plong&eacute;es"/>
 					</a></li>
 					<li>
 					<a href="inscription/InscriptionPlongeePage.html" title="ReserverPlongee" wicket:id="reservPlongee">
-						<img src="medias/images/bouton_reserver_plongee_150.png" class="no_cadre" alt="R&eacute;server une Plong&eacute;e"/>
+						<img wicket:message="src:bouton_reserver" class="no_cadre" alt="R&eacute;server une Plong&eacute;e"/>
 					</a></li>
 					<li>
 					<a href="inscription/DeInscriptionPlongeePage.html" title="DeInscrirePlongee" wicket:id="deInscrirePlongee">
-						<img src="medias/images/bouton_de_inscrire_plongee_150.png" class="no_cadre" alt="Se de-inscrire d'une Plong&eacute;e"/>
+						<img wicket:message="src:bouton_desinscrire" class="no_cadre" alt="Se de-inscrire d'une Plong&eacute;e"/>
 					</a></li>
 				</ul>
 				<hr />
@@ -45,30 +46,30 @@
 				<ul>
 					<li>
 					<a href="admin/CreerPlongee.html" title="CreerPlongee" wicket:id="creerPlongee">
-						<img src="medias/images/bouton_creer_plongee_150.png" class="no_cadre" alt="Cr&eacute;er une plong&eacute;e"/>
+						<img wicket:message="src:bouton_creer" class="no_cadre" alt="Cr&eacute;er une plong&eacute;e"/>
 					</a></li>
 					<li>
 					<a href="admin/AnnulerPlongee.html.html" title="AnnulerPlongee" wicket:id="annulerPlongee">
-						<img src="medias/images/bouton_annuler_plongee_150.png" class="no_cadre" alt="Annuler une Plong&eacute;e"/>
+						<img wicket:message="src:bouton_annuler" class="no_cadre" alt="Annuler une Plong&eacute;e"/>
 					</a></li>
 					<li>
 					<a href="admin/GererPlongeeAOuvrirOne.html" title="OuvrirPlongee" wicket:id="ouvrirPlongee">
-						<img src="medias/images/bouton_ouvrir_plongee_150.png" class="no_cadre" alt="Ouvrir une Plong&eacute;e"/>
+						<img wicket:message="src:bouton_ouvrir" class="no_cadre" alt="Ouvrir une Plong&eacute;e"/>
 					</a></li>
 					<li>
 					<a href="admin/GererListeAttenteOne.html" title="ListeAttentPlongee" wicket:id="listeAttentePlongee">
-						<img src="medias/images/bouton_liste_attente_plongee_150.png" class="no_cadre" alt="G&eacute;rer la liste d'attente d'une Plong&eacute;e"/>
+						<img wicket:message="src:bouton_liste_attente" class="no_cadre" alt="G&eacute;rer la liste d'attente d'une Plong&eacute;e"/>
 					</a></li>
 				</ul>
 				<h4>gestion Adh&eacute;rent</h4>
 				<ul>
 					<li>
 					<a href="admin/CreerAdherent.html" title="CreerAdherent" wicket:id="creerAdherent">
-						<img src="medias/images/bouton_creer_plongee_150.png" class="no_cadre" alt="Cr&eacute;er un Adh&eacute;rent"/>
+						<img wicket:message="src:bouton_creer_plongee" class="no_cadre" alt="Cr&eacute;er un Adh&eacute;rent"/>
 					</a></li>
 					<li>
 					<a href="admin/GererAdherents.html" title="GererAdherent" wicket:id="gererAdherent">
-						<img src="medias/images/bouton_visu_modif_150.png" class="no_cadre" alt="G&eacute;rer les Adh&eacute;rents"/>
+						<img wicket:message="src:bouton_visu_modif" class="no_cadre" alt="G&eacute;rer les Adh&eacute;rents"/>
 					</a></li>
 				</ul>
 				<hr />
@@ -79,28 +80,26 @@
 				<ul>
 					<li>
 					<a href="inscription/secretariat/InscriptionAdherentPlongeePage.html" title="InscrireAdherent" wicket:id="inscrireAdherent">
-						<img src="medias/images/bouton_inscrire_adherent_150.png" class="no_cadre" alt="Inscrire un Adh&eacute;rent"/>
+						<img wicket:message="src:bouton_inscrire_adherent" class="no_cadre" alt="Inscrire un Adh&eacute;rent"/>
 					</a></li>
 					<li>
 					<a href="inscription/secretariat/InscriptionExterieurPlongeePage.html" title="InscrireExterne" wicket:id="inscrireExterne">
-						<img src="medias/images/bouton_inscrire_externe_150.png" class="no_cadre" alt="Inscrire un Externe"/>
+						<img wicket:message="src:bouton_inscrire_externe" class="no_cadre" alt="Inscrire un Externe"/>
 					</a></li>
 				</ul>
 				<h4>Gestion</h4>
 				<ul>
 					<li>
 					<a href="inscription/secretariat/DesInscriptionPlongeePage.html" title="DeInscrirePlongee" wicket:id="secretDeInscrirePlongee">
-						<img src="medias/images/bouton_de_inscrire_plongee_150.png" class="no_cadre" alt="De-inscrire d'une Plong&eacute;e"/>
+						<img wicket:message="src:bouton_desinscrire_plongee" class="no_cadre" alt="De-inscrire d'une Plong&eacute;e"/>
 					</a></li>
 					<li>
 					<a href="consultation/ConsulterPlongees" title="ConsulterPlongee" wicket:id="secretConsultPlongee">
-						<img src="medias/images/bouton_consulter_plongee_150.png" class="no_cadre" alt="Consulter les plong&eacute;es"/>
+						<img wicket:message="src:bouton_consulter_plongee" class="no_cadre" alt="Consulter les plong&eacute;es"/>
 					</a></li>
 				</ul>
 		 	</div>
-	
 		</div>
-	
 		<div class="content"> 
 			<wicket:child />
 		</div>

@@ -65,11 +65,6 @@ public class GererPlongeeAOuvrirTwo extends TemplatePage {
 			final Palette<Adherent> palDp = new Palette<Adherent>("paletteDps",
 				new ListModel<Adherent>(new ArrayList<Adherent>()),
 				new CollectionModel<Adherent>(dps), rendDp, 10, false){
-				// Modification de la feuille de style
-				// pour agrandir la largeur de la palette
-				protected ResourceReference getCSS() {
-					return new ResourceReference(GererPlongeeAOuvrirTwo.class, "PlongeePalette.css");
-			    }
 			};
 
 			List<Adherent> pilotes = getResaSession().getAdherentService()
@@ -81,11 +76,6 @@ public class GererPlongeeAOuvrirTwo extends TemplatePage {
 				"palettePilotes", new ListModel<Adherent>(
 				new ArrayList<Adherent>()),
 				new CollectionModel<Adherent>(pilotes), rendPilote, 10, false){
-					// Modification de la feuille de style
-					// pour agrandir la largeur de la palette
-					protected ResourceReference getCSS() {
-						return new ResourceReference(GererPlongeeAOuvrirTwo.class, "PlongeePalette.css");
-					}
 			};
 			
 			final Form<Plongee> form = new Form<Plongee>("form") {
