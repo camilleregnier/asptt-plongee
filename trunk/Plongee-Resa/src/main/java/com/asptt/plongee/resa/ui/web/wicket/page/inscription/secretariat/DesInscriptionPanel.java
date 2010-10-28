@@ -9,6 +9,7 @@ import org.apache.wicket.Page;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.behavior.IBehavior;
+import org.apache.wicket.behavior.SimpleAttributeModifier;
 import org.apache.wicket.extensions.ajax.markup.html.IndicatingAjaxLink;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.WebPage;
@@ -126,24 +127,39 @@ public abstract class DesInscriptionPanel extends Panel {
 		{
 			// Informations précisant la plongeur concerné et la plongée
 			// dans la fenêtre de confirmation de désinscription
-			add(new Label("infoPlongeur", "Etes-vous sûr de vouloir annuler l'inscription de " + plongeur.getPrenom() + " " + plongeur.getNom()));
-			add(new Label("infoPlongee", " à la plongée du " + plongee.getDate() + " " + plongee.getType() + " ?"));
+			String infoPlongeur = "Etes-vous sûr de vouloir annuler l'inscription de " + plongeur.getPrenom() + " " + plongeur.getNom();
+			String infoPlongee =  "à la plongée du " + plongee.getDate() + " " + plongee.getType() + " ?";
+			String infoEncadrant = "";
+			
+			if(plongeur.getEncadrement() != null){
+				ResaSession resaSession = (ResaSession) getApplication()
+				.getSessionStore().lookup(getRequest());
+				
+				//C'est un encadrant : on regarde s'il en reste assez
+				if( ! resaSession.getPlongeeService().isEnoughEncadrant(plongee)){
+					infoEncadrant = infoEncadrant + "Il ne reste plus assez d'encadrant !!";
+				}
+			}
+			add(new Label("infoPlongeur", infoPlongeur));
+			add(new Label("infoPlongee", infoPlongee));
+			add(new Label("infoEncadrant", infoEncadrant));
 			
 			// Le lien qui va fermer la fenêtre de confirmation
 			// et appeler la méthode de désinscription de la page principale (DesInscriptionPlongeePage)
 			add(new IndicatingAjaxLink("yes")
 			{
-				private static final long serialVersionUID = -8801329059174173909L;
+			
+				private static final long serialVersionUID = -8801329059174173909L;	
 
 				@Override
 				public void onClick(AjaxRequestTarget target)
 				{
-					modalConfirm.closeCurrent(target);
 					onSave(target, plongee, plongeur);
+					modalConfirm.close(target);
 					
 				}
 			});
-			
+
 			add(new IndicatingAjaxLink("no")
 			{
 				private static final long serialVersionUID = 7770018649246290638L;
