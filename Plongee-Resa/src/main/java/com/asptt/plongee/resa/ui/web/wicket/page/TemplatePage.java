@@ -22,9 +22,9 @@ import com.asptt.plongee.resa.ui.web.wicket.page.admin.GererPlongeeAOuvrirOne;
 import com.asptt.plongee.resa.ui.web.wicket.page.consultation.ConsulterPlongees;
 import com.asptt.plongee.resa.ui.web.wicket.page.inscription.DeInscriptionPlongeePage;
 import com.asptt.plongee.resa.ui.web.wicket.page.inscription.InscriptionPlongeePage;
-import com.asptt.plongee.resa.ui.web.wicket.page.inscription.secretariat.DesInscriptionPlongeePage;
-import com.asptt.plongee.resa.ui.web.wicket.page.inscription.secretariat.InscriptionAdherentPlongeePage;
-import com.asptt.plongee.resa.ui.web.wicket.page.inscription.secretariat.InscriptionExterieurPlongeePage;
+import com.asptt.plongee.resa.ui.web.wicket.page.secretariat.DesInscriptionPlongeePage;
+import com.asptt.plongee.resa.ui.web.wicket.page.secretariat.InscriptionAdherentPlongeePage;
+import com.asptt.plongee.resa.ui.web.wicket.page.secretariat.InscriptionExterieurPlongeePage;
 
 
 public abstract class TemplatePage extends WebPage {

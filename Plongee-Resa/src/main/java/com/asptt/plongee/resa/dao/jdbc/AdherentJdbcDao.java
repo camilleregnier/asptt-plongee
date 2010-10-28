@@ -1,5 +1,6 @@
 package com.asptt.plongee.resa.dao.jdbc;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -26,12 +27,13 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 	}
 
 	public Adherent create(Adherent adh) throws TechnicalException {
+		Connection conex=null;
 		try {
+			conex = getDataSource().getConnection();
 			StringBuffer sb = new StringBuffer();
 			sb.append("INSERT INTO ADHERENT (`LICENSE`, `NOM`, `PRENOM`, `NIVEAU`, `TELEPHONE`, `MAIL`, `ENCADRANT`, `PILOTE`, `DATE_DEBUT`, `ACTIF`, `PASSWORD`)");
 			sb.append(" VALUES (?, ?, ?, ?, ?, ?, ?, ?, current_timestamp, ?, ?)");
-			PreparedStatement st = getDataSource().getConnection()
-					.prepareStatement(sb.toString());
+			PreparedStatement st = conex.prepareStatement(sb.toString());
 			st.setString(1, adh.getNumeroLicense());
 			st.setString(2, adh.getNom());
 			st.setString(3, adh.getPrenom());
@@ -60,11 +62,9 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 				// On gere les role uniquement pour les actifs
 				Iterator it = adh.getRoles().iterator();
 				while (it.hasNext()) {
-					sb
-							.append("INSERT INTO rel_adherent_roles (`ADHERENT_LICENSE`, `ROLES_idROLES`)");
+					sb.append("INSERT INTO rel_adherent_roles (`ADHERENT_LICENSE`, `ROLES_idROLES`)");
 					sb.append(" VALUES (?, ?)");
-					st = getDataSource().getConnection().prepareStatement(
-							sb.toString());
+					st = conex.prepareStatement(sb.toString());
 					st.setString(1, adh.getNumeroLicense());
 					int id = getIdRole((String) it.next());
 					st.setInt(2, id);
@@ -80,7 +80,9 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 			throw new TechnicalException(e);
 		} finally {
 			try {
-				getDataSource().getConnection().close();
+				if(null != conex ){
+					conex.close();
+				}
 			} catch (SQLException e) {
 				e.printStackTrace();
 				throw new TechnicalException(
@@ -90,13 +92,14 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 	}
 
 	public void delete(Adherent adh) throws TechnicalException {
+		Connection conex=null;
 		try {
+			conex = getDataSource().getConnection();
 			StringBuffer sb = new StringBuffer();
 			sb.append("UPDATE ADHERENT");
 			sb.append(" SET DATE_FIN = current_timestamp , ACTIF = 0");
 			sb.append(" WHERE LICENSE = ?");
-			PreparedStatement st = getDataSource().getConnection()
-					.prepareStatement(sb.toString());
+			PreparedStatement st = conex.prepareStatement(sb.toString());
 			st.setString(1, adh.getNumeroLicense());
 			if (st.executeUpdate() == 0) {
 				throw new TechnicalException("L'adhérent n'a pu être supprimé");
@@ -105,7 +108,9 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 			throw new TechnicalException(e);
 		} finally {
 			try {
-				getDataSource().getConnection().close();
+				if(null != conex ){
+					conex.close();
+				}
 			} catch (SQLException e) {
 				e.printStackTrace();
 				throw new TechnicalException(
@@ -115,7 +120,9 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 	}
 
 	public Adherent update(Adherent adh) throws TechnicalException {
+		Connection conex=null;
 		try {
+			conex = getDataSource().getConnection();
 			StringBuffer sb = new StringBuffer();
 			sb.append("UPDATE ADHERENT");
 			sb.append(" SET NIVEAU = ?,");
@@ -128,8 +135,7 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 			sb.append(" PRENOM = ?");
 			sb.append(" WHERE license = ?");
 
-			PreparedStatement st = getDataSource().getConnection()
-					.prepareStatement(sb.toString());
+			PreparedStatement st = conex.prepareStatement(sb.toString());
 			st.setString(1, adh.getNiveau());
 			st.setString(2, adh.getTelephone());
 			st.setString(3, adh.getMail());
@@ -155,8 +161,7 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 			
 			// gestion des roles 1er temps : on supprime les roles
 			sb.append("DELETE FROM rel_adherent_roles WHERE ADHERENT_LICENSE = ? ");
-			PreparedStatement st1 = getDataSource().getConnection()
-					.prepareStatement(sb.toString());
+			PreparedStatement st1 = conex.prepareStatement(sb.toString());
 			st1.setString(1, adh.getNumeroLicense());
 			if (st1.executeUpdate() == 0) {
 				throw new TechnicalException(
@@ -166,11 +171,9 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 			Iterator it = adh.getRoles().iterator();
 			sb = new StringBuffer();
 			while (it.hasNext()) {
-				sb
-						.append("INSERT INTO rel_adherent_roles (`ADHERENT_LICENSE`, `ROLES_idROLES`)");
+				sb.append("INSERT INTO rel_adherent_roles (`ADHERENT_LICENSE`, `ROLES_idROLES`)");
 				sb.append(" VALUES (?, ?)");
-				st = getDataSource().getConnection().prepareStatement(
-						sb.toString());
+				st = conex.prepareStatement(sb.toString());
 				st.setString(1, adh.getNumeroLicense());
 				int id = getIdRole((String) it.next());
 				st.setInt(2, id);
@@ -186,7 +189,9 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 			throw new TechnicalException(e);
 		} finally {
 			try {
-				getDataSource().getConnection().close();
+				if(null != conex ){
+					conex.close();
+				}
 			} catch (SQLException e) {
 				e.printStackTrace();
 				throw new TechnicalException(
@@ -196,14 +201,15 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 	}
 
 	public Adherent updatePassword(Adherent adh) throws TechnicalException {
+		Connection conex=null;
 		try {
+			conex = getDataSource().getConnection();
 			StringBuffer sb = new StringBuffer();
 			sb.append("UPDATE ADHERENT");
 			sb.append(" SET PASSWORD = ?");
 			sb.append(" WHERE license = ?");
 
-			PreparedStatement st = getDataSource().getConnection()
-					.prepareStatement(sb.toString());
+			PreparedStatement st = conex.prepareStatement(sb.toString());
 			st.setString(1, adh.getPassword());
 			st.setString(2, adh.getNumeroLicense());
 			if (st.executeUpdate() == 0) {
@@ -215,7 +221,9 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 			throw new TechnicalException(e);
 		} finally {
 			try {
-				getDataSource().getConnection().close();
+				if(null != conex ){
+					conex.close();
+				}
 			} catch (SQLException e) {
 				e.printStackTrace();
 				throw new TechnicalException(
@@ -225,9 +233,10 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 	}
 
 	public List<Adherent> findAll() throws TechnicalException {
+		Connection conex=null;
 		try {
-			PreparedStatement st = getDataSource().getConnection()
-					.prepareStatement("select * from ADHERENT order by NOM");
+			conex = getDataSource().getConnection();
+			PreparedStatement st = conex.prepareStatement("select * from ADHERENT order by NOM");
 			ResultSet rs = st.executeQuery();
 			List<Adherent> adherents = new ArrayList<Adherent>();
 			while (rs.next()) {
@@ -239,7 +248,9 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 			throw new TechnicalException(e);
 		} finally {
 			try {
-				getDataSource().getConnection().close();
+				if(null != conex ){
+					conex.close();
+				}
 			} catch (SQLException e) {
 				e.printStackTrace();
 				throw new TechnicalException(
@@ -250,9 +261,10 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 
 	@Override
 	public List<Adherent> getAdherentsTous() throws TechnicalException {
+		Connection conex=null;
 		try {
-			PreparedStatement st = getDataSource().getConnection()
-					.prepareStatement("select * from ADHERENT where ACTIF = 1 or ACTIF = 0 order by NOM");
+			conex = getDataSource().getConnection();
+			PreparedStatement st = conex.prepareStatement("select * from ADHERENT where ACTIF = 1 or ACTIF = 0 order by NOM");
 			ResultSet rs = st.executeQuery();
 			List<Adherent> adherents = new ArrayList<Adherent>();
 			while (rs.next()) {
@@ -264,7 +276,9 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 			throw new TechnicalException(e);
 		} finally {
 			try {
-				getDataSource().getConnection().close();
+				if(null != conex ){
+					conex.close();
+				}
 			} catch (SQLException e) {
 				e.printStackTrace();
 				throw new TechnicalException(
@@ -274,9 +288,10 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 	}
 
 	public List<Adherent> getAdherentsActifs() throws TechnicalException {
+		Connection conex=null;
 		try {
-			PreparedStatement st = getDataSource().getConnection()
-					.prepareStatement("select * from ADHERENT where ACTIF = 1 order by NOM");
+			conex = getDataSource().getConnection();
+			PreparedStatement st = conex.prepareStatement("select * from ADHERENT where ACTIF = 1 order by NOM");
 			ResultSet rs = st.executeQuery();
 			List<Adherent> adherents = new ArrayList<Adherent>();
 			while (rs.next()) {
@@ -288,7 +303,9 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 			throw new TechnicalException(e);
 		} finally {
 			try {
-				getDataSource().getConnection().close();
+				if(null != conex ){
+					conex.close();
+				}
 			} catch (SQLException e) {
 				e.printStackTrace();
 				throw new TechnicalException(
@@ -299,9 +316,10 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 
 	@Override
 	public List<Adherent> getAdherentsInactifs() throws TechnicalException {
+		Connection conex=null;
 		try {
-			PreparedStatement st = getDataSource().getConnection()
-					.prepareStatement("select * from ADHERENT where ACTIF = 0 order by NOM");
+			conex = getDataSource().getConnection();
+			PreparedStatement st = conex.prepareStatement("select * from ADHERENT where ACTIF = 0 order by NOM");
 			ResultSet rs = st.executeQuery();
 			List<Adherent> adherents = new ArrayList<Adherent>();
 			while (rs.next()) {
@@ -313,7 +331,9 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 			throw new TechnicalException(e);
 		} finally {
 			try {
-				getDataSource().getConnection().close();
+				if(null != conex ){
+					conex.close();
+				}
 			} catch (SQLException e) {
 				e.printStackTrace();
 				throw new TechnicalException(
@@ -324,9 +344,10 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 
 	@Override
 	public List<Adherent> getExternes() throws TechnicalException {
+		Connection conex=null;
 		try {
-			PreparedStatement st = getDataSource().getConnection()
-					.prepareStatement("select * from ADHERENT where ACTIF = 2 order by NOM");
+			conex = getDataSource().getConnection();
+			PreparedStatement st = conex.prepareStatement("select * from ADHERENT where ACTIF = 2 order by NOM");
 			ResultSet rs = st.executeQuery();
 			List<Adherent> adherents = new ArrayList<Adherent>();
 			while (rs.next()) {
@@ -338,7 +359,9 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 			throw new TechnicalException(e);
 		} finally {
 			try {
-				getDataSource().getConnection().close();
+				if(null != conex ){
+					conex.close();
+				}
 			} catch (SQLException e) {
 				e.printStackTrace();
 				throw new TechnicalException(
@@ -348,11 +371,10 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 	}
 
 	public Adherent findById(String id) throws TechnicalException {
+		Connection conex=null;
 		try {
-			PreparedStatement st = getDataSource()
-					.getConnection()
-					.prepareStatement(
-							"select * from ADHERENT where LICENSE = ? and ACTIF <> 0");
+			conex = getDataSource().getConnection();
+			PreparedStatement st = conex.prepareStatement("select * from ADHERENT where LICENSE = ? and ACTIF <> 0");
 			st.setString(1, id);
 			ResultSet rs = st.executeQuery();
 			Adherent adherent = null;
@@ -364,7 +386,9 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 			throw new TechnicalException(e);
 		} finally {
 			try {
-				getDataSource().getConnection().close();
+				if(null != conex ){
+					conex.close();
+				}
 			} catch (SQLException e) {
 				e.printStackTrace();
 				throw new TechnicalException(
@@ -374,11 +398,10 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 	}
 	
 	public Adherent findByIdAll(String id) throws TechnicalException {
+		Connection conex=null;
 		try {
-			PreparedStatement st = getDataSource()
-					.getConnection()
-					.prepareStatement(
-							"select * from ADHERENT where LICENSE = ? ");
+			conex = getDataSource().getConnection();
+			PreparedStatement st = conex.prepareStatement("select * from ADHERENT where LICENSE = ? ");
 			st.setString(1, id);
 			ResultSet rs = st.executeQuery();
 			Adherent adherent = null;
@@ -390,7 +413,9 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 			throw new TechnicalException(e);
 		} finally {
 			try {
-				getDataSource().getConnection().close();
+				if(null != conex ){
+					conex.close();
+				}
 			} catch (SQLException e) {
 				e.printStackTrace();
 				throw new TechnicalException(
@@ -400,11 +425,10 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 	}
 
 	public Adherent authenticateAdherent(String id, String pwd) throws TechnicalException {
+		Connection conex=null;
 		try {
-			PreparedStatement st = getDataSource()
-					.getConnection()
-					.prepareStatement(
-							"select * from ADHERENT where LICENSE = ?  and PASSWORD = ? and ACTIF <> 0");
+			conex = getDataSource().getConnection();
+			PreparedStatement st = conex.prepareStatement("select * from ADHERENT where LICENSE = ?  and PASSWORD = ? and ACTIF <> 0");
 			st.setString(1, id);
 			st.setString(2, pwd);
 			ResultSet rs = st.executeQuery();
@@ -417,7 +441,9 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 			throw new TechnicalException(e);
 		} finally {
 			try {
-				getDataSource().getConnection().close();
+				if(null != conex ){
+					conex.close();
+				}
 			} catch (SQLException e) {
 				e.printStackTrace();
 				throw new TechnicalException(
@@ -429,14 +455,14 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 	public List<String> getStrRoles(Adherent adherent)
 			throws TechnicalException {
 		PreparedStatement st;
+		Connection conex=null;
 		try {
-
+			conex = getDataSource().getConnection();
 			StringBuffer sb = new StringBuffer(
 					"SELECT r.LIBELLE FROM rel_adherent_roles rel, roles r ");
 			sb.append(" where rel.ROLES_idROLES = r.idROLES ");
 			sb.append(" and rel.ADHERENT_LICENSE = ?");
-			st = getDataSource().getConnection()
-					.prepareStatement(sb.toString());
+			st = conex.prepareStatement(sb.toString());
 			st.setString(1, adherent.getNumeroLicense());
 			ResultSet rs = st.executeQuery();
 			List<String> result = new ArrayList<String>();
@@ -448,7 +474,9 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 			throw new TechnicalException(e);
 		} finally {
 			try {
-				getDataSource().getConnection().close();
+				if(null != conex ){
+					conex.close();
+				}
 			} catch (SQLException e) {
 				e.printStackTrace();
 				throw new TechnicalException(
@@ -460,14 +488,16 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 	public List<Adherent> getAdherentsLikeName(String name)
 	throws TechnicalException {
 		PreparedStatement st;
+		Connection conex=null;
 		try {
+			conex = getDataSource().getConnection();
 			String generiqueName = "%";
 			generiqueName.concat(name);
 			generiqueName.concat("%");
 			StringBuffer sb = new StringBuffer("select LICENSE, NOM, PRENOM, NIVEAU, TELEPHONE, MAIL, ENCADRANT, PILOTE, ACTIF, PASSWORD ");
 			sb.append(" from adherent a ");
 			sb.append(" where NOM LIKE ? order by NOM");
-			st = getDataSource().getConnection().prepareStatement(sb.toString());
+			st = conex.prepareStatement(sb.toString());
 			st.setString(1, generiqueName);
 			ResultSet rs = st.executeQuery();
 			List<Adherent> adherents = new ArrayList<Adherent>();
@@ -480,7 +510,9 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 			throw new TechnicalException(e);
 		} finally {
 			try {
-				getDataSource().getConnection().close();
+				if(null != conex ){
+					conex.close();
+				}
 			} catch (SQLException e) {
 				e.printStackTrace();
 				throw new TechnicalException("Impossible de cloturer la connexion");
@@ -491,13 +523,15 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 	public List<Adherent> getAdherentsLikeRole(String role)
 	throws TechnicalException {
 		PreparedStatement st;
+		Connection conex=null;
 		try {
+			conex = getDataSource().getConnection();
 			StringBuffer sb = new StringBuffer("select LICENSE, NOM, PRENOM, NIVEAU, TELEPHONE, MAIL, ENCADRANT, PILOTE, ACTIF, PASSWORD ");
 			sb.append(" FROM adherent a, rel_adherent_roles rel, roles r");
 			sb.append(" where a.license = rel.adherent_license");
 			sb.append(" and rel.roles_idRoles = r.idroles");
 			sb.append(" and r.libelle = ? order by NOM");
-			st = getDataSource().getConnection().prepareStatement(sb.toString());
+			st = conex.prepareStatement(sb.toString());
 			st.setString(1, role);
 			ResultSet rs = st.executeQuery();
 			List<Adherent> adherents = new ArrayList<Adherent>();
@@ -510,7 +544,9 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 			throw new TechnicalException(e);
 		} finally {
 			try {
-				getDataSource().getConnection().close();
+				if(null != conex ){
+					conex.close();
+				}
 			} catch (SQLException e) {
 				e.printStackTrace();
 				throw new TechnicalException("Impossible de cloturer la connexion");
@@ -529,7 +565,9 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 	public List<Adherent> getAdherentsInscrits(Plongee plongee,  String niveauPlongeur, String niveauEncadrement, String trie)
 			throws TechnicalException {
 		PreparedStatement st;
+		Connection conex=null;
 		try {
+			conex = getDataSource().getConnection();
 			StringBuffer sb = new StringBuffer("select LICENSE, NOM, PRENOM, NIVEAU, TELEPHONE, MAIL, ENCADRANT, PILOTE, ACTIF, PASSWORD ");
 			sb.append(" from plongee p, inscription_plongee i, adherent a ");
 			sb.append(" where idPLONGEES = ?");
@@ -551,8 +589,7 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 			} else if(trie.equalsIgnoreCase("nom")){
 				sb.append(" order by NOM");
 			}
-			st = getDataSource().getConnection()
-					.prepareStatement(sb.toString());
+			st = conex.prepareStatement(sb.toString());
 			st.setInt(1, plongee.getId());
 			if(null != niveauPlongeur){
 				st.setString(2, niveauPlongeur);
@@ -575,7 +612,9 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 			throw new TechnicalException(e);
 		} finally {
 			try {
-				getDataSource().getConnection().close();
+				if(null != conex ){
+					conex.close();
+				}
 			} catch (SQLException e) {
 				e.printStackTrace();
 				throw new TechnicalException(
@@ -592,7 +631,9 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 	public List<Adherent> getAdherentsWaiting(Plongee plongee)
 			throws TechnicalException {
 		PreparedStatement st;
+		Connection conex=null;
 		try {
+			conex = getDataSource().getConnection();
 			StringBuffer sb = new StringBuffer(
 					"select LICENSE, NOM, PRENOM, NIVEAU, TELEPHONE, MAIL, ENCADRANT, PILOTE, ACTIF, PASSWORD ");
 			sb.append(" from plongee p, liste_attente la, adherent a ");
@@ -601,8 +642,7 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 			sb.append(" and ADHERENT_LICENSE = LICENSE ");
 			sb.append(" and DATE_INSCRIPTION is null");
 			sb.append(" order by DATE_ATTENTE");
-			st = getDataSource().getConnection()
-					.prepareStatement(sb.toString());
+			st = conex.prepareStatement(sb.toString());
 			st.setInt(1, plongee.getId());
 			ResultSet rs = st.executeQuery();
 			List<Adherent> adherents = new ArrayList<Adherent>();
@@ -615,7 +655,9 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 			throw new TechnicalException(e);
 		} finally {
 			try {
-				getDataSource().getConnection().close();
+				if(null != conex ){
+					conex.close();
+				}
 			} catch (SQLException e) {
 				e.printStackTrace();
 				throw new TechnicalException(
@@ -626,11 +668,11 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 
 	public int getIdRole(String libelle) throws TechnicalException {
 		PreparedStatement st;
+		Connection conex=null;
 		try {
-			StringBuffer sb = new StringBuffer(
-					"select idRoles from roles where libelle=? ");
-			st = getDataSource().getConnection()
-					.prepareStatement(sb.toString());
+			conex = getDataSource().getConnection();
+			StringBuffer sb = new StringBuffer("select idRoles from roles where libelle=? ");
+			st = conex.prepareStatement(sb.toString());
 			st.setString(1, libelle);
 			ResultSet rs = st.executeQuery();
 			int id = 0;
@@ -642,7 +684,9 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 			throw new TechnicalException(e);
 		} finally {
 			try {
-				getDataSource().getConnection().close();
+				if(null != conex ){
+					conex.close();
+				}
 			} catch (SQLException e) {
 				e.printStackTrace();
 				throw new TechnicalException(

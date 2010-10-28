@@ -27,9 +27,9 @@ import com.asptt.plongee.resa.ui.web.wicket.page.admin.GererPlongeeAOuvrirOne;
 import com.asptt.plongee.resa.ui.web.wicket.page.consultation.ConsulterPlongees;
 import com.asptt.plongee.resa.ui.web.wicket.page.inscription.DeInscriptionPlongeePage;
 import com.asptt.plongee.resa.ui.web.wicket.page.inscription.InscriptionPlongeePage;
-import com.asptt.plongee.resa.ui.web.wicket.page.inscription.secretariat.DesInscriptionPlongeePage;
-import com.asptt.plongee.resa.ui.web.wicket.page.inscription.secretariat.InscriptionAdherentPlongeePage;
-import com.asptt.plongee.resa.ui.web.wicket.page.inscription.secretariat.InscriptionExterieurPlongeePage;
+import com.asptt.plongee.resa.ui.web.wicket.page.secretariat.DesInscriptionPlongeePage;
+import com.asptt.plongee.resa.ui.web.wicket.page.secretariat.InscriptionAdherentPlongeePage;
+import com.asptt.plongee.resa.ui.web.wicket.page.secretariat.InscriptionExterieurPlongeePage;
 
 public class PlongeeApplication extends AuthenticatedWebApplication {
 
@@ -67,9 +67,9 @@ public class PlongeeApplication extends AuthenticatedWebApplication {
 		mountBookmarkablePage("/gereradherents", GererAdherents.class);
 		mountBookmarkablePage("/gererplongee", GererPlongeeAOuvrirOne.class);
 		mountBookmarkablePage("/gererlisteattente", GererListeAttenteOne.class);
-		mountBookmarkablePage("/secretariat/inscriptionadherent", InscriptionAdherentPlongeePage.class);
-		mountBookmarkablePage("/secretariat/inscriptionexterieur", InscriptionExterieurPlongeePage.class);
-		mountBookmarkablePage("/secretariat/desinscription", DesInscriptionPlongeePage.class);
+		mountBookmarkablePage("/inscriptionadherent", InscriptionAdherentPlongeePage.class);
+		mountBookmarkablePage("/inscriptionexterieur", InscriptionExterieurPlongeePage.class);
+		mountBookmarkablePage("/desinscription", DesInscriptionPlongeePage.class);
 		
 	}
 

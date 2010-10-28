@@ -14,7 +14,6 @@ import com.asptt.plongee.resa.exception.MailException;
 import com.asptt.plongee.resa.exception.ResaException;
 import com.asptt.plongee.resa.model.Adherent;
 import com.asptt.plongee.resa.model.Plongee;
-import com.asptt.plongee.resa.util.Parameters;
 
 public final class PlongeeMail {
 
@@ -70,7 +69,7 @@ public final class PlongeeMail {
 
 	public List<String> getDestisAdmin(){
 		//récupération du mails des admins
-        String admin = Parameters.getString("MAIL_DESTIS_ADMIN");
+        String admin = ParametersMail.getString("MAIL_DESTIS_ADMIN");
         StringTokenizer st = new StringTokenizer(admin, ";");
         List<String> destis = new ArrayList<String>();
 //        while (st.hasMoreElements()){
@@ -83,7 +82,7 @@ public final class PlongeeMail {
 
 	public List<String> getDestisEncadrant(){
 		//récupération du mails des admins
-        String admin = Parameters.getString("MAIL_DESTIS_ENCADRANT");
+        String admin = ParametersMail.getString("MAIL_DESTIS_ENCADRANT");
       StringTokenizer st = new StringTokenizer(admin, ";");
 		List<String> destis = new ArrayList<String>();
 //	    while (st.hasMoreElements()){
@@ -116,7 +115,7 @@ public final class PlongeeMail {
 
 	public String getHostName() {
 		if (null == hostName){
-			hostName = Parameters.getString("mail.smtp.host");
+			hostName = ParametersMail.getString("mail.smtp.host");
 		}
 		return hostName;
 	}
@@ -127,7 +126,7 @@ public final class PlongeeMail {
 
 	public String getFrom() {
 		if(null == from){
-			from = Parameters.getString("mail.smtp.from");
+			from = ParametersMail.getString("mail.smtp.from");
 		}
 		return from;
 	}
