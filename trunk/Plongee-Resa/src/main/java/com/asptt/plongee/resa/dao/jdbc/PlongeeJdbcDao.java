@@ -1,5 +1,6 @@
 package com.asptt.plongee.resa.dao.jdbc;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -35,11 +36,13 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements PlongeeDao {
 	
 	
 	public Plongee create(Plongee obj) throws TechnicalException {
+		Connection conex=null;
 		try {
+			conex = getDataSource().getConnection();
 			StringBuffer sb = new StringBuffer();
 			sb.append("INSERT INTO PLONGEE (`DATE`, `DEMIE_JOURNEE`, `OUVERTURE_FORCEE`, `NIVEAU_MINI`, `NB_MAX_PLG`)");
 			sb.append(" VALUES (?,?,?,?,?)");
-			PreparedStatement st = getDataSource().getConnection().prepareStatement(sb.toString());
+			PreparedStatement st = conex.prepareStatement(sb.toString());
 			//maj de l'heure de la plongée en fonction du type
 			GregorianCalendar gc = new GregorianCalendar();
 			gc.setTime(obj.getDate());
@@ -88,7 +91,9 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements PlongeeDao {
 			throw new TechnicalException(e);
 		} finally {
 			try {
-				getDataSource().getConnection().close();
+				if(null != conex ){
+					conex.close();
+				}
 			} catch (SQLException e) {
 				e.printStackTrace();
 				throw new TechnicalException(
@@ -98,13 +103,14 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements PlongeeDao {
 	}
 
 	public void delete(Plongee obj) throws TechnicalException {
+		Connection conex=null;
 		try {
+			conex = getDataSource().getConnection();
 			StringBuffer sb = new StringBuffer();
 			sb.append("UPDATE PLONGEE");
 			sb.append(" SET OUVERTURE_FORCEE = 0");
 			sb.append(" WHERE IDPLONGEES = ?");
-			PreparedStatement st = getDataSource().getConnection()
-					.prepareStatement(sb.toString());
+			PreparedStatement st = conex.prepareStatement(sb.toString());
 			st.setInt(1, obj.getId());
 			if (st.executeUpdate() == 0) {
 				throw new TechnicalException(
@@ -114,7 +120,9 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements PlongeeDao {
 			throw new TechnicalException(e);
 		} finally {
 			try {
-				getDataSource().getConnection().close();
+				if(null != conex ){
+					conex.close();
+				}
 			} catch (SQLException e) {
 				e.printStackTrace();
 				throw new TechnicalException(
@@ -124,15 +132,16 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements PlongeeDao {
 	}
 
 	public Plongee update(Plongee obj) throws TechnicalException {
+		Connection conex=null;
 		try {
+			conex = getDataSource().getConnection();
 			StringBuffer sb = new StringBuffer();
 			sb.append("UPDATE PLONGEE");
 			sb.append(" SET OUVERTURE_FORCEE = ?,");
 			sb.append(" NIVEAU_MINI = ?,");
 			sb.append(" NB_MAX_PLG = ?");
 			sb.append(" WHERE IDPLONGEES = ?");
-			PreparedStatement st = getDataSource().getConnection()
-					.prepareStatement(sb.toString());
+			PreparedStatement st = conex.prepareStatement(sb.toString());
 			if (obj.getOuvertureForcee()) {
 				st.setInt(1, 1);
 			} else {
@@ -154,7 +163,9 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements PlongeeDao {
 			throw new TechnicalException(e);
 		} finally {
 			try {
-				getDataSource().getConnection().close();
+				if(null != conex ){
+					conex.close();
+				}
 			} catch (SQLException e) {
 				e.printStackTrace();
 				throw new TechnicalException(
@@ -164,7 +175,9 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements PlongeeDao {
 	}
 	
 	public List<Plongee> findAll() throws TechnicalException {
+		Connection conex=null;
 		try {
+			conex = getDataSource().getConnection();
 			StringBuffer sb = new StringBuffer();
 			sb.append("SELECT * FROM PLONGEE p");
 			sb.append(" WHERE OUVERTURE_FORCEE=1");
@@ -172,7 +185,7 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements PlongeeDao {
 			sb.append(" and date < DATE_ADD(CURRENT_DATE(), INTERVAL ? DAY)");
 			sb.append(" and OUVERTURE_FORCEE = 1");
 			sb.append(" ORDER BY DATE");
-			PreparedStatement st = getDataSource().getConnection().prepareStatement(sb.toString());
+			PreparedStatement st = conex.prepareStatement(sb.toString());
 			
 			st.setString(1, Parameters.getString("visible.max"));
 			
@@ -187,7 +200,9 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements PlongeeDao {
 			throw new TechnicalException(e);
 		} finally{
 			try {
-				getDataSource().getConnection().close();
+				if(null != conex ){
+					conex.close();
+				}
 			} catch (SQLException e) {
 				e.printStackTrace();
 				throw new TechnicalException("Impossible de cloturer la connexion");
@@ -199,14 +214,16 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements PlongeeDao {
 	 * Retourne les plongées à partir du lendemain
 	 */
 	public List<Plongee> getPlongeesForFewDay( int aPartir, int nbjour) throws TechnicalException {
+		Connection conex=null;
 		try {
+			conex = getDataSource().getConnection();
 			StringBuffer sb = new StringBuffer("SELECT * FROM PLONGEE p");
 			sb.append(" WHERE OUVERTURE_FORCEE=1");
 			sb.append(" and date < DATE_ADD(CURRENT_DATE(), INTERVAL ? DAY)");
 			sb.append(" and date > DATE_ADD(CURRENT_TIMESTAMP(), INTERVAL ? DAY)");
 			sb.append(" ORDER BY DATE");
 			
-			PreparedStatement st = getDataSource().getConnection().prepareStatement(sb.toString());
+			PreparedStatement st = conex.prepareStatement(sb.toString());
 			st.setInt(1, nbjour);
 			st.setInt(2, aPartir);
 			
@@ -223,7 +240,9 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements PlongeeDao {
 			throw new TechnicalException(e);
 		} finally{
 			try {
-				getDataSource().getConnection().close();
+				if(null != conex ){
+					conex.close();
+				}
 			} catch (SQLException e) {
 				e.printStackTrace();
 				throw new TechnicalException("Impossible de cloturer la connexion");
@@ -232,9 +251,10 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements PlongeeDao {
 	}
 
 	public Plongee findById(Integer id) throws TechnicalException {
+		Connection conex=null;
 		try {
-			PreparedStatement st = getDataSource().getConnection().
-			prepareStatement("SELECT * FROM PLONGEE p  WHERE idPLONGEES = ?");
+			conex = getDataSource().getConnection();
+			PreparedStatement st = conex.prepareStatement("SELECT * FROM PLONGEE p  WHERE idPLONGEES = ?");
 			st.setInt(1, id);
 			ResultSet rs = st.executeQuery();
 			Plongee plongee = null;
@@ -246,7 +266,9 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements PlongeeDao {
 			throw new TechnicalException(e);
 		} finally{
 			try {
-				getDataSource().getConnection().close();
+				if(null != conex ){
+					conex.close();
+				}
 			} catch (SQLException e) {
 				e.printStackTrace();
 				throw new TechnicalException("Impossible de cloturer la connexion");
@@ -256,10 +278,12 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements PlongeeDao {
 
 	public List<Plongee> getPlongeesWhereAdherentIsInscrit(Adherent adherent, int nbHours)
 	throws TechnicalException {
+		Connection conex=null;
 		try {
+			conex = getDataSource().getConnection();
 			StringBuffer sb = new StringBuffer();
 			sb.append("SELECT pl.`idPLONGEES`, pl.`DATE`, pl.`DEMIE_JOURNEE`, pl.`OUVERTURE_FORCEE`, pl.`NIVEAU_MINI`, pl.`NB_MAX_PLG`");
-			sb.append(" FROM plongee pl, inscription_plongee rel , adherent ad");
+			sb.append(" FROM PLONGEE pl, INSCRIPTION_PLONGEE rel , ADHERENT ad");
 			sb.append(" WHERE license = ?");
 			sb.append(" AND license = adherent_license");
 			sb.append(" AND plongees_idPlongees = idPlongees");
@@ -267,8 +291,7 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements PlongeeDao {
 			sb.append(" AND date_annul_plongee is null");
 			sb.append(" and OUVERTURE_FORCEE = 1");
 			sb.append(" ORDER BY DATE");
-			PreparedStatement st = getDataSource().getConnection().
-				prepareStatement(sb.toString());
+			PreparedStatement st = conex.prepareStatement(sb.toString());
 			st.setString(1, adherent.getNumeroLicense());
 			st.setInt(2, nbHours);
 			ResultSet rs = st.executeQuery();
@@ -282,7 +305,9 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements PlongeeDao {
 			throw new TechnicalException(e);
 		} finally{
 			try {
-				getDataSource().getConnection().close();
+				if(null != conex ){
+					conex.close();
+				}
 			} catch (SQLException e) {
 				e.printStackTrace();
 				throw new TechnicalException("Impossible de cloturer la connexion");
@@ -293,12 +318,14 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements PlongeeDao {
 	@Override
 	public List<Plongee> getPlongeesWhithSameDate(Date date, String type)
 			throws TechnicalException {
+		Connection conex=null;
 		try {
+			conex = getDataSource().getConnection();
 			StringBuffer sb = new StringBuffer();
 			sb.append("SELECT * FROM PLONGEE p");
 			sb.append(" WHERE date(DATE) = ? AND DEMIE_JOURNEE = ?");
 			sb.append(" and OUVERTURE_FORCEE = 1");
-			PreparedStatement st = getDataSource().getConnection().prepareStatement(sb.toString());
+			PreparedStatement st = conex.prepareStatement(sb.toString());
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 			String laDateRecherchee = sdf.format(date);			
 			st.setString(1, laDateRecherchee);
@@ -314,7 +341,9 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements PlongeeDao {
 			throw new TechnicalException(e);
 		} finally{
 			try {
-				getDataSource().getConnection().close();
+				if(null != conex ){
+					conex.close();
+				}
 			} catch (SQLException e) {
 				e.printStackTrace();
 				throw new TechnicalException("Impossible de cloturer la connexion");
@@ -325,17 +354,18 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements PlongeeDao {
 
 	public List<Plongee> getListeAttenteForAdherent(Adherent adherent)
 	throws TechnicalException {
+		Connection conex=null;
 		try {
+			conex = getDataSource().getConnection();
 			StringBuffer sb = new StringBuffer();
 			sb.append("SELECT pl.`idPLONGEES`, pl.`DATE`, pl.`DEMIE_JOURNEE`, pl.`OUVERTURE_FORCEE`, pl.`NIVEAU_MINI`, pl.`NB_MAX_PLG`");
-			sb.append(" FROM plongee pl, liste_attente rel , adherent ad");
+			sb.append(" FROM PLONGEE pl, LISTE_ATTENTE rel , ADHERENT ad");
 			sb.append(" WHERE license = ?");
 			sb.append(" AND license = adherent_license");
 			sb.append(" AND plongees_idPlongees = idPlongees");
 			sb.append(" AND date < current_date()");
 			sb.append(" and OUVERTURE_FORCEE = 1");
-			PreparedStatement st = getDataSource().getConnection().
-				prepareStatement(sb.toString());
+			PreparedStatement st = conex.prepareStatement(sb.toString());
 			st.setString(1, adherent.getNumeroLicense());
 			ResultSet rs = st.executeQuery();
 			List<Plongee> plongees = new ArrayList<Plongee>();
@@ -348,7 +378,9 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements PlongeeDao {
 			throw new TechnicalException(e);
 		} finally{
 			try {
-				getDataSource().getConnection().close();
+				if(null != conex ){
+					conex.close();
+				}
 			} catch (SQLException e) {
 				e.printStackTrace();
 				throw new TechnicalException("Impossible de cloturer la connexion");
@@ -358,12 +390,13 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements PlongeeDao {
 
 	public void inscrireAdherentPlongee(Plongee plongee,
 			Adherent adherent) throws TechnicalException {
+		Connection conex=null;
 		try {
+			conex = getDataSource().getConnection();
 			StringBuffer sb = new StringBuffer();
 			sb.append("INSERT INTO INSCRIPTION_PLONGEE (`ADHERENT_LICENSE`, PLONGEES_idPLONGEES, `DATE_INSCRIPTION`)");
 			sb.append(" VALUES (?, ?, current_timestamp)");
-			PreparedStatement st = getDataSource().getConnection().
-				prepareStatement(sb.toString());
+			PreparedStatement st = conex.prepareStatement(sb.toString());
 			st.setString(1, adherent.getNumeroLicense());
 			st.setInt(2, plongee.getId());
 			if (st.executeUpdate() == 0) {
@@ -374,7 +407,9 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements PlongeeDao {
 			throw new TechnicalException(e);
 		} finally{
 			try {
-				getDataSource().getConnection().close();
+				if(null != conex ){
+					conex.close();
+				}
 			} catch (SQLException e) {
 				e.printStackTrace();
 				throw new TechnicalException("Impossible de cloturer la connexion");
@@ -384,15 +419,16 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements PlongeeDao {
 
 	public void supprimeAdherentPlongee(Plongee plongee,
 			Adherent adherent) throws TechnicalException {
+		Connection conex=null;
 		try {
+			conex = getDataSource().getConnection();
 			StringBuffer sb = new StringBuffer();
-			sb.append("update inscription_plongee");
+			sb.append("update INSCRIPTION_PLONGEE");
 			sb.append(" set date_annul_plongee = current_timestamp");
 			sb.append(" where adherent_license = ?  ");
 			sb.append(" and plongees_idplongees = ? ");
 			sb.append(" and date_annul_plongee is null ");
-			PreparedStatement st = getDataSource().getConnection().
-				prepareStatement(sb.toString());
+			PreparedStatement st = conex.prepareStatement(sb.toString());
 			st.setString(1, adherent.getNumeroLicense());
 			st.setInt(2, plongee.getId());
 			if (st.executeUpdate() == 0) {
@@ -403,7 +439,9 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements PlongeeDao {
 			throw new TechnicalException(e);
 		} finally{
 			try {
-				getDataSource().getConnection().close();
+				if(null != conex ){
+					conex.close();
+				}
 			} catch (SQLException e) {
 				e.printStackTrace();
 				throw new TechnicalException("Impossible de cloturer la connexion");
@@ -413,37 +451,13 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements PlongeeDao {
 
 	public void inscrireAdherentAttente(Plongee plongee,
 			Adherent adherent) throws TechnicalException {
-//		int rang = 0;
-//		try {
-//			StringBuffer sb = new StringBuffer();
-//			sb.append("select MAX(RANG) from LISTE_ATTENTE where plongees_idplongees = ?");
-//			PreparedStatement st = getDataSource().getConnection().
-//				prepareStatement(sb.toString());
-//			st.setInt(1, plongee.getId());
-//			ResultSet rs = st.executeQuery();
-//			while (rs.next()) {
-//				if(0 == rs.getInt(1)){
-//					rang =1;
-//				}else{
-//					rang = rs.getInt(1) + 1;
-//				}
-//			}
-//		} catch (SQLException e) {
-//			throw new TechnicalException(e);
-//		} finally{
-//			try {
-//				getDataSource().getConnection().close();
-//			} catch (SQLException e) {
-//				e.printStackTrace();
-//				throw new TechnicalException("Impossible de cloturer la connexion");
-//			}
-//		}
+		Connection conex=null;
 		try {
+			conex = getDataSource().getConnection();
 			StringBuffer sb = new StringBuffer();
 			sb.append("INSERT INTO LISTE_ATTENTE (ADHERENT_LICENSE, PLONGEES_idPLONGEES, DATE_ATTENTE)");
 			sb.append(" VALUES (?, ?, current_timestamp)");
-			PreparedStatement st = getDataSource().getConnection().
-				prepareStatement(sb.toString());
+			PreparedStatement st = conex.prepareStatement(sb.toString());
 			st.setString(1, adherent.getNumeroLicense());
 			st.setInt(2, plongee.getId());
 			if (st.executeUpdate() == 0) {
@@ -454,7 +468,9 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements PlongeeDao {
 			throw new TechnicalException(e);
 		} finally{
 			try {
-				getDataSource().getConnection().close();
+				if(null != conex ){
+					conex.close();
+				}
 			} catch (SQLException e) {
 				e.printStackTrace();
 				throw new TechnicalException("Impossible de cloturer la connexion");
@@ -468,14 +484,15 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements PlongeeDao {
 	 */
 	public void supprimeAdherentAttente(Plongee plongee,
 			Adherent adherent) throws TechnicalException {
+		Connection conex=null;
 		try {
+			conex = getDataSource().getConnection();
 			StringBuffer sb = new StringBuffer();
-			sb.append("update liste_attente");
+			sb.append("update LISTE_ATTENTE");
 			sb.append(" SET DATE_INSCRIPTION = CURRENT_TIMESTAMP ");
 			sb.append(" where adherent_license = ?  ");
 			sb.append(" and plongees_idplongees = ? ");
-			PreparedStatement st = getDataSource().getConnection().
-				prepareStatement(sb.toString());
+			PreparedStatement st = conex.prepareStatement(sb.toString());
 			st.setString(1, adherent.getNumeroLicense());
 			st.setInt(2, plongee.getId());
 			if (st.executeUpdate() == 0) {
@@ -486,7 +503,9 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements PlongeeDao {
 			throw new TechnicalException(e);
 		} finally{
 			try {
-				getDataSource().getConnection().close();
+				if(null != conex ){
+					conex.close();
+				}
 			} catch (SQLException e) {
 				e.printStackTrace();
 				throw new TechnicalException("Impossible de cloturer la connexion");
