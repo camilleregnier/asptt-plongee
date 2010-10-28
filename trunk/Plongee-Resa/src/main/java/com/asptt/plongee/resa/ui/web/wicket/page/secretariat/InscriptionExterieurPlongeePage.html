@@ -1,0 +1,14 @@
+	<wicket:head>
+	<wicket:link> 
+	<link rel="stylesheet" type="text/css" href="secretariat.css" />
+	</wicket:link>
+	</wicket:head> 
+	<wicket:extend>
+		<span>Si la recherche n'aboutie pas, <a href="#" wicket:id="creerExterieur">cr&eacute;er</a> le plongeur ext&eacute;rieur</span>
+		<form wicket:id="form"><br></br>
+			Ext&eacute;rieur : <input type="text" wicket:id="numeroLicense" size="50"/>
+			<a href="#" wicket:id="valider">Valider</a> 
+		</form>
+		<div wicket:id="modalExterieur"/>
+
+	</wicket:extend>
