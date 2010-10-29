@@ -62,7 +62,7 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 				// On gere les role uniquement pour les actifs
 				Iterator it = adh.getRoles().iterator();
 				while (it.hasNext()) {
-					sb.append("INSERT INTO rel_adherent_roles (`ADHERENT_LICENSE`, `ROLES_idROLES`)");
+					sb.append("INSERT INTO REL_ADHERENT_ROLES (`ADHERENT_LICENSE`, `ROLES_idROLES`)");
 					sb.append(" VALUES (?, ?)");
 					st = conex.prepareStatement(sb.toString());
 					st.setString(1, adh.getNumeroLicense());
@@ -160,7 +160,7 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 			sb = new StringBuffer();
 			
 			// gestion des roles 1er temps : on supprime les roles
-			sb.append("DELETE FROM rel_adherent_roles WHERE ADHERENT_LICENSE = ? ");
+			sb.append("DELETE FROM REL_ADHERENT_ROLES WHERE ADHERENT_LICENSE = ? ");
 			PreparedStatement st1 = conex.prepareStatement(sb.toString());
 			st1.setString(1, adh.getNumeroLicense());
 			if (st1.executeUpdate() == 0) {
@@ -171,7 +171,7 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 			Iterator it = adh.getRoles().iterator();
 			sb = new StringBuffer();
 			while (it.hasNext()) {
-				sb.append("INSERT INTO rel_adherent_roles (`ADHERENT_LICENSE`, `ROLES_idROLES`)");
+				sb.append("INSERT INTO REL_ADHERENT_ROLES (`ADHERENT_LICENSE`, `ROLES_idROLES`)");
 				sb.append(" VALUES (?, ?)");
 				st = conex.prepareStatement(sb.toString());
 				st.setString(1, adh.getNumeroLicense());
@@ -459,7 +459,7 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 		try {
 			conex = getDataSource().getConnection();
 			StringBuffer sb = new StringBuffer(
-					"SELECT r.LIBELLE FROM rel_adherent_roles rel, roles r ");
+					"SELECT r.LIBELLE FROM REL_ADHERENT_ROLES rel, ROLES r ");
 			sb.append(" where rel.ROLES_idROLES = r.idROLES ");
 			sb.append(" and rel.ADHERENT_LICENSE = ?");
 			st = conex.prepareStatement(sb.toString());
@@ -495,7 +495,7 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 			generiqueName.concat(name);
 			generiqueName.concat("%");
 			StringBuffer sb = new StringBuffer("select LICENSE, NOM, PRENOM, NIVEAU, TELEPHONE, MAIL, ENCADRANT, PILOTE, ACTIF, PASSWORD ");
-			sb.append(" from adherent a ");
+			sb.append(" from ADHERENT a ");
 			sb.append(" where NOM LIKE ? order by NOM");
 			st = conex.prepareStatement(sb.toString());
 			st.setString(1, generiqueName);
@@ -527,7 +527,7 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 		try {
 			conex = getDataSource().getConnection();
 			StringBuffer sb = new StringBuffer("select LICENSE, NOM, PRENOM, NIVEAU, TELEPHONE, MAIL, ENCADRANT, PILOTE, ACTIF, PASSWORD ");
-			sb.append(" FROM adherent a, rel_adherent_roles rel, roles r");
+			sb.append(" FROM ADHERENT a, REL_ADHERENT_ROLES rel, ROLES r");
 			sb.append(" where a.license = rel.adherent_license");
 			sb.append(" and rel.roles_idRoles = r.idroles");
 			sb.append(" and r.libelle = ? order by NOM");
@@ -569,7 +569,7 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 		try {
 			conex = getDataSource().getConnection();
 			StringBuffer sb = new StringBuffer("select LICENSE, NOM, PRENOM, NIVEAU, TELEPHONE, MAIL, ENCADRANT, PILOTE, ACTIF, PASSWORD ");
-			sb.append(" from plongee p, inscription_plongee i, adherent a ");
+			sb.append(" from PLONGEE p, INSCRIPTION_PLONGEE i, ADHERENT a ");
 			sb.append(" where idPLONGEES = ?");
 			sb.append(" and idPLONGEES = PLONGEES_idPLONGEES ");
 			sb.append(" and ADHERENT_LICENSE = LICENSE");
@@ -636,7 +636,7 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 			conex = getDataSource().getConnection();
 			StringBuffer sb = new StringBuffer(
 					"select LICENSE, NOM, PRENOM, NIVEAU, TELEPHONE, MAIL, ENCADRANT, PILOTE, ACTIF, PASSWORD ");
-			sb.append(" from plongee p, liste_attente la, adherent a ");
+			sb.append(" from PLONGEE p, LISTE_ATTENTE la, ADHERENT a ");
 			sb.append(" where idPLONGEES = ?");
 			sb.append(" and idPLONGEES = PLONGEES_idPLONGEES ");
 			sb.append(" and ADHERENT_LICENSE = LICENSE ");
@@ -671,7 +671,7 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
 		Connection conex=null;
 		try {
 			conex = getDataSource().getConnection();
-			StringBuffer sb = new StringBuffer("select idRoles from roles where libelle=? ");
+			StringBuffer sb = new StringBuffer("select idRoles from ROLES where libelle=? ");
 			st = conex.prepareStatement(sb.toString());
 			st.setString(1, libelle);
 			ResultSet rs = st.executeQuery();
