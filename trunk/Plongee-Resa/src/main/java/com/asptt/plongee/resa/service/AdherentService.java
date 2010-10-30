@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import com.asptt.plongee.resa.model.Adherent;
+import com.asptt.plongee.resa.model.Plongee;
 
 public interface AdherentService {
 
@@ -29,7 +30,11 @@ public interface AdherentService {
 
 	public List<Adherent> rechercherDPs(List<Adherent> adherents);
 	
+	public List<Adherent> rechercherDPsNonInscrits(List<Adherent> adherents, Plongee plongee);
+	
 	public List<Adherent> rechercherPilotes(List<Adherent> adherents);
+	
+	public List<Adherent> rechercherPilotesNonInscrits(List<Adherent> adherents, Plongee plongee);
 
 	public void creerAdherent(Adherent adherent);
 	
