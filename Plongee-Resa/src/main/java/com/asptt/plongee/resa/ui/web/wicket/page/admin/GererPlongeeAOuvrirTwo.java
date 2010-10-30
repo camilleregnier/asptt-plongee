@@ -54,9 +54,11 @@ public class GererPlongeeAOuvrirTwo extends TemplatePage {
 
 		List<Adherent> dps;
 			dps = getResaSession().getAdherentService()
-					.rechercherDPs(
+					.rechercherDPsNonInscrits(
 							getResaSession().getAdherentService()
-									.rechercherAdherentsActifs());
+									.rechercherAdherentsActifs(), plongee);
+			
+			dps.removeAll(plongee.getParticipants());
 		
 			IChoiceRenderer<Adherent> rendDp = new ChoiceRenderer<Adherent>("nom",
 				"nom");
@@ -68,7 +70,9 @@ public class GererPlongeeAOuvrirTwo extends TemplatePage {
 			};
 
 			List<Adherent> pilotes = getResaSession().getAdherentService()
-				.rechercherPilotes(getResaSession().getAdherentService().rechercherAdherentsActifs());
+				.rechercherPilotesNonInscrits(getResaSession().getAdherentService().rechercherAdherentsActifs(), plongee);
+			
+			pilotes.removeAll(plongee.getParticipants());
 			
 			IChoiceRenderer<Adherent> rendPilote = new ChoiceRenderer<Adherent>("nom", "nom");
 

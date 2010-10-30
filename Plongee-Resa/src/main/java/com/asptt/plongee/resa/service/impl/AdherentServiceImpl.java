@@ -1,7 +1,8 @@
 package com.asptt.plongee.resa.service.impl;
 
+import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.TreeSet;
 
@@ -9,11 +10,13 @@ import com.asptt.plongee.resa.dao.AdherentDao;
 import com.asptt.plongee.resa.exception.TechnicalException;
 import com.asptt.plongee.resa.model.Adherent;
 import com.asptt.plongee.resa.model.AdherentComparatorNom;
+import com.asptt.plongee.resa.model.Plongee;
 import com.asptt.plongee.resa.model.ResaConstants;
 import com.asptt.plongee.resa.service.AdherentService;
 
-public class AdherentServiceImpl implements AdherentService {
+public class AdherentServiceImpl implements AdherentService, Serializable {
 
+	private static final long serialVersionUID = -8552502001819883624L;
 	private AdherentDao adherentDao;
 
 	public void setAdherentDao(AdherentDao adherentDao) {
@@ -81,11 +84,45 @@ public class AdherentServiceImpl implements AdherentService {
 		}
 		return dps;
 	}
+	public List<Adherent> rechercherDPsNonInscrits(List<Adherent> adherents, Plongee plongee) throws TechnicalException{
+		List<Adherent> dps = new ArrayList<Adherent>();
+		HashMap<String,Adherent> dpInscrits = new HashMap<String,Adherent>();
+		
+		for(Adherent a : plongee.getParticipants()){
+			if(a.isDp()){
+				dpInscrits.put(a.getNumeroLicense(),a);
+			}
+		}
+		
+		for(Adherent a : adherents){
+			if(a.isDp() && ! dpInscrits.containsKey(a.getNumeroLicense())){
+				dps.add(a);
+			}
+		}
+		return dps;
+	}
 
 	public List<Adherent> rechercherPilotes(List<Adherent> adherents) throws TechnicalException{
 		List<Adherent> pilotes = new ArrayList<Adherent>();
 		for(Adherent a : adherents){
 			if(a.isPilote()){
+				pilotes.add(a);
+			}
+		}
+		return pilotes;
+	}
+	public List<Adherent> rechercherPilotesNonInscrits(List<Adherent> adherents, Plongee plongee) throws TechnicalException{
+		List<Adherent> pilotes = new ArrayList<Adherent>();
+		HashMap<String,Adherent> pilotesInscrits = new HashMap<String,Adherent>();
+		
+		for(Adherent a : plongee.getParticipants()){
+			if(a.isPilote()){
+				pilotesInscrits.put(a.getNumeroLicense(),a);
+			}
+		}
+		
+		for(Adherent a : adherents){
+			if(a.isPilote() && ! pilotesInscrits.containsKey(a.getNumeroLicense())){
 				pilotes.add(a);
 			}
 		}
