@@ -162,7 +162,9 @@ public class DesInscriptionPlongeePage extends TemplatePage {
 							plongeur, -1);
 				}
 			} else {
-					//C'est un encadrant
+				//C'est un encadrant et qu'il en reste assez
+				if (getResaSession().getPlongeeService().isEnoughEncadrant(plongee)){
+					
 					//S'il y a des personnes en liste d'attente => mail
 					if(getResaSession().getPlongeeService().rechercherListeAttente(plongee).size() > 0){
 						getResaSession().getPlongeeService().deInscrireAdherent(
@@ -174,6 +176,12 @@ public class DesInscriptionPlongeePage extends TemplatePage {
 								plongee, 
 								plongeur, -1);
 					}
+				} else {
+					// Plus assez d'encadrants
+					getResaSession().getPlongeeService().deInscrireAdherent(
+							plongee, 
+							plongeur, PlongeeMail.MAIL_PLUS_ASSEZ_ENCADRANT);
+				}
 			}
 			modalPlongees.close(target);
 			//setResponsePage(new InscriptionConfirmationPlongeePage(plongee));
