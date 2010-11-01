@@ -72,11 +72,11 @@ public final class PlongeeMail {
         String admin = ParametersMail.getString("MAIL_DESTIS_ADMIN");
         StringTokenizer st = new StringTokenizer(admin, ";");
         List<String> destis = new ArrayList<String>();
-//        while (st.hasMoreElements()){
-//        	destis.add((String)st.nextElement());
-//        }
+        while (st.hasMoreElements()){
+        	destis.add((String)st.nextElement());
+        }
 //		destis.add("camille.regnier@orange.fr");
-		destis.add("eric.simon28@orange.fr");
+//		destis.add("eric.simon28@orange.fr");
 		return destis;
 	}
 
@@ -85,11 +85,11 @@ public final class PlongeeMail {
         String admin = ParametersMail.getString("MAIL_DESTIS_ENCADRANT");
       StringTokenizer st = new StringTokenizer(admin, ";");
 		List<String> destis = new ArrayList<String>();
-//	    while (st.hasMoreElements()){
-//	    	destis.add((String)st.nextElement());
-//	    }
+	    while (st.hasMoreElements()){
+	    	destis.add((String)st.nextElement());
+	    }
 //		destis.add("camille.regnier@orange.fr");
-		destis.add("eric.simon28@orange.fr");
+//		destis.add("eric.simon28@orange.fr");
 //		destis.add("gilbert.dicostanzo@orange.fr");
 //		destis.add("michel-a.marchetti@orange.fr");
 //		destis.add("phanie.laurent@wanadoo.fr");//BAUDOIN

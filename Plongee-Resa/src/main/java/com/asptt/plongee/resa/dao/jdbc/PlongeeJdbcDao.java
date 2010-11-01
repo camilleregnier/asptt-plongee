@@ -429,7 +429,7 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements Serializable, Plo
 			st.setInt(2, plongee.getId());
 			if (st.executeUpdate() == 0) {
 				throw new TechnicalException("L'adhérent"+adherent.getNumeroLicense()+
-						" n'a pu être de-inscrit à la plongée:"+plongee.getId()+"."); 
+						" n'a pu être désinscrit à la plongée:"+plongee.getId()+"."); 
 			}
 		} catch (SQLException e) {
 			throw new TechnicalException(e);
