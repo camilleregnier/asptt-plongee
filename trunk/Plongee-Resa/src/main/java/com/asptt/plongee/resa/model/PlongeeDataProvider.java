@@ -7,7 +7,6 @@ import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.model.IModel;
 
 import com.asptt.plongee.resa.exception.TechnicalException;
-import com.asptt.plongee.resa.service.PlongeeService;
 
 @SuppressWarnings("serial")
 public class PlongeeDataProvider implements IDataProvider<Plongee> {

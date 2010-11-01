@@ -1,10 +1,7 @@
 package com.asptt.plongee.resa.service;
 
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.List;
-
-import javax.mail.MessagingException;
 
 import com.asptt.plongee.resa.exception.ResaException;
 import com.asptt.plongee.resa.exception.TechnicalException;

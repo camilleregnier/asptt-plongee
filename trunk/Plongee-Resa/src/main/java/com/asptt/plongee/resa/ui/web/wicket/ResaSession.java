@@ -1,9 +1,5 @@
 package com.asptt.plongee.resa.ui.web.wicket;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.wicket.Request;
 import org.apache.wicket.Session;
 import org.apache.wicket.authentication.AuthenticatedWebSession;

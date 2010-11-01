@@ -6,9 +6,6 @@ import java.util.List;
 import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.model.IModel;
 
-import com.asptt.plongee.resa.service.AdherentService;
-import com.asptt.plongee.resa.service.PlongeeService;
-
 @SuppressWarnings("serial")
 public class InscritsPlongeeDataProvider implements IDataProvider<Adherent> {
 	
