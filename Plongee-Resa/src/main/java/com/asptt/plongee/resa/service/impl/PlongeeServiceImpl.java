@@ -1,15 +1,12 @@
 package com.asptt.plongee.resa.service.impl;
 
-import java.text.SimpleDateFormat;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
 import javax.mail.MessagingException;
-
-import org.apache.commons.mail.Email;
-import org.apache.commons.mail.SimpleEmail;
 
 import com.asptt.plongee.resa.dao.AdherentDao;
 import com.asptt.plongee.resa.dao.PlongeeDao;
@@ -23,8 +20,9 @@ import com.asptt.plongee.resa.model.Adherent.Encadrement;
 import com.asptt.plongee.resa.service.PlongeeService;
 import com.asptt.plongee.resa.util.Parameters;
 
-public class PlongeeServiceImpl implements PlongeeService {
+public class PlongeeServiceImpl implements PlongeeService, Serializable {
 
+	private static final long serialVersionUID = -8826356175277601403L;
 	private PlongeeDao plongeeDao;
 	private AdherentDao adherentDao;
 	
