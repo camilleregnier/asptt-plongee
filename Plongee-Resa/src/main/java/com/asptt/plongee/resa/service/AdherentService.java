@@ -1,7 +1,6 @@
 package com.asptt.plongee.resa.service;
 
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import com.asptt.plongee.resa.model.Adherent;
 import com.asptt.plongee.resa.model.Plongee;

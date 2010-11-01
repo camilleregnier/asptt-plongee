@@ -1,5 +1,6 @@
 package com.asptt.plongee.resa.dao.jdbc;
 
+import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -16,8 +17,9 @@ import com.asptt.plongee.resa.model.NiveauAutonomie;
 import com.asptt.plongee.resa.model.Plongee;
 import com.asptt.plongee.resa.model.Adherent.Encadrement;
 
-public class AdherentJdbcDao extends AbstractJdbcDao implements AdherentDao {
+public class AdherentJdbcDao extends AbstractJdbcDao implements Serializable, AdherentDao {
 
+	private static final long serialVersionUID = 6165324672085274169L;
 	private PlongeeDao plongeeDao;
 
 	public void setPlongeeDao(PlongeeDao plongeeDao) { // setter appelé par

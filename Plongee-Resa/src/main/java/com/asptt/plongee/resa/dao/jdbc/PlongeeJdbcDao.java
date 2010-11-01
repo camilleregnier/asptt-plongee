@@ -1,5 +1,6 @@
 package com.asptt.plongee.resa.dao.jdbc;
 
+import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -7,12 +8,9 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 
 import com.asptt.plongee.resa.dao.AdherentDao;
 import com.asptt.plongee.resa.dao.PlongeeDao;
@@ -20,14 +18,12 @@ import com.asptt.plongee.resa.exception.TechnicalException;
 import com.asptt.plongee.resa.model.Adherent;
 import com.asptt.plongee.resa.model.NiveauAutonomie;
 import com.asptt.plongee.resa.model.Plongee;
-import com.asptt.plongee.resa.model.ResaConstants;
 import com.asptt.plongee.resa.model.Plongee.Type;
-import com.asptt.plongee.resa.service.impl.AdherentServiceImpl;
-import com.asptt.plongee.resa.service.impl.PlongeeServiceImpl;
 import com.asptt.plongee.resa.util.Parameters;
 
-public class PlongeeJdbcDao extends AbstractJdbcDao implements PlongeeDao {
+public class PlongeeJdbcDao extends AbstractJdbcDao implements Serializable, PlongeeDao {
 	
+	private static final long serialVersionUID = 5459542271710949540L;
 	private AdherentDao adherentDao;  // (l'interface AdherentDao et non une implémentation)
 	
 	public void setAdherentDao(AdherentDao adherentDao) {   // setter appelé par Spring pour injecter le bean "adherentDao"

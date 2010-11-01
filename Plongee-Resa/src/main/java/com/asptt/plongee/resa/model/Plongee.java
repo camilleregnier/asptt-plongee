@@ -9,7 +9,7 @@ import com.asptt.plongee.resa.model.Adherent.Encadrement;
 
 public class Plongee implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = -2548032640337298221L;
 
 	public static enum Type {MATIN, APRES_MIDI, SOIR, NUIT }
 	
