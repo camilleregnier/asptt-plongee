@@ -310,7 +310,7 @@ public class InscriptionPlongeePage extends TemplatePage {
 	{
 		private static final long serialVersionUID = 196724625616748115L;
 
-		String message = "La plongée est complète";
+		String message = "La plong\u00e9e est compl\u00e8te";
 		
 		@SuppressWarnings("unchecked")
 		public ConfirmSelectionModal(String id, final Plongee plongee)
