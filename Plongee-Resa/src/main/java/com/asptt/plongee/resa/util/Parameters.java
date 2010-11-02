@@ -7,7 +7,7 @@ import java.util.ResourceBundle;
 
 public final class Parameters {
 
-	private static final String BUNDLE_NAME = "com.asptt.plongee.resa.util.resaPlongee"; //$NON-NLS-1$
+	private static final String BUNDLE_NAME = "com.asptt.plongee.resa.util.ResaPlongee"; //$NON-NLS-1$
 	
 	
 	private Parameters() {

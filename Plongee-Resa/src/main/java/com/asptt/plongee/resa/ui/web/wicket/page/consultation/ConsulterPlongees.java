@@ -63,10 +63,10 @@ public class ConsulterPlongees extends TemplatePage {
 					item.add(new IndicatingAjaxLink("select") {
 						@Override
 						public void onClick(AjaxRequestTarget target) {
-							if (getResaSession().getAdherent().getEncadrement() == null){
-								replaceModalWindow(target, item.getModel());
-							} else {
+							if (getResaSession().getAdherent().getEncadrement() != null || getResaSession().getAdherent().getRoles().hasRole("SECRETARIAT") ){
 								replaceModalWindowEncadrant(target, item.getModel());
+							} else {
+								replaceModalWindow(target, item.getModel());
 							}
 							modal2.show(target);
 						}
