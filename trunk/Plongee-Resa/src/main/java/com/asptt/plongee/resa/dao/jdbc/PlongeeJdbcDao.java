@@ -427,12 +427,10 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements Serializable, Plo
 			PreparedStatement st = conex.prepareStatement(sb.toString());
 			st.setString(1, adherent.getNumeroLicense());
 			st.setInt(2, plongee.getId());
-			if (st.executeUpdate() == 0) {
-				throw new TechnicalException("L'adhérent"+adherent.getNumeroLicense()+
-						" n'a pu être désinscrit à la plongée:"+plongee.getId()+"."); 
-			}
+			st.executeUpdate();
 		} catch (SQLException e) {
-			throw new TechnicalException(e);
+			throw new TechnicalException("L'adhérent"+adherent.getNumeroLicense()+
+					" n'a pu être désinscrit à la plongée:"+plongee.getId()+".",e);
 		} finally{
 			try {
 				if(null != conex ){
@@ -491,12 +489,10 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements Serializable, Plo
 			PreparedStatement st = conex.prepareStatement(sb.toString());
 			st.setString(1, adherent.getNumeroLicense());
 			st.setInt(2, plongee.getId());
-			if (st.executeUpdate() == 0) {
-				throw new TechnicalException("L'adhérent"+adherent.getNumeroLicense()+
-						" n'a pu être supprimé de la liste d'attente de la plongée:"+plongee.getId()+"."); 
-			}
+			st.executeUpdate();
 		} catch (SQLException e) {
-			throw new TechnicalException(e);
+			throw new TechnicalException("L'adhérent"+adherent.getNumeroLicense()+
+					" n'a pu être supprimé de la liste d'attente de la plongée:"+plongee.getId()+".",e);
 		} finally{
 			try {
 				if(null != conex ){

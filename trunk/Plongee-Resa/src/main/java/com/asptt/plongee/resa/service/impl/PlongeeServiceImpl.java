@@ -454,7 +454,7 @@ public class PlongeeServiceImpl implements PlongeeService, Serializable {
 		}
 	}
 
-	public synchronized void inscrireAdherentEnListeAttente(Plongee plongee,	Adherent adherent, int typeMail)   throws ResaException, TechnicalException{
+	public void inscrireAdherentEnListeAttente(Plongee plongee,	Adherent adherent, int typeMail)   throws ResaException, TechnicalException{
 		//Appel DAO
 		plongeeDao.inscrireAdherentAttente(plongee, adherent);
 		//Envoi d'un mail
@@ -470,7 +470,7 @@ public class PlongeeServiceImpl implements PlongeeService, Serializable {
 		
 	}
 
-	public synchronized void deInscrireAdherent(Plongee plongee, Adherent adherent, int typeMail)   throws ResaException, TechnicalException{
+	public void deInscrireAdherent(Plongee plongee, Adherent adherent, int typeMail)   throws ResaException, TechnicalException{
 		//Appel DAO
 		plongeeDao.supprimeAdherentPlongee(plongee, adherent);
 		//Envoi mail
@@ -496,7 +496,7 @@ public class PlongeeServiceImpl implements PlongeeService, Serializable {
 		}
 	}
 
-	public synchronized void deInscrireAdherentEnListeAttente(Plongee plongee, Adherent adherent)  throws TechnicalException {
+	public void deInscrireAdherentEnListeAttente(Plongee plongee, Adherent adherent)  throws TechnicalException {
 		plongeeDao.supprimeAdherentAttente(plongee, adherent);
 	}
 	
