@@ -187,7 +187,7 @@ public class DeInscriptionPlongeePage extends TemplatePage {
 	
 	private void replaceModalWindow(AjaxRequestTarget target, Plongee plongee) {
 		modalConfirm.setContent(new ConfirmSelectionModal(modalConfirm.getContentId(), plongee));
-		modalConfirm.setTitle("Confirmation de d\u00e9sinscription à une plong\u00e9e");
+		modalConfirm.setTitle("Confirmation de d\u00e9sinscription \u00e0 une plong\u00e9e");
 		modalConfirm.setUseInitialHeight(true);
 		
 		// Pour éviter le message de disparition de la fenetre lors de la validation
@@ -203,7 +203,7 @@ public class DeInscriptionPlongeePage extends TemplatePage {
 			// Informations précisant la plongeur concerné et la plongée
 			// dans la fenêtre de confirmation de désinscription
 			add(new Label("infoPlongeur", "Etes-vous s\u00fbr de vouloir vous d\u00e9sinscrire : il ne reste plus assez d'encadrant"));
-			add(new Label("infoPlongee", " à la plong\u00e9e du " + plongee.getDate() + " " + plongee.getType() + " ?"));
+			add(new Label("infoPlongee", " \u00e0 la plong\u00e9e du " + plongee.getDate() + " " + plongee.getType() + " ?"));
 			
 			// Le lien qui va fermer la fenêtre de confirmation
 			// et appeler la méthode de désinscription de la page principale (DesInscriptionPlongeePage)
