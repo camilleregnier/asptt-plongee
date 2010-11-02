@@ -35,12 +35,12 @@ public class AnnulerPlongee extends TemplatePage {
 		
 		// Fenêtre modale d'informations sur la plongée à annuler
 		modalPlongee = new ModalWindow("modalPlongee");
-		modalPlongee.setTitle("Informations sur la plongée");
+		modalPlongee.setTitle("Informations sur la plong\u00e9e");
 		modalPlongee.setUseInitialHeight(false);
 		modalPlongee.setWidthUnit("px");
 		add(modalPlongee);
 		
-		infoLabel = new Label("infoLabel", "Choisissez la plongée à annuler");
+		infoLabel = new Label("infoLabel", "Choisissez la plong\u00e9e \u00e0 annuler");
 		add(infoLabel);
 		
 		// TODO, voir si on ajoute pas cela dans un panel
@@ -138,7 +138,7 @@ public class AnnulerPlongee extends TemplatePage {
 			
 			// Informations précisant la plongeur concerné et la plongée
 			// dans la fenêtre de confirmation de désinscription
-			add(new Label("infoPlongee", "Etes-vous sûr de vouloir annuler la plongée du  " + plongee.getDate() + " " + plongee.getType() + " ?"));
+			add(new Label("infoPlongee", "Etes-vous s\u00fbr de vouloir annuler la plong\u00e9e du  " + plongee.getDate() + " " + plongee.getType() + " ?"));
 			int nbPlongeursInscrits = plongee.getParticipants().size();
 			add(new Label("infoPlongeurs", (nbPlongeursInscrits == 0) ? " " : " Il y a " + nbPlongeursInscrits + " plongeur(s) inscrits."));
 			

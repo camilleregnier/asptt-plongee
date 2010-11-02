@@ -88,7 +88,7 @@ public class GererAdherents extends TemplatePage {
 	
 	private void replaceModalWindow(AjaxRequestTarget target, IModel<Adherent> adherent) {
 		modal2.setContent(new AdherentPanel(modal2.getContentId(), adherent));
-		modal2.setTitle("Modifiez les informations à mettre à jour");
+		modal2.setTitle("Modifiez les informations \u00e0 mettre \u00e0 jour");
 		modal2.setUseInitialHeight(true);
 		
 		// Pour éviter le message de disparition de la fenetre lors de la validation

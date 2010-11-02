@@ -28,7 +28,7 @@ public class GererPlongeeAOuvrirOne extends TemplatePage {
 		final FeedbackPanel feedback = new FeedbackPanel("feedback");
 		add(feedback);
 		add(new GererListeAttenteOneForm("inputForm", feedback));
-		add(new Label("message", getResaSession().getAdherent().getPrenom() + ", ci-dessous, les plongées en attente d'ouverture."));
+		add(new Label("message", getResaSession().getAdherent().getPrenom() + ", ci-dessous, les plong\u00e9es en attente d'ouverture."));
 	}
 
 	public class GererListeAttenteOneForm extends Form {

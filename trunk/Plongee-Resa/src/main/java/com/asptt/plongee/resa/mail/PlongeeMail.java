@@ -144,22 +144,22 @@ public final class PlongeeMail {
 
 		switch (type) {
 		case MAIL_INSCRIPTION_SUR_PLONGEE_FERMEE: 
-			this.email.setSubject("Inscription sur la plongée du : "+dateAffichee+" ("+plongee.getType()+") encore fermée");
+			this.email.setSubject("Inscription sur la plong\u00e9e du : "+dateAffichee+" ("+plongee.getType()+") encore ferm\u00e9e");
 			sb = new StringBuffer("Bonjour,\n");
 			sb.append("L'encadrant / P4 "+adherent.getPrenom()+" "+adherent.getNom()+" \n");
-			sb.append("viens de s'inscrire à la plongée du "+dateAffichee+" ("+plongee.getType()+")\n");
+			sb.append("viens de s'inscrire \u00e0 la plong\u00e9e du "+dateAffichee+" ("+plongee.getType()+")\n");
 			sb.append("\n");
-			sb.append("Cette plongée est encore fermée.\n");
+			sb.append("Cette plong\u00e9e est encore ferm\u00e9e.\n");
 			sb.append("\n");
 			sb.append("Pouvez-vous l'ouvrir en trouvant un DP et/ou un pilote ?\n");
 			sb.append("Cordialement.\n");
 			this.email.setMsg(sb.toString());
 			break;
 		case MAIL_PAS_ASSEZ_ENCADRANT: 
-			this.email.setSubject("Manque d'encadrement - plongée du : "+dateAffichee+" ("+plongee.getType()+")");
+			this.email.setSubject("Manque d'encadrement - plong\u00e9e du : "+dateAffichee+" ("+plongee.getType()+")");
 			sb = new StringBuffer("Bonjour,\n");
-			sb.append("Nous avons un manque d'encadrant à la plongée du "+dateAffichee+" ("+plongee.getType()+")\n");
-			sb.append("Si vous êtes disponible, votre inscription est la bienvenue.\n");
+			sb.append("Nous avons un manque d'encadrant \u00e0 la plong\u00e9e du "+dateAffichee+" ("+plongee.getType()+")\n");
+			sb.append("Si vous \u00eates disponible, votre inscription est la bienvenue.\n");
 			sb.append("\n");
 			sb.append("-----------------------------------------------------------\n");
 			sb.append("ATTENTION : dans ce cas AVERTISSEZ les administrateurs \n");
@@ -170,21 +170,21 @@ public final class PlongeeMail {
 			this.email.setMsg(sb.toString());
 			break;
 		case MAIL_PLACES_LIBRES:
-			this.email.setSubject("Gestion de file d'attente - plongée du : "+dateAffichee+" ("+plongee.getType()+")");
+			this.email.setSubject("Gestion de file d'attente - plong\u00e9e du : "+dateAffichee+" ("+plongee.getType()+")");
 			sb = new StringBuffer("Bonjour,\n");
-			sb.append("Des personnes sont en file d'attente à la plongée du "+dateAffichee+" ("+plongee.getType()+")\n");
+			sb.append("Des personnes sont en file d'attente \u00e0 la plong\u00e9e du "+dateAffichee+" ("+plongee.getType()+")\n");
 			sb.append("\n");
-			sb.append("Une place vient de se libérer.\n");
+			sb.append("Une place vient de se lib\u00e9rer.\n");
 			sb.append("\n");
 			sb.append("Cordialement.\n");
 			this.email.setMsg(sb.toString());
 			break;
 		case MAIL_PLUS_ASSEZ_ENCADRANT: 
-			this.email.setSubject("Encadrement de la plongée du : "+dateAffichee+" ("+plongee.getType()+")");
+			this.email.setSubject("Encadrement de la plong\u00e9e du : "+dateAffichee+" ("+plongee.getType()+")");
 			sb = new StringBuffer("Bonjour,\n");
-			sb.append("Un encadrant ("+adherent.getPrenom()+" "+adherent.getNom()+") vient de se désinscrire de la plongée du "+dateAffichee+" ("+plongee.getType()+")\n");
+			sb.append("Un encadrant ("+adherent.getPrenom()+" "+adherent.getNom()+") vient de se d\u00e9sinscrire de la plong\u00e9e du "+dateAffichee+" ("+plongee.getType()+")\n");
 			sb.append("\n");
-			sb.append("Il n'y a plus assez d'encadrant pour assurer la plongée.\n");
+			sb.append("Il n'y a plus assez d'encadrant pour assurer la plong\u00e9e.\n");
 			sb.append("\n");
 			sb.append("Cordialement.\n");
 			this.email.setMsg(sb.toString());
@@ -192,10 +192,10 @@ public final class PlongeeMail {
 		case MAIL_LISTE_ATTENTE_EXIST: 
 			this.email.setSubject("Gestion de file d'attente : "+dateAffichee+" ("+plongee.getType()+")");
 			sb = new StringBuffer("Bonjour,\n");
-			sb.append("Un nouveau plongeur vient d'être inscrit en liste d'attente \n");
-			sb.append("à la plongée du "+dateAffichee+" ("+plongee.getType()+")\n");
+			sb.append("Un nouveau plongeur vient d'\u00eatre inscrit en liste d'attente \n");
+			sb.append("\u00e0 la plong\u00e9e du "+dateAffichee+" ("+plongee.getType()+")\n");
 			sb.append("\n");
-			sb.append("Votre intervention est requise pour gérer cette file d'attente.\n");
+			sb.append("Votre intervention est requise pour g\u00e9rer cette file d'attente.\n");
 			sb.append("\n");
 			sb.append("Cordialement.\n");
 			this.email.setMsg(sb.toString());

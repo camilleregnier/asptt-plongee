@@ -12,7 +12,7 @@ public class LogoutPage extends SignOutPage {
 		super();
 		String libelle = "";
 		if(message.equalsIgnoreCase("toLate")){
-			libelle = "Desole : "+a.getPrenom()+", mais il est pas encore 9h00 ....";
+			libelle = "D\u00e9sol\u00e9 : "+a.getPrenom()+", mais il est pas encore 9h00 ....";
 		} else {
 			libelle = "Au revoir : "+a.getPrenom()+".";
 		}

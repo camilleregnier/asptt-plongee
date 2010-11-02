@@ -9,7 +9,7 @@ public class ErrorPage extends TemplatePage {
 	
 	public ErrorPage(ResaException re) {
 		Adherent a = getResaSession().getAdherent();
-	    add(new Label("hello","MESSAGE : Désolé "+a.getPrenom()+" mais : "+re.getKey()));
+	    add(new Label("hello","MESSAGE : D\u00e9sol\u00e9 "+a.getPrenom()+" mais : "+re.getKey()));
 	}
 
 }
