@@ -76,7 +76,7 @@ public class ModifPasswordPage extends WebPage {
 								setResponsePage(AccueilPage.class);
 							} else {
 								// Re-saisie du nouveau mot de passe
-								error("Le nouveau mot de passe doit être différent de celui d'origine");
+								error("Le nouveau mot de passe doit \u00eatre diff\u00e9rent de celui d'origine");
 							}
 						} else {
 							// Re-saisie du nouveau mot de passe
