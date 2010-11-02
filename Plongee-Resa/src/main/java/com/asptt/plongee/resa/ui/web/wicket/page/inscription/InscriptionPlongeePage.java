@@ -45,7 +45,7 @@ public class InscriptionPlongeePage extends TemplatePage {
 	
 	public InscriptionPlongeePage(){
 		this.adh = getResaSession().getAdherent(); 
-		add(new Label("message", adh.getPrenom() + ", ci-dessous, les plongées auxquelles tu peux t'inscrire"));
+		add(new Label("message", adh.getPrenom() + ", ci-dessous, les plong\u00e9es auxquelles tu peux t'inscrire"));
 		feedback.setOutputMarkupId(true);
 		add(feedback);
 		init();
@@ -53,7 +53,7 @@ public class InscriptionPlongeePage extends TemplatePage {
 	
 	public InscriptionPlongeePage(Adherent adherent) {
 		this.adh = adherent;
-		add(new Label("message", adh.getPrenom() + " " + adh.getNom() + " peut s'inscrire aux plongées suivantes"));
+		add(new Label("message", adh.getPrenom() + " " + adh.getNom() + " peut s'inscrire aux plong\u00e9es suivantes"));
 		feedback.setOutputMarkupId(true);
 		add(feedback);
 		init();
@@ -160,7 +160,7 @@ public class InscriptionPlongeePage extends TemplatePage {
 			} else {
 				//On regarde l'heure avant de donner accès à l'inscription
 				if( heureCourante < heureOuverture ){
-					throw new ResaException("Désolé "+adh.getPrenom()+" mais l'inscription ouvre à partir de : "+heureOuverture+" heures.");
+					throw new ResaException("D\u00e9sol\u00e9 "+adh.getPrenom()+" mais l'inscription ouvre \u00e0 partir de : "+heureOuverture+" heures.");
 				}
 			}
 			//Appel au service de verification des RGs pour inscrire le plongeur
@@ -320,11 +320,11 @@ public class InscriptionPlongeePage extends TemplatePage {
 			if(typeMail == PlongeeMail.MAIL_PAS_ASSEZ_ENCADRANT){
 				message = "Il n'y a pas assez d'encadrant";
 			}else if(typeMail == PlongeeMail.MAIL_LISTE_ATTENTE_EXIST){
-				message = "Cette plongée demande l'intervention d'un administrateur pour la gestion des palanquées";
+				message = "Cette plong\u00e9e demande l'intervention d'un administrateur pour la gestion des palanqu\u00e9es";
 			} 
 			// Informations précisant que le plongeur est en liste d'attente
-			add(new Label("infoPlongeur", message+"\n Vous allez êtres en liste d'attente en position " + (plongee.getParticipantsEnAttente().size()+1) + "."));
-			add(new Label("infoPlongee", " Confirmez-vous votre inscription pour la plongée du " + plongee.getDate() + " " + plongee.getType() + " ?"));
+			add(new Label("infoPlongeur", message+"\n Vous allez \u00eatres en liste d'attente en position " + (plongee.getParticipantsEnAttente().size()+1) + "."));
+			add(new Label("infoPlongee", " Confirmez-vous votre inscription pour la plong\u00e9e du " + plongee.getDate() + " " + plongee.getType() + " ?"));
 			
 			// Le lien qui va fermer la fenêtre de confirmation
 			// et appeler la méthode de d'inscription en liste d'attente si nécessaire

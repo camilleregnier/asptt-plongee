@@ -17,7 +17,7 @@ public class InscriptionFailurePlongeePage extends TemplatePage {
 	public InscriptionFailurePlongeePage(Plongee plongee) {
 		
 		Adherent a = getResaSession().getAdherent();
-	    add(new Label("hello","DESOLE, "+a.getPrenom()+" Inscription impossible sur cette plongée"));
+	    add(new Label("hello","DESOLE, "+a.getPrenom()+" Inscription impossible sur cette plong\u00e9e"));
 	}
 
 }
