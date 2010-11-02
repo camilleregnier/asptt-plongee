@@ -7,7 +7,7 @@ import java.util.ResourceBundle;
 
 public final class ParametersMail {
 
-	private static final String BUNDLE_NAME = "com.asptt.plongee.resa.mail.plongeeMail"; //$NON-NLS-1$
+	private static final String BUNDLE_NAME = "com.asptt.plongee.resa.mail.PlongeeMail"; //$NON-NLS-1$
 	
 	
 	private ParametersMail() {
