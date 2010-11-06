@@ -1,24 +1,13 @@
 package com.asptt.plongee.resa.ui.web.wicket.page.inscription;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
-import javax.mail.MessagingException;
-import javax.smartcardio.ATR;
-
-import org.apache.commons.mail.Email;
-import org.apache.commons.mail.SimpleEmail;
 import org.apache.wicket.AttributeModifier;
-import org.apache.wicket.Page;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.ajax.markup.html.IndicatingAjaxLink;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
-import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow.WindowClosedCallback;
-import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -33,10 +22,8 @@ import com.asptt.plongee.resa.mail.PlongeeMail;
 import com.asptt.plongee.resa.model.Adherent;
 import com.asptt.plongee.resa.model.Plongee;
 import com.asptt.plongee.resa.model.PlongeeDataProvider;
-import com.asptt.plongee.resa.ui.web.wicket.page.AccueilPage;
 import com.asptt.plongee.resa.ui.web.wicket.page.ErreurTechniquePage;
 import com.asptt.plongee.resa.ui.web.wicket.page.TemplatePage;
-import com.asptt.plongee.resa.ui.web.wicket.page.admin.AdherentPanel;
 
 public class DeInscriptionPlongeePage extends TemplatePage {
 
@@ -86,6 +73,9 @@ public class DeInscriptionPlongeePage extends TemplatePage {
 		PlongeeDataProvider pDataProvider = new PlongeeDataProvider(plongees);
 
 		add(new DataView<Plongee>("simple", pDataProvider) {
+
+			private static final long serialVersionUID = 2877768852318892774L;
+
 			protected void populateItem(final Item<Plongee> item) {
 				Plongee plongee = item.getModelObject();
 				String nomDP = "Aucun";
@@ -94,6 +84,9 @@ public class DeInscriptionPlongeePage extends TemplatePage {
 				}
 
 				item.add(new IndicatingAjaxLink("select") {
+
+					private static final long serialVersionUID = 1771547719792642196L;
+
 					@Override
 					public void onClick(AjaxRequestTarget target) {
 						deInscrire(target, item.getModel());
@@ -196,6 +189,8 @@ public class DeInscriptionPlongeePage extends TemplatePage {
 
 	public class ConfirmSelectionModal extends Panel
 	{
+		private static final long serialVersionUID = 6479726881300748390L;
+
 		public ConfirmSelectionModal(String id, final Plongee plongee)
 		{
 			super(id);
@@ -233,8 +228,6 @@ public class DeInscriptionPlongeePage extends TemplatePage {
 			
 			add(new IndicatingAjaxLink("no")
 			{
-				private static final long serialVersionUID = 1L;
-
 				@Override
 				public void onClick(AjaxRequestTarget target)
 				{

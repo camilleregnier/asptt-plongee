@@ -6,7 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.extensions.ajax.markup.html.IndicatingAjaxSubmitButton;
+import org.apache.wicket.extensions.ajax.markup.html.IndicatingAjaxButton;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
@@ -24,7 +24,6 @@ import com.asptt.plongee.resa.mail.PlongeeMail;
 import com.asptt.plongee.resa.model.Adherent;
 import com.asptt.plongee.resa.model.Plongee;
 import com.asptt.plongee.resa.ui.web.wicket.page.TemplatePage;
-import com.asptt.plongee.resa.ui.web.wicket.page.inscription.InscriptionConfirmationPlongeePage;
 
 public class DesInscriptionPlongeePage extends TemplatePage {
 
@@ -77,6 +76,8 @@ public class DesInscriptionPlongeePage extends TemplatePage {
 
 	class PlongeurADesinscrireForm extends Form {
 
+		private static final long serialVersionUID = 7883466952589328612L;
+		
 		ObjectAutoCompleteField<Adherent, String> autocompleteField;
 
 		public PlongeurADesinscrireForm(String id) {
@@ -126,7 +127,9 @@ public class DesInscriptionPlongeePage extends TemplatePage {
 
 			add(autocompleteField);
 
-			add(new IndicatingAjaxSubmitButton("select", this) {
+			add(new IndicatingAjaxButton("select", this) {
+
+				private static final long serialVersionUID = 3271786428555733961L;
 
 				@Override
 				protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
