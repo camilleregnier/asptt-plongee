@@ -13,6 +13,8 @@ import org.apache.commons.mail.Email;
 import org.apache.commons.mail.SimpleEmail;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.IAjaxCallDecorator;
+import org.apache.wicket.ajax.calldecorator.AjaxCallDecorator;
 import org.apache.wicket.extensions.ajax.markup.html.IndicatingAjaxLink;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.basic.Label;
@@ -98,8 +100,30 @@ public class InscriptionPlongeePage extends TemplatePage {
 				if (null != plongee.getDp()) {
 					nomDP = plongee.getDp().getNom();
 				}
+				
+				// On étend la class IndicatingAjaxLink pour obtenir une confirmation d'inscription
+				abstract class ConfirmAjaxLink extends IndicatingAjaxLink {
 
-				item.add(new IndicatingAjaxLink("select") {
+					private static final long serialVersionUID = 1389708787081345734L;
+
+					public ConfirmAjaxLink(String id) {
+				        super(id);
+				    }
+
+				    @Override
+				    protected IAjaxCallDecorator getAjaxCallDecorator() {
+				        return new AjaxCallDecorator() {
+
+							private static final long serialVersionUID = -7160464423034555478L;
+
+							public CharSequence decorateScript(CharSequence script) {
+				                return "if(!confirm('Es-tu s\u00fbr(e) de vouloir r\u00e9server cette plong\u00e9e ?')) return false;" + script;
+				            }
+				        };
+
+				    }
+				}
+				item.add(new ConfirmAjaxLink("select") {
 					private static final long serialVersionUID = 4442484995694176106L;
 
 					@Override
@@ -107,6 +131,7 @@ public class InscriptionPlongeePage extends TemplatePage {
 						inscrire(target, item.getModel());
 					}
 				});
+
 
 				// Mise en forme de la date
 				Calendar cal = Calendar.getInstance();
