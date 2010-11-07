@@ -71,10 +71,11 @@ public class PlongeeServiceImpl implements PlongeeService, Serializable {
 		//nombre de jour pour la visiblité des plongées
 		int nbJour = 0;
 		
-		//jour 'a partir' de la date courante visible 
-		// 0 = le jour même, 1 = le lendemain,  etc
-		// initialisé pour le jour même (cas de l'adherent l'ambda)
-		int aPartir = 0;
+		// heure 'delta' represente le nombre d'heure 
+		// ou la plongée restera visible par les encadrant
+		// apres que l'heure de cette plongée soit depassée
+		// initialisé pour les adherents s'est à dire à zero.
+		int nbHeureVisibleApres = 0;
 		
 //			GregorianCalendar gc = new GregorianCalendar();
 //			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
@@ -118,13 +119,12 @@ public class PlongeeServiceImpl implements PlongeeService, Serializable {
 		
 		// reunion du 27/09/2010
 		// Les encadrant peuvent visualiser les 15 jours suivants à partir du jour même 
-//		if (adherent.getEncadrement() != null || adherent.isDp() || adherent.isPilote()) {
 		if (adherent.isVesteRouge()) {
 			nbJour = Parameters.getInt("visible.max");
-			aPartir = 0;
+			nbHeureVisibleApres = Parameters.getInt("visible.apres.encadrant");
 		}
 		//Appel au service DAO
-		List<Plongee> plongeeTrouvees = plongeeDao.getPlongeesForFewDay(aPartir, nbJour);
+		List<Plongee> plongeeTrouvees = plongeeDao.getPlongeesForFewDay(nbHeureVisibleApres, nbJour);
 		for(Plongee plongee: plongeeTrouvees){
 			if(adherent.isVesteRouge() ){
 				plongees.add(plongee);

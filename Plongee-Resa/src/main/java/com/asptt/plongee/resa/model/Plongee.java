@@ -2,6 +2,7 @@ package com.asptt.plongee.resa.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -99,21 +100,27 @@ public class Plongee implements Serializable {
 	public void setOuvertureForcee(Boolean ouvertureForcee) {
 		this.ouvertureForcee = ouvertureForcee;
 	}
+	
 	public Adherent getDp() {
+		return dp;
+	}
+	
+
+	public Adherent setDp() {
 		List<Adherent> participants = getParticipants();
+		List<Adherent> lesDPs = new ArrayList<Adherent>();
 		for(Adherent adherent : participants){
 			if(adherent.isDp()){
-				if(adherent.getNiveau().equalsIgnoreCase("P5")){
-					dp=adherent;
-				} else if(adherent.getEnumEncadrement().equals(Encadrement.E2)){
-					dp=adherent;
-				} else if(adherent.getEnumEncadrement().equals(Encadrement.E3)){
-					dp=adherent;
-				}
+				lesDPs.add(adherent);
 			}
+		}
+		Collections.sort(lesDPs, new AdherentComparatorDP());
+		if(lesDPs.size() > 0){
+			this.dp =  lesDPs.get(0);
 		}
 		return dp;
 	}
+	
 	public void setDp(Adherent dp) {
 		this.dp = dp;
 	}

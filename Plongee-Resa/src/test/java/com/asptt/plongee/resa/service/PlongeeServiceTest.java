@@ -9,14 +9,17 @@ import java.util.Locale;
 
 import junit.framework.Assert;
 
+import org.apache.log4j.Logger;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowire;
 
+import com.asptt.plongee.resa.dao.PlongeeDaoTest;
 import com.asptt.plongee.resa.exception.TechnicalException;
 import com.asptt.plongee.resa.model.NiveauAutonomie;
 import com.asptt.plongee.resa.model.Plongee;
 public class PlongeeServiceTest extends AbstractServiceTest {
 	
+	private final Logger logger = Logger.getLogger(getClass());
 	@Test
 	public void testCreerPlongee() throws TechnicalException {
 		
@@ -38,7 +41,7 @@ public class PlongeeServiceTest extends AbstractServiceTest {
 		plongee.setDate(gc.getTime());
 		
 		plongeeDao.create(plongee);
-		System.out.println("date + 3 jours à  8 heure: "+gc.getTime().toString());
+		logger.info("date + 3 jours à  8 heure: "+gc.getTime().toString());
 		
 	
 	}
@@ -54,7 +57,7 @@ public class PlongeeServiceTest extends AbstractServiceTest {
 		String maDateAffichee = gc.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.FRANCE);			
 		int monNumJour = gc.get(Calendar.DAY_OF_WEEK);
 		List<Plongee> plongees = plongeeDao.getPlongeesWhithSameDate(maDate, "APRES_MIDI");
-		System.out.println("nombre de plongee trouvées = "+plongees.size());
+		logger.info("nombre de plongee trouvées = "+plongees.size());
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -83,7 +86,7 @@ public class PlongeeServiceTest extends AbstractServiceTest {
 			String maDateAffichee = gc.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.FRANCE);			
 			int monNumJour = gc.get(Calendar.DAY_OF_WEEK);
 			List<Plongee> plongees =plongeeDao.getPlongeesWhithSameDate(maDate, "MATIN");
-			System.out.println("Nombre de plongées trouvées = "+plongees.size());
+			logger.info("Nombre de plongées trouvées = "+plongees.size());
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -101,7 +104,7 @@ public class PlongeeServiceTest extends AbstractServiceTest {
 			String maDateAffichee = gc.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.FRANCE);			
 			int monNumJour = gc.get(Calendar.DAY_OF_WEEK);
 			List<Plongee> plongees =plongeeDao.getPlongeesWhithSameDate(maDate, "MATIN");
-			System.out.println("Nombre de plongées trouvées = "+plongees.size());
+			logger.info("Nombre de plongées trouvées = "+plongees.size());
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -9,7 +9,9 @@ import javax.mail.MessagingException;
 
 import org.apache.commons.mail.Email;
 import org.apache.commons.mail.SimpleEmail;
+import org.apache.log4j.Logger;
 
+import com.asptt.plongee.resa.dao.jdbc.AdherentJdbcDao;
 import com.asptt.plongee.resa.exception.MailException;
 import com.asptt.plongee.resa.exception.ResaException;
 import com.asptt.plongee.resa.model.Adherent;
@@ -24,6 +26,7 @@ public final class PlongeeMail {
 	public static final int MAIL_PLACES_LIBRES = 2;
 	public static final int MAIL_LISTE_ATTENTE_EXIST = 5;
 	
+	private final Logger logger = Logger.getLogger(getClass());
 	private Email email = null;
 	private String hostName = null;
 	private String from = null;
@@ -55,7 +58,7 @@ public final class PlongeeMail {
 			email.send();
 		} catch (MessagingException e) {
 			e.printStackTrace();
-			throw new ResaException("pb lors de l'envoi d'un mail");
+			logger.warn("pb lors de l'envoi d'un mail");
 		}
 	}
 

@@ -3,17 +3,22 @@ package com.asptt.plongee.resa.quartz.manager;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import org.apache.log4j.Logger;
+
 
 import com.asptt.plongee.resa.dao.AdherentDao;
 import com.asptt.plongee.resa.dao.PlongeeDao;
 import com.asptt.plongee.resa.exception.ResaException;
 import com.asptt.plongee.resa.exception.TechnicalException;
 import com.asptt.plongee.resa.model.Plongee;
+import com.asptt.plongee.resa.quartz.job.QuartzJob;
 import com.asptt.plongee.resa.service.PlongeeService;
 
 public class BusinessManager {
 
 	private PlongeeService plongeeService;
+	
+	private final Logger logger = Logger.getLogger(getClass());
 	
 	public void setPlongeeService(PlongeeService plongeeService) {
 		this.plongeeService = plongeeService;
@@ -30,7 +35,7 @@ public class BusinessManager {
 	 * dimanche matin
 	 */
 	public void runAction() throws TechnicalException {
-		System.out.println("In business manager, I do the runAction") ;
+		logger.info("Classe BusinessManager : execution du runAction()");
 		
 		Plongee plongee = new Plongee();
 		Date dateDuJour = new Date();
@@ -49,7 +54,7 @@ public class BusinessManager {
 //			plongee.setType(Plongee.Type.APRES_MIDI);
 //			plongee.setDate(gc.getTime());
 //			plongeeService.creerPlongee(plongee);
-//			System.out.println("Plongée du MERCREDI aprem créee : "+gc.getTime().toString());
+//			logger.info("Plongée du MERCREDI aprem créee : "+gc.getTime().toString());
 //		
 //			//Plongée du JEUDI Soir
 ////			gc.setTime(dateDuJour);
@@ -57,7 +62,7 @@ public class BusinessManager {
 ////			plongee.setType(Plongee.Type.SOIR);
 ////			plongee.setDate(gc.getTime());
 ////			plongeeService.creerPlongee(plongee);
-////			System.out.println("Plongée du JEUDI soir créee : "+gc.getTime().toString());
+////			logger.info("Plongée du JEUDI soir créee : "+gc.getTime().toString());
 //				
 //			//Plongée du VENDREDI Aprem
 //			gc.setTime(dateDuJour);
@@ -65,7 +70,7 @@ public class BusinessManager {
 //			plongee.setType(Plongee.Type.APRES_MIDI);
 //			plongee.setDate(gc.getTime());
 //			plongeeService.creerPlongee(plongee);
-//			System.out.println("Plongée du VENDREDI aprem créee : "+gc.getTime().toString());
+//			logger.info("Plongée du VENDREDI aprem créee : "+gc.getTime().toString());
 //	
 //			//Plongée du SAMEDI matin
 //			gc.setTime(dateDuJour);
@@ -74,12 +79,12 @@ public class BusinessManager {
 //			plongee.setType(Plongee.Type.MATIN);
 //			plongee.setDate(gc.getTime());
 //			plongeeService.creerPlongee(plongee);
-//			System.out.println("Plongée du SAMEDI matin créee : "+gc.getTime().toString());
+//			logger.info("Plongée du SAMEDI matin créee : "+gc.getTime().toString());
 //			//Plongée du SAMEDI aprem
 //			plongee.setType(Plongee.Type.APRES_MIDI);
 //			plongee.setDate(gc.getTime());
 //			plongeeService.creerPlongee(plongee);
-//			System.out.println("Plongée du SAMEDI aprem créee : "+gc.getTime().toString());
+//			logger.info("Plongée du SAMEDI aprem créee : "+gc.getTime().toString());
 //	
 //			//Plongée du DIMANCHE matin
 //			gc.setTime(dateDuJour);
@@ -87,7 +92,7 @@ public class BusinessManager {
 //			plongee.setType(Plongee.Type.MATIN);
 //			plongee.setDate(gc.getTime());
 //			plongeeService.creerPlongee(plongee);
-//			System.out.println("Plongée du DIMANCHE matin créee : "+gc.getTime().toString());
+//			logger.info("Plongée du DIMANCHE matin créee : "+gc.getTime().toString());
 	
 			//------------------ +15 jours-------------------------------------------
 			// par defaut les plongées sont à 20 plongeurs et n'ont pas de niveau mini
@@ -102,7 +107,7 @@ public class BusinessManager {
 			plongee.setType(Plongee.Type.APRES_MIDI);
 			plongee.setDate(gc.getTime());
 			plongeeService.creerPlongee(plongee);
-			System.out.println("Plongée du MERCREDI aprem créee : "+gc.getTime().toString());
+			logger.info("Plongée du MERCREDI aprem créee : "+gc.getTime().toString());
 
 			//Plongée du JEUDI Soir
 //			gc.setTime(dateDuJour);
@@ -110,7 +115,7 @@ public class BusinessManager {
 //			plongee.setType(Plongee.Type.SOIR);
 //			plongee.setDate(gc.getTime());
 //			plongeeService.creerPlongee(plongee);
-//			System.out.println("Plongée du JEUDI soir créee : "+gc.getTime().toString());
+//			logger.info("Plongée du JEUDI soir créee : "+gc.getTime().toString());
 				
 			//Plongée du VENDREDI Aprem
 			gc.setTime(dateDuJour);
@@ -118,7 +123,7 @@ public class BusinessManager {
 			plongee.setType(Plongee.Type.APRES_MIDI);
 			plongee.setDate(gc.getTime());
 			plongeeService.creerPlongee(plongee);
-			System.out.println("Plongée du VENDREDI aprem créee : "+gc.getTime().toString());
+			logger.info("Plongée du VENDREDI aprem créee : "+gc.getTime().toString());
 
 			//Plongée du SAMEDI matin
 			gc.setTime(dateDuJour);
@@ -127,12 +132,12 @@ public class BusinessManager {
 			plongee.setType(Plongee.Type.MATIN);
 			plongee.setDate(gc.getTime());
 			plongeeService.creerPlongee(plongee);
-			System.out.println("Plongée du SAMEDI matin créee : "+gc.getTime().toString());
+			logger.info("Plongée du SAMEDI matin créee : "+gc.getTime().toString());
 			//Plongée du SAMEDI aprem
 			plongee.setType(Plongee.Type.APRES_MIDI);
 			plongee.setDate(gc.getTime());
 			plongeeService.creerPlongee(plongee);
-			System.out.println("Plongée du SAMEDI aprem créee : "+gc.getTime().toString());
+			logger.info("Plongée du SAMEDI aprem créee : "+gc.getTime().toString());
 
 			//Plongée du DIMANCHE matin
 			gc.setTime(dateDuJour);
@@ -140,7 +145,7 @@ public class BusinessManager {
 			plongee.setType(Plongee.Type.MATIN);
 			plongee.setDate(gc.getTime());
 			plongeeService.creerPlongee(plongee);
-			System.out.println("Plongée du DIMANCHE matin créee : "+gc.getTime().toString());
+			logger.info("Plongée du DIMANCHE matin créee : "+gc.getTime().toString());
 		} catch (ResaException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
