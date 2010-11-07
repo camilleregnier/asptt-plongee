@@ -1,28 +1,29 @@
 package com.asptt.plongee.resa.ui.web.wicket.page;
 
+import org.apache.log4j.Logger;
 import org.apache.wicket.PageParameters;
+import org.apache.wicket.Request;
+import org.apache.wicket.Response;
+import org.apache.wicket.Session;
 import org.apache.wicket.authentication.pages.SignOutPage;
 import org.apache.wicket.markup.html.basic.Label;
 
+import com.asptt.plongee.resa.dao.jdbc.AdherentJdbcDao;
 import com.asptt.plongee.resa.model.Adherent;
+import com.asptt.plongee.resa.ui.web.wicket.ResaSession;
 
 public class LogoutPage extends SignOutPage {
 
-	public LogoutPage(Adherent a, String message) {
-		super();
-		String libelle = "";
-		if(message.equalsIgnoreCase("toLate")){
-			libelle = "D\u00e9sol\u00e9 : "+a.getPrenom()+", mais il est pas encore 9h00 ....";
-		} else {
-			libelle = "Au revoir : "+a.getPrenom()+".";
-		}
-		add(new Label("byebye", libelle));
-		// TODO Auto-generated constructor stub
-	}
-
+	private final Logger logger = Logger.getLogger(getClass());
+	
+	
 	public LogoutPage() {
 		super();
+		ResaSession sess = (ResaSession) getSession();
+		
 		add(new Label("byebye", ""));
+		logger.info("L'adherent "+sess.getAdherent().getNom()+" / "+sess.getAdherent().getPrenom()+" vient de se deconnecter");
+		
 	}
 
 }

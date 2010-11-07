@@ -8,6 +8,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
+
+import org.apache.log4j.Logger;
+
 
 import com.asptt.plongee.resa.dao.AdherentDao;
 import com.asptt.plongee.resa.dao.PlongeeDao;
@@ -21,7 +25,9 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements Serializable, Ad
 
 	private static final long serialVersionUID = 6165324672085274169L;
 	private PlongeeDao plongeeDao;
-
+	
+	private final Logger logger = Logger.getLogger(getClass());
+	
 	public void setPlongeeDao(PlongeeDao plongeeDao) { // setter appelé par
 														// Spring pour injecter
 														// le bean "plongeeDao"
@@ -438,8 +444,10 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements Serializable, Ad
 			if (rs.next()) {
 				adherent = wrapAdherent(rs);
 			}
+			logger.info("L'adherent "+adherent.getNom()+" / "+adherent.getPrenom()+" vient de se connecter");
 			return adherent;
 		} catch (SQLException e) {
+			logger.fatal("L'adherent "+id+" n'a pas pu se connecter");
 			throw new TechnicalException(e);
 		} finally {
 			try {

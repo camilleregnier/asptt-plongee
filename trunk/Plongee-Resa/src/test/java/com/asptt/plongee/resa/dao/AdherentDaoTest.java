@@ -3,12 +3,15 @@ package com.asptt.plongee.resa.dao;
 
 import junit.framework.Assert;
 
+import org.apache.log4j.Logger;
 import org.junit.Test;
 
 import com.asptt.plongee.resa.exception.TechnicalException;
 import com.asptt.plongee.resa.model.Adherent;
+import com.asptt.plongee.resa.quartz.job.QuartzJob;
 
 public class AdherentDaoTest extends AbstractDaoTest {
+	 private final Logger logger = Logger.getLogger(getClass());
 
 	@Test
 	public void testFindById() throws TechnicalException {
@@ -39,7 +42,7 @@ public class AdherentDaoTest extends AbstractDaoTest {
 			adherentDao.create(adh);
 			Assert.fail("duplication des adhérents non controlée");
 		} catch (TechnicalException e) {
-			System.out.println("On a bien une exception");
+			logger.info("On a bien une exception");
 			// La duplication a bien été controlée
 		}
 	}
@@ -58,7 +61,7 @@ public class AdherentDaoTest extends AbstractDaoTest {
 		
 		try {
 			adherentDao.create(adh);
-			System.out.println("On a bien une creation");
+			logger.info("On a bien une creation");
 		} catch (TechnicalException e) {
 			Assert.fail("creation d'un adherent plantée");
 			// La duplication a bien été controlée
@@ -78,7 +81,7 @@ public class AdherentDaoTest extends AbstractDaoTest {
 		adh.setPilote(false);
 		try {
 			adherentDao.delete(adh);
-			System.out.println("On a bien une suppression");
+			logger.info("On a bien une suppression");
 		} catch (TechnicalException e) {
 			Assert.fail("Suppression d'un adherent plantée");
 			// La duplication a bien été controlée

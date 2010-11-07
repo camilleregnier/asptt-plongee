@@ -3,14 +3,17 @@ package com.asptt.plongee.resa.dao;
 
 import junit.framework.Assert;
 
+import org.apache.log4j.Logger;
 import org.junit.Test;
 
+import com.asptt.plongee.resa.dao.jdbc.AdherentJdbcDao;
 import com.asptt.plongee.resa.exception.TechnicalException;
 import com.asptt.plongee.resa.model.Adherent;
 import com.asptt.plongee.resa.model.Plongee;
 
 public class PlongeeDaoTest extends AbstractDaoTest {
 
+	private static final Logger logger = Logger.getLogger(PlongeeDaoTest.class);
 //	@Test
 //	public void testFindById() throws TechnicalException {
 //		// test de la fonction
@@ -40,7 +43,7 @@ public class PlongeeDaoTest extends AbstractDaoTest {
 //			adherentDao.create(adh);
 //			Assert.fail("duplication des adhérents non controlée");
 //		} catch (TechnicalException e) {
-//			System.out.println("On a bien une exception");
+//			logger.info("On a bien une exception");
 //			// La duplication a bien été controlée
 //		}
 //	}
@@ -54,7 +57,7 @@ public class PlongeeDaoTest extends AbstractDaoTest {
 		pl.setId(4);
 		try {
 			plongeeDao.inscrireAdherentPlongee(pl, adh);
-			System.out.println("On a bien inscrit : "+adh.getNumeroLicense()+" a la plongee : "+pl.getId()+".");
+			logger.info("On a bien inscrit : "+adh.getNumeroLicense()+" a la plongee : "+pl.getId()+".");
 		} catch (TechnicalException e) {
 			Assert.fail("inscription d'un adherent plantée");
 			// La duplication a bien été controlée
@@ -70,7 +73,7 @@ public class PlongeeDaoTest extends AbstractDaoTest {
 		pl.setId(6);
 		try {
 			plongeeDao.supprimeAdherentAttente(pl, adh);
-			System.out.println("On a bien supprimé : "+adh.getNumeroLicense()+" a de la liste d'attente de la plongee : "+pl.getId()+".");
+			logger.info("On a bien supprimé : "+adh.getNumeroLicense()+" a de la liste d'attente de la plongee : "+pl.getId()+".");
 		} catch (TechnicalException e) {
 			Assert.fail("suppression liste attente d'un adherent plantée");
 			// La duplication a bien été controlée
@@ -90,7 +93,7 @@ public class PlongeeDaoTest extends AbstractDaoTest {
 //		adh.setPilote(false);
 //		try {
 //			adherentDao.delete(adh);
-//			System.out.println("On a bien une suppression");
+//			logger.info("On a bien une suppression");
 //		} catch (TechnicalException e) {
 //			Assert.fail("Suppression d'un adherent plantée");
 //			// La duplication a bien été controlée
