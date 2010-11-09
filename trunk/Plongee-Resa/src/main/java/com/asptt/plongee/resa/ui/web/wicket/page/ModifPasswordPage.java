@@ -76,15 +76,15 @@ public class ModifPasswordPage extends WebPage {
 								setResponsePage(AccueilPage.class);
 							} else {
 								// Re-saisie du nouveau mot de passe
-								error("Le nouveau mot de passe doit \u00eatre diff\u00e9rent de celui d'origine");
+								error("Le nouveau mot de passe doit \u00eatre diff\u00e9rent de celui d'origine.");
 							}
 						} else {
 							// Re-saisie du nouveau mot de passe
-							error("Erreur dans la saisie du nouveau mot de passe");
+							error("Erreur dans la saisie du nouveau mot de passe !");
 						}
 					} else {
 						// Re-saisie du nouveau mot de passe
-						error("L'ancien mot de passe n'est pas correcte");
+						error("L'ancien mot de passe n'est pas correct !");
 					}
 
 				}
