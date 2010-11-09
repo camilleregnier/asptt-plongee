@@ -10,22 +10,22 @@ import com.asptt.plongee.resa.model.Plongee;
 
 public interface PlongeeDao extends GenericDao<Plongee, Integer>{
 
-	public List<Plongee> getPlongeesForFewDay(int aPartir, int nbjour) throws TechnicalException;
+	List<Plongee> getPlongeesForFewDay(int aPartir, int nbjour) throws TechnicalException;
 	
-	public List<Plongee> getPlongeesWhereAdherentIsInscrit(Adherent adherent, int nbHours) throws TechnicalException;
+	List<Plongee> getPlongeesWhereAdherentIsInscrit(Adherent adherent, int nbHours) throws TechnicalException;
 
-	public List<Plongee> getPlongeesWhithSameDate(Date date, String type) throws TechnicalException;
+	List<Plongee> getPlongeesWhithSameDate(Date date, String type) throws TechnicalException;
 
-	public List<Plongee> getListeAttenteForAdherent(Adherent adherent) throws TechnicalException;
+	List<Plongee> getListeAttenteForAdherent(Adherent adherent) throws TechnicalException;
 
-	public void inscrireAdherentPlongee(Plongee plongee, Adherent adherent) throws TechnicalException;
+	void inscrireAdherentPlongee(Plongee plongee, Adherent adherent) throws TechnicalException;
 
-	public void inscrireAdherentAttente(Plongee plongee, Adherent adherent) throws TechnicalException;
+	void inscrireAdherentAttente(Plongee plongee, Adherent adherent) throws TechnicalException;
 
-	public void moveAdherentAttenteToInscrit(Plongee plongee, Adherent adherent) throws TechnicalException;
+	void moveAdherentAttenteToInscrit(Plongee plongee, Adherent adherent) throws TechnicalException;
 
-	public void supprimeAdherentPlongee(Plongee plongee, Adherent adherent) throws TechnicalException;
+	void supprimeAdherentPlongee(Plongee plongee, Adherent adherent) throws TechnicalException;
 
-	public void supprimeAdherentAttente(Plongee plongee, Adherent adherent) throws TechnicalException;
+	void supprimeAdherentAttente(Plongee plongee, Adherent adherent) throws TechnicalException;
 
 }

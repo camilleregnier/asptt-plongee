@@ -9,7 +9,7 @@ public interface ReservationService {
 	 * Indique si la plongée donnée peut être ouverte ou non.
 	 * Une plongée peut être ouverte si dans les plongeurs il y a 1 directeur de plongée et un pilote OU si l'administrateur a forcé la plongée à l'ouverture. 
 	 */
-	public boolean isOuverte(Plongee plongee);
+	boolean isOuverte(Plongee plongee);
 	
 	/**
 	 * 
@@ -17,8 +17,8 @@ public interface ReservationService {
 	 * @param plongeur
 	 * @throws MetierException si l'adhérent n'a pas le niveau requis pour participer 
 	 */
-	public void inscrire(Plongee plongee, Adherent plongeur) throws MetierException;
-	public void desinscrire(Plongee plongee, Adherent plongeur) throws MetierException;
+	void inscrire(Plongee plongee, Adherent plongeur) throws MetierException;
+	void desinscrire(Plongee plongee, Adherent plongeur) throws MetierException;
 	
 	
 //	public boolean estValide(Plongee plongee);

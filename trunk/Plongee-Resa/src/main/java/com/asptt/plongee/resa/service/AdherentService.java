@@ -7,40 +7,40 @@ import com.asptt.plongee.resa.model.Plongee;
 
 public interface AdherentService {
 
-	public Adherent authentifierAdherent(String id, String pwd);
+	Adherent authentifierAdherent(String id, String pwd);
 
-	public Adherent rechercherAdherentParIdentifiant(String id);
+	Adherent rechercherAdherentParIdentifiant(String id);
 	
-	public Adherent rechercherAdherentParIdentifiantTous(String id);
+	Adherent rechercherAdherentParIdentifiantTous(String id);
 	
-	public List<Adherent> rechercherPlongeurs();
+	List<Adherent> rechercherPlongeurs();
 	
-	public List<Adherent> rechercherAdherentsTous();
+	List<Adherent> rechercherAdherentsTous();
 	
-	public List<Adherent> rechercherAdherentsActifs();
+	List<Adherent> rechercherAdherentsActifs();
 	
-	public List<Adherent> rechercherAdherentsInactifs();
+	List<Adherent> rechercherAdherentsInactifs();
 	
-	public List<Adherent> rechercherExternes();
+	List<Adherent> rechercherExternes();
 
-	public List<Adherent> rechercherAdherents(int first, int count);
+	List<Adherent> rechercherAdherents(int first, int count);
 
-	public List<Adherent> rechercherAdherentsRole(String roles);
+	List<Adherent> rechercherAdherentsRole(String roles);
 
-	public List<Adherent> rechercherDPs(List<Adherent> adherents);
+	List<Adherent> rechercherDPs(List<Adherent> adherents);
 	
-	public List<Adherent> rechercherDPsNonInscrits(List<Adherent> adherents, Plongee plongee);
+	List<Adherent> rechercherDPsNonInscrits(List<Adherent> adherents, Plongee plongee);
 	
-	public List<Adherent> rechercherPilotes(List<Adherent> adherents);
+	List<Adherent> rechercherPilotes(List<Adherent> adherents);
+
+	List<Adherent> rechercherPilotesNonInscrits(List<Adherent> adherents, Plongee plongee);
+
+	void creerAdherent(Adherent adherent);
 	
-	public List<Adherent> rechercherPilotesNonInscrits(List<Adherent> adherents, Plongee plongee);
+	void updateAdherent(Adherent adherent);
 
-	public void creerAdherent(Adherent adherent);
-	
-	public void updateAdherent(Adherent adherent);
+	void updatePasswordAdherent(Adherent adherent);
 
-	public void updatePasswordAdherent(Adherent adherent);
-
-	public void creerExterne(Adherent adherent);
+	void creerExterne(Adherent adherent);
 	
 }
