@@ -19,6 +19,7 @@ import com.asptt.plongee.resa.model.Plongee;
 import com.asptt.plongee.resa.model.Adherent.Encadrement;
 import com.asptt.plongee.resa.service.PlongeeService;
 import com.asptt.plongee.resa.util.Parameters;
+import com.asptt.plongee.resa.util.ResaUtil;
 
 public class PlongeeServiceImpl implements PlongeeService, Serializable {
 
@@ -64,7 +65,7 @@ public class PlongeeServiceImpl implements PlongeeService, Serializable {
 		return plongeeDao.findAll();
 	}
 
-	public List<Plongee> rechercherPlongeeProchainJour(Adherent adherent)  throws TechnicalException{
+	public List<Plongee> rechercherPlongeeProchainJour(Adherent adherent, boolean visibleApres)  throws TechnicalException{
 
 		List<Plongee> plongees = new ArrayList<Plongee>();
 		
@@ -118,11 +119,20 @@ public class PlongeeServiceImpl implements PlongeeService, Serializable {
 		}
 		
 		// reunion du 27/09/2010
-		// Les encadrant peuvent visualiser les 15 jours suivants à partir du jour même 
+		// Les encadrant peuvent visualiser les 15 jours suivants à partir du jour même
+		// et consulter les plongées 2heures après l'heure de debut. 
 		if (adherent.isVesteRouge()) {
 			nbJour = Parameters.getInt("visible.max");
 			nbHeureVisibleApres = Parameters.getInt("visible.apres.encadrant");
 		}
+		
+		//si c'est pour la consultation des plongées en vues de l'inscription
+		//l'appel du service est fait avec le boolean visibleApres à false
+		// et on ne doit pas pouvoir s'inscrire après le debut de la plongée
+		if(! visibleApres){
+			nbHeureVisibleApres = 0;
+		}
+
 		//Appel au service DAO
 		List<Plongee> plongeeTrouvees = plongeeDao.getPlongeesForFewDay(nbHeureVisibleApres, nbJour);
 		for(Plongee plongee: plongeeTrouvees){
@@ -167,7 +177,7 @@ public class PlongeeServiceImpl implements PlongeeService, Serializable {
 	public List<Plongee> rechercherPlongeePourInscriptionAdherent(Adherent adherent) throws TechnicalException{
 		
 		List<Plongee> plongeesForAdherent = new ArrayList<Plongee>();
-		List<Plongee> plongees = rechercherPlongeeProchainJour(adherent);
+		List<Plongee> plongees = rechercherPlongeeProchainJour(adherent, false);
 		
 		for (Plongee plongee : plongees) {
 			boolean isNotInscrit = true;
@@ -473,6 +483,21 @@ public class PlongeeServiceImpl implements PlongeeService, Serializable {
 	public void deInscrireAdherent(Plongee plongee, Adherent adherent, int typeMail)   throws ResaException, TechnicalException{
 		//Appel DAO
 		plongeeDao.supprimeAdherentPlongee(plongee, adherent);
+		
+		//Envoi d'un mail si la desincription a lieu à moins de 24 heure de la plongée
+		Date dateDuJour = new Date();
+		Date datePlongee = plongee.getDate();
+		if(ResaUtil.calculNbHeure(dateDuJour, datePlongee) <= Parameters.getInt("desincription.alerte")){
+			try {
+				
+				PlongeeMail pMail = new PlongeeMail(PlongeeMail.MAIL_DESINSCRIPTION_24,
+						plongee, adherent);
+				pMail.sendMail("ADMIN");
+			} catch (MessagingException e) {
+				e.printStackTrace();
+			}
+		}
+		
 		//Envoi mail
 		if (typeMail == PlongeeMail.MAIL_PLACES_LIBRES){
 			try {

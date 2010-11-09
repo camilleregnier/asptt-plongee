@@ -444,7 +444,11 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements Serializable, Ad
 			if (rs.next()) {
 				adherent = wrapAdherent(rs);
 			}
-			logger.info("L'adherent "+adherent.getNom()+" / "+adherent.getPrenom()+" vient de se connecter");
+			if (null == adherent){
+				logger.info("Pb connexion avec le numero de license : "+id+" existe pas ou mauvais mot de passe :"+pwd+" ");
+			} else {
+				logger.info("L'adherent "+adherent.getNom()+" / "+adherent.getPrenom()+" vient de se connecter");
+			}
 			return adherent;
 		} catch (SQLException e) {
 			logger.fatal("L'adherent "+id+" n'a pas pu se connecter");

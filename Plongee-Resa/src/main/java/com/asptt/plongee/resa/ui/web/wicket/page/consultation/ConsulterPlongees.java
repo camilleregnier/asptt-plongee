@@ -48,7 +48,7 @@ public class ConsulterPlongees extends TemplatePage {
 		add(modal2);
 
 		try {
-			List<Plongee> plongees = getResaSession().getPlongeeService().rechercherPlongeeProchainJour(getResaSession().getAdherent());
+			List<Plongee> plongees = getResaSession().getPlongeeService().rechercherPlongeeProchainJour(getResaSession().getAdherent(), true);
 			
 			PlongeeDataProvider pDataProvider = new PlongeeDataProvider(plongees);
 
