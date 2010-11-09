@@ -10,33 +10,33 @@ import com.asptt.plongee.resa.model.Plongee;
 
 public interface PlongeeService {
 
-	public Plongee rechercherPlongeeParId(Integer id);
-	public List<Plongee> rechercherPlongeeTout();
-	public List<Plongee> rechercherPlongeeProchainJour(Adherent adherent,  boolean visibleApres);
-	public List<Plongee> rechercherPlongeeAOuvrir(List<Plongee> plongees);
-	public List<Plongee> rechercherPlongeeOuverteTout(List<Plongee> plongees);
-	public List<Plongee> rechercherPlongeePourInscriptionAdherent(Adherent adherent);
-	public List<Plongee> rechercherPlongeesAdherentInscrit(Adherent adherent, int nbHours);
-	public List<Plongee> rechercherPlongeesOuvertesWithAttente(List<Plongee> plongees);
-	public List<Plongee> rechercherPlongees(Date date, String type);
-	public List<Adherent> rechercherInscriptions(Plongee plongee, String niveauPlongeur, String niveauEncadrement, String trie);
-	public List<Adherent> rechercherListeAttente(Plongee plongee);
+	Plongee rechercherPlongeeParId(Integer id);
+	List<Plongee> rechercherPlongeeTout();
+	List<Plongee> rechercherPlongeeProchainJour(Adherent adherent,  boolean visibleApres);
+	List<Plongee> rechercherPlongeeAOuvrir(List<Plongee> plongees);
+	List<Plongee> rechercherPlongeeOuverteTout(List<Plongee> plongees);
+	List<Plongee> rechercherPlongeePourInscriptionAdherent(Adherent adherent);
+	List<Plongee> rechercherPlongeesAdherentInscrit(Adherent adherent, int nbHours);
+	List<Plongee> rechercherPlongeesOuvertesWithAttente(List<Plongee> plongees);
+	List<Plongee> rechercherPlongees(Date date, String type);
+	List<Adherent> rechercherInscriptions(Plongee plongee, String niveauPlongeur, String niveauEncadrement, String trie);
+	List<Adherent> rechercherListeAttente(Plongee plongee);
 	
-	public void creerPlongee(Plongee plongee) throws ResaException, TechnicalException;
-	public void supprimerPlongee(Plongee plongee) throws TechnicalException;
-	public void modifierPlongee(Plongee plongee);
+	void creerPlongee(Plongee plongee) throws ResaException, TechnicalException;
+	void supprimerPlongee(Plongee plongee) throws TechnicalException;
+	void modifierPlongee(Plongee plongee);
 
-	public Integer getNbPlaceRestante(Plongee plongee);
+	Integer getNbPlaceRestante(Plongee plongee);
 	
-	public int isOkForResa(Plongee plongee, Adherent adherent) throws ResaException;
-	public boolean isOkForListeAttente(Plongee plongee, Adherent adherent) throws TechnicalException, ResaException;
-	public boolean isEnoughEncadrant(Plongee plongee) throws TechnicalException;
-	public boolean isOuverte(Plongee plongee);
+	int isOkForResa(Plongee plongee, Adherent adherent) throws ResaException;
+	boolean isOkForListeAttente(Plongee plongee, Adherent adherent) throws TechnicalException, ResaException;
+	boolean isEnoughEncadrant(Plongee plongee) throws TechnicalException;
+	boolean isOuverte(Plongee plongee);
 	
-	public void inscrireAdherent(Plongee plongee, Adherent adherent, int typeMail) throws ResaException;
-	public void inscrireAdherentEnListeAttente(Plongee plongee, Adherent adherent, int typeMail) throws ResaException;
-	public void fairePasserAttenteAInscrit(Plongee plongee, Adherent adherent);
+	void inscrireAdherent(Plongee plongee, Adherent adherent, int typeMail) throws ResaException;
+	void inscrireAdherentEnListeAttente(Plongee plongee, Adherent adherent, int typeMail) throws ResaException;
+	void fairePasserAttenteAInscrit(Plongee plongee, Adherent adherent);
 
-	public void deInscrireAdherent(Plongee plongee, Adherent adherent, int typeMail) throws ResaException;
-	public void deInscrireAdherentEnListeAttente(Plongee plongee, Adherent adherent) throws ResaException;
+	void deInscrireAdherent(Plongee plongee, Adherent adherent, int typeMail) throws ResaException;
+	void deInscrireAdherentEnListeAttente(Plongee plongee, Adherent adherent) throws ResaException;
 }

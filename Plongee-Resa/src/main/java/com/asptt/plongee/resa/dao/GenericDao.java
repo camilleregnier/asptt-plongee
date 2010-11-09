@@ -32,7 +32,7 @@ public interface GenericDao<T, ID extends Serializable> {
 	 * @return l'entit� persist�e (permet de r�cup�rer les valeurs auto-g�n�r�es) 
 	 * @throws TechnicalException erreur technique
 	 */
-	public T create(final T obj) throws TechnicalException;
+	T create(final T obj) throws TechnicalException;
 
 	/**
 	 * Met � jour les donn�es persist�es de l'entit� persistante.
@@ -40,7 +40,7 @@ public interface GenericDao<T, ID extends Serializable> {
 	 * @return l'entit� mise � jour (permet de r�cup�rer les valeurs auto-g�n�r�es) 
 	 * @throws TechnicalException erreur technique
 	 */
-	public T update(final T obj) throws TechnicalException;
+	T update(final T obj) throws TechnicalException;
 
 	/**
 	 * Supprime l'entit� de la couche physique de persistance.
@@ -48,7 +48,7 @@ public interface GenericDao<T, ID extends Serializable> {
 	 * @param obj entit� � supprimer
 	 * @throws TechnicalException erreur technique
 	 */
-	public void delete(final T obj) throws TechnicalException;
+	void delete(final T obj) throws TechnicalException;
 
 	/**
 	 * Retourne l'entit� persistante correspondant � l'identifiant donn�.<br>
@@ -57,7 +57,7 @@ public interface GenericDao<T, ID extends Serializable> {
 	 * @return l'entit� persistante correspondant � l'identifiant donn� ou null
 	 * @throws TechnicalException erreur technique
 	 */
-	public T findById(final ID id) throws TechnicalException;
+	T findById(final ID id) throws TechnicalException;
 
 	/**
 	 * Retourne l'ensemble des entit�s persistantes.<br>
@@ -65,5 +65,5 @@ public interface GenericDao<T, ID extends Serializable> {
 	 * @return l'ensemble des entit�s persistantes
 	 * @throws TechnicalException erreur technique
 	 */
-	public List<T> findAll() throws TechnicalException;
+	List<T> findAll() throws TechnicalException;
 }
