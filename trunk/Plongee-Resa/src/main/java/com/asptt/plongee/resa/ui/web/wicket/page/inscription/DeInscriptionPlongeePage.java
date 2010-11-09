@@ -22,6 +22,7 @@ import com.asptt.plongee.resa.mail.PlongeeMail;
 import com.asptt.plongee.resa.model.Adherent;
 import com.asptt.plongee.resa.model.Plongee;
 import com.asptt.plongee.resa.model.PlongeeDataProvider;
+import com.asptt.plongee.resa.ui.web.wicket.component.ConfirmAjaxLink;
 import com.asptt.plongee.resa.ui.web.wicket.page.ErreurTechniquePage;
 import com.asptt.plongee.resa.ui.web.wicket.page.TemplatePage;
 
@@ -83,7 +84,7 @@ public class DeInscriptionPlongeePage extends TemplatePage {
 					nomDP = plongee.getDp().getNom();
 				}
 
-				item.add(new IndicatingAjaxLink("select") {
+				item.add(new ConfirmAjaxLink("select","Es-tu s\u00fbr(e) de vouloir te d\u00e9sinscrire de cette plong\u00e9e ?") {
 
 					private static final long serialVersionUID = 1771547719792642196L;
 
