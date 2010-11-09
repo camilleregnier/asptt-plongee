@@ -31,6 +31,7 @@ import com.asptt.plongee.resa.mail.PlongeeMail;
 import com.asptt.plongee.resa.model.Adherent;
 import com.asptt.plongee.resa.model.Plongee;
 import com.asptt.plongee.resa.model.PlongeeDataProvider;
+import com.asptt.plongee.resa.ui.web.wicket.component.ConfirmAjaxLink;
 import com.asptt.plongee.resa.ui.web.wicket.page.TemplatePage;
 import com.asptt.plongee.resa.ui.web.wicket.page.admin.GererPlongeeAOuvrirTwo;
 import com.asptt.plongee.resa.util.Parameters;
@@ -93,7 +94,6 @@ public class InscriptionPlongeePage extends TemplatePage {
 
 			private static final long serialVersionUID = 4247578422439877902L;
 
-			@SuppressWarnings("unchecked")
 			protected void populateItem(final Item<Plongee> item) {
 				Plongee plongee = item.getModelObject();
 				String nomDP = "Aucun";
@@ -101,29 +101,7 @@ public class InscriptionPlongeePage extends TemplatePage {
 					nomDP = plongee.getDp().getNom();
 				}
 				
-				// On étend la class IndicatingAjaxLink pour obtenir une confirmation d'inscription
-				abstract class ConfirmAjaxLink extends IndicatingAjaxLink {
-
-					private static final long serialVersionUID = 1389708787081345734L;
-
-					public ConfirmAjaxLink(String id) {
-				        super(id);
-				    }
-
-				    @Override
-				    protected IAjaxCallDecorator getAjaxCallDecorator() {
-				        return new AjaxCallDecorator() {
-
-							private static final long serialVersionUID = -7160464423034555478L;
-
-							public CharSequence decorateScript(CharSequence script) {
-				                return "if(!confirm('Es-tu s\u00fbr(e) de vouloir r\u00e9server cette plong\u00e9e ?')) return false;" + script;
-				            }
-				        };
-
-				    }
-				}
-				item.add(new ConfirmAjaxLink("select") {
+				item.add(new ConfirmAjaxLink("select","Es-tu s\u00fbr(e) de vouloir r\u00e9server cette plong\u00e9e ?") {
 					private static final long serialVersionUID = 4442484995694176106L;
 
 					@Override
