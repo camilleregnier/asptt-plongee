@@ -8,10 +8,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.logging.Level;
 
 import org.apache.log4j.Logger;
-
 
 import com.asptt.plongee.resa.dao.AdherentDao;
 import com.asptt.plongee.resa.dao.PlongeeDao;
@@ -26,7 +24,7 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements Serializable, Ad
 	private static final long serialVersionUID = 6165324672085274169L;
 	private PlongeeDao plongeeDao;
 	
-	private final Logger logger = Logger.getLogger(getClass());
+	private final Logger logger = Logger.getLogger(getClass().getName());
 	
 	public void setPlongeeDao(PlongeeDao plongeeDao) { // setter appelé par
 														// Spring pour injecter
@@ -85,17 +83,10 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements Serializable, Ad
 			}
 			return adh;
 		} catch (SQLException e) {
+			log.error(e.getMessage(), e);
 			throw new TechnicalException(e);
 		} finally {
-			try {
-				if(null != conex ){
-					conex.close();
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-				throw new TechnicalException(
-						"Impossible de cloturer la connexion");
-			}
+			closeConnexion(conex);
 		}
 	}
 
@@ -113,17 +104,10 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements Serializable, Ad
 				throw new TechnicalException("L'adhérent n'a pu être supprimé");
 			}
 		} catch (SQLException e) {
+			log.error(e.getMessage(), e);
 			throw new TechnicalException(e);
 		} finally {
-			try {
-				if(null != conex ){
-					conex.close();
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-				throw new TechnicalException(
-						"Impossible de cloturer la connexion");
-			}
+			closeConnexion(conex);
 		}
 	}
 
@@ -194,17 +178,10 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements Serializable, Ad
 			}
 			return adh;
 		} catch (SQLException e) {
+			log.error(e.getMessage(), e);
 			throw new TechnicalException(e);
 		} finally {
-			try {
-				if(null != conex ){
-					conex.close();
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-				throw new TechnicalException(
-						"Impossible de cloturer la connexion");
-			}
+			closeConnexion(conex);
 		}
 	}
 
@@ -226,17 +203,10 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements Serializable, Ad
 			}
 			return adh;
 		} catch (SQLException e) {
+			log.error(e.getMessage(), e);
 			throw new TechnicalException(e);
 		} finally {
-			try {
-				if(null != conex ){
-					conex.close();
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-				throw new TechnicalException(
-						"Impossible de cloturer la connexion");
-			}
+			closeConnexion(conex);
 		}
 	}
 
@@ -253,17 +223,10 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements Serializable, Ad
 			}
 			return adherents;
 		} catch (SQLException e) {
+			log.error(e.getMessage(), e);
 			throw new TechnicalException(e);
 		} finally {
-			try {
-				if(null != conex ){
-					conex.close();
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-				throw new TechnicalException(
-						"Impossible de cloturer la connexion");
-			}
+			closeConnexion(conex);
 		}
 	}
 
@@ -281,17 +244,10 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements Serializable, Ad
 			}
 			return adherents;
 		} catch (SQLException e) {
+			log.error(e.getMessage(), e);
 			throw new TechnicalException(e);
 		} finally {
-			try {
-				if(null != conex ){
-					conex.close();
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-				throw new TechnicalException(
-						"Impossible de cloturer la connexion");
-			}
+			closeConnexion(conex);
 		}
 	}
 
@@ -308,17 +264,10 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements Serializable, Ad
 			}
 			return adherents;
 		} catch (SQLException e) {
+			log.error(e.getMessage(), e);
 			throw new TechnicalException(e);
 		} finally {
-			try {
-				if(null != conex ){
-					conex.close();
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-				throw new TechnicalException(
-						"Impossible de cloturer la connexion");
-			}
+			closeConnexion(conex);
 		}
 	}
 
@@ -336,17 +285,10 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements Serializable, Ad
 			}
 			return adherents;
 		} catch (SQLException e) {
+			log.error(e.getMessage(), e);
 			throw new TechnicalException(e);
 		} finally {
-			try {
-				if(null != conex ){
-					conex.close();
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-				throw new TechnicalException(
-						"Impossible de cloturer la connexion");
-			}
+			closeConnexion(conex);
 		}
 	}
 
@@ -364,17 +306,10 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements Serializable, Ad
 			}
 			return adherents;
 		} catch (SQLException e) {
+			log.error(e.getMessage(), e);
 			throw new TechnicalException(e);
 		} finally {
-			try {
-				if(null != conex ){
-					conex.close();
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-				throw new TechnicalException(
-						"Impossible de cloturer la connexion");
-			}
+			closeConnexion(conex);
 		}
 	}
 
@@ -391,17 +326,10 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements Serializable, Ad
 			}
 			return adherent;
 		} catch (SQLException e) {
+			log.error(e.getMessage(), e);
 			throw new TechnicalException(e);
 		} finally {
-			try {
-				if(null != conex ){
-					conex.close();
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-				throw new TechnicalException(
-						"Impossible de cloturer la connexion");
-			}
+			closeConnexion(conex);
 		}
 	}
 	
@@ -418,17 +346,10 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements Serializable, Ad
 			}
 			return adherent;
 		} catch (SQLException e) {
+			log.error(e.getMessage(), e);
 			throw new TechnicalException(e);
 		} finally {
-			try {
-				if(null != conex ){
-					conex.close();
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-				throw new TechnicalException(
-						"Impossible de cloturer la connexion");
-			}
+			closeConnexion(conex);
 		}
 	}
 
@@ -454,15 +375,7 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements Serializable, Ad
 			logger.fatal("L'adherent "+id+" n'a pas pu se connecter");
 			throw new TechnicalException(e);
 		} finally {
-			try {
-				if(null != conex ){
-					conex.close();
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-				throw new TechnicalException(
-						"Impossible de cloturer la connexion");
-			}
+			closeConnexion(conex);
 		}
 	}
 	
@@ -485,17 +398,10 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements Serializable, Ad
 			}
 			return result;
 		} catch (SQLException e) {
+			log.error(e.getMessage(), e);
 			throw new TechnicalException(e);
 		} finally {
-			try {
-				if(null != conex ){
-					conex.close();
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-				throw new TechnicalException(
-						"Impossible de cloturer la connexion");
-			}
+			closeConnexion(conex);
 		}
 	}
 
@@ -521,16 +427,10 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements Serializable, Ad
 			}
 			return adherents;
 		} catch (SQLException e) {
+			log.error(e.getMessage(), e);
 			throw new TechnicalException(e);
 		} finally {
-			try {
-				if(null != conex ){
-					conex.close();
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-				throw new TechnicalException("Impossible de cloturer la connexion");
-			}
+			closeConnexion(conex);
 		}
 	}
 
@@ -555,16 +455,10 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements Serializable, Ad
 			}
 			return adherents;
 		} catch (SQLException e) {
+			log.error(e.getMessage(), e);
 			throw new TechnicalException(e);
 		} finally {
-			try {
-				if(null != conex ){
-					conex.close();
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-				throw new TechnicalException("Impossible de cloturer la connexion");
-			}
+			closeConnexion(conex);
 		}
 	}
 	
@@ -623,17 +517,10 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements Serializable, Ad
 			}
 			return adherents;
 		} catch (SQLException e) {
+			log.error(e.getMessage(), e);
 			throw new TechnicalException(e);
 		} finally {
-			try {
-				if(null != conex ){
-					conex.close();
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-				throw new TechnicalException(
-						"Impossible de cloturer la connexion");
-			}
+			closeConnexion(conex);
 		}
 	}
 	
@@ -666,17 +553,10 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements Serializable, Ad
 			}
 			return adherents;
 		} catch (SQLException e) {
+			log.error(e.getMessage(), e);
 			throw new TechnicalException(e);
 		} finally {
-			try {
-				if(null != conex ){
-					conex.close();
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-				throw new TechnicalException(
-						"Impossible de cloturer la connexion");
-			}
+			closeConnexion(conex);
 		}
 	}
 
@@ -695,17 +575,10 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements Serializable, Ad
 			}
 			return id;
 		} catch (SQLException e) {
+			log.error(e.getMessage(), e);
 			throw new TechnicalException(e);
 		} finally {
-			try {
-				if(null != conex ){
-					conex.close();
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-				throw new TechnicalException(
-						"Impossible de cloturer la connexion");
-			}
+			closeConnexion(conex);
 		}
 	}
 

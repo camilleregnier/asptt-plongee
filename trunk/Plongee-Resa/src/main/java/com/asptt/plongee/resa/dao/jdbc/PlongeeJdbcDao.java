@@ -12,6 +12,8 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import com.asptt.plongee.resa.dao.AdherentDao;
 import com.asptt.plongee.resa.dao.PlongeeDao;
 import com.asptt.plongee.resa.exception.TechnicalException;
@@ -22,6 +24,8 @@ import com.asptt.plongee.resa.model.Plongee.Type;
 import com.asptt.plongee.resa.util.Parameters;
 
 public class PlongeeJdbcDao extends AbstractJdbcDao implements Serializable, PlongeeDao {
+	
+	private final Logger log = Logger.getLogger(getClass().getName());
 	
 	private static final long serialVersionUID = 5459542271710949540L;
 	private AdherentDao adherentDao;  // (l'interface AdherentDao et non une implémentation)
@@ -84,17 +88,10 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements Serializable, Plo
 			}
 			return obj;
 		} catch (SQLException e) {
+			log.error(e.getMessage(), e);
 			throw new TechnicalException(e);
 		} finally {
-			try {
-				if(null != conex ){
-					conex.close();
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-				throw new TechnicalException(
-						"Impossible de cloturer la connexion");
-			}
+			closeConnexion(conex);
 		}
 	}
 
@@ -113,17 +110,10 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements Serializable, Plo
 						"La plongée "+obj.getId()+" n'a pu être annulée");
 			}
 		} catch (SQLException e) {
+			log.error(e.getMessage(), e);
 			throw new TechnicalException(e);
 		} finally {
-			try {
-				if(null != conex ){
-					conex.close();
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-				throw new TechnicalException(
-						"Impossible de cloturer la connexion");
-			}
+			closeConnexion(conex);
 		}
 	}
 
@@ -156,17 +146,10 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements Serializable, Plo
 			}
 			return obj;
 		} catch (SQLException e) {
+			log.error(e.getMessage(), e);
 			throw new TechnicalException(e);
 		} finally {
-			try {
-				if(null != conex ){
-					conex.close();
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-				throw new TechnicalException(
-						"Impossible de cloturer la connexion");
-			}
+			closeConnexion(conex);
 		}
 	}
 	
@@ -193,16 +176,10 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements Serializable, Plo
 			}
 			return plongees;
 		} catch (SQLException e) {
+			log.error(e.getMessage(), e);
 			throw new TechnicalException(e);
 		} finally{
-			try {
-				if(null != conex ){
-					conex.close();
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-				throw new TechnicalException("Impossible de cloturer la connexion");
-			}
+			closeConnexion(conex);
 		}
 	}
 	
@@ -232,16 +209,10 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements Serializable, Plo
 			}
 			return plongees;
 		} catch (SQLException e) {
+			log.error(e.getMessage(), e);
 			throw new TechnicalException(e);
 		} finally{
-			try {
-				if(null != conex ){
-					conex.close();
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-				throw new TechnicalException("Impossible de cloturer la connexion");
-			}
+			closeConnexion(conex);
 		}
 	}
 
@@ -258,16 +229,10 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements Serializable, Plo
 			}
 			return plongee;
 		} catch (SQLException e) {
+			log.error(e.getMessage(), e);
 			throw new TechnicalException(e);
 		} finally{
-			try {
-				if(null != conex ){
-					conex.close();
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-				throw new TechnicalException("Impossible de cloturer la connexion");
-			}
+			closeConnexion(conex);
 		}
 	}
 
@@ -297,16 +262,10 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements Serializable, Plo
 			}
 			return plongees;
 		} catch (SQLException e) {
+			log.error(e.getMessage(), e);
 			throw new TechnicalException(e);
 		} finally{
-			try {
-				if(null != conex ){
-					conex.close();
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-				throw new TechnicalException("Impossible de cloturer la connexion");
-			}
+			closeConnexion(conex);
 		}
 	}
 
@@ -333,16 +292,10 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements Serializable, Plo
 			}
 			return plongees;
 		} catch (SQLException e) {
+			log.error(e.getMessage(), e);
 			throw new TechnicalException(e);
 		} finally{
-			try {
-				if(null != conex ){
-					conex.close();
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-				throw new TechnicalException("Impossible de cloturer la connexion");
-			}
+			closeConnexion(conex);
 		}
 	}
 
@@ -370,16 +323,10 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements Serializable, Plo
 			}
 			return plongees;
 		} catch (SQLException e) {
+			log.error(e.getMessage(), e);
 			throw new TechnicalException(e);
 		} finally{
-			try {
-				if(null != conex ){
-					conex.close();
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-				throw new TechnicalException("Impossible de cloturer la connexion");
-			}
+			closeConnexion(conex);
 		}
 	}
 
@@ -399,16 +346,10 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements Serializable, Plo
 						" n'a pu être inscrit à la plongée:"+plongee.getId()+"."); 
 			}
 		} catch (SQLException e) {
+			log.error(e.getMessage(), e);
 			throw new TechnicalException(e);
 		} finally{
-			try {
-				if(null != conex ){
-					conex.close();
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-				throw new TechnicalException("Impossible de cloturer la connexion");
-			}
+			closeConnexion(conex);
 		}
 	}
 
@@ -428,17 +369,11 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements Serializable, Plo
 			st.setInt(2, plongee.getId());
 			st.executeUpdate();
 		} catch (SQLException e) {
+			log.error(e.getMessage(), e);
 			throw new TechnicalException("L'adhérent"+adherent.getNumeroLicense()+
 					" n'a pu être désinscrit à la plongée:"+plongee.getId()+".",e);
 		} finally{
-			try {
-				if(null != conex ){
-					conex.close();
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-				throw new TechnicalException("Impossible de cloturer la connexion");
-			}
+			closeConnexion(conex);
 		}
 	}
 
@@ -458,16 +393,10 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements Serializable, Plo
 						" n'a pu être inscrit en liste d'attente de la plongée:"+plongee.getId()+"."); 
 			}
 		} catch (SQLException e) {
+			log.error(e.getMessage(), e);
 			throw new TechnicalException(e);
 		} finally{
-			try {
-				if(null != conex ){
-					conex.close();
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-				throw new TechnicalException("Impossible de cloturer la connexion");
-			}
+			closeConnexion(conex);
 		}
 	}
 
@@ -490,17 +419,11 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements Serializable, Plo
 			st.setInt(2, plongee.getId());
 			st.executeUpdate();
 		} catch (SQLException e) {
+			log.error(e.getMessage(), e);
 			throw new TechnicalException("L'adhérent"+adherent.getNumeroLicense()+
 					" n'a pu être supprimé de la liste d'attente de la plongée:"+plongee.getId()+".",e);
 		} finally{
-			try {
-				if(null != conex ){
-					conex.close();
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-				throw new TechnicalException("Impossible de cloturer la connexion");
-			}
+			closeConnexion(conex);
 		}
 	}
 
