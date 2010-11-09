@@ -22,8 +22,9 @@ public class LogoutPage extends SignOutPage {
 		ResaSession sess = (ResaSession) getSession();
 		
 		add(new Label("byebye", ""));
-		logger.info("L'adherent "+sess.getAdherent().getNom()+" / "+sess.getAdherent().getPrenom()+" vient de se deconnecter");
-		
+		if (null != sess.getAdherent()){
+			logger.info("L'adherent "+sess.getAdherent().getNom()+" / "+sess.getAdherent().getPrenom()+" vient de se deconnecter");
+		}
 	}
 
 }

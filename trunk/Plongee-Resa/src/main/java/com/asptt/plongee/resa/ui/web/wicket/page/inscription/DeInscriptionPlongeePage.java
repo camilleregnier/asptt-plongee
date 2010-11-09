@@ -25,6 +25,7 @@ import com.asptt.plongee.resa.model.PlongeeDataProvider;
 import com.asptt.plongee.resa.ui.web.wicket.component.ConfirmAjaxLink;
 import com.asptt.plongee.resa.ui.web.wicket.page.ErreurTechniquePage;
 import com.asptt.plongee.resa.ui.web.wicket.page.TemplatePage;
+import com.asptt.plongee.resa.util.Parameters;
 
 public class DeInscriptionPlongeePage extends TemplatePage {
 
@@ -64,7 +65,7 @@ public class DeInscriptionPlongeePage extends TemplatePage {
 	private void init() {
 		try{
 			plongees = getResaSession().getPlongeeService().rechercherPlongeesAdherentInscrit( 	
-					getResaSession().getAdherent(), 24);
+					getResaSession().getAdherent(), Parameters.getInt("desincription.nb.heure"));
 		} catch (TechnicalException e) {
 			e.printStackTrace();
 			ErreurTechniquePage etp = new ErreurTechniquePage(e);

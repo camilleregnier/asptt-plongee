@@ -25,6 +25,7 @@ public final class PlongeeMail {
 	public static final int MAIL_INSCRIPTION_SUR_PLONGEE_FERMEE = 1;
 	public static final int MAIL_PLACES_LIBRES = 2;
 	public static final int MAIL_LISTE_ATTENTE_EXIST = 5;
+	public static final int MAIL_DESINSCRIPTION_24 = 6;
 	
 	private final Logger logger = Logger.getLogger(getClass());
 	private Email email = null;
@@ -58,7 +59,7 @@ public final class PlongeeMail {
 			email.send();
 		} catch (MessagingException e) {
 			e.printStackTrace();
-			logger.warn("pb lors de l'envoi d'un mail");
+			logger.error("pb lors de l'envoi d'un mail");
 		}
 	}
 
@@ -199,6 +200,18 @@ public final class PlongeeMail {
 			sb.append("\u00e0 la plong\u00e9e du "+dateAffichee+" ("+plongee.getType()+")\n");
 			sb.append("\n");
 			sb.append("Votre intervention est requise pour g\u00e9rer cette file d'attente.\n");
+			sb.append("\n");
+			sb.append("Cordialement.\n");
+			this.email.setMsg(sb.toString());
+			break;
+		case MAIL_DESINSCRIPTION_24: 
+			this.email.setSubject("Desinscription tardive \u00e0 la plong\u00e9e du : "+dateAffichee+" ("+plongee.getType()+")");
+			sb = new StringBuffer("Bonjour,\n");
+			sb.append("Pour information  \n");
+			sb.append("\n");
+			sb.append("L'adherent "+adherent.getPrenom()+" "+adherent.getNom()+" \n");
+			sb.append("viens de se désincrire à moins de 24 heure  \n");
+			sb.append("de la plong\u00e9e du "+dateAffichee+" ("+plongee.getType()+")\n");
 			sb.append("\n");
 			sb.append("Cordialement.\n");
 			this.email.setMsg(sb.toString());

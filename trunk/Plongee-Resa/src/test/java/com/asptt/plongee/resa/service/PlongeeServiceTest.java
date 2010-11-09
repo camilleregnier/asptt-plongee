@@ -13,6 +13,8 @@ import org.apache.log4j.Logger;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowire;
 
+import sun.util.resources.CalendarData;
+
 import com.asptt.plongee.resa.dao.PlongeeDaoTest;
 import com.asptt.plongee.resa.exception.TechnicalException;
 import com.asptt.plongee.resa.model.NiveauAutonomie;
@@ -87,6 +89,44 @@ public class PlongeeServiceTest extends AbstractServiceTest {
 			int monNumJour = gc.get(Calendar.DAY_OF_WEEK);
 			List<Plongee> plongees =plongeeDao.getPlongeesWhithSameDate(maDate, "MATIN");
 			logger.info("Nombre de plongées trouvées = "+plongees.size());
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	@Test
+	public void testCalculNbHeure() throws TechnicalException {
+		try {
+			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+			Date datePlongee = sdf.parse("09/11/2010");
+			GregorianCalendar gcPlongee = new GregorianCalendar();
+			gcPlongee.setTime(datePlongee);
+			gcPlongee.set(GregorianCalendar.HOUR_OF_DAY, 16);
+			gcPlongee.set(GregorianCalendar.MINUTE, 0);
+			gcPlongee.set(GregorianCalendar.SECOND, 0);
+			
+//			Date dateDuJour = sdf.parse("08/11/2010");
+			Date dateDuJour = new Date();
+			GregorianCalendar gcJour = new GregorianCalendar();
+			gcJour.setTime(dateDuJour);
+//			gcJour.set(GregorianCalendar.HOUR_OF_DAY, 17);
+//			gcJour.set(GregorianCalendar.MINUTE, 0);
+//			gcJour.set(GregorianCalendar.SECOND, 0);
+			
+			int nbJour = gcPlongee.get(Calendar.DAY_OF_MONTH) - gcJour.get(Calendar.DAY_OF_MONTH);
+			int nbHour = gcPlongee.get(Calendar.HOUR_OF_DAY) - gcJour.get(Calendar.HOUR_OF_DAY);
+			
+			int nombreHeure = (nbJour * 24) + nbHour;
+			
+			System.out.println("Jour plongee = "+gcPlongee.get(Calendar.DAY_OF_MONTH));
+			System.out.println("Jour  = "+gcJour.get(Calendar.DAY_OF_MONTH));
+			System.out.println("Heure plongee = "+gcPlongee.get(Calendar.HOUR_OF_DAY));
+			System.out.println("Heure = "+gcJour.get(Calendar.HOUR_OF_DAY));
+			System.out.println("Nombre de jour entre les 2 dates = "+nbJour);
+			System.out.println("Nombre de heure = "+nbHour);
+			System.out.println("Nombre d'heure entre les 2 dates = "+nombreHeure);
+
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
