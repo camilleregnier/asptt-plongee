@@ -12,6 +12,10 @@ public interface PlongeeDao extends GenericDao<Plongee, Integer>{
 
 	List<Plongee> getPlongeesForFewDay(int aPartir, int nbjour) throws TechnicalException;
 	
+	List<Plongee> getPlongeesForEncadrant(int aPartir, int nbjour) throws TechnicalException;
+
+	List<Plongee> getPlongeesForAdherent() throws TechnicalException;
+
 	List<Plongee> getPlongeesWhereAdherentIsInscrit(Adherent adherent, int nbHours) throws TechnicalException;
 
 	List<Plongee> getPlongeesWhithSameDate(Date date, String type) throws TechnicalException;

@@ -209,8 +209,8 @@ public final class PlongeeMail {
 			sb = new StringBuffer("Bonjour,\n");
 			sb.append("Pour information  \n");
 			sb.append("\n");
-			sb.append("L'adherent "+adherent.getPrenom()+" "+adherent.getNom()+" \n");
-			sb.append("viens de se désincrire à moins de 24 heure  \n");
+			sb.append("L'adh\u00e9rent "+adherent.getPrenom()+" "+adherent.getNom()+" \n");
+			sb.append("viens de se désincrire à moins de 24 heures  \n");
 			sb.append("de la plong\u00e9e du "+dateAffichee+" ("+plongee.getType()+")\n");
 			sb.append("\n");
 			sb.append("Cordialement.\n");

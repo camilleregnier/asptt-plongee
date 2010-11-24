@@ -134,4 +134,17 @@ public class PlongeeInMemoryDao implements PlongeeDao {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public List<Plongee> getPlongeesForAdherent() throws TechnicalException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Plongee> getPlongeesForEncadrant(int aPartir, int nbjour)
+			throws TechnicalException {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

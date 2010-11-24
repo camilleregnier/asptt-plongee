@@ -3,10 +3,13 @@ package com.asptt.plongee.resa.service;
 import java.util.List;
 
 import com.asptt.plongee.resa.model.Adherent;
+import com.asptt.plongee.resa.model.Message;
 import com.asptt.plongee.resa.model.Plongee;
 
 public interface AdherentService {
-
+	
+	List<Message> rechercherMessage();
+	
 	Adherent authentifierAdherent(String id, String pwd);
 
 	Adherent rechercherAdherentParIdentifiant(String id);
@@ -32,13 +35,13 @@ public interface AdherentService {
 	List<Adherent> rechercherDPsNonInscrits(List<Adherent> adherents, Plongee plongee);
 	
 	List<Adherent> rechercherPilotes(List<Adherent> adherents);
-
+	
 	List<Adherent> rechercherPilotesNonInscrits(List<Adherent> adherents, Plongee plongee);
-
+	
 	void creerAdherent(Adherent adherent);
 	
 	void updateAdherent(Adherent adherent);
-
+	
 	void updatePasswordAdherent(Adherent adherent);
 
 	void creerExterne(Adherent adherent);

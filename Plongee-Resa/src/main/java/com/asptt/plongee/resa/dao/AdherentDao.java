@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.asptt.plongee.resa.exception.TechnicalException;
 import com.asptt.plongee.resa.model.Adherent;
+import com.asptt.plongee.resa.model.Message;
 import com.asptt.plongee.resa.model.Plongee;
 
 
@@ -34,4 +35,6 @@ public interface AdherentDao extends GenericDao<Adherent, String> {
 	Adherent updatePassword(Adherent adherent) throws TechnicalException;
 
 	Adherent authenticateAdherent(String id, String pwd) throws TechnicalException;
+
+	List<Message> getMessage() throws TechnicalException;
 }

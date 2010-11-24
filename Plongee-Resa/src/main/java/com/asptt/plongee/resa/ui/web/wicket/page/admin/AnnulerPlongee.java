@@ -46,7 +46,7 @@ public class AnnulerPlongee extends TemplatePage {
 		// TODO, voir si on ajoute pas cela dans un panel
 		// pour une mise à jour dynamique lors de l'annulation de la plongée
 		try {
-			List<Plongee> plongees = getResaSession().getPlongeeService().rechercherPlongeeProchainJour(getResaSession().getAdherent(), false);
+			List<Plongee> plongees = getResaSession().getPlongeeService().rechercherPlongeeProchainJour(getResaSession().getAdherent());
 			
 			PlongeeDataProvider pDataProvider = new PlongeeDataProvider(plongees);
 

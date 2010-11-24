@@ -4,11 +4,24 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
+import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
+import org.apache.wicket.extensions.ajax.markup.html.IndicatingAjaxLink;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.repeater.Item;
+import org.apache.wicket.markup.repeater.data.DataView;
+import org.apache.wicket.model.AbstractReadOnlyModel;
 
+import com.asptt.plongee.resa.exception.TechnicalException;
 import com.asptt.plongee.resa.model.Adherent;
+import com.asptt.plongee.resa.model.Message;
+import com.asptt.plongee.resa.model.MessageDataProvider;
+import com.asptt.plongee.resa.model.Plongee;
+import com.asptt.plongee.resa.model.PlongeeDataProvider;
 //import com.asptt.plongee.resa.util.PlongeeMail;
 import com.asptt.plongee.resa.ui.web.wicket.ResaSession;
 
@@ -24,8 +37,43 @@ public class AccueilPage extends TemplatePage {
 			setResponsePage(ModifPasswordPage.class);
 		}
 		
+//		String msg = getResaSession().getAdherentService().rechercherMessage();
 		add(new Label("hello", "Bienvenue:"+a.getPrenom()+", nous sommes le : " + calculerDateCourante()));
 	   
+		try {
+			List<Message> messages = getResaSession().getAdherentService().rechercherMessage();
+			
+			MessageDataProvider pDataProvider = new MessageDataProvider(messages);
+
+			add(new DataView<Message>("simple", pDataProvider) {
+
+				@Override
+				protected void populateItem(final Item<Message> item) {
+					final Message message = item.getModelObject();
+					item.add(new Label("libelle", message.getLibelle()));
+					
+					item.add(new AttributeModifier("class", true,
+							new AbstractReadOnlyModel<String>() {
+								@Override
+								public String getObject() {
+									String cssClass;
+									if (item.getIndex() % 2 == 1){
+										cssClass = "even";
+									} else {
+										cssClass = "odd";
+									}
+									return cssClass;
+								}
+							}));
+				}
+
+			});
+		}	catch (TechnicalException e) {
+			e.printStackTrace();
+			ErreurTechniquePage etp = new ErreurTechniquePage(e);
+			setResponsePage(etp);
+		}
+
 	} 
 
 	private String calculerDateCourante() {

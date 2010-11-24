@@ -12,7 +12,9 @@ public interface PlongeeService {
 
 	Plongee rechercherPlongeeParId(Integer id);
 	List<Plongee> rechercherPlongeeTout();
-	List<Plongee> rechercherPlongeeProchainJour(Adherent adherent,  boolean visibleApres);
+	List<Plongee> rechercherPlongeeProchainJour(Adherent adherent);
+	List<Plongee> rechercherPlongeePourAdherent();
+	List<Plongee> rechercherPlongeePourEncadrant();
 	List<Plongee> rechercherPlongeeAOuvrir(List<Plongee> plongees);
 	List<Plongee> rechercherPlongeeOuverteTout(List<Plongee> plongees);
 	List<Plongee> rechercherPlongeePourInscriptionAdherent(Adherent adherent);
