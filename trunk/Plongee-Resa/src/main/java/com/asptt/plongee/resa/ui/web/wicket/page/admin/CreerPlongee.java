@@ -55,6 +55,11 @@ public class CreerPlongee extends TemplatePage {
 			add(dateTextFiled);
 			dateTextFiled.add(new DatePicker());
 			
+			DateTextField dateVisibleTextFiled = new DateTextField("dateVisible", new PropertyModel<Date>(model, "dateVisible"), new StyleDateConverter("S-", true));
+			dateVisibleTextFiled.setRequired(true);
+			add(dateVisibleTextFiled);
+			dateVisibleTextFiled.add(new DatePicker());
+
 			add(new RequiredTextField<Integer>("nbMaxPlaces", Integer.class).add(new MinimumValidator<Integer>(4)));
 			
 			

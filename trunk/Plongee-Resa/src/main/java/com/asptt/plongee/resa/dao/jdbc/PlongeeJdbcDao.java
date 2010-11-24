@@ -40,33 +40,9 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements Serializable, Plo
 		try {
 			conex = getDataSource().getConnection();
 			StringBuffer sb = new StringBuffer();
-			sb.append("INSERT INTO PLONGEE (`DATE`, `DEMIE_JOURNEE`, `OUVERTURE_FORCEE`, `NIVEAU_MINI`, `NB_MAX_PLG`)");
-			sb.append(" VALUES (?,?,?,?,?)");
+			sb.append("INSERT INTO PLONGEE (`DATE`, `DEMIE_JOURNEE`, `OUVERTURE_FORCEE`, `NIVEAU_MINI`, `NB_MAX_PLG`,`DATE_VISIBLE`)");
+			sb.append(" VALUES (?,?,?,?,?,?)");
 			PreparedStatement st = conex.prepareStatement(sb.toString());
-			//maj de l'heure de la plongée en fonction du type
-			GregorianCalendar gc = new GregorianCalendar();
-			gc.setTime(obj.getDate());
-			if( obj.getType().equalsIgnoreCase(Plongee.Type.MATIN.toString()) ){
-				gc.set(GregorianCalendar.HOUR_OF_DAY, 8);
-				gc.set(GregorianCalendar.MINUTE, 0);
-				gc.set(GregorianCalendar.SECOND, 0);
-				obj.setDate(gc.getTime());
-			} else if( obj.getType().equalsIgnoreCase(Plongee.Type.APRES_MIDI.toString()) ){
-				gc.set(GregorianCalendar.HOUR_OF_DAY, 13);
-				gc.set(GregorianCalendar.MINUTE, 0);
-				gc.set(GregorianCalendar.SECOND, 0);
-				obj.setDate(gc.getTime());
-			} else if( obj.getType().equalsIgnoreCase(Plongee.Type.SOIR.toString()) ){
-				gc.set(GregorianCalendar.HOUR_OF_DAY, 18);
-				gc.set(GregorianCalendar.MINUTE, 0);
-				gc.set(GregorianCalendar.SECOND, 0);
-				obj.setDate(gc.getTime());
-			} else if( obj.getType().equalsIgnoreCase(Plongee.Type.NUIT.toString()) ){
-				gc.set(GregorianCalendar.HOUR_OF_DAY, 21);
-				gc.set(GregorianCalendar.MINUTE, 0);
-				gc.set(GregorianCalendar.SECOND, 0);
-				obj.setDate(gc.getTime());
-			}
 			Timestamp ts = new Timestamp(obj.getDate().getTime());
 			st.setTimestamp(1, ts);
 			st.setString(2, obj.getType());
@@ -81,6 +57,10 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements Serializable, Plo
 				st.setString(4, obj.getNiveauMinimum().toString());
 			}
 			st.setInt(5, obj.getNbMaxPlaces());
+			
+			Timestamp tsVisi = new Timestamp(obj.getDateVisible().getTime());
+			st.setTimestamp(6, tsVisi);
+			
 			//on cree la plongée
 			if (st.executeUpdate() == 0) {
 				throw new TechnicalException(
@@ -161,7 +141,7 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements Serializable, Plo
 			sb.append("SELECT * FROM PLONGEE p");
 			sb.append(" WHERE OUVERTURE_FORCEE=1");
 			sb.append(" and date > CURRENT_TIMESTAMP()");
-			sb.append(" and date < DATE_ADD(CURRENT_DATE(), INTERVAL ? DAY)");
+			sb.append(" and now() >= DATE_ADD(date_visible, INTERVAL ? DAY)");
 			sb.append(" and OUVERTURE_FORCEE = 1");
 			sb.append(" ORDER BY DATE");
 			PreparedStatement st = conex.prepareStatement(sb.toString());
@@ -200,6 +180,69 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements Serializable, Plo
 			PreparedStatement st = conex.prepareStatement(sb.toString());
 			st.setInt(1, nbjour);
 			st.setInt(2, visibleApres);
+			
+			ResultSet rs = st.executeQuery();
+			List<Plongee> plongees = new ArrayList<Plongee>();
+			while (rs.next()) {
+				Plongee plongee = wrapPlongee(rs);
+				plongees.add(plongee);
+			}
+			return plongees;
+		} catch (SQLException e) {
+			log.error(e.getMessage(), e);
+			throw new TechnicalException(e);
+		} finally{
+			closeConnexion(conex);
+		}
+	}
+
+	/**
+	 * Retourne les plongées à partir du lendemain
+	 */
+	public List<Plongee> getPlongeesForEncadrant( int visibleApres, int nbjour) throws TechnicalException {
+		Connection conex=null;
+		try {
+			conex = getDataSource().getConnection();
+			StringBuffer sb = new StringBuffer("SELECT * FROM PLONGEE p");
+			sb.append(" WHERE OUVERTURE_FORCEE=1");
+			sb.append(" and date > CURRENT_DATE()");
+			sb.append(" and now() >= DATE_ADD(date_visible, INTERVAL ? DAY)");
+			sb.append(" and now() < DATE_ADD(date, INTERVAL ? HOUR)");
+			sb.append(" ORDER BY DATE");
+			
+			PreparedStatement st = conex.prepareStatement(sb.toString());
+			st.setInt(1, nbjour);
+			st.setInt(2, visibleApres);
+			
+			ResultSet rs = st.executeQuery();
+			List<Plongee> plongees = new ArrayList<Plongee>();
+			while (rs.next()) {
+				Plongee plongee = wrapPlongee(rs);
+				plongees.add(plongee);
+			}
+			return plongees;
+		} catch (SQLException e) {
+			log.error(e.getMessage(), e);
+			throw new TechnicalException(e);
+		} finally{
+			closeConnexion(conex);
+		}
+	}
+
+	/**
+	 * Retourne les plongées pour l'adherent
+	 */
+	public List<Plongee> getPlongeesForAdherent() throws TechnicalException {
+		Connection conex=null;
+		try {
+			conex = getDataSource().getConnection();
+			StringBuffer sb = new StringBuffer("SELECT * FROM PLONGEE p");
+			sb.append(" WHERE OUVERTURE_FORCEE=1");
+			sb.append(" and date > CURRENT_DATE()");
+			sb.append(" and now() >= DATE_VISIBLE");
+			sb.append(" ORDER BY DATE");
+			
+			PreparedStatement st = conex.prepareStatement(sb.toString());
 			
 			ResultSet rs = st.executeQuery();
 			List<Plongee> plongees = new ArrayList<Plongee>();
@@ -437,6 +480,7 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements Serializable, Plo
 	private Plongee wrapPlongee(ResultSet rs)throws SQLException, TechnicalException {
 		int id = rs.getInt("idPLONGEES");
 		Date date = rs.getDate("DATE");
+		Date dateVisible = rs.getDate("DATE_VISIBLE");
 		Type demie_journee = Type.valueOf(rs.getString("DEMIE_JOURNEE"));
 		String nMin = rs.getString("NIVEAU_MINI");
 		NiveauAutonomie niveauMini = NiveauAutonomie.P0;	
@@ -448,6 +492,7 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements Serializable, Plo
 		Plongee plongee = new Plongee();
 		plongee.setId(id);
 		plongee.setDate(date);
+		plongee.setDateVisible(dateVisible);
 		plongee.setType(demie_journee);
 		plongee.setEnumNiveauMinimum(niveauMini);
 		plongee.setNbMaxPlaces(nbMaxPlongeur);
@@ -458,11 +503,6 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements Serializable, Plo
 		}
 		List<Adherent> participants = adherentDao.getAdherentsInscrits(plongee,null,null,null);
 		plongee.setParticipants(participants);
-//		for(Adherent a : participants){
-//			if(a.isDp()){
-//				plongee.setDp(a);
-//			}
-//		}
 		plongee.setDp();
 		for(Adherent a : participants){
 			if(a.isPilote()){

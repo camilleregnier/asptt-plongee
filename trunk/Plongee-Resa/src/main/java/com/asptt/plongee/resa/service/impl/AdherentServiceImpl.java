@@ -10,6 +10,7 @@ import com.asptt.plongee.resa.dao.AdherentDao;
 import com.asptt.plongee.resa.exception.TechnicalException;
 import com.asptt.plongee.resa.model.Adherent;
 import com.asptt.plongee.resa.model.AdherentComparatorNom;
+import com.asptt.plongee.resa.model.Message;
 import com.asptt.plongee.resa.model.Plongee;
 import com.asptt.plongee.resa.model.ResaConstants;
 import com.asptt.plongee.resa.service.AdherentService;
@@ -152,6 +153,17 @@ public class AdherentServiceImpl implements AdherentService, Serializable {
 			adherent.setPilote(false);
 			adherent.setDp(false);
 			adherentDao.create(adherent);
+	}
+
+	@Override
+	public List<Message> rechercherMessage() {
+		return adherentDao.getMessage();
+//		List<String> libelles = adherentDao.getMessage();
+//		String lib = new String();
+//		for(String libelle : libelles){
+//			lib = lib.concat(libelle.concat("<br>"));
+//		}
+//		return lib;
 	}
 	
 }

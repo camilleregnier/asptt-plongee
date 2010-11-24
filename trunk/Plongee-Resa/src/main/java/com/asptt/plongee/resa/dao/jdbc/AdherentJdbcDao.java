@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -15,6 +16,7 @@ import com.asptt.plongee.resa.dao.AdherentDao;
 import com.asptt.plongee.resa.dao.PlongeeDao;
 import com.asptt.plongee.resa.exception.TechnicalException;
 import com.asptt.plongee.resa.model.Adherent;
+import com.asptt.plongee.resa.model.Message;
 import com.asptt.plongee.resa.model.NiveauAutonomie;
 import com.asptt.plongee.resa.model.Plongee;
 import com.asptt.plongee.resa.model.Adherent.Encadrement;
@@ -614,6 +616,52 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements Serializable, Ad
 		adherent.setPassword(rs.getString("PASSWORD"));
 		
 		return adherent;
+	}
+
+	@Override
+	public List<Message> getMessage() throws TechnicalException {
+		PreparedStatement st;
+		Connection conex=null;
+		try {
+			conex = getDataSource().getConnection();
+			StringBuffer sb = new StringBuffer("select idMESSAGE, LIBELLE, DATE_DEBUT, DATE_FIN ");
+			sb.append(" from MESSAGE ");
+			sb.append(" where date_debut <= CURRENT_TIMESTAMP()");
+			sb.append(" and CURRENT_TIMESTAMP() < date_fin " );
+			sb.append(" or date_fin is null " );
+			sb.append(" order by date_debut " );
+
+			st = conex.prepareStatement(sb.toString());
+			ResultSet rs = st.executeQuery();
+
+			List<Message> messages = new ArrayList<Message>();
+			while (rs.next()) {
+				Message message = wrapMessage(rs);
+				messages.add(message);
+			}
+			return messages;
+			
+		} catch (SQLException e) {
+			log.error(e.getMessage(), e);
+			throw new TechnicalException(e);
+		} finally {
+			closeConnexion(conex);
+		}
+	}
+
+	private Message wrapMessage(ResultSet rs) throws SQLException,	TechnicalException {
+		int id = rs.getInt("idMESSAGE");
+		String libelle = rs.getString("LIBELLE");
+		Date dateDebut = rs.getDate("DATE_DEBUT");
+		Date dateFin = rs.getDate("DATE_FIN");
+		
+		Message message = new Message();
+		message.setId(id);
+		message.setLibelle(libelle);
+		message.setDateDebut(dateDebut);
+		message.setDateFin(dateFin);
+		
+		return message;
 	}
 
 }

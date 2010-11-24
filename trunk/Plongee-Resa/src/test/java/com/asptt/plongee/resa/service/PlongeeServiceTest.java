@@ -19,6 +19,8 @@ import com.asptt.plongee.resa.dao.PlongeeDaoTest;
 import com.asptt.plongee.resa.exception.TechnicalException;
 import com.asptt.plongee.resa.model.NiveauAutonomie;
 import com.asptt.plongee.resa.model.Plongee;
+import com.asptt.plongee.resa.util.Parameters;
+import com.asptt.plongee.resa.util.ResaUtil;
 public class PlongeeServiceTest extends AbstractServiceTest {
 	
 	private final Logger logger = Logger.getLogger(getClass());
@@ -99,20 +101,22 @@ public class PlongeeServiceTest extends AbstractServiceTest {
 	public void testCalculNbHeure() throws TechnicalException {
 		try {
 			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-			Date datePlongee = sdf.parse("09/11/2010");
+			Date datePlongee = sdf.parse("24/11/2010");
 			GregorianCalendar gcPlongee = new GregorianCalendar();
 			gcPlongee.setTime(datePlongee);
-			gcPlongee.set(GregorianCalendar.HOUR_OF_DAY, 16);
+			gcPlongee.set(GregorianCalendar.HOUR_OF_DAY, 13);
 			gcPlongee.set(GregorianCalendar.MINUTE, 0);
-			gcPlongee.set(GregorianCalendar.SECOND, 0);
+			gcPlongee.set(GregorianCalendar.SECOND, 0);	
+			datePlongee.setTime(gcPlongee.getTimeInMillis());
 			
-//			Date dateDuJour = sdf.parse("08/11/2010");
-			Date dateDuJour = new Date();
+			Date dateDuJour = sdf.parse("23/11/2010");
+//			Date dateDuJour = new Date();
 			GregorianCalendar gcJour = new GregorianCalendar();
 			gcJour.setTime(dateDuJour);
-//			gcJour.set(GregorianCalendar.HOUR_OF_DAY, 17);
-//			gcJour.set(GregorianCalendar.MINUTE, 0);
-//			gcJour.set(GregorianCalendar.SECOND, 0);
+			gcJour.set(GregorianCalendar.HOUR_OF_DAY, 11);
+			gcJour.set(GregorianCalendar.MINUTE, 40);
+			gcJour.set(GregorianCalendar.SECOND, 0);
+			dateDuJour.setTime(gcJour.getTimeInMillis());
 			
 			int nbJour = gcPlongee.get(Calendar.DAY_OF_MONTH) - gcJour.get(Calendar.DAY_OF_MONTH);
 			int nbHour = gcPlongee.get(Calendar.HOUR_OF_DAY) - gcJour.get(Calendar.HOUR_OF_DAY);
@@ -126,6 +130,13 @@ public class PlongeeServiceTest extends AbstractServiceTest {
 			System.out.println("Nombre de jour entre les 2 dates = "+nbJour);
 			System.out.println("Nombre de heure = "+nbHour);
 			System.out.println("Nombre d'heure entre les 2 dates = "+nombreHeure);
+			
+			System.out.println("Calcul avec la methode = "+ResaUtil.calculNbHeure(dateDuJour, datePlongee)+"!");
+			
+			if(ResaUtil.calculNbHeure(dateDuJour, datePlongee) <= Parameters.getInt("desincription.alerte")){
+				System.out.println("ENVOI DU MAIL");
+			}
+			
 
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block

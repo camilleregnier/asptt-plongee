@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import javax.mail.MessagingException;
@@ -40,6 +41,72 @@ public class PlongeeServiceImpl implements PlongeeService, Serializable {
 		//On verifie d'abord qu'elle n'existe pas déjà
 		List<Plongee> plongees = rechercherPlongees(plongee.getDate(), plongee.getType());
 		if(plongees.size() == 0){
+			//maj de l'heure de la plongée en fonction du type
+			GregorianCalendar gc = new GregorianCalendar();
+			gc.setTime(plongee.getDate());
+			gc.set(GregorianCalendar.MINUTE, 0);
+			gc.set(GregorianCalendar.SECOND, 0);
+			if( plongee.getType().equalsIgnoreCase(Plongee.Type.MATIN.toString()) ){
+				gc.set(GregorianCalendar.HOUR_OF_DAY, 8);
+				plongee.setDate(gc.getTime());
+			} else if( plongee.getType().equalsIgnoreCase(Plongee.Type.APRES_MIDI.toString()) ){
+				gc.set(GregorianCalendar.HOUR_OF_DAY, 13);
+				plongee.setDate(gc.getTime());
+			} else if( plongee.getType().equalsIgnoreCase(Plongee.Type.SOIR.toString()) ){
+				gc.set(GregorianCalendar.HOUR_OF_DAY, 18);
+				plongee.setDate(gc.getTime());
+			} else if( plongee.getType().equalsIgnoreCase(Plongee.Type.NUIT.toString()) ){
+				gc.set(GregorianCalendar.HOUR_OF_DAY, 21);
+				plongee.setDate(gc.getTime());
+			}
+			
+			if(null == plongee.getDateVisible()){
+				//Maj de la date de visibile de la plongée
+				GregorianCalendar gcVisi = new GregorianCalendar();
+				gcVisi.setTime(plongee.getDate());
+				gcVisi.set(GregorianCalendar.HOUR_OF_DAY, 0);
+				gcVisi.set(GregorianCalendar.MINUTE, 0);
+				gcVisi.set(GregorianCalendar.SECOND, 0);
+				
+				switch (gcVisi.get(GregorianCalendar.DAY_OF_WEEK)) {
+				case GregorianCalendar.SUNDAY:	//Dimanche visible j-3
+					gcVisi.add(GregorianCalendar.DAY_OF_WEEK, Parameters.getInt("visible.dimanche"));
+					plongee.setDateVisible(gcVisi.getTime());
+					break;
+				case GregorianCalendar.MONDAY:	//Lundi visible j-3
+					gcVisi.add(GregorianCalendar.DAY_OF_WEEK, Parameters.getInt("visible.lundi"));
+					plongee.setDateVisible(gcVisi.getTime());
+					break;
+				case GregorianCalendar.TUESDAY:	//Mardi visible j-3
+					gcVisi.add(GregorianCalendar.DAY_OF_WEEK, Parameters.getInt("visible.mardi"));
+					plongee.setDateVisible(gcVisi.getTime());
+					break;
+				case GregorianCalendar.WEDNESDAY:	//Mercredi visible j-3
+					gcVisi.add(GregorianCalendar.DAY_OF_WEEK, Parameters.getInt("visible.mercredi"));
+					plongee.setDateVisible(gcVisi.getTime());
+					break;
+				case GregorianCalendar.THURSDAY:	//Jeudi visible j-1
+					gcVisi.add(GregorianCalendar.DAY_OF_WEEK, Parameters.getInt("visible.jeudi"));
+					plongee.setDateVisible(gcVisi.getTime());
+					break;
+				case GregorianCalendar.FRIDAY:	//Jeudi visible j-1
+					gcVisi.add(GregorianCalendar.DAY_OF_WEEK, Parameters.getInt("visible.vendredi"));
+					plongee.setDateVisible(gcVisi.getTime());
+					break;
+				case  GregorianCalendar.SATURDAY:	//Jeudi visible j-1
+					gcVisi.add(GregorianCalendar.DAY_OF_WEEK, Parameters.getInt("visible.samedi"));
+					plongee.setDateVisible(gcVisi.getTime());
+					break;
+				default:
+					//j-3
+					gcVisi.add(GregorianCalendar.DAY_OF_WEEK, Parameters.getInt("visible.defaut"));
+					plongee.setDateVisible(gcVisi.getTime());
+					break;
+				}
+			}
+			if(plongee.getDate().before(plongee.getDateVisible())){
+				throw new ResaException("La date d'inscription doit être antérieure à la date de la plongée");
+			}
 			plongeeDao.create(plongee);
 		}
 		else{
@@ -65,84 +132,45 @@ public class PlongeeServiceImpl implements PlongeeService, Serializable {
 		return plongeeDao.findAll();
 	}
 
-	public List<Plongee> rechercherPlongeeProchainJour(Adherent adherent, boolean visibleApres)  throws TechnicalException{
+	public List<Plongee> rechercherPlongeeProchainJour(Adherent adherent)  throws TechnicalException{
 
 		List<Plongee> plongees = new ArrayList<Plongee>();
 		
-		//nombre de jour pour la visiblité des plongées
-		int nbJour = 0;
-		
-		// heure 'delta' represente le nombre d'heure 
-		// ou la plongée restera visible par les encadrant
-		// apres que l'heure de cette plongée soit depassée
-		// initialisé pour les adherents s'est à dire à zero.
-		int nbHeureVisibleApres = 0;
-		
-//			GregorianCalendar gc = new GregorianCalendar();
-//			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-//			Date maDate = sdf.parse("21/07/2010");
-//			gc.setTime(maDate);
-//			String maDateAffichee = gc.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.FRANCE);			
-//			int monNumJour = gc.get(Calendar.DAY_OF_WEEK);			
-		
-		Date dateDuJour = new Date();
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(dateDuJour);
-		int numJour = cal.get(Calendar.DAY_OF_WEEK);			
+		if(adherent.isVesteRouge()){
+			plongees = rechercherPlongeePourEncadrant();
+		} else {
+			plongees = rechercherPlongeePourAdherent();
+		}
+		return plongees;
+			
+	}
 
-		switch (numJour) {
-		case 1: //Dimanche visible j+3 = lundi mardi
-			nbJour = Parameters.getInt("visible.dimanche");
-			break;
-		case 2: //Lundi visible j+2 = mardi
-			nbJour = Parameters.getInt("visible.lundi");
-			break;
-		case 3: //Mardi visible = j+3 : mercredi, jeudi
-			nbJour = Parameters.getInt("visible.mardi");
-			break;
-		case 4: //Mercredi visible = j+2 : jeudi 
-			nbJour = Parameters.getInt("visible.mercredi");
-			break;
-		case 5: //Jeudi visible = j+6 : vendredi, samedi, dimanche, lundi , mardi
-			nbJour = Parameters.getInt("visible.jeudi");;
-			break;
-		case 6: //Vendredi visible = j+5 : samedi, dimanche, lundi , mardi
-			nbJour = Parameters.getInt("visible.vendredi");;
-			break;
-		case 7: //Samedi visible = j+4 : dimanche, lundi , mardi
-			nbJour = Parameters.getInt("visible.samedi");;
-			break;
-		default:
-			//on voit le lendemain
-			nbJour=2;
-			break;
-		}
-		
-		// reunion du 27/09/2010
-		// Les encadrant peuvent visualiser les 15 jours suivants à partir du jour même
-		// et consulter les plongées 2heures après l'heure de debut. 
-		if (adherent.isVesteRouge()) {
-			nbJour = Parameters.getInt("visible.max");
-			nbHeureVisibleApres = Parameters.getInt("visible.apres.encadrant");
-		}
-		
-		//si c'est pour la consultation des plongées en vues de l'inscription
-		//l'appel du service est fait avec le boolean visibleApres à false
-		// et on ne doit pas pouvoir s'inscrire après le debut de la plongée
-		if(! visibleApres){
-			nbHeureVisibleApres = 0;
-		}
+	public List<Plongee> rechercherPlongeePourAdherent()  throws TechnicalException{
+
+		List<Plongee> plongees = new ArrayList<Plongee>();
 
 		//Appel au service DAO
-		List<Plongee> plongeeTrouvees = plongeeDao.getPlongeesForFewDay(nbHeureVisibleApres, nbJour);
+		List<Plongee> plongeeTrouvees = plongeeDao.getPlongeesForAdherent();
 		for(Plongee plongee: plongeeTrouvees){
-			if(adherent.isVesteRouge() ){
+			if(isOuverte(plongee)){
 				plongees.add(plongee);
-			} else {
-				if(isOuverte(plongee)){
-					plongees.add(plongee);
-				}
 			}
+		}
+		return plongees;
+			
+	}
+
+	public List<Plongee> rechercherPlongeePourEncadrant()  throws TechnicalException{
+
+		List<Plongee> plongees = new ArrayList<Plongee>();
+		
+		//Appel au service DAO
+		List<Plongee> plongeeTrouvees = plongeeDao.getPlongeesForEncadrant(
+				Parameters.getInt("visible.apres.encadrant"),
+				Parameters.getInt("visible.max"));
+		
+		for(Plongee plongee: plongeeTrouvees){
+			plongees.add(plongee);
 		}
 		return plongees;
 			
@@ -177,7 +205,13 @@ public class PlongeeServiceImpl implements PlongeeService, Serializable {
 	public List<Plongee> rechercherPlongeePourInscriptionAdherent(Adherent adherent) throws TechnicalException{
 		
 		List<Plongee> plongeesForAdherent = new ArrayList<Plongee>();
-		List<Plongee> plongees = rechercherPlongeeProchainJour(adherent, false);
+		
+		List<Plongee> plongees = new ArrayList<Plongee>();
+		if(adherent.isVesteRouge()){
+			plongees = rechercherPlongeePourEncadrant();
+		} else {
+			plongees = rechercherPlongeePourAdherent();
+		}
 		
 		for (Plongee plongee : plongees) {
 			boolean isNotInscrit = true;
@@ -236,12 +270,7 @@ public class PlongeeServiceImpl implements PlongeeService, Serializable {
 	
 	public Integer getNbPlaceRestante(Plongee plongee)  throws TechnicalException{
 		Integer nbPlace =  plongee.getNbMaxPlaces() - adherentDao.getAdherentsInscrits(plongee,null,null,null).size();
-		//Pour ne pas afficher de nombre negatif
-//		if (nbPlace < 0){
-//			nbPlace = 0;
-//		}
 		return nbPlace;
-//		return 0;
 	}
 
 	public boolean isEnoughEncadrant(Plongee plongee) throws  TechnicalException {
@@ -487,7 +516,7 @@ public class PlongeeServiceImpl implements PlongeeService, Serializable {
 		//Envoi d'un mail si la desincription a lieu à moins de 24 heure de la plongée
 		Date dateDuJour = new Date();
 		Date datePlongee = plongee.getDate();
-		if(ResaUtil.calculNbHeure(dateDuJour, datePlongee) <= Parameters.getInt("desincription.alerte")){
+		if(ResaUtil.calculNbHeure(dateDuJour, datePlongee) < Parameters.getInt("desincription.alerte")){
 			try {
 				
 				PlongeeMail pMail = new PlongeeMail(PlongeeMail.MAIL_DESINSCRIPTION_24,

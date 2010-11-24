@@ -21,6 +21,7 @@ public class Plongee implements Serializable {
 	private String niveauDP;
 	private String lieux;
 	private Date date;
+	private Date dateVisible;
 	private Boolean ouvertureForcee;
 	private Adherent dp;
 	private Adherent pilote;
@@ -93,6 +94,12 @@ public class Plongee implements Serializable {
 	}
 	public void setDate(Date date) {
 		this.date = date;
+	}
+	public Date getDateVisible() {
+		return dateVisible;
+	}
+	public void setDateVisible(Date date) {
+		this.dateVisible = date;
 	}
 	public Boolean getOuvertureForcee() {
 		return ouvertureForcee;
