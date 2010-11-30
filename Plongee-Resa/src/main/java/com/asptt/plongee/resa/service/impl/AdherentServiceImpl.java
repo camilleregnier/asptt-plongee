@@ -156,14 +156,18 @@ public class AdherentServiceImpl implements AdherentService, Serializable {
 	}
 
 	@Override
-	public List<Message> rechercherMessage() {
+	public List<Message> rechercherMessage() throws TechnicalException{
 		return adherentDao.getMessage();
-//		List<String> libelles = adherentDao.getMessage();
-//		String lib = new String();
-//		for(String libelle : libelles){
-//			lib = lib.concat(libelle.concat("<br>"));
-//		}
-//		return lib;
+	}
+
+	@Override
+	public Message updateMessage(Message message) throws TechnicalException{
+		return adherentDao.updateMessage(message);
+	}
+	
+	@Override
+	public Message createMessage(Message message) throws TechnicalException{
+		return adherentDao.createMessage(message);
 	}
 	
 }

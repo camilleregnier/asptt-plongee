@@ -45,5 +45,9 @@ public interface AdherentService {
 	void updatePasswordAdherent(Adherent adherent);
 
 	void creerExterne(Adherent adherent);
+
+	Message updateMessage(Message message);
+
+	Message createMessage(Message message);
 	
 }

@@ -1,6 +1,8 @@
 package com.asptt.plongee.resa.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.wicket.authorization.strategies.role.Roles;
@@ -26,6 +28,11 @@ public class Adherent implements Serializable {
 	private Roles roles;
 	private String role;
 	private String password;
+	
+	private Date dateCM;
+	private Integer anneeCotisation;
+	private List<ContactUrgent> contacts= null;
+
 
 	
 	public String getPassword() {
@@ -250,5 +257,32 @@ public class Adherent implements Serializable {
 		else {
 			this.roles.add(role) ;
 		}
+	}
+
+	public Date getDateCM() {
+		return dateCM;
+	}
+
+	public void setDateCM(Date dateCM) {
+		this.dateCM = dateCM;
+	}
+
+	public Integer getAnneeCotisation() {
+		return anneeCotisation;
+	}
+
+	public void setAnneeCotisation(Integer anneeCotisation) {
+		this.anneeCotisation = anneeCotisation;
+	}
+
+	public List<ContactUrgent> getContacts() {
+		if(null == contacts){
+			contacts = new ArrayList<ContactUrgent>();
+		}
+		return contacts;
+	}
+
+	public void setContacts(List<ContactUrgent> contacts) {
+		this.contacts = contacts;
 	}
 }

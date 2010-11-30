@@ -30,6 +30,8 @@ public interface PlongeeDao extends GenericDao<Plongee, Integer>{
 
 	void supprimeAdherentPlongee(Plongee plongee, Adherent adherent) throws TechnicalException;
 
-	void supprimeAdherentAttente(Plongee plongee, Adherent adherent) throws TechnicalException;
+	void sortirAdherentAttente(Plongee plongee, Adherent adherent) throws TechnicalException;
+
+	void supprimerDeLaListeAttente(Plongee plongee, Adherent adherent, int indic) throws TechnicalException;
 
 }

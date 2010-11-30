@@ -285,7 +285,7 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements Serializable, Plo
 		try {
 			conex = getDataSource().getConnection();
 			StringBuffer sb = new StringBuffer();
-			sb.append("SELECT pl.`idPLONGEES`, pl.`DATE`, pl.`DEMIE_JOURNEE`, pl.`OUVERTURE_FORCEE`, pl.`NIVEAU_MINI`, pl.`NB_MAX_PLG`");
+			sb.append("SELECT pl.`idPLONGEES`, pl.`DATE`, pl.`DEMIE_JOURNEE`, pl.`OUVERTURE_FORCEE`, pl.`NIVEAU_MINI`, pl.`NB_MAX_PLG`, pl.`DATE_VISIBLE`");
 			sb.append(" FROM PLONGEE pl, INSCRIPTION_PLONGEE rel , ADHERENT ad");
 			sb.append(" WHERE license = ?");
 			sb.append(" AND license = adherent_license");
@@ -426,11 +426,12 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements Serializable, Plo
 		try {
 			conex = getDataSource().getConnection();
 			StringBuffer sb = new StringBuffer();
-			sb.append("INSERT INTO LISTE_ATTENTE (ADHERENT_LICENSE, PLONGEES_idPLONGEES, DATE_ATTENTE)");
-			sb.append(" VALUES (?, ?, current_timestamp)");
+			sb.append("INSERT INTO LISTE_ATTENTE (ADHERENT_LICENSE, PLONGEES_idPLONGEES, DATE_ATTENTE, SUPPRIMER)");
+			sb.append(" VALUES (?, ?, current_timestamp,?)");
 			PreparedStatement st = conex.prepareStatement(sb.toString());
 			st.setString(1, adherent.getNumeroLicense());
 			st.setInt(2, plongee.getId());
+			st.setInt(3, 0);
 			if (st.executeUpdate() == 0) {
 				throw new TechnicalException("L'adhérent"+adherent.getNumeroLicense()+
 						" n'a pu être inscrit en liste d'attente de la plongée:"+plongee.getId()+"."); 
@@ -447,7 +448,7 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements Serializable, Plo
 	 * En fait on ne supprime pas l'adherent
 	 * mais on init le champ Date_inscription à la date du jour
 	 */
-	public void supprimeAdherentAttente(Plongee plongee,
+	public void sortirAdherentAttente(Plongee plongee,
 			Adherent adherent) throws TechnicalException {
 		Connection conex=null;
 		try {
@@ -464,7 +465,7 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements Serializable, Plo
 		} catch (SQLException e) {
 			log.error(e.getMessage(), e);
 			throw new TechnicalException("L'adhérent"+adherent.getNumeroLicense()+
-					" n'a pu être supprimé de la liste d'attente de la plongée:"+plongee.getId()+".",e);
+					" n'a pu être sorti de la liste d'attente de la plongée:"+plongee.getId()+".",e);
 		} finally{
 			closeConnexion(conex);
 		}
@@ -473,7 +474,7 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements Serializable, Plo
 	public void moveAdherentAttenteToInscrit(Plongee plongee, Adherent adherent)
 			throws TechnicalException {
 			inscrireAdherentPlongee(plongee, adherent);
-			supprimeAdherentAttente(plongee, adherent);
+			sortirAdherentAttente(plongee, adherent);
 	}
 
 
@@ -512,6 +513,31 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements Serializable, Plo
 		List<Adherent> attente = adherentDao.getAdherentsWaiting(plongee);
 		plongee.setParticipantsEnAttente(attente);
 		return plongee;
+	}
+
+
+	@Override
+	public void supprimerDeLaListeAttente(Plongee plongee, Adherent adherent, int indic)  throws TechnicalException {
+		Connection conex=null;
+		try {
+			conex = getDataSource().getConnection();
+			StringBuffer sb = new StringBuffer();
+			sb.append("update LISTE_ATTENTE");
+			sb.append(" SET SUPPRIMER = ? ");
+			sb.append(" where adherent_license = ?  ");
+			sb.append(" and plongees_idplongees = ? ");
+			PreparedStatement st = conex.prepareStatement(sb.toString());
+			st.setInt(1, indic);
+			st.setString(2, adherent.getNumeroLicense());
+			st.setInt(3, plongee.getId());
+			st.executeUpdate();
+		} catch (SQLException e) {
+			log.error(e.getMessage(), e);
+			throw new TechnicalException("L'adhérent"+adherent.getNumeroLicense()+
+					" n'a pu être supprimé de la liste d'attente de la plongée:"+plongee.getId()+", indicateur = "+indic+".",e);
+		} finally{
+			closeConnexion(conex);
+		}	
 	}
 
 }
