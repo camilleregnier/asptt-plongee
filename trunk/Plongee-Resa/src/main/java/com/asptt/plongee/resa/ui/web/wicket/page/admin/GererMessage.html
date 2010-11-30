@@ -1,0 +1,19 @@
+<wicket:extend>
+<div wicket:id="infoLabel"/>
+	<table cellspacing="0" class="dataview">
+		<tr>
+			<th>Modifier</th>
+			<th>Libelle</th>
+			<th>DateDebut</th>
+			<th>DateFin</th>
+		</tr>
+		<tr wicket:id="simple">
+			<td><a href="#" wicket:id="modifier" title="Modifier">
+			<img wicket:message="src:select" class="no_cadre" alt="modifier"/></a></td>
+			<td><span wicket:id="libelle">[type]</span></td>
+			<td><span wicket:id="dateDebut">[dateDebut]</span></td>
+			<td><span wicket:id="dateFin">[dateFin]</span></td>
+		</tr>
+	</table>
+<div wicket:id="modalMessage"/>
+</wicket:extend>
