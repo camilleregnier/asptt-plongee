@@ -2,14 +2,20 @@ package com.asptt.plongee.resa.ui.web.wicket.page.admin;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Enumeration;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.authorization.strategies.role.Roles;
 import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
+import org.apache.wicket.datetime.StyleDateConverter;
+import org.apache.wicket.datetime.markup.html.form.DateTextField;
+import org.apache.wicket.extensions.yui.calendar.DatePicker;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
@@ -21,6 +27,7 @@ import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.util.lang.EnumeratedType;
 import org.apache.wicket.validation.validator.EmailAddressValidator;
 import org.apache.wicket.validation.validator.PatternValidator;
@@ -93,12 +100,23 @@ public class CreerAdherent extends TemplatePage {
 			List<String> roles = Arrays.asList(new String[] { "ADMIN", "USER", "SECRETARIAT" });
 			add(new ListMultipleChoice<String>("roles", roles));
 			
+			//Ajout du champs date du certificat medical
+			DateTextField dateCMTextFiled = new DateTextField("dateCM", new PropertyModel<Date>(model, "dateCM"), new StyleDateConverter("S-", true));
+			dateCMTextFiled.setRequired(true);
+			add(dateCMTextFiled);
+			dateCMTextFiled.add(new DatePicker());
+			
 			add(new AjaxButton("validAdherent") {
 
 				@Override
 				protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 					Adherent adherent = (Adherent) form.getModelObject();
 					try {
+						Date dateDuJour = new Date();
+						GregorianCalendar gc = new GregorianCalendar();
+						gc.setTime(dateDuJour);
+						int anneeCourante = gc.get(Calendar.YEAR);
+						adherent.setAnneeCotisation(new Integer(anneeCourante));
 						getResaSession().getAdherentService().creerAdherent(adherent);
 
 						setResponsePage(AccueilPage.class);

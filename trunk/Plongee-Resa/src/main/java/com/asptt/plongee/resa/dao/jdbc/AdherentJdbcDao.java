@@ -5,8 +5,12 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
 
@@ -16,6 +20,7 @@ import com.asptt.plongee.resa.dao.AdherentDao;
 import com.asptt.plongee.resa.dao.PlongeeDao;
 import com.asptt.plongee.resa.exception.TechnicalException;
 import com.asptt.plongee.resa.model.Adherent;
+import com.asptt.plongee.resa.model.ContactUrgent;
 import com.asptt.plongee.resa.model.Message;
 import com.asptt.plongee.resa.model.NiveauAutonomie;
 import com.asptt.plongee.resa.model.Plongee;
@@ -39,8 +44,8 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements Serializable, Ad
 		try {
 			conex = getDataSource().getConnection();
 			StringBuffer sb = new StringBuffer();
-			sb.append("INSERT INTO ADHERENT (`LICENSE`, `NOM`, `PRENOM`, `NIVEAU`, `TELEPHONE`, `MAIL`, `ENCADRANT`, `PILOTE`, `DATE_DEBUT`, `ACTIF`, `PASSWORD`)");
-			sb.append(" VALUES (?, ?, ?, ?, ?, ?, ?, ?, current_timestamp, ?, ?)");
+			sb.append("INSERT INTO ADHERENT (`LICENSE`, `NOM`, `PRENOM`, `NIVEAU`, `TELEPHONE`, `MAIL`, `ENCADRANT`, `PILOTE`, `DATE_DEBUT`, `ACTIF`, `PASSWORD`, `DATE_CM`, `ANNEE_COTI`)");
+			sb.append(" VALUES (?, ?, ?, ?, ?, ?, ?, ?, current_timestamp, ?, ?, ?, ?)");
 			PreparedStatement st = conex.prepareStatement(sb.toString());
 			st.setString(1, adh.getNumeroLicense());
 			st.setString(2, adh.getNom());
@@ -60,6 +65,9 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements Serializable, Ad
 			}
 			st.setInt(9, adh.getActifInt());
 			st.setString(10, adh.getNumeroLicense());
+			Timestamp tsCm = new Timestamp(adh.getDateCM().getTime());
+			st.setTimestamp(11, tsCm);
+			st.setInt(12, adh.getAnneeCotisation());
 			if (st.executeUpdate() == 0) {
 				throw new TechnicalException(
 						"L'adhérent n'a pu être enregistré");
@@ -82,6 +90,10 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements Serializable, Ad
 					}
 					sb = new StringBuffer();
 				}
+			}
+			// gestion des Contacts
+			if(adh.getContacts().size() > 0){
+					createContact(adh.getContacts(), adh);
 			}
 			return adh;
 		} catch (SQLException e) {
@@ -126,7 +138,9 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements Serializable, Ad
 			sb.append(" PILOTE = ?,");
 			sb.append(" ACTIF = ?,");
 			sb.append(" NOM = ?,");
-			sb.append(" PRENOM = ?");
+			sb.append(" PRENOM = ?,");
+			sb.append(" DATE_CM = ?,");
+			sb.append(" ANNEE_COTI = ?");
 			sb.append(" WHERE license = ?");
 
 			PreparedStatement st = conex.prepareStatement(sb.toString());
@@ -146,7 +160,10 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements Serializable, Ad
 			st.setInt(6, adh.getActifInt());
 			st.setString(7, adh.getNom());
 			st.setString(8, adh.getPrenom());
-			st.setString(9, adh.getNumeroLicense());
+			Timestamp ts = new Timestamp(adh.getDateCM().getTime());
+			st.setTimestamp(9, ts);
+			st.setInt(10, adh.getAnneeCotisation());
+			st.setString(11, adh.getNumeroLicense());
 			if (st.executeUpdate() == 0) {
 				throw new TechnicalException(
 						"L'adhérent n'a pu être enregistré");
@@ -416,7 +433,7 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements Serializable, Ad
 			String generiqueName = "%";
 			generiqueName.concat(name);
 			generiqueName.concat("%");
-			StringBuffer sb = new StringBuffer("select LICENSE, NOM, PRENOM, NIVEAU, TELEPHONE, MAIL, ENCADRANT, PILOTE, ACTIF, PASSWORD ");
+			StringBuffer sb = new StringBuffer("select LICENSE, NOM, PRENOM, NIVEAU, TELEPHONE, MAIL, ENCADRANT, PILOTE, ACTIF, PASSWORD, DATE_CM, ANNEE_COTI ");
 			sb.append(" from ADHERENT a ");
 			sb.append(" where NOM LIKE ? order by NOM");
 			st = conex.prepareStatement(sb.toString());
@@ -442,7 +459,7 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements Serializable, Ad
 		Connection conex=null;
 		try {
 			conex = getDataSource().getConnection();
-			StringBuffer sb = new StringBuffer("select LICENSE, NOM, PRENOM, NIVEAU, TELEPHONE, MAIL, ENCADRANT, PILOTE, ACTIF, PASSWORD ");
+			StringBuffer sb = new StringBuffer("select LICENSE, NOM, PRENOM, NIVEAU, TELEPHONE, MAIL, ENCADRANT, PILOTE, ACTIF, PASSWORD, DATE_CM, ANNEE_COTI ");
 			sb.append(" FROM ADHERENT a, REL_ADHERENT_ROLES rel, ROLES r");
 			sb.append(" where a.license = rel.adherent_license");
 			sb.append(" and rel.roles_idRoles = r.idroles");
@@ -478,7 +495,7 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements Serializable, Ad
 		Connection conex=null;
 		try {
 			conex = getDataSource().getConnection();
-			StringBuffer sb = new StringBuffer("select LICENSE, NOM, PRENOM, NIVEAU, TELEPHONE, MAIL, ENCADRANT, PILOTE, ACTIF, PASSWORD ");
+			StringBuffer sb = new StringBuffer("select LICENSE, NOM, PRENOM, NIVEAU, TELEPHONE, MAIL, ENCADRANT, PILOTE, ACTIF, PASSWORD, DATE_CM, ANNEE_COTI ");
 			sb.append(" from PLONGEE p, INSCRIPTION_PLONGEE i, ADHERENT a ");
 			sb.append(" where idPLONGEES = ?");
 			sb.append(" and idPLONGEES = PLONGEES_idPLONGEES ");
@@ -538,12 +555,13 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements Serializable, Ad
 		try {
 			conex = getDataSource().getConnection();
 			StringBuffer sb = new StringBuffer(
-					"select LICENSE, NOM, PRENOM, NIVEAU, TELEPHONE, MAIL, ENCADRANT, PILOTE, ACTIF, PASSWORD ");
+					"select LICENSE, NOM, PRENOM, NIVEAU, TELEPHONE, MAIL, ENCADRANT, PILOTE, ACTIF, PASSWORD, DATE_CM, ANNEE_COTI ");
 			sb.append(" from PLONGEE p, LISTE_ATTENTE la, ADHERENT a ");
 			sb.append(" where idPLONGEES = ?");
 			sb.append(" and idPLONGEES = PLONGEES_idPLONGEES ");
 			sb.append(" and ADHERENT_LICENSE = LICENSE ");
 			sb.append(" and DATE_INSCRIPTION is null");
+			sb.append(" and SUPPRIMER = 0");
 			sb.append(" order by DATE_ATTENTE");
 			st = conex.prepareStatement(sb.toString());
 			st.setInt(1, plongee.getId());
@@ -614,7 +632,13 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements Serializable, Ad
 			adherent.setPilote(false);
 		}
 		adherent.setPassword(rs.getString("PASSWORD"));
+		// Pour les Contacts
+		adherent.setContacts(getContact(adherent));
 		
+		//Pour les nouveaux champs date du certificat medical et annee de cotisation
+		Date dateCM = rs.getDate("DATE_CM");
+		adherent.setDateCM(dateCM);
+		adherent.setAnneeCotisation(rs.getInt("ANNEE_COTI"));
 		return adherent;
 	}
 
@@ -624,8 +648,7 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements Serializable, Ad
 		Connection conex=null;
 		try {
 			conex = getDataSource().getConnection();
-			StringBuffer sb = new StringBuffer("select idMESSAGE, LIBELLE, DATE_DEBUT, DATE_FIN ");
-			sb.append(" from MESSAGE ");
+			StringBuffer sb = new StringBuffer("select * from MESSAGE");
 			sb.append(" where date_debut <= CURRENT_TIMESTAMP()");
 			sb.append(" and CURRENT_TIMESTAMP() < date_fin " );
 			sb.append(" or date_fin is null " );
@@ -649,6 +672,74 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements Serializable, Ad
 		}
 	}
 
+	@Override
+	public Message updateMessage(Message message) throws TechnicalException {
+		Connection conex=null;
+		try {
+			conex = getDataSource().getConnection();
+			StringBuffer sb = new StringBuffer();
+			sb.append("UPDATE MESSAGE");
+			sb.append(" SET LIBELLE = ?,");
+			sb.append(" DATE_DEBUT = ?,");
+			sb.append(" DATE_FIN = ?");
+			sb.append(" WHERE IDMESSAGE = ?");
+
+			PreparedStatement st = conex.prepareStatement(sb.toString());
+			st.setString(1, message.getLibelle());
+			Timestamp tsDeb = new Timestamp(message.getDateDebut().getTime());
+			st.setTimestamp(2, tsDeb);
+			if (null == message.getDateFin()) {
+				st.setDate(3, null);
+			} else {
+				Timestamp tsFin = new Timestamp(message.getDateFin().getTime());
+				st.setTimestamp(3, tsFin);
+			}
+			st.setInt(4, message.getId());
+			if (st.executeUpdate() == 0) {
+				throw new TechnicalException(
+						"Le message id n°"+message.getId()+"n'a pu être mis à jour");
+			}
+			return message;
+		} catch (SQLException e) {
+			log.error(e.getMessage(), e);
+			throw new TechnicalException(e);
+		} finally {
+			closeConnexion(conex);
+		}
+
+	}
+	
+	@Override
+	public Message createMessage(Message message) throws TechnicalException {
+		Connection conex=null;
+		try {
+			conex = getDataSource().getConnection();
+			StringBuffer sb = new StringBuffer();
+			sb.append("INSERT INTO MESSAGE (`LIBELLE`, `DATE_DEBUT`, `DATE_FIN`)");
+			sb.append(" VALUES (?, ?, ?)");
+			PreparedStatement st = conex.prepareStatement(sb.toString());
+			st.setString(1, message.getLibelle());
+			Timestamp tsDeb = new Timestamp(message.getDateDebut().getTime());
+			st.setTimestamp(2, tsDeb);
+			if (null == message.getDateFin()) {
+				st.setDate(3, null);
+			} else {
+				Timestamp tsFin = new Timestamp(message.getDateFin().getTime());
+				st.setTimestamp(3, tsFin);
+			}
+			if (st.executeUpdate() == 0) {
+				throw new TechnicalException(
+						"Le message n'a pu être creé");
+			}
+			return message;
+		} catch (SQLException e) {
+			log.error(e.getMessage(), e);
+			throw new TechnicalException(e);
+		} finally {
+			closeConnexion(conex);
+		}
+	}
+	
 	private Message wrapMessage(ResultSet rs) throws SQLException,	TechnicalException {
 		int id = rs.getInt("idMESSAGE");
 		String libelle = rs.getString("LIBELLE");
@@ -662,6 +753,142 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements Serializable, Ad
 		message.setDateFin(dateFin);
 		
 		return message;
+	}
+
+	@Override
+	public List<ContactUrgent> getContact(Adherent adh) throws TechnicalException {
+		Connection conex=null;
+		try {
+			conex = getDataSource().getConnection();
+			StringBuffer sb = new StringBuffer();
+			sb.append("SELECT cu.idCONTACT, cu.TITRE, cu.NOM, cu.PRENOM, cu.TELEPHONE, cu.MAIL");
+			sb.append(" FROM REL_ADHERENT_CONTACT rel , CONTACT_URGENT cu");
+			sb.append(" where rel.ADHERENT_LICENSE = ?" );
+			sb.append(" and  rel.CONTACT_URGENT_IDCONTACT = cu.IDCONTACT" );
+			sb.append(" order by cu.IDCONTACT" );
+
+			PreparedStatement st = conex.prepareStatement(sb.toString());
+			st.setString(1, adh.getNumeroLicense());
+			ResultSet rs = st.executeQuery();
+
+			List<ContactUrgent> contacts = new ArrayList<ContactUrgent>();
+			while (rs.next()) {
+				ContactUrgent contact = wrapContact(rs);
+				contacts.add(contact);
+			}
+			return contacts;
+			
+		} catch (SQLException e) {
+			log.error(e.getMessage(), e);
+			throw new TechnicalException(e);
+		} finally {
+			closeConnexion(conex);
+		}
+	}
+
+	@Override
+	public void createContact(List<ContactUrgent> contacts, Adherent adh) throws TechnicalException {
+		Connection conex=null;
+		try {
+			conex = getDataSource().getConnection();
+			StringBuffer sb = new StringBuffer();
+			PreparedStatement st = null;
+			for(ContactUrgent contact : contacts){
+				sb.append("INSERT INTO CONTACT_URGENT (`TITRE`, `NOM`, `PRENOM`, `TELEPHONE`, `MAIL`)");
+				sb.append(" VALUES (?, ?, ?, ?, ?)");
+				st = conex.prepareStatement(sb.toString());
+				st.setString(1, contact.getTitre());
+				st.setString(2, contact.getNom());
+				st.setString(3, contact.getPrenom());
+				st.setString(4, contact.getTelephone());
+				st.setString(5, contact.getMail());
+				if (st.executeUpdate() == 0) {
+					throw new TechnicalException(
+							"Le contact :"+contact.getNom()+"n'a pu être creé");
+				}
+			}
+//			//On s'occupe de la table de relation
+//			// Dans un premier temps on supprime tous les contacts de la table de relation pour cet adherent
+//			sb = new StringBuffer();
+//			sb.append("DELETE FROM REL_ADHERENT_CONTACT WHERE ADHERENT_LICENSE = ? ");
+//			st = conex.prepareStatement(sb.toString());
+//			st.setString(1, adh.getNumeroLicense());
+//			if (st.executeUpdate() == 0) {
+//				throw new TechnicalException(
+//						"Impossible de supprimer les contacts de l'adherent : "+adh.getNom());
+//			}
+			// Dans en 
+			for(ContactUrgent contact : contacts){
+				sb = new StringBuffer();
+				sb.append("INSERT INTO REL_ADHERENT_CONTACT (`ADHERENT_LICENSE`, `CONTACT_URGENT_IDCONTACT`)");
+				sb.append(" VALUES (?, ?)");
+				st = conex.prepareStatement(sb.toString());
+				st.setString(1, adh.getNumeroLicense());
+				st.setInt(2, contact.getId());
+				if (st.executeUpdate() == 0) {
+					throw new TechnicalException(
+							"La relation adherent"+adh.getNom()+" le contact :"+contact.getNom()+", "+ contact.getPrenom()+"n'a pu être creé");
+				}
+			}
+		} catch (SQLException e) {
+			log.error(e.getMessage(), e);
+			throw new TechnicalException(e);
+		} finally {
+			closeConnexion(conex);
+		}
+	}
+	
+	@Override
+	public ContactUrgent updateContact(ContactUrgent contact) throws TechnicalException {
+		Connection conex=null;
+		try {
+			conex = getDataSource().getConnection();
+			StringBuffer sb = new StringBuffer();
+			sb.append("UPDATE CONTACT_URGENT");
+			sb.append(" SET TITRE = ?,");
+			sb.append(" SET NOM = ?,");
+			sb.append(" SET PRENOM = ?,");
+			sb.append(" SET TELEPHONE = ?,");
+			sb.append(" SET MAIL = ?,");
+			sb.append(" WHERE IDCONTACT = ?");
+
+			PreparedStatement st = conex.prepareStatement(sb.toString());
+			st.setString(1, contact.getTitre());
+			st.setString(2, contact.getNom());
+			st.setString(3, contact.getPrenom());
+			st.setString(4, contact.getTelephone());
+			st.setString(5, contact.getMail());
+			st.setInt(6, contact.getId());
+			if (st.executeUpdate() == 0) {
+				throw new TechnicalException(
+						"Le Contact id : "+contact.getId()+"n'a pu être mis à jour");
+			}
+			return contact;
+		} catch (SQLException e) {
+			log.error(e.getMessage(), e);
+			throw new TechnicalException(e);
+		} finally {
+			closeConnexion(conex);
+		}
+	}
+
+	private ContactUrgent wrapContact(ResultSet rs) throws SQLException,	TechnicalException {
+		int id = rs.getInt("idCONTACT");
+		String titre = rs.getString("TITRE");
+		String nom = rs.getString("NOM");
+		String prenom = rs.getString("PRENOM");
+		String telephone = rs.getString("TELEPHONE");
+		String mail = rs.getString("MAIL");
+		
+		ContactUrgent contact = new ContactUrgent();
+		contact.setId(id);
+		contact.setTitre(titre);
+		contact.setNom(nom);
+		contact.setPrenom(prenom);
+		contact.setTelephone(telephone);
+		contact.setMail(mail);
+		
+		return contact;
 	}
 
 }

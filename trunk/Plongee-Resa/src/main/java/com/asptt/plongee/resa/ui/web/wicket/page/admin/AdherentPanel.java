@@ -1,13 +1,20 @@
 package com.asptt.plongee.resa.ui.web.wicket.page.admin;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.behavior.BehaviorsUtil;
+import org.apache.wicket.datetime.StyleDateConverter;
+import org.apache.wicket.datetime.markup.html.form.DateTextField;
+import org.apache.wicket.extensions.yui.calendar.DatePicker;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.CheckBox;
@@ -23,7 +30,9 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.validation.validator.EmailAddressValidator;
+import org.apache.wicket.validation.validator.MinimumValidator;
 import org.apache.wicket.validation.validator.PatternValidator;
+import org.apache.wicket.validation.validator.RangeValidator;
 import org.apache.wicket.validation.validator.StringValidator.ExactLengthValidator;
 
 import com.asptt.plongee.resa.exception.TechnicalException;
@@ -96,6 +105,26 @@ public class AdherentPanel extends Panel {
 			List<String> roles = Arrays.asList(new String[] { "ADMIN", "USER",
 					"SECRETARIAT" });
 			add(new ListMultipleChoice<String>("roles", roles));
+			
+			//Ajout des nouveaux champs date du certificat medical et de l'année de cotisation
+			DateTextField dateCMTextFiled = new DateTextField("dateCM", new PropertyModel<Date>(model, "dateCM"), new StyleDateConverter("S-", true));
+			dateCMTextFiled.setRequired(true);
+			add(dateCMTextFiled);
+			dateCMTextFiled.add(new DatePicker());
+			
+			Date dateDuJour = new Date();
+			GregorianCalendar gc = new GregorianCalendar();
+			gc.setTime(dateDuJour);
+			int anneeCourante = gc.get(Calendar.YEAR);
+			int nextAnnee = anneeCourante + 1;
+			
+			List<Integer> annees = new ArrayList<Integer>();
+			annees.add(new Integer(anneeCourante));
+			annees.add(new Integer(nextAnnee));
+			
+			DropDownChoice<Integer> listAnnee = new DropDownChoice<Integer>("anneeCotisation", annees);
+			listAnnee.setRequired(true);
+			add(listAnnee);
 			
 			add(new AjaxButton("validPlongee") {
 				@Override

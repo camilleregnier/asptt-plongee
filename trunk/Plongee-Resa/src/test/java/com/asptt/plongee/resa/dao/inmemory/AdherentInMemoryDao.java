@@ -9,6 +9,7 @@ import org.apache.wicket.authorization.strategies.role.Roles;
 import com.asptt.plongee.resa.dao.AdherentDao;
 import com.asptt.plongee.resa.exception.TechnicalException;
 import com.asptt.plongee.resa.model.Adherent;
+import com.asptt.plongee.resa.model.ContactUrgent;
 import com.asptt.plongee.resa.model.Message;
 import com.asptt.plongee.resa.model.Plongee;
 
@@ -156,6 +157,39 @@ public class AdherentInMemoryDao implements AdherentDao{
 
 	@Override
 	public List<Message> getMessage() throws TechnicalException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void createContact(List<ContactUrgent> contacts, Adherent adh)
+			throws TechnicalException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Message createMessage(Message message) throws TechnicalException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<ContactUrgent> getContact(Adherent adh)
+			throws TechnicalException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ContactUrgent updateContact(ContactUrgent contact)
+			throws TechnicalException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Message updateMessage(Message message) throws TechnicalException {
 		// TODO Auto-generated method stub
 		return null;
 	}

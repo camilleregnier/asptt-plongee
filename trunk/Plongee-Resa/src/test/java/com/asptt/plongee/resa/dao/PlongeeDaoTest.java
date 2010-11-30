@@ -72,7 +72,7 @@ public class PlongeeDaoTest extends AbstractDaoTest {
 		Plongee pl = new Plongee();
 		pl.setId(6);
 		try {
-			plongeeDao.supprimeAdherentAttente(pl, adh);
+			plongeeDao.sortirAdherentAttente(pl, adh);
 			logger.info("On a bien supprimé : "+adh.getNumeroLicense()+" a de la liste d'attente de la plongee : "+pl.getId()+".");
 		} catch (TechnicalException e) {
 			Assert.fail("suppression liste attente d'un adherent plantée");

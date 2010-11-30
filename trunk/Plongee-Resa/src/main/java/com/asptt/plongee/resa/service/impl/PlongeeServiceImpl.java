@@ -551,7 +551,18 @@ public class PlongeeServiceImpl implements PlongeeService, Serializable {
 	}
 
 	public void deInscrireAdherentEnListeAttente(Plongee plongee, Adherent adherent)  throws TechnicalException {
-		plongeeDao.supprimeAdherentAttente(plongee, adherent);
+		plongeeDao.sortirAdherentAttente(plongee, adherent);
+	}
+
+	/**
+	 * Met à jour l'indicateur de suppression
+	 * indic = 1 vient l'admin
+	 * indic = 2 vient l'adherent lui même
+	 * indic = 3 vient du secretariat
+	 */
+	@Override
+	public void supprimerDeLaListeDattente(Plongee plongee, Adherent adherent,	int indic) throws TechnicalException {
+		plongeeDao.supprimerDeLaListeAttente(plongee, adherent, indic);
 	}
 	
 }

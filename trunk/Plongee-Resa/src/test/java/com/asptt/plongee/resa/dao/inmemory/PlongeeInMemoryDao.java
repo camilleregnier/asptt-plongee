@@ -95,7 +95,7 @@ public class PlongeeInMemoryDao implements PlongeeDao {
 		// TODO Auto-generated method stub
 	}
 
-	public void supprimeAdherentAttente(Plongee plongee, Adherent adherent)
+	public void sortirAdherentAttente(Plongee plongee, Adherent adherent)
 			throws TechnicalException {
 		// TODO Auto-generated method stub
 		
@@ -146,5 +146,12 @@ public class PlongeeInMemoryDao implements PlongeeDao {
 			throws TechnicalException {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public void supprimerDeLaListeAttente(Plongee plongee, Adherent adherent,
+			int indic) throws TechnicalException {
+		// TODO Auto-generated method stub
+		
 	}
 }

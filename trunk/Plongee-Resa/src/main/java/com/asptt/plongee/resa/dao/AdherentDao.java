@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.asptt.plongee.resa.exception.TechnicalException;
 import com.asptt.plongee.resa.model.Adherent;
+import com.asptt.plongee.resa.model.ContactUrgent;
 import com.asptt.plongee.resa.model.Message;
 import com.asptt.plongee.resa.model.Plongee;
 
@@ -37,4 +38,15 @@ public interface AdherentDao extends GenericDao<Adherent, String> {
 	Adherent authenticateAdherent(String id, String pwd) throws TechnicalException;
 
 	List<Message> getMessage() throws TechnicalException;
+
+	Message updateMessage(Message message) throws TechnicalException;
+
+	Message createMessage(Message message) throws TechnicalException;
+
+	List<ContactUrgent> getContact(Adherent adh) throws TechnicalException;
+
+	void createContact(List<ContactUrgent> contacts, Adherent adh) throws TechnicalException;
+	
+	ContactUrgent updateContact(ContactUrgent contact) throws TechnicalException;
+
 }

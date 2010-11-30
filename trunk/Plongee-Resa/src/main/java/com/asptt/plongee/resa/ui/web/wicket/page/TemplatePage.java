@@ -15,9 +15,11 @@ import org.apache.wicket.model.Model;
 import com.asptt.plongee.resa.ui.web.wicket.ResaSession;
 import com.asptt.plongee.resa.ui.web.wicket.page.admin.AnnulerPlongee;
 import com.asptt.plongee.resa.ui.web.wicket.page.admin.CreerAdherent;
+import com.asptt.plongee.resa.ui.web.wicket.page.admin.CreerMessage;
 import com.asptt.plongee.resa.ui.web.wicket.page.admin.CreerPlongee;
 import com.asptt.plongee.resa.ui.web.wicket.page.admin.GererAdherents;
 import com.asptt.plongee.resa.ui.web.wicket.page.admin.GererListeAttenteOne;
+import com.asptt.plongee.resa.ui.web.wicket.page.admin.GererMessage;
 import com.asptt.plongee.resa.ui.web.wicket.page.admin.GererPlongeeAOuvrirOne;
 import com.asptt.plongee.resa.ui.web.wicket.page.consultation.ConsulterPlongees;
 import com.asptt.plongee.resa.ui.web.wicket.page.inscription.DeInscriptionPlongeePage;
@@ -64,6 +66,8 @@ public abstract class TemplatePage extends WebPage {
 		adminMenus.add(addListeAttentePlongeeLink());
 		adminMenus.add(addCreerAdherentLink());
 		adminMenus.add(addGererAdherentLink());
+		adminMenus.add(addGererMessageLink());
+		adminMenus.add(addCreerMessageLink());
 		add(adminMenus);
 		//menu SECRETARIAT
 		secretariatMenus.add(addInscrireAdherentLink());
@@ -184,6 +188,32 @@ public abstract class TemplatePage extends WebPage {
 
 			public void onClick() {
 				setResponsePage(GererAdherents.class);
+			}
+		};
+		add(link);
+		return link;
+	}
+	
+	private Link addGererMessageLink() {
+		Link link = new Link("gererMessage") {
+		//DefaultButtonImageResource def = new DefaultButtonImageResource("Cancel"){
+			private static final long serialVersionUID = 1L;
+
+			public void onClick() {
+				setResponsePage(GererMessage.class);
+			}
+		};
+		add(link);
+		return link;
+	}
+	
+	private Link addCreerMessageLink() {
+		Link link = new Link("creerMessage") {
+		//DefaultButtonImageResource def = new DefaultButtonImageResource("Cancel"){
+			private static final long serialVersionUID = 1L;
+
+			public void onClick() {
+				setResponsePage(CreerMessage.class);
 			}
 		};
 		add(link);
