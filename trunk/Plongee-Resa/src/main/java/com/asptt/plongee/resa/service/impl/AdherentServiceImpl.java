@@ -2,6 +2,7 @@ package com.asptt.plongee.resa.service.impl;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.TreeSet;
@@ -14,6 +15,7 @@ import com.asptt.plongee.resa.model.Message;
 import com.asptt.plongee.resa.model.Plongee;
 import com.asptt.plongee.resa.model.ResaConstants;
 import com.asptt.plongee.resa.service.AdherentService;
+import com.asptt.plongee.resa.util.ResaUtil;
 
 public class AdherentServiceImpl implements AdherentService, Serializable {
 
@@ -60,7 +62,6 @@ public class AdherentServiceImpl implements AdherentService, Serializable {
 	 * Cette methode est appelée uniquement par l'AdherentDataProvider
 	 * dans le seul cas ou il faut faire une recherche : normalement jamais!
 	 */
-	@Override
 	public List<Adherent> rechercherAdherents(int first, int count) throws TechnicalException{
 		TreeSet tAdh = new TreeSet(new AdherentComparatorNom());
 		tAdh.addAll(rechercherAdherentsTous());
@@ -155,19 +156,26 @@ public class AdherentServiceImpl implements AdherentService, Serializable {
 			adherentDao.create(adherent);
 	}
 
-	@Override
 	public List<Message> rechercherMessage() throws TechnicalException{
 		return adherentDao.getMessage();
 	}
 
-	@Override
 	public Message updateMessage(Message message) throws TechnicalException{
 		return adherentDao.updateMessage(message);
 	}
 	
-	@Override
 	public Message createMessage(Message message) throws TechnicalException{
 		return adherentDao.createMessage(message);
 	}
 	
+	public int checkCertificatMedical(Adherent adherent) throws TechnicalException{
+		int result = 1;
+		List<Integer> chek = ResaUtil.calculNbMois(adherent.getDateCM(), new Date());
+		if(chek.get(0) > 12){
+			result = -1;
+		} else if(chek.get(0) >= 11){
+			result = 0;
+		}
+		return result;
+	}
 }

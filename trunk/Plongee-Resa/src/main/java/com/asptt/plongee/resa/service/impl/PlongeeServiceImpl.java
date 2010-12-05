@@ -521,7 +521,7 @@ public class PlongeeServiceImpl implements PlongeeService, Serializable {
 				
 				PlongeeMail pMail = new PlongeeMail(PlongeeMail.MAIL_DESINSCRIPTION_24,
 						plongee, adherent);
-				pMail.sendMail("ADMIN");
+				pMail.sendMail("ADMIN",adherent);
 			} catch (MessagingException e) {
 				e.printStackTrace();
 			}
