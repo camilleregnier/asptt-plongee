@@ -2,6 +2,7 @@ package com.asptt.plongee.resa.service;
 
 import java.util.List;
 
+import com.asptt.plongee.resa.exception.TechnicalException;
 import com.asptt.plongee.resa.model.Adherent;
 import com.asptt.plongee.resa.model.Message;
 import com.asptt.plongee.resa.model.Plongee;
@@ -49,5 +50,7 @@ public interface AdherentService {
 	Message updateMessage(Message message);
 
 	Message createMessage(Message message);
+
+	int checkCertificatMedical(Adherent adherent);
 	
 }
