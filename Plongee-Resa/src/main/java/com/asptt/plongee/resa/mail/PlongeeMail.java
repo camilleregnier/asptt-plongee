@@ -63,6 +63,25 @@ public final class PlongeeMail {
 		}
 	}
 
+	public void sendMail(String destinataire, Adherent adherent) throws ResaException{
+		List<String> destis = null;
+		try {
+			if(destinataire.equalsIgnoreCase("ADMIN")){
+				destis = getDestisAdmin();
+			} else if (destinataire.equalsIgnoreCase("ENCADRANT")){
+				destis = getDestisEncadrant();
+			}
+			for (String desti : destis){
+				email.addBcc(desti);
+			}
+			email.addBcc(adherent.getMail());
+			email.send();
+		} catch (MessagingException e) {
+			e.printStackTrace();
+			logger.error("pb lors de l'envoi d'un mail");
+		}
+	}
+
 	public Email getEmail() {
 		return email;
 	}
