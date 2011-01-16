@@ -169,7 +169,8 @@ public final class PlongeeMail {
 		case MAIL_INSCRIPTION_SUR_PLONGEE_FERMEE: 
 			this.email.setSubject("Inscription sur la plong\u00e9e du : "+dateAffichee+" ("+plongee.getType()+") encore ferm\u00e9e");
 			sb = new StringBuffer("Bonjour,\n");
-			sb.append("L'encadrant / P4 "+adherent.getPrenom()+" "+adherent.getNom()+" \n");
+			String niveau = adherent.getPrerogative(); 
+			sb.append("L'encadrant / "+niveau+" "+adherent.getPrenom()+" "+adherent.getNom()+" \n");
 			sb.append("viens de s'inscrire \u00e0 la plong\u00e9e du "+dateAffichee+" ("+plongee.getType()+")\n");
 			sb.append("\n");
 			sb.append("Cette plong\u00e9e est encore ferm\u00e9e.\n");

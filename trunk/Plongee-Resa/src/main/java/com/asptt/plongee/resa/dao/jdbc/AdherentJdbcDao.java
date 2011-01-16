@@ -53,10 +53,10 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements Serializable, Ad
 			st.setString(4, adh.getNiveau());
 			st.setString(5, adh.getTelephone());
 			st.setString(6, adh.getMail());
-			if (null == adh.getEncadrement()) {
-				st.setString(7, null);
-			} else {
+			if (adh.isEncadrent()) {
 				st.setString(7, adh.getEncadrement());
+			} else {
+				st.setString(7, null);
 			}
 			if (adh.isPilote()) {
 				st.setInt(8, 1);
@@ -147,10 +147,10 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements Serializable, Ad
 			st.setString(1, adh.getNiveau());
 			st.setString(2, adh.getTelephone());
 			st.setString(3, adh.getMail());
-			if (null == adh.getEncadrement()) {
-				st.setString(4, null);
-			} else {
+			if (adh.isEncadrent()) {
 				st.setString(4, adh.getEncadrement());
+			} else {
+				st.setString(4, null);
 			}
 			if (adh.isPilote()) {
 				st.setInt(5, 1);
@@ -761,7 +761,7 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements Serializable, Ad
 		try {
 			conex = getDataSource().getConnection();
 			StringBuffer sb = new StringBuffer();
-			sb.append("SELECT cu.idCONTACT, cu.TITRE, cu.NOM, cu.PRENOM, cu.TELEPHONE, cu.MAIL");
+			sb.append("SELECT cu.idCONTACT, cu.TITRE, cu.NOM, cu.PRENOM, cu.TELEPHONE, cu.TELEPHTWO");
 			sb.append(" FROM REL_ADHERENT_CONTACT rel , CONTACT_URGENT cu");
 			sb.append(" where rel.ADHERENT_LICENSE = ?" );
 			sb.append(" and  rel.CONTACT_URGENT_IDCONTACT = cu.IDCONTACT" );

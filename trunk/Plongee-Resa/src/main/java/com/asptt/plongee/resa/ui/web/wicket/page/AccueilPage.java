@@ -16,6 +16,7 @@ import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 
+import com.asptt.plongee.resa.exception.ResaException;
 import com.asptt.plongee.resa.exception.TechnicalException;
 import com.asptt.plongee.resa.model.Adherent;
 import com.asptt.plongee.resa.model.Message;
@@ -30,15 +31,14 @@ public class AccueilPage extends TemplatePage {
 	
 	public AccueilPage() { 
 
-		Adherent a = getResaSession().getAdherent();
+		Adherent adh = getResaSession().getAdherent();
 		
 		// Si l'adhérent est identifié mais qu'il n'a pas changé son password (password = licence)
 		if (getResaSession().getAdherent().getNumeroLicense().equalsIgnoreCase(getResaSession().getAdherent().getPassword())){
 			setResponsePage(ModifPasswordPage.class);
 		}
 		
-//		String msg = getResaSession().getAdherentService().rechercherMessage();
-		add(new Label("hello", "Bienvenue:"+a.getPrenom()+", nous sommes le : " + calculerDateCourante()));
+		String libMesg = "Bienvenue:"+adh.getPrenom()+", nous sommes le : " + calculerDateCourante();
 	   
 		try {
 			List<Message> messages = getResaSession().getAdherentService().rechercherMessage();
@@ -68,6 +68,17 @@ public class AccueilPage extends TemplatePage {
 				}
 
 			});
+			String libCM ="";
+			try {
+				getResaSession().getPlongeeService().checkCertificatMedical(
+						getResaSession().getAdherent());
+			} catch (ResaException e) {
+				libCM=e.getKey();
+			}
+			
+			add(new Label("hello", libMesg));
+			add(new Label("certificat", libCM));
+
 		}	catch (TechnicalException e) {
 			e.printStackTrace();
 			ErreurTechniquePage etp = new ErreurTechniquePage(e);

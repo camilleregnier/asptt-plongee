@@ -131,7 +131,7 @@ public abstract class DesInscriptionPanel extends Panel {
 			String infoPlongee =  "\u00e0 la plong\u00e9e du " + plongee.getDate() + " " + plongee.getType() + " ?";
 			String infoEncadrant = "";
 			
-			if(plongeur.getEncadrement() != null){
+			if(plongeur.isEncadrent()){
 				ResaSession resaSession = (ResaSession) getApplication()
 				.getSessionStore().lookup(getRequest());
 				

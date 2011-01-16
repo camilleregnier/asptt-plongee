@@ -167,50 +167,19 @@ public class PlongeeServiceTest extends AbstractServiceTest {
 	public void testCalculNbMois() {
 		try {
 			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-			Date dateDebut = sdf.parse("15/10/2009");
+			Date dateCM = sdf.parse("15/04/2009");
 			GregorianCalendar gcDebut = new GregorianCalendar();
-			gcDebut.setTime(dateDebut);
-			gcDebut.set(GregorianCalendar.HOUR_OF_DAY, 13);
-			gcDebut.set(GregorianCalendar.MINUTE, 0);
-			gcDebut.set(GregorianCalendar.SECOND, 0);	
-			dateDebut.setTime(gcDebut.getTimeInMillis());
-			System.out.println("DATE de DEBUT:"+sdf.format(dateDebut));
+			gcDebut.setTime(dateCM);
+			dateCM.setTime(gcDebut.getTimeInMillis());
 			
-			Date dateFin = sdf.parse("14/10/2010");
-//			Date dateDuJour = new Date();
+			Date dateDuJour = sdf.parse("03/03/2010");
+//			Date dateFin = new Date();
 			GregorianCalendar gcFin = new GregorianCalendar();
-			gcFin.setTime(dateFin);
-			gcFin.set(GregorianCalendar.HOUR_OF_DAY, 11);
-			gcFin.set(GregorianCalendar.MINUTE, 40);
-			gcFin.set(GregorianCalendar.SECOND, 0);
-			dateFin.setTime(gcFin.getTimeInMillis());
-			System.out.println("DATE de FIN:"+sdf.format(dateFin));
+			gcFin.setTime(dateDuJour);
+			dateDuJour.setTime(gcFin.getTimeInMillis());
 			
-			GregorianCalendar gcDebutPlusAnnee = new GregorianCalendar();
-			gcDebutPlusAnnee.setTime(dateDebut);
-			gcDebutPlusAnnee.add(Calendar.YEAR, 1);
-			Date dateDebutPlusAnnee = new Date();
-			dateDebutPlusAnnee.setTime(gcDebutPlusAnnee.getTimeInMillis());
-			System.out.println("DATE DEBUT PLUS 1 AN:"+sdf.format(dateDebutPlusAnnee));
-			if(dateFin.before(dateDebutPlusAnnee)){
-				GregorianCalendar gcDebutPlus11Mois = new GregorianCalendar();
-				gcDebutPlus11Mois.setTime(dateDebut);
-				gcDebutPlus11Mois.add(Calendar.MONTH, 11);
-				Date dateDebutPlus11Mois = new Date();
-				dateDebutPlus11Mois.setTime(gcDebutPlus11Mois.getTimeInMillis());
-				System.out.println("DATE DEBUT PLUS 11 MOIS:"+sdf.format(dateDebutPlus11Mois));
-				if(dateFin.before(dateDebutPlus11Mois)){
-					System.out.println("VALIDE");
-				}else{
-					System.out.println("CM DANS le DERNIER MOIS");
-				}
-			}else{
-				System.out.println("CM PERIME");
-			}
-			
-			
-//			List<Integer> result = ResaUtil.calculNbMois(dateDebut, dateFin);
-//			System.out.println("Nombre de mois entre le:'"+sdf.format(dateDebut)+"' et le:'"+sdf.format(dateFin)+"' est de:"+result.get(0)+"mois et:"+result.get(1)+"jour");
+			List<Integer> result = ResaUtil.checkDateCM(dateCM, dateDuJour);
+			System.out.println("il reste:"+result.get(0)+"mois et:"+result.get(1)+"jour");
 			
 
 		} catch (ParseException e) {

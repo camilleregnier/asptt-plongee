@@ -30,10 +30,7 @@ public class InscriptionConfirmationPlongeePage extends TemplatePage {
 				item.add(new Label("prenom", adherent.getPrenom()));
 				
 				// Dès que le plongeur est encadrant, on affiche son niveau d'encadrement
-				String niveauAffiche;
-				if (adherent.getEncadrement() != null)
-					niveauAffiche = adherent.getEncadrement();
-				else niveauAffiche = adherent.getNiveau();
+				String niveauAffiche = adherent.getPrerogative();
 				
 				// Pour les externes, le niveau est suffixé par (Ext.)
 				if (adherent.getActifInt() ==2){

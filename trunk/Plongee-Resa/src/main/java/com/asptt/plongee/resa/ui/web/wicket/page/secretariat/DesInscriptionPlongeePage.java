@@ -103,8 +103,7 @@ public class DesInscriptionPlongeePage extends TemplatePage {
 							+ " "
 							+ adherent.getPrenom()
 							+ " "
-							+ ((adherent.getEncadrement() != null) ? adherent
-									.getEncadrement() : adherent.getNiveau());
+							+ (adherent.getPrerogative());
 					// Pour les externes, le niveau est suffixé par (Ext.)
 					if (adherent.getActifInt() == 2) {
 						texteAffiche = texteAffiche + " (Ext.)";
@@ -150,7 +149,7 @@ public class DesInscriptionPlongeePage extends TemplatePage {
 			
 			//SI c'est un encadrant il faut verifier s'il en reste assez
 			//et sinon envoyer un mail 
-			if(plongeur.getEncadrement() == null){	
+			if( ! plongeur.isEncadrent()){	
 				//Ce n'est pas un encadrant : on desinscrit
 				
 				//S'il y a des personnes en liste d'attente => mail aux ADMIN

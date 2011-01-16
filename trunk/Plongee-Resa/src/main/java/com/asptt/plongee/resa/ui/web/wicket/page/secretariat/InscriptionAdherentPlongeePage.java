@@ -74,8 +74,7 @@ public class InscriptionAdherentPlongeePage extends TemplatePage {
 					return adherent.getNumeroLicense();
 				}
 				protected String getTextValue(Adherent adherent) {
-					String texteAffiche = adherent.getNom() + " " + adherent.getPrenom() + " " + ((adherent.getEncadrement() != null) ? adherent
-							.getEncadrement() : adherent.getNiveau());
+					String texteAffiche = adherent.getNom() + " " + adherent.getPrenom() + " " + (adherent.getPrerogative());
 					return texteAffiche;
 				}
 			};

@@ -1,5 +1,7 @@
 package com.asptt.plongee.resa.util;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -17,70 +19,85 @@ public class ResaUtil {
 		return nombreHeure;
 	}
 	
+	public static int calculNbJour(Date dateDebut, Date dateFin) throws TechnicalException {
+		long diffMilli = dateFin.getTime() - dateDebut.getTime();
+		int nombreJour =   Long.valueOf(((diffMilli/1000) / 3600) /24).intValue(); 
+		return nombreJour;
+	}
+	
 	/**
 	 * Calcul le nombre de mois et de jour entre deux dates de la meme annee
 	 * Si debut > fin retourne -1 dans mois 
-	 * @param dateDebut
-	 * @param dateFin
+	 * @param dateCM
+	 * @param dateDuJour
 	 * @return List<Integer> mois, jour
 	 * @throws TechnicalException
 	 */
-	public static List<Integer> calculNbMois(Date dateDebut, Date dateFin) throws TechnicalException {
-//		long diffMilli = dateFin.getTime() - dateDebut.getTime();
-//		int nombreMois =   Long.valueOf((diffMilli/1000) / 3600 /24 /30).intValue();
+	public static List<Integer> checkDateCM(Date dateCM, Date dateDuJour) throws TechnicalException {
 		
 		int nombreMois = 0;
 		int nombreJour = 0;
 		
-		GregorianCalendar gcDeb = new GregorianCalendar();
-		gcDeb.setTimeInMillis(dateDebut.getTime());
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		
+		GregorianCalendar gcCM = new GregorianCalendar();
+		gcCM.setTime(dateCM);
+		dateCM.setTime(gcCM.getTimeInMillis());
+		System.out.println("DATE de DEBUT:"+sdf.format(dateCM));
+		
 		GregorianCalendar gcFin = new GregorianCalendar();
-		gcFin.setTimeInMillis(dateFin.getTime());
+		gcFin.setTime(dateCM);
+		gcFin.add(GregorianCalendar.YEAR, +1);
+		Date dateDeFin = new Date(gcFin.getTimeInMillis());
+		System.out.println("DATE de FIN:"+sdf.format(dateDeFin));
 		
-		int anneeDeb = gcDeb.get(Calendar.YEAR);
-		int moisDeb = gcDeb.get(Calendar.MONTH);
-		int jourDeb = gcDeb.get(Calendar.DAY_OF_MONTH);
-		int anneeFin = gcFin.get(Calendar.YEAR);
-		int moisFin = gcFin.get(Calendar.MONTH);
-		int jourFin = gcFin.get(Calendar.DAY_OF_MONTH);
-		
-		if(anneeDeb > anneeFin){
-			nombreMois = -1;
-			nombreMois = 0;
-		} else if (anneeDeb == anneeFin){
-			nombreMois = moisFin - moisDeb;
-			if(nombreMois == 0){
-				nombreJour= gcFin.get(Calendar.DAY_OF_WEEK)- gcDeb.get(Calendar.DAY_OF_WEEK);
+		GregorianCalendar gcDuJour = new GregorianCalendar();
+		gcDuJour.setTime(dateDuJour);
+		System.out.println("DATE du JOUR:"+sdf.format(dateDuJour));
+		//init d'une date + 1 an pour voir si le CM est perimé
+//		GregorianCalendar gcDebutPlusAnnee = new GregorianCalendar();
+//		gcDebutPlusAnnee.setTime(dateDebut);
+//		gcDebutPlusAnnee.add(Calendar.YEAR, 1);
+//		Date dateDebutPlusAnnee = new Date();
+//		dateDebutPlusAnnee.setTime(gcDebutPlusAnnee.getTimeInMillis());
+//		System.out.println("DATE DEBUT PLUS 1 AN:"+sdf.format(dateDebutPlusAnnee));
+
+		if(dateDuJour.before(dateDeFin)){
+			//Le CM est encore bon
+			int moisFin = gcFin.get(GregorianCalendar.MONTH);
+			int moisCourant = gcDuJour.get(GregorianCalendar.MONTH);
+			int jourFin = gcFin.get(GregorianCalendar.DAY_OF_MONTH);
+			int jourCourant = gcDuJour.get(GregorianCalendar.DAY_OF_MONTH);
+			if(moisFin == moisCourant){
+				System.out.println("CM DANS LE MEME MOIS");
+				nombreMois = 0;
+				nombreJour = jourFin - jourCourant;
 			} else {
-				if(jourDeb == jourFin){
-					nombreJour = 0;
+				System.out.println("CM MOIS M-1");
+				gcFin.add(GregorianCalendar.MONTH, -1);
+				moisFin = gcFin.get(GregorianCalendar.MONTH);
+				if(moisCourant == moisFin){
+					nombreMois = 1;
+					int nbJourCourant = gcDuJour.getMaximum(Calendar.DAY_OF_MONTH) - jourCourant;
+					nombreJour = nbJourCourant +  jourFin;
 				} else {
-					nombreJour= gcFin.get(Calendar.DAY_OF_MONTH)- gcDeb.get(Calendar.DAY_OF_MONTH);
-//					int nbJoursMoisDeb = gcDeb.getActualMaximum(Calendar.DAY_OF_MONTH);
-//					int resteJourdeb = nbJoursMoisDeb - gcDeb.get(Calendar.DAY_OF_MONTH );
-//					nombreJour = resteJourdeb + gcFin.get(Calendar.DAY_OF_MONTH);
+					System.out.println("CM LARGEMENT VALABLE");
+					nombreJour = 99;
+					nombreMois = 2;
 				}
 			}
-		} else if (anneeDeb < anneeFin){
-			int resteAnneeDeb = 12 - moisDeb;
-			int nbAnnee = (anneeFin - anneeDeb -1) * 12;
-			nombreMois = nbAnnee + resteAnneeDeb + moisFin;
-//			if(moisDeb == moisFin){
-//				nombreJour= gcFin.get(Calendar.DAY_OF_WEEK)- gcDeb.get(Calendar.DAY_OF_WEEK);
-//			}else{
-//				if(jourDeb == jourFin){
-//					nombreJour = 0;
-//				} else {
-//					nombreJour= gcFin.get(Calendar.DAY_OF_MONTH)- gcDeb.get(Calendar.DAY_OF_MONTH);
-////					int nbJoursMoisDeb = gcDeb.getActualMaximum(Calendar.DAY_OF_MONTH);
-////					int resteJourdeb = nbJoursMoisDeb - gcDeb.get(Calendar.DAY_OF_MONTH );
-////					nombreJour = resteJourdeb + gcFin.get(Calendar.DAY_OF_MONTH);
-//				}
-//			}
+		}else{
+			System.out.println("CM PERIME");
+			nombreJour = -1;
+			nombreMois = -1;
 		}
+		System.out.println("RESTE nombreMois="+nombreMois+", nombreJour="+nombreJour+".");
+		
 		List<Integer> result = new ArrayList<Integer>();
 		result.add(nombreMois);
 		result.add(nombreJour);
 		return result;
 	}
+
 }
+

@@ -132,7 +132,7 @@ public class DeInscriptionPlongeePage extends TemplatePage {
 			
 			//SI c'est un encadrant il faut verifier s'il en reste assez
 			//et sinon envoyer un mail 
-			if(adherent.getEncadrement() == null){	
+			if( ! adherent.isEncadrent()){	
 				//Ce n'est pas un encadrant : on desinscrit
 				
 				//S'il y a des personnes en liste d'attente => mail aux ADMIN
