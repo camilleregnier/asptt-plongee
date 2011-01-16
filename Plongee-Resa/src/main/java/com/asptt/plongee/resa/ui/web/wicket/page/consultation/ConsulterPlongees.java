@@ -63,7 +63,7 @@ public class ConsulterPlongees extends TemplatePage {
 					item.add(new IndicatingAjaxLink("select") {
 						@Override
 						public void onClick(AjaxRequestTarget target) {
-							if (getResaSession().getAdherent().getEncadrement() != null || getResaSession().getAdherent().getRoles().hasRole("SECRETARIAT") ){
+							if (getResaSession().getAdherent().isEncadrent() || getResaSession().getAdherent().getRoles().hasRole("SECRETARIAT") ){
 								replaceModalWindowEncadrant(target, item.getModel());
 							} else {
 								replaceModalWindow(target, item.getModel());
@@ -186,13 +186,10 @@ public class ConsulterPlongees extends TemplatePage {
 						item.add(new Label("prenom", adherent.getPrenom()));
 						
 						// Dès que le plongeur est encadrant, on affiche son niveau d'encadrement
-						String niveauAffiche;
-						if (adherent.getEncadrement() != null)
-							niveauAffiche = adherent.getEncadrement();
-						else niveauAffiche = adherent.getNiveau();
+						String niveauAffiche = adherent.getPrerogative();
 						
 						// Pour les externes, le niveau est suffixé par (Ext.)
-						if (adherent.getActifInt() ==2){
+						if (adherent.getActifInt() == 2){
 							niveauAffiche = niveauAffiche + " (Ext.)";
 						}
 							
@@ -220,10 +217,7 @@ public class ConsulterPlongees extends TemplatePage {
 								item.add(new Label("prenom", adherent.getPrenom()));
 								
 								// Dès que le plongeur est encadrant, on affiche son niveau d'encadrement
-								String niveauAffiche;
-								if (adherent.getEncadrement() != null)
-									niveauAffiche = adherent.getEncadrement();
-								else niveauAffiche = adherent.getNiveau();
+								String niveauAffiche = adherent.getPrerogative();
 								
 								// Pour les externes, le niveau est suffixé par (Ext.)
 								if (adherent.getActifInt() ==2){
@@ -274,10 +268,7 @@ public class ConsulterPlongees extends TemplatePage {
 						item.add(new Label("prenom", adherent.getPrenom()));
 						
 						// Dès que le plongeur est encadrant, on affiche son niveau d'encadrement
-						String niveauAffiche;
-						if (adherent.getEncadrement() != null)
-							niveauAffiche = adherent.getEncadrement();
-						else niveauAffiche = adherent.getNiveau();
+						String niveauAffiche = adherent.getPrerogative();
 						
 						// Pour les externes, le niveau est suffixé par (Ext.)
 						if (adherent.getActifInt() ==2){
@@ -309,10 +300,7 @@ public class ConsulterPlongees extends TemplatePage {
 								item.add(new Label("prenom", adherent.getPrenom()));
 								
 								// Dès que le plongeur est encadrant, on affiche son niveau d'encadrement
-								String niveauAffiche;
-								if (adherent.getEncadrement() != null)
-									niveauAffiche = adherent.getEncadrement();
-								else niveauAffiche = adherent.getNiveau();
+								String niveauAffiche = adherent.getPrerogative();
 								
 								// Pour les externes, le niveau est suffixé par (Ext.)
 								if (adherent.getActifInt() ==2){
