@@ -1,30 +1,31 @@
 <wicket:extend>
-
-            <div>
-				<span wicket:id="message"/>
-			</div>
-			  <table cellspacing="0" class="dataview">
-				<tr>
-					<th>S'inscrire</th>
-					<th>Date</th>
-					<th>DP</th>
-					<th>Type</th>
-					<th>Niveau Mini.</th>
-					<th>Places Rest.</th>
-				</tr>
-				<tr wicket:id="simple">
-					<td><a href="#" wicket:id="select" title="S'inscrire">
-					<img wicket:message="src:select" class="no_cadre" alt="S'inscrire"/></a></td>
-					<td><span wicket:id="date">[date]</span></td>
-					<td><span wicket:id="dp">[dp]</span></td>
-					<td><span wicket:id="type">[type]</span></td>
-					<td><span wicket:id="niveauMini">[niveauMini]</span></td>
-					<td><span wicket:id="placesRestantes">[placesRestantes]</span></td>
-				</tr>
-			  </table>
-				<div>
-					<span wicket:id="feedback" />
-				</div>
-				<div id="errorsDiv" class="innerError" />
-				<div wicket:id="modalConfirm"/>
+          <div class="justification">
+		<span class="msg" wicket:id="message"></span>
+		<br>
+		<span class="cm" wicket:id="certificat"></span>
+	  <table cellspacing="0" class="dataview">
+		<tr>
+			<th>S'inscrire</th>
+			<th>Date</th>
+			<th>DP</th>
+			<th>Type</th>
+			<th>Niveau Mini.</th>
+			<th>Places Rest.</th>
+		</tr>
+		<tr wicket:id="simple">
+			<td><a href="#" wicket:id="select" title="S'inscrire">
+			<img wicket:message="src:select" class="no_cadre" alt="S'inscrire"/></a></td>
+			<td><span wicket:id="date">[date]</span></td>
+			<td><span wicket:id="dp">[dp]</span></td>
+			<td><span wicket:id="type">[type]</span></td>
+			<td><span wicket:id="niveauMini">[niveauMini]</span></td>
+			<td><span wicket:id="placesRestantes">[placesRestantes]</span></td>
+		</tr>
+	  </table>
+	</div>
+	<div>
+		<span wicket:id="feedback"></span>
+	</div>
+	<div id="errorsDiv" class="innerError"></div>
+	<div wicket:id="modalConfirm"></div>
 </wicket:extend>

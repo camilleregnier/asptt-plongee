@@ -59,9 +59,9 @@ public class CreerMessage extends TemplatePage {
 			CompoundPropertyModel<Message> model = new CompoundPropertyModel<Message>(new Message());
 			setModel(model);
 			
-			add(new RequiredTextField<String>("libelle"));
-//			TextArea textareaInput = new TextArea("libelle");
-//			add(textareaInput);
+//			add(new RequiredTextField<String>("libelle"));
+			TextArea<String> textareaInput = new TextArea<String>("libelle");
+			add(textareaInput);
 			
 			DateTextField dateDebTextFiled = new DateTextField("dateDebut", new PropertyModel<Date>(model, "dateDebut"), new StyleDateConverter("S-", true));
 			dateDebTextFiled.setRequired(true);
@@ -89,7 +89,7 @@ public class CreerMessage extends TemplatePage {
 					try {
 						if(null != message.getDateFin())
 							if( message.getDateFin().before(message.getDateDebut())){
-							throw new ResaException("La date de fin ne peux pas être avant la date de début");
+							throw new ResaException("La date de fin ne peut pas être avant la date de début");
 						}
 						ResaSession resaSession = (ResaSession) getApplication()
 								.getSessionStore().lookup(getRequest());

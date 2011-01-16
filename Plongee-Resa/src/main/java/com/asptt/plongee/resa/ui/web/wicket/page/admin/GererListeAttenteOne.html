@@ -1,10 +1,9 @@
 <wicket:extend>
-	<div><span wicket:id="feedback" /></div>
-	<div id="corps">
-	<div>
-		<span wicket:id="message"/>
-	</div>
-	<form wicket:id="inputForm" id="inputForm">
+	<div class="justification">
+		<span wicket:id="feedback"></span>
+	 <div id="corps">
+	  <div><span class="msg" wicket:id="message"></span></div>
+	  <form wicket:id="inputForm" id="inputForm">
 		<table cellspacing="0" class="dataview">
 			<tr>
 				<th>Voir liste</th>
@@ -24,6 +23,8 @@
 				<td><span wicket:id="placesRestantes">[placesRestantes]</span></td>
 			</tr>
 		</table>
-	</form>
-	<div id="errorsDiv" class="innerError" /></div>
+	  </form>
+	 </div>
+	</div>
+	<div id="errorsDiv" class="innerError"></div>
 </wicket:extend>

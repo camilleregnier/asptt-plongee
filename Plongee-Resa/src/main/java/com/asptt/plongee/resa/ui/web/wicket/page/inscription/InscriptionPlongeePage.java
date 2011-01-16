@@ -49,6 +49,16 @@ public class InscriptionPlongeePage extends TemplatePage {
 	public InscriptionPlongeePage(){
 		this.adh = getResaSession().getAdherent(); 
 		add(new Label("message", adh.getPrenom() + ", ci-dessous, les plong\u00e9es auxquelles tu peux t'inscrire"));
+		String libCM ="";
+		try {
+			 getResaSession().getPlongeeService().checkCertificatMedical(adh);
+		} catch (TechnicalException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ResaException e) {
+			libCM=e.getKey();
+		}
+		add(new Label("certificat", libCM));
 		feedback.setOutputMarkupId(true);
 		add(feedback);
 		init();
@@ -56,7 +66,18 @@ public class InscriptionPlongeePage extends TemplatePage {
 	
 	public InscriptionPlongeePage(Adherent adherent) {
 		this.adh = adherent;
-		add(new Label("message", adh.getPrenom() + " " + adh.getNom() + " peut s'inscrire aux plong\u00e9es suivantes"));
+		String libMesg = adh.getPrenom()+" "+ adh.getNom() + " peut s'inscrire aux plong\u00e9es suivantes";
+		String libCM ="";
+		try {
+			getResaSession().getPlongeeService().checkCertificatMedical(adh);
+		} catch (TechnicalException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ResaException e) {
+			libCM=e.getKey();
+		}
+		add(new Label("message", libMesg));
+		add(new Label("certificat", libCM));
 		feedback.setOutputMarkupId(true);
 		add(feedback);
 		init();
@@ -212,7 +233,7 @@ public class InscriptionPlongeePage extends TemplatePage {
 					
 					setResponsePage(new InscriptionConfirmationPlongeePage(plongee));
 				break;
-			case 1: //on peux inscrire l'adherent à la plongee
+			case 1: //on peut inscrire l'adherent à la plongee
 				typeMail=-1;
 				getResaSession().getPlongeeService().inscrireAdherent(
 						plongee, 

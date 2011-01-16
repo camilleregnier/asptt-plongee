@@ -81,6 +81,7 @@ ne pas modifier les valeurs*/
 	text-align: center;
 }
 
+
 table.dataview {
 	margin-bottom: 10px;
 	border-bottom: 1px solid #0079d6;
@@ -193,6 +194,20 @@ text-align: center;
 margin-top:20px;
 margin-bottom:20px; 
 clear: both;
+}
+
+.cm{
+	font-size : 28px;
+	color:#FA0101; 
+}
+
+.msg{
+	font-size : 18px;
+	color:#000000;
+}
+
+.justification{
+	align : left;
 }
 
 /*

@@ -36,10 +36,14 @@ import com.asptt.plongee.resa.ui.web.wicket.page.ErreurTechniquePage;
 public class MessagePanel extends Panel {
 	
 	private CompoundPropertyModel<Message> model;
+	FeedbackPanel feedback = new FeedbackPanel("feedback");
 	
 	public MessagePanel(String id, IModel<Message> message) {
 		super(id, message);
 		setOutputMarkupId(true);
+
+		feedback.setOutputMarkupId(true);
+		add(feedback);
 
 		add(new MessageForm("inputForm", message));
 
@@ -54,13 +58,8 @@ public class MessagePanel extends Panel {
 			model = new CompoundPropertyModel<Message>(message);
 			setModel(model);
 			
-			final FeedbackPanel feedback = new FeedbackPanel("feedback");
-			feedback.setOutputMarkupId(true);
-			add(feedback);
-			
-			add(new RequiredTextField<String>("libelle"));
-//			TextArea textareaInput = new TextArea("libelle");
-//			add(textareaInput);
+			TextArea textareaInput = new TextArea("libelle");
+			add(textareaInput);
 			
 			DateTextField dateDebTextFiled = new DateTextField("dateDebut", new PropertyModel<Date>(model, "dateDebut"), new StyleDateConverter("S-", true));
 			dateDebTextFiled.setRequired(true);
@@ -80,15 +79,11 @@ public class MessagePanel extends Panel {
 				protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 					Message message = (Message) form.getModelObject();
 					
-					// TODO Mise au format du libellé
-//					adherent.setNom(adherent.getNom().toUpperCase());
-//					adherent.setPrenom((adherent.getPrenom().substring(0, 1).toUpperCase()) + (adherent.getPrenom().substring(1).toLowerCase()));
-
 					// Mise à jour du message
 					try {
 						if(null != message.getDateFin())
 							if( message.getDateFin().before(message.getDateDebut()) ){
-							throw new ResaException("La date de fin ne peux pas être avant la date de début");
+							throw new ResaException("La date de fin ne peut pas être avant la date de début");
 						}
 						ResaSession resaSession = (ResaSession) getApplication()
 								.getSessionStore().lookup(getRequest());
@@ -122,15 +117,11 @@ public class MessagePanel extends Panel {
 				protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 					Message message = (Message) form.getModelObject();
 					
-					// TODO Mise au format du libellé
-//					adherent.setNom(adherent.getNom().toUpperCase());
-//					adherent.setPrenom((adherent.getPrenom().substring(0, 1).toUpperCase()) + (adherent.getPrenom().substring(1).toLowerCase()));
-
 					// Mise à jour du message
 					try {
 						if(null != message.getDateFin())
 							if( message.getDateFin().before(message.getDateDebut())){
-							throw new ResaException("La date de fin ne peux pas être avant la date de début");
+							throw new ResaException("La date de fin ne peut pas être avant la date de début");
 						}
 						ResaSession resaSession = (ResaSession) getApplication()
 								.getSessionStore().lookup(getRequest());

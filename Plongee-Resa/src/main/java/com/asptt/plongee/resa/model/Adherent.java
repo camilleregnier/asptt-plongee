@@ -78,11 +78,27 @@ public class Adherent implements Serializable {
 		return encadrement;
 	}
 
+	public boolean isEncadrent() {
+		if(null == getEncadrement()){
+			return false;
+		} else {
+			return true;
+		}
+	}
+
 	public String getEncadrement() {
 		if(null == encadrement){
 			return null;
 		}else{
 			return encadrement.toString();
+		}
+	}
+
+	public String getPrerogative() {
+		if(isEncadrent()){
+			return getEncadrement();
+		}else{
+			return getNiveau();
 		}
 	}
 
