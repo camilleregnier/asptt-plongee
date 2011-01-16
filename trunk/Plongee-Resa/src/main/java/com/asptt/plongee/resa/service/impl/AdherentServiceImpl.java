@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.TreeSet;
 
 import com.asptt.plongee.resa.dao.AdherentDao;
+import com.asptt.plongee.resa.exception.ResaException;
 import com.asptt.plongee.resa.exception.TechnicalException;
 import com.asptt.plongee.resa.model.Adherent;
 import com.asptt.plongee.resa.model.AdherentComparatorNom;
@@ -168,14 +169,4 @@ public class AdherentServiceImpl implements AdherentService, Serializable {
 		return adherentDao.createMessage(message);
 	}
 	
-	public int checkCertificatMedical(Adherent adherent) throws TechnicalException{
-		int result = 1;
-		List<Integer> chek = ResaUtil.calculNbMois(adherent.getDateCM(), new Date());
-		if(chek.get(0) > 12){
-			result = -1;
-		} else if(chek.get(0) >= 11){
-			result = 0;
-		}
-		return result;
-	}
 }

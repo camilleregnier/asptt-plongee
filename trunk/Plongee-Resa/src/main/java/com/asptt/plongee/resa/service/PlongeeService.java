@@ -42,4 +42,7 @@ public interface PlongeeService {
 	void deInscrireAdherent(Plongee plongee, Adherent adherent, int typeMail) throws ResaException;
 	void deInscrireAdherentEnListeAttente(Plongee plongee, Adherent adherent) throws ResaException;
 	void supprimerDeLaListeDattente(Plongee plongee, Adherent adherent, int indic)throws ResaException;
+	
+	void checkCertificatMedical(Adherent adherent) throws TechnicalException, ResaException;
+
 }

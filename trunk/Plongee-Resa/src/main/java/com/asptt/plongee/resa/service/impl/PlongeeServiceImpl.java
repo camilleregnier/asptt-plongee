@@ -475,6 +475,15 @@ public class PlongeeServiceImpl implements PlongeeService, Serializable {
 
 	public synchronized void  inscrireAdherent(Plongee plongee, Adherent adherent, int typeMail) throws ResaException, TechnicalException {
 		
+		try {
+			checkCertificatMedical(adherent);
+		} catch (ResaException e) {
+			if( ! e.getKey().substring(0, 9).equalsIgnoreCase("ATTENTION")){
+				throw e;
+			}
+			// TODO: handle exception
+		}
+		
 		if(getNbPlaceRestante(plongee) > 0){
 			//Appel DAO
 			plongeeDao.inscrireAdherentPlongee(plongee, adherent);
@@ -565,4 +574,31 @@ public class PlongeeServiceImpl implements PlongeeService, Serializable {
 		plongeeDao.supprimerDeLaListeAttente(plongee, adherent, indic);
 	}
 	
+	/**
+	 * Verifie si le certificat medical de l'adherent est encore valable
+	 * @param Adherent adherent
+	 * @return List<Integer> (nbMois, nbJours)
+	 * si nbMois =-1 => perimé
+	 * si nbMois = 0 => Warning : dans le derniers mois 
+	 * si nbMois = 1 => Warning : mois-1 avec le nombre de jour
+	 * si nbMois = 2 => No soucie 
+	 *  
+	 */
+	public void checkCertificatMedical(Adherent adherent) throws TechnicalException, ResaException{
+		List<Integer> result = ResaUtil.checkDateCM(adherent.getDateCM(), new Date());
+		int nbMois = result.get(0);
+		int nbJours = result.get(1);
+		String libCM ="";
+		if(nbMois < 0){
+			//CM Perimé
+			throw new ResaException("\n ton certificat m\u00e9dical est p\u00e9rim\u00e9");
+		} else {
+			if(nbMois == 0){
+				throw new ResaException("ATTENTION plus que "+nbJours+" jours avant que ton certificat m\u00e9dical soit p\u00e9rim\u00e9");
+			}else if (nbMois == 1){
+				throw new ResaException("ATTENTION plus que 1 mois avant que ton certificat m\u00e9dical soit p\u00e9rim\u00e9");
+			}
+		}
+
+	}
 }
