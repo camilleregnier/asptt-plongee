@@ -144,7 +144,7 @@ public class DeInscriptionPlongeePage extends TemplatePage {
 				} else {
 					getResaSession().getPlongeeService().deInscrireAdherent(
 							plongee, 
-							getResaSession().getAdherent(), -1);
+							getResaSession().getAdherent(), PlongeeMail.PAS_DE_MAIL);
 				}
 				setResponsePage(new InscriptionConfirmationPlongeePage(plongee));
 			} else {
@@ -159,7 +159,7 @@ public class DeInscriptionPlongeePage extends TemplatePage {
 					} else {
 						getResaSession().getPlongeeService().deInscrireAdherent(
 								plongee, 
-								getResaSession().getAdherent(), -1);
+								getResaSession().getAdherent(), PlongeeMail.PAS_DE_MAIL);
 					}
 					setResponsePage(new InscriptionConfirmationPlongeePage(plongee));
 				} else {

@@ -194,7 +194,7 @@ public class InscriptionPlongeePage extends TemplatePage {
 			//Analyse le retour de service
 			switch (response) {
 			case 0: //on inscrit l'adherent en liste d'attente sans envoi de mail
-				typeMail=-1;
+				typeMail=PlongeeMail.PAS_DE_MAIL;
 				if(getResaSession().getPlongeeService().isOkForListeAttente(
 						plongee, 
 						getResaSession().getAdherent())){
@@ -234,15 +234,15 @@ public class InscriptionPlongeePage extends TemplatePage {
 					setResponsePage(new InscriptionConfirmationPlongeePage(plongee));
 				break;
 			case 1: //on peut inscrire l'adherent à la plongee
-				typeMail=-1;
+				typeMail=PlongeeMail.PAS_DE_MAIL;
 				getResaSession().getPlongeeService().inscrireAdherent(
 						plongee, 
-						adh != null ?  adh : getResaSession().getAdherent(), -1);
+						adh != null ?  adh : getResaSession().getAdherent(), PlongeeMail.PAS_DE_MAIL);
 				setResponsePage(new InscriptionConfirmationPlongeePage(plongee));
 				break;
 
 			case 2: // ouvrir la plongée
-				typeMail=-1;
+				typeMail=PlongeeMail.PAS_DE_MAIL;
 				setResponsePage(new GererPlongeeAOuvrirTwo(plongee));
 				break;
 			}

@@ -10,7 +10,7 @@ public class ContactUrgent implements Serializable {
 	private String nom;
 	private String prenom;
 	private String telephone;
-	private String mail;
+	private String telephtwo;
 
 	public ContactUrgent() {
 		super();
@@ -59,12 +59,23 @@ public class ContactUrgent implements Serializable {
 		this.telephone = telephone;
 	}
 
-	public String getMail() {
-		return mail;
+	public String getTelephtwo() {
+		return telephtwo;
 	}
 
-	public void setMail(String mail) {
-		this.mail = mail;
+	public void setTelephtwo(String telephone) {
+		this.telephtwo = telephone;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		ContactUrgent objContact = (ContactUrgent) obj;
+		if (this.getNom().equalsIgnoreCase(objContact.getNom()) 
+				&& this.getPrenom().equalsIgnoreCase(objContact.getPrenom()) ){
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 

@@ -35,13 +35,16 @@ import org.apache.wicket.validation.validator.PatternValidator;
 import org.apache.wicket.validation.validator.RangeValidator;
 import org.apache.wicket.validation.validator.StringValidator.ExactLengthValidator;
 
+import com.asptt.plongee.resa.exception.ResaException;
 import com.asptt.plongee.resa.exception.TechnicalException;
+import com.asptt.plongee.resa.mail.PlongeeMail;
 import com.asptt.plongee.resa.model.Adherent;
 import com.asptt.plongee.resa.model.NiveauAutonomie;
 import com.asptt.plongee.resa.model.Plongee;
 import com.asptt.plongee.resa.ui.web.wicket.ResaSession;
 import com.asptt.plongee.resa.ui.web.wicket.page.AccueilPage;
 import com.asptt.plongee.resa.ui.web.wicket.page.ErreurTechniquePage;
+import com.asptt.plongee.resa.ui.web.wicket.page.consultation.InfoAdherent;
 
 public class AdherentPanel extends Panel {
 	
@@ -142,13 +145,17 @@ public class AdherentPanel extends Panel {
 					try {
 						ResaSession resaSession = (ResaSession) getApplication()
 								.getSessionStore().lookup(getRequest());
-						resaSession.getAdherentService().updateAdherent(adherent);
+						resaSession.getAdherentService().updateAdherent(adherent, PlongeeMail.PAS_DE_MAIL);
 
 						setResponsePage(AccueilPage.class);
 						
 					} catch (TechnicalException e) {
 						e.printStackTrace();
 						error(e.getKey());
+					} catch (ResaException e) {
+						e.printStackTrace();
+						error(e.getKey());
+						setResponsePage(new GererAdherents());
 					}
 
 				}

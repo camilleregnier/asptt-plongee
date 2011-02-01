@@ -161,7 +161,7 @@ public class DesInscriptionPlongeePage extends TemplatePage {
 				} else {
 					getResaSession().getPlongeeService().deInscrireAdherent(
 							plongee, 
-							plongeur, -1);
+							plongeur, PlongeeMail.PAS_DE_MAIL);
 				}
 			} else {
 				//C'est un encadrant et qu'il en reste assez
@@ -176,7 +176,7 @@ public class DesInscriptionPlongeePage extends TemplatePage {
 					} else {
 						getResaSession().getPlongeeService().deInscrireAdherent(
 								plongee, 
-								plongeur, -1);
+								plongeur, PlongeeMail.PAS_DE_MAIL);
 					}
 				} else {
 					// Plus assez d'encadrants
