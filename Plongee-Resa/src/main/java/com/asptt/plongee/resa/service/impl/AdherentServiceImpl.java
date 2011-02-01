@@ -7,11 +7,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.TreeSet;
 
+import javax.mail.MessagingException;
+
 import com.asptt.plongee.resa.dao.AdherentDao;
 import com.asptt.plongee.resa.exception.ResaException;
 import com.asptt.plongee.resa.exception.TechnicalException;
+import com.asptt.plongee.resa.mail.PlongeeMail;
 import com.asptt.plongee.resa.model.Adherent;
 import com.asptt.plongee.resa.model.AdherentComparatorNom;
+import com.asptt.plongee.resa.model.ContactUrgent;
 import com.asptt.plongee.resa.model.Message;
 import com.asptt.plongee.resa.model.Plongee;
 import com.asptt.plongee.resa.model.ResaConstants;
@@ -140,8 +144,20 @@ public class AdherentServiceImpl implements AdherentService, Serializable {
 			adherentDao.create(adherent);
 	}
 	
-	public void updateAdherent(Adherent adherent) throws TechnicalException{
-			adherentDao.update(adherent);	
+	public void updateAdherent(Adherent adherent, int typeMail) throws TechnicalException, ResaException{
+		
+		adherentDao.update(adherent);	
+		if (typeMail == PlongeeMail.MAIL_MODIF_INFO_ADHERENT){
+			PlongeeMail pMail;
+			try {
+				pMail = new PlongeeMail(PlongeeMail.MAIL_PAS_ASSEZ_ENCADRANT,
+						null, adherent);
+				pMail.sendMail("ADMIN");
+			} catch (MessagingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	public void updatePasswordAdherent(Adherent adherent) throws TechnicalException{
@@ -168,5 +184,5 @@ public class AdherentServiceImpl implements AdherentService, Serializable {
 	public Message createMessage(Message message) throws TechnicalException{
 		return adherentDao.createMessage(message);
 	}
-	
+
 }

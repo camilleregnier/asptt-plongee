@@ -19,13 +19,14 @@ import com.asptt.plongee.resa.model.Plongee;
 
 public final class PlongeeMail {
 
-
+	public static final int PAS_DE_MAIL = -1;
 	public static final int MAIL_PLUS_ASSEZ_ENCADRANT = 0;
 	public static final int MAIL_PAS_ASSEZ_ENCADRANT = 3;
 	public static final int MAIL_INSCRIPTION_SUR_PLONGEE_FERMEE = 1;
 	public static final int MAIL_PLACES_LIBRES = 2;
 	public static final int MAIL_LISTE_ATTENTE_EXIST = 5;
 	public static final int MAIL_DESINSCRIPTION_24 = 6;
+	public static final int MAIL_MODIF_INFO_ADHERENT = 7;
 	
 	private final Logger logger = Logger.getLogger(getClass());
 	private Email email = null;
@@ -232,6 +233,17 @@ public final class PlongeeMail {
 			sb.append("L'adh\u00e9rent "+adherent.getPrenom()+" "+adherent.getNom()+" \n");
 			sb.append("viens de se désinscrire à moins de 24 heures  \n");
 			sb.append("de la plong\u00e9e du "+dateAffichee+" ("+plongee.getType()+")\n");
+			sb.append("\n");
+			sb.append("Cordialement.\n");
+			this.email.setMsg(sb.toString());
+			break;
+		case MAIL_MODIF_INFO_ADHERENT: 
+			this.email.setSubject("Modification des informations de l'adherent : "+adherent.getPrenom()+" "+adherent.getNom()+"");
+			sb = new StringBuffer("Bonjour,\n");
+			sb.append("Pour information  \n");
+			sb.append("\n");
+			sb.append("L'adh\u00e9rent "+adherent.getPrenom()+" "+adherent.getNom()+" \n");
+			sb.append("vient de modifier ses informations  \n");
 			sb.append("\n");
 			sb.append("Cordialement.\n");
 			this.email.setMsg(sb.toString());

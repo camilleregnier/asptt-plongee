@@ -481,7 +481,7 @@ public class PlongeeServiceImpl implements PlongeeService, Serializable {
 			if( ! e.getKey().substring(0, 9).equalsIgnoreCase("ATTENTION")){
 				throw e;
 			}
-			// TODO: handle exception
+			throw new ResaException("Problème lors de la vérification du certificat médical");
 		}
 		
 		if(getNbPlaceRestante(plongee) > 0){

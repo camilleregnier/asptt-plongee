@@ -42,7 +42,7 @@ public interface AdherentService {
 	
 	void creerAdherent(Adherent adherent);
 	
-	void updateAdherent(Adherent adherent);
+	void updateAdherent(Adherent adherent, int typeMail) throws TechnicalException, ResaException;
 	
 	void updatePasswordAdherent(Adherent adherent);
 

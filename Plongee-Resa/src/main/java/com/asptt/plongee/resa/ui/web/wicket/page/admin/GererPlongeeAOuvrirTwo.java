@@ -1,15 +1,19 @@
 package com.asptt.plongee.resa.ui.web.wicket.page.admin;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.ResourceReference;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
+import org.apache.wicket.datetime.StyleDateConverter;
+import org.apache.wicket.datetime.markup.html.form.DateTextField;
 import org.apache.wicket.extensions.ajax.markup.html.IndicatingAjaxLink;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.extensions.markup.html.form.palette.Palette;
+import org.apache.wicket.extensions.yui.calendar.DatePicker;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
@@ -21,6 +25,7 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.util.CollectionModel;
 import org.apache.wicket.model.util.ListModel;
 import org.apache.wicket.validation.validator.MinimumValidator;
@@ -28,6 +33,7 @@ import org.apache.wicket.validation.validator.MinimumValidator;
 
 import com.asptt.plongee.resa.exception.ResaException;
 import com.asptt.plongee.resa.exception.TechnicalException;
+import com.asptt.plongee.resa.mail.PlongeeMail;
 import com.asptt.plongee.resa.model.Adherent;
 import com.asptt.plongee.resa.model.NiveauAutonomie;
 import com.asptt.plongee.resa.model.Plongee;
@@ -41,6 +47,7 @@ public class GererPlongeeAOuvrirTwo extends TemplatePage {
 	private ModalWindow modalPlongee;
 	TextField<Integer> maxPlaces;
 	TextField<Integer> niveauMinimum;
+	TextField<Date> dateVisible;
 
 	public GererPlongeeAOuvrirTwo(final Plongee plongee) {
 
@@ -125,7 +132,7 @@ public class GererPlongeeAOuvrirTwo extends TemplatePage {
 					for (Adherent adh : adhInscrits) {
 						try {
 							getResaSession().getPlongeeService().inscrireAdherent(
-									plongee, adh, -1);
+									plongee, adh, PlongeeMail.PAS_DE_MAIL);
 						} catch (ResaException e) {
 							e.printStackTrace();
 							ErrorPage ep = new ErrorPage(e);
@@ -149,6 +156,11 @@ public class GererPlongeeAOuvrirTwo extends TemplatePage {
 			niveauMinimum = new TextField<Integer>("niveauMinimum");
 			niveauMinimum.setOutputMarkupId(true);
 			form.add(niveauMinimum.setEnabled(false));
+			
+			// La Date de visibilite de la plongée, pour info
+			dateVisible = new TextField<Date>("dateVisible");
+			dateVisible.setOutputMarkupId(true);
+			form.add(dateVisible.setEnabled(false));
 			
 			// Ajout des palettes
 			form.add(palDp);
@@ -184,6 +196,7 @@ public class GererPlongeeAOuvrirTwo extends TemplatePage {
 	private void onSubmitPlongeePanel(AjaxRequestTarget target){
 		target.addComponent(maxPlaces);
 		target.addComponent(niveauMinimum);
+		target.addComponent(dateVisible);
 		modalPlongee.close(target);
 	}
 
@@ -215,6 +228,13 @@ public class GererPlongeeAOuvrirTwo extends TemplatePage {
 				niveaux.add(n.toString());
 			}
 			formPlongee.add(new DropDownChoice("niveauMinimum", niveaux));
+			
+			// Date Visibilite de la plongee
+			DateTextField dateVisi = new DateTextField("dateVisible", new PropertyModel<Date>(plongee, "dateVisible"), new StyleDateConverter("S-", true));
+			dateVisi.setRequired(true);
+			dateVisi.add(new DatePicker());
+
+			formPlongee.add(dateVisi);			
 			
 			formPlongee.add(new AjaxButton("validPlongee") {
 				@Override
