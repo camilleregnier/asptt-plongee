@@ -124,10 +124,12 @@ public class PlongeeServiceImpl implements PlongeeService, Serializable {
 		plongeeDao.update(plongee);
 	}
 
+	@Override
 	public Plongee rechercherPlongeeParId(Integer id) throws TechnicalException{
 		return plongeeDao.findById(id);
 	}
 
+	@Override
 	public List<Plongee> rechercherPlongeeTout()  throws TechnicalException{
 		return plongeeDao.findAll();
 	}
@@ -145,7 +147,7 @@ public class PlongeeServiceImpl implements PlongeeService, Serializable {
 			
 	}
 
-	public List<Plongee> rechercherPlongeePourAdherent()  throws TechnicalException{
+	private List<Plongee> rechercherPlongeePourAdherent()  throws TechnicalException{
 
 		List<Plongee> plongees = new ArrayList<Plongee>();
 
@@ -160,7 +162,7 @@ public class PlongeeServiceImpl implements PlongeeService, Serializable {
 			
 	}
 
-	public List<Plongee> rechercherPlongeePourEncadrant()  throws TechnicalException{
+	private List<Plongee> rechercherPlongeePourEncadrant()  throws TechnicalException{
 
 		List<Plongee> plongees = new ArrayList<Plongee>();
 		
@@ -176,6 +178,7 @@ public class PlongeeServiceImpl implements PlongeeService, Serializable {
 			
 	}
 
+	@Override
 	public List<Plongee> rechercherPlongeeAOuvrir(List<Plongee> plongees) throws TechnicalException{
 		
 		List<Plongee> plongeesFermees = new ArrayList<Plongee>();
@@ -187,6 +190,7 @@ public class PlongeeServiceImpl implements PlongeeService, Serializable {
 		return plongeesFermees;
 	}
 
+	@Override
 	public List<Plongee> rechercherPlongeeOuverteTout(List<Plongee> plongees) throws TechnicalException{
 		
 		List<Plongee> plongeesOuvertes = new ArrayList<Plongee>();
@@ -202,6 +206,7 @@ public class PlongeeServiceImpl implements PlongeeService, Serializable {
 	 * Si l'adherent n'est pas déjà inscrit dans la liste
 	 * de plongées passée en parametre
 	 */
+	@Override
 	public List<Plongee> rechercherPlongeePourInscriptionAdherent(Adherent adherent) throws TechnicalException{
 		
 		List<Plongee> plongeesForAdherent = new ArrayList<Plongee>();
@@ -230,17 +235,23 @@ public class PlongeeServiceImpl implements PlongeeService, Serializable {
 				}
 			}
 			if (isNotInscrit) {
+				List<Integer> result = ResaUtil.checkDateCM(adherent.getDateCM(), plongee.getDate());
+				int nbMois = result.get(0);
+				if( nbMois >= 0){
 						plongeesForAdherent.add(plongee);
+				}
 			}	
 		}
 
 		return plongeesForAdherent;
 	}
 
+	@Override
 	public List<Plongee> rechercherPlongeesAdherentInscrit(Adherent adherent, int nbHours)  throws TechnicalException{
 		return plongeeDao.getPlongeesWhereAdherentIsInscrit(adherent, nbHours);
 	}
 
+	@Override
 	public List<Plongee> rechercherPlongeesOuvertesWithAttente(
 			List<Plongee> plongees) throws TechnicalException{
 		
@@ -260,19 +271,23 @@ public class PlongeeServiceImpl implements PlongeeService, Serializable {
 		return plongeeDao.getPlongeesWhithSameDate(date, type);
 	}
 
+	@Override
 	public List<Adherent> rechercherInscriptions(Plongee plongee,String niveauPlongeur, String niveauEncadrement, String trie)  throws TechnicalException{
 		return adherentDao.getAdherentsInscrits(plongee,null,null,trie);
 	}
 
+	@Override
 	public List<Adherent> rechercherListeAttente(Plongee plongee)  throws TechnicalException{
 		return adherentDao.getAdherentsWaiting(plongee);
 	}
 	
+	@Override
 	public Integer getNbPlaceRestante(Plongee plongee)  throws TechnicalException{
 		Integer nbPlace =  plongee.getNbMaxPlaces() - adherentDao.getAdherentsInscrits(plongee,null,null,null).size();
 		return nbPlace;
 	}
 
+	@Override
 	public boolean isEnoughEncadrant(Plongee plongee) throws  TechnicalException {
 		boolean isOk = true;
 		List<Adherent> encadrants = adherentDao.getAdherentsInscrits(plongee, null, "TOUS", null);
@@ -327,6 +342,7 @@ public class PlongeeServiceImpl implements PlongeeService, Serializable {
 	 * 
 	 * -1 si ko
 	 */
+	@Override
 	public int isOkForResa(Plongee plongee, Adherent adherent) throws ResaException, TechnicalException {
 
 		//initialisation du retour par defaut à 1 CàD : on inscrit
@@ -442,7 +458,17 @@ public class PlongeeServiceImpl implements PlongeeService, Serializable {
 
 	}
 
+	@Override
 	public boolean isOkForListeAttente(Plongee plongee, Adherent adherent) throws TechnicalException, ResaException{
+
+//		try {
+//			checkCertificatMedical(adherent, plongee);
+//		} catch (ResaException e) {
+//			if( ! e.getKey().substring(0, 9).equalsIgnoreCase("ATTENTION")){
+//				throw e;
+//			}
+//		}
+		
 		//On inscrit pas qqlun en liste d'attente si il est dejà inscrit
 		List<Adherent> inscrits = adherentDao.getAdherentsInscrits(plongee, null, "TOUS", null);
 		for(Adherent inscrit : inscrits){
@@ -461,6 +487,7 @@ public class PlongeeServiceImpl implements PlongeeService, Serializable {
 	 *  soit inferieure au nombre de plongeurs max
 	 *  ceci pour bloquer l'inscription en cas de liste d'attente sur plongée pleine
 	 */
+	@Override
 	public boolean isOuverte(Plongee plongee){
 		if(  plongee.isExistDP() && plongee.isExistPilote()){
 			return true;
@@ -469,20 +496,21 @@ public class PlongeeServiceImpl implements PlongeeService, Serializable {
 		}
 	}
 
+	@Override
 	public void fairePasserAttenteAInscrit(Plongee plongee, Adherent adherent)  throws TechnicalException{
 		plongeeDao.moveAdherentAttenteToInscrit(plongee, adherent);
 	}
 
+	@Override
 	public synchronized void  inscrireAdherent(Plongee plongee, Adherent adherent, int typeMail) throws ResaException, TechnicalException {
 		
-		try {
-			checkCertificatMedical(adherent);
-		} catch (ResaException e) {
-			if( ! e.getKey().substring(0, 9).equalsIgnoreCase("ATTENTION")){
-				throw e;
-			}
-			throw new ResaException("Problème lors de la vérification du certificat médical");
-		}
+//		try {
+//			checkCertificatMedical(adherent, plongee);
+//		} catch (ResaException e) {
+//			if( ! e.getKey().substring(0, 9).equalsIgnoreCase("ATTENTION")){
+//				throw e;
+//			}
+//		}
 		
 		if(getNbPlaceRestante(plongee) > 0){
 			//Appel DAO
@@ -502,6 +530,7 @@ public class PlongeeServiceImpl implements PlongeeService, Serializable {
 		}
 	}
 
+	@Override
 	public void inscrireAdherentEnListeAttente(Plongee plongee,	Adherent adherent, int typeMail)   throws ResaException, TechnicalException{
 		//Appel DAO
 		plongeeDao.inscrireAdherentAttente(plongee, adherent);
@@ -518,6 +547,7 @@ public class PlongeeServiceImpl implements PlongeeService, Serializable {
 		
 	}
 
+	@Override
 	public void deInscrireAdherent(Plongee plongee, Adherent adherent, int typeMail)   throws ResaException, TechnicalException{
 		//Appel DAO
 		plongeeDao.supprimeAdherentPlongee(plongee, adherent);
@@ -559,6 +589,7 @@ public class PlongeeServiceImpl implements PlongeeService, Serializable {
 		}
 	}
 
+	@Override
 	public void deInscrireAdherentEnListeAttente(Plongee plongee, Adherent adherent)  throws TechnicalException {
 		plongeeDao.sortirAdherentAttente(plongee, adherent);
 	}
@@ -584,8 +615,15 @@ public class PlongeeServiceImpl implements PlongeeService, Serializable {
 	 * si nbMois = 2 => No soucie 
 	 *  
 	 */
-	public void checkCertificatMedical(Adherent adherent) throws TechnicalException, ResaException{
-		List<Integer> result = ResaUtil.checkDateCM(adherent.getDateCM(), new Date());
+	@Override
+	public void checkCertificatMedical(Adherent adherent, Plongee plongee) throws TechnicalException, ResaException{
+		
+		Date dateCompare = new Date();
+		if (null != plongee){
+			dateCompare = plongee.getDate();
+		}
+		
+		List<Integer> result = ResaUtil.checkDateCM(adherent.getDateCM(), dateCompare);
 		int nbMois = result.get(0);
 		int nbJours = result.get(1);
 		String libCM ="";

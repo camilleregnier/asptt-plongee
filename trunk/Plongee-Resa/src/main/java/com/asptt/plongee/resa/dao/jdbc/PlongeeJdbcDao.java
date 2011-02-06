@@ -166,6 +166,7 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements Serializable, Plo
 	/**
 	 * Retourne les plongées à partir du lendemain
 	 */
+	@Override
 	public List<Plongee> getPlongeesForFewDay( int visibleApres, int nbjour) throws TechnicalException {
 		Connection conex=null;
 		try {
@@ -199,13 +200,14 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements Serializable, Plo
 	/**
 	 * Retourne les plongées à partir du lendemain
 	 */
+	@Override
 	public List<Plongee> getPlongeesForEncadrant( int visibleApres, int nbjour) throws TechnicalException {
 		Connection conex=null;
 		try {
 			conex = getDataSource().getConnection();
 			StringBuffer sb = new StringBuffer("SELECT * FROM PLONGEE p");
 			sb.append(" WHERE OUVERTURE_FORCEE=1");
-			sb.append(" and date > CURRENT_DATE()");
+			sb.append(" and date > CURRENT_TIMESTAMP()");
 			sb.append(" and now() >= DATE_ADD(date_visible, INTERVAL ? DAY)");
 			sb.append(" and now() < DATE_ADD(date, INTERVAL ? HOUR)");
 			sb.append(" ORDER BY DATE");
@@ -232,13 +234,14 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements Serializable, Plo
 	/**
 	 * Retourne les plongées pour l'adherent
 	 */
+	@Override
 	public List<Plongee> getPlongeesForAdherent() throws TechnicalException {
 		Connection conex=null;
 		try {
 			conex = getDataSource().getConnection();
 			StringBuffer sb = new StringBuffer("SELECT * FROM PLONGEE p");
 			sb.append(" WHERE OUVERTURE_FORCEE=1");
-			sb.append(" and date > CURRENT_DATE()");
+			sb.append(" and date > CURRENT_TIMESTAMP()");
 			sb.append(" and now() >= DATE_VISIBLE");
 			sb.append(" ORDER BY DATE");
 			
@@ -279,6 +282,7 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements Serializable, Plo
 		}
 	}
 
+	@Override
 	public List<Plongee> getPlongeesWhereAdherentIsInscrit(Adherent adherent, int nbHours)
 	throws TechnicalException {
 		Connection conex=null;
@@ -343,6 +347,7 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements Serializable, Plo
 	}
 
 
+	@Override
 	public List<Plongee> getListeAttenteForAdherent(Adherent adherent)
 	throws TechnicalException {
 		Connection conex=null;
@@ -373,6 +378,7 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements Serializable, Plo
 		}
 	}
 
+	@Override
 	public void inscrireAdherentPlongee(Plongee plongee,
 			Adherent adherent) throws TechnicalException {
 		Connection conex=null;
@@ -396,6 +402,7 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements Serializable, Plo
 		}
 	}
 
+	@Override
 	public void supprimeAdherentPlongee(Plongee plongee,
 			Adherent adherent) throws TechnicalException {
 		Connection conex=null;
@@ -420,6 +427,7 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements Serializable, Plo
 		}
 	}
 
+	@Override
 	public void inscrireAdherentAttente(Plongee plongee,
 			Adherent adherent) throws TechnicalException {
 		Connection conex=null;
@@ -448,6 +456,7 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements Serializable, Plo
 	 * En fait on ne supprime pas l'adherent
 	 * mais on init le champ Date_inscription à la date du jour
 	 */
+	@Override
 	public void sortirAdherentAttente(Plongee plongee,
 			Adherent adherent) throws TechnicalException {
 		Connection conex=null;
@@ -471,6 +480,7 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements Serializable, Plo
 		}
 	}
 
+	@Override
 	public void moveAdherentAttenteToInscrit(Plongee plongee, Adherent adherent)
 			throws TechnicalException {
 			inscrireAdherentPlongee(plongee, adherent);

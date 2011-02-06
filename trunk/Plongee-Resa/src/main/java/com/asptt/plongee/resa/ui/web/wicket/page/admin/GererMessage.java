@@ -11,6 +11,7 @@ import org.apache.wicket.extensions.ajax.markup.html.IndicatingAjaxLink;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
@@ -19,23 +20,27 @@ import org.apache.wicket.model.IModel;
 
 import com.asptt.plongee.resa.exception.ResaException;
 import com.asptt.plongee.resa.exception.TechnicalException;
+import com.asptt.plongee.resa.mail.PlongeeMail;
 import com.asptt.plongee.resa.model.Adherent;
 import com.asptt.plongee.resa.model.Message;
 import com.asptt.plongee.resa.model.MessageDataProvider;
 import com.asptt.plongee.resa.model.Plongee;
 import com.asptt.plongee.resa.model.PlongeeDataProvider;
 import com.asptt.plongee.resa.ui.web.wicket.ResaSession;
+import com.asptt.plongee.resa.ui.web.wicket.component.ConfirmAjaxLink;
 import com.asptt.plongee.resa.ui.web.wicket.page.AccueilPage;
 import com.asptt.plongee.resa.ui.web.wicket.page.ErreurTechniquePage;
 import com.asptt.plongee.resa.ui.web.wicket.page.ErrorPage;
 import com.asptt.plongee.resa.ui.web.wicket.page.TemplatePage;
 import com.asptt.plongee.resa.ui.web.wicket.page.admin.MessagePanel.MessageForm;
+import com.asptt.plongee.resa.ui.web.wicket.page.inscription.InscriptionListeAttentePlongeePage;
 
 public class GererMessage extends TemplatePage {
 	
 	private ModalWindow modalMessage;
 	Label infoLabel;
 	DataView<Message> dataMessages;
+	
 
 	public GererMessage() {
 		
@@ -52,7 +57,7 @@ public class GererMessage extends TemplatePage {
 		// TODO, voir si on ajoute pas cela dans un panel
 		// pour une mise à jour dynamique lors de l'annulation de la plongée
 		try {
-			List<Message> messages = getResaSession().getAdherentService().rechercherMessage();
+			List<Message> messages = getResaSession().getAdherentService().rechercherMessagesTous();
 			
 			MessageDataProvider mDataProvider = new MessageDataProvider(messages);
 
@@ -102,6 +107,17 @@ public class GererMessage extends TemplatePage {
 											: "odd";
 								}
 							}));
+					
+					item.add(new ConfirmAjaxLink("supprimer","Es-tu s\u00fbr(e) de vouloir supprimer ce message ?") {
+						private static final long serialVersionUID = 4442484995694176106L;
+
+						@Override
+						public void onClick(AjaxRequestTarget target) {
+							getResaSession().getAdherentService().deleteMessage(item.getModel().getObject());
+							setResponsePage(new GererMessage());
+						}
+					});
+					
 				}
 			};
 			dataMessages.setOutputMarkupId(true);
@@ -116,70 +132,18 @@ public class GererMessage extends TemplatePage {
 	
 	private void replaceModalWindow(AjaxRequestTarget target, IModel<Message> message) {
 		modalMessage.setContent(new MessagePanel(modalMessage.getContentId(), message));
-		
 		// Pour éviter le message de disparition de la fenetre lors de la validation
 		target.appendJavascript( "Wicket.Window.unloadConfirmation  = false;");
 	}
 	
 	private void onClickMessagePanel(AjaxRequestTarget target, Message message){
-
 		modalMessage.close(target);
-		
-		// appel du service d'annulation de la plongée;
-//		getResaSession().getAdherentService().supprimerPlongee(message);
-		
 		setResponsePage(AccueilPage.class);
-
 	}
 	
 	private void onClickNo(AjaxRequestTarget target){
-
 		modalMessage.close(target);
-
 	}
 	
-//	public  class MessagePanel extends Panel {
-//
-//		private static final long serialVersionUID = 8737443673255555616L;
-//
-//		public MessagePanel(String id, IModel<Message> messageModel) {
-//			super(id, messageModel);
-//			setOutputMarkupId(true);
-//			setDefaultModel(messageModel);
-//			
-//			final Message message = messageModel.getObject();
-//			
-//			// Informations précisant la plongeur concerné et la plongée
-//			// dans la fenêtre de confirmation de désinscription
-//			add(new Label("infoPlongee", "Etes-vous s\u00fbr de vouloir annuler la plong\u00e9e du  " + message.getDateDebut() + " ?"));
-////			int nbPlongeursInscrits = message.getParticipants().size();
-////			add(new Label("infoPlongeurs", (nbPlongeursInscrits == 0) ? " " : " Il y a " + nbPlongeursInscrits + " plongeur(s) inscrits."));
-//			
-//			// Le lien qui va fermer la fenêtre de confirmation
-//			// et appeler la méthode de désinscription de la page principale (DesInscriptionPlongeePage)
-//			add(new IndicatingAjaxLink("yes")
-//			{
-//				private static final long serialVersionUID = 1L;
-//
-//				@Override
-//				public void onClick(AjaxRequestTarget target)
-//				{
-//					onClickMessagePanel(target, message);
-//				}
-//			});
-//			
-//			add(new IndicatingAjaxLink("no")
-//			{
-//				private static final long serialVersionUID = 1L;
-//
-//				@Override
-//				public void onClick(AjaxRequestTarget target)
-//				{
-//					onClickNo(target);
-//				}
-//			});
-//		}
-//		
-//	}
 }
 

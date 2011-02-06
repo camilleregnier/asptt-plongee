@@ -51,7 +51,7 @@ public class InscriptionPlongeePage extends TemplatePage {
 		add(new Label("message", adh.getPrenom() + ", ci-dessous, les plong\u00e9es auxquelles tu peux t'inscrire"));
 		String libCM ="";
 		try {
-			 getResaSession().getPlongeeService().checkCertificatMedical(adh);
+			 getResaSession().getPlongeeService().checkCertificatMedical(adh, null);
 		} catch (TechnicalException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -69,7 +69,7 @@ public class InscriptionPlongeePage extends TemplatePage {
 		String libMesg = adh.getPrenom()+" "+ adh.getNom() + " peut s'inscrire aux plong\u00e9es suivantes";
 		String libCM ="";
 		try {
-			getResaSession().getPlongeeService().checkCertificatMedical(adh);
+			getResaSession().getPlongeeService().checkCertificatMedical(adh, null);
 		} catch (TechnicalException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -193,7 +193,7 @@ public class InscriptionPlongeePage extends TemplatePage {
 					adh != null ? adh : getResaSession().getAdherent());
 			//Analyse le retour de service
 			switch (response) {
-			case 0: //on inscrit l'adherent en liste d'attente sans envoi de mail
+			case 0://on inscrit l'adherent en liste d'attente sans envoi de mail : car plongee complete  
 				typeMail=PlongeeMail.PAS_DE_MAIL;
 				if(getResaSession().getPlongeeService().isOkForListeAttente(
 						plongee, 
@@ -203,7 +203,7 @@ public class InscriptionPlongeePage extends TemplatePage {
 					modalConfirm.show(target);
 				}
 				break;
-			case 4: //on inscrit l'adherent en liste d'attente avec envoi d'un mail
+			case 4: //on inscrit l'adherent en liste d'attente avec envoi d'un mail : pas assez d'encadrant
 				typeMail=PlongeeMail.MAIL_PAS_ASSEZ_ENCADRANT;
 				if(getResaSession().getPlongeeService().isOkForListeAttente(
 						plongee, 
@@ -214,7 +214,7 @@ public class InscriptionPlongeePage extends TemplatePage {
 					modalConfirm.show(target);
 				}
 				break;
-			case 5: //on inscrit l'adherent en liste d'attente avec envoi d'un mail
+			case 5: //on inscrit l'adherent en liste d'attente avec envoi d'un mail : Liste d'attente déjà ouverte
 				typeMail=PlongeeMail.MAIL_LISTE_ATTENTE_EXIST;
 				if(getResaSession().getPlongeeService().isOkForListeAttente(
 						plongee, 
@@ -241,7 +241,7 @@ public class InscriptionPlongeePage extends TemplatePage {
 				setResponsePage(new InscriptionConfirmationPlongeePage(plongee));
 				break;
 
-			case 2: // ouvrir la plongée
+			case 2: //le plongeur est DP et Pilote => ouvrir plongee
 				typeMail=PlongeeMail.PAS_DE_MAIL;
 				setResponsePage(new GererPlongeeAOuvrirTwo(plongee));
 				break;
