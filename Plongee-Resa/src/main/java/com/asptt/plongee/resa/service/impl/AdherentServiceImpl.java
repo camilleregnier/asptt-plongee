@@ -31,34 +31,42 @@ public class AdherentServiceImpl implements AdherentService, Serializable {
 		this.adherentDao = adherentDao;
 	}
 
+	@Override
 	public Adherent authentifierAdherent(String id, String pwd) throws TechnicalException{
 		return adherentDao.authenticateAdherent(id, pwd);
 	}
 	
+	@Override
 	public Adherent rechercherAdherentParIdentifiant(String id) throws TechnicalException{
 			return adherentDao.findById(id);
 	}
 	
+	@Override
 	public Adherent rechercherAdherentParIdentifiantTous(String id) throws TechnicalException{
 			return adherentDao.findByIdAll(id);
 	}
 
+	@Override
 	public List<Adherent> rechercherPlongeurs() throws TechnicalException{
 			return adherentDao.findAll();
 	}
 
+	@Override
 	public List<Adherent> rechercherAdherentsTous() throws TechnicalException{
 			return adherentDao.getAdherentsTous();
 	}
 
+	@Override
 	public List<Adherent> rechercherAdherentsActifs() throws TechnicalException{
 			return adherentDao.getAdherentsActifs();
 	}
 
+	@Override
 	public List<Adherent> rechercherAdherentsInactifs() throws TechnicalException{
 			return adherentDao.getAdherentsInactifs();
 	}
 
+	@Override
 	public List<Adherent> rechercherExternes() throws TechnicalException{
 			return adherentDao.getExternes();
 	}
@@ -67,6 +75,7 @@ public class AdherentServiceImpl implements AdherentService, Serializable {
 	 * Cette methode est appelée uniquement par l'AdherentDataProvider
 	 * dans le seul cas ou il faut faire une recherche : normalement jamais!
 	 */
+	@Override
 	public List<Adherent> rechercherAdherents(int first, int count) throws TechnicalException{
 		TreeSet tAdh = new TreeSet(new AdherentComparatorNom());
 		tAdh.addAll(rechercherAdherentsTous());
@@ -82,6 +91,7 @@ public class AdherentServiceImpl implements AdherentService, Serializable {
 		return sousAdhTrie;
 	}
 
+	@Override
 	public List<Adherent> rechercherDPs(List<Adherent> adherents) throws TechnicalException{
 		List<Adherent> dps = new ArrayList<Adherent>();
 		for(Adherent a : adherents){
@@ -91,9 +101,12 @@ public class AdherentServiceImpl implements AdherentService, Serializable {
 		}
 		return dps;
 	}
+
+	@Override
 	public List<Adherent> rechercherDPsNonInscrits(List<Adherent> adherents, Plongee plongee) throws TechnicalException{
 		List<Adherent> dps = new ArrayList<Adherent>();
 		HashMap<String,Adherent> dpInscrits = new HashMap<String,Adherent>();
+		
 		
 		for(Adherent a : plongee.getParticipants()){
 			if(a.isDp()){
@@ -103,12 +116,17 @@ public class AdherentServiceImpl implements AdherentService, Serializable {
 		
 		for(Adherent a : adherents){
 			if(a.isDp() && ! dpInscrits.containsKey(a.getNumeroLicense())){
-				dps.add(a);
+				List<Integer> result = ResaUtil.checkDateCM(a.getDateCM(), plongee.getDate());
+				int nbMois = result.get(0);
+				if( nbMois >= 0){
+					dps.add(a);
+				}
 			}
 		}
 		return dps;
 	}
 
+	@Override
 	public List<Adherent> rechercherPilotes(List<Adherent> adherents) throws TechnicalException{
 		List<Adherent> pilotes = new ArrayList<Adherent>();
 		for(Adherent a : adherents){
@@ -118,6 +136,8 @@ public class AdherentServiceImpl implements AdherentService, Serializable {
 		}
 		return pilotes;
 	}
+
+	@Override
 	public List<Adherent> rechercherPilotesNonInscrits(List<Adherent> adherents, Plongee plongee) throws TechnicalException{
 		List<Adherent> pilotes = new ArrayList<Adherent>();
 		HashMap<String,Adherent> pilotesInscrits = new HashMap<String,Adherent>();
@@ -130,20 +150,27 @@ public class AdherentServiceImpl implements AdherentService, Serializable {
 		
 		for(Adherent a : adherents){
 			if(a.isPilote() && ! pilotesInscrits.containsKey(a.getNumeroLicense())){
-				pilotes.add(a);
+				List<Integer> result = ResaUtil.checkDateCM(a.getDateCM(), plongee.getDate());
+				int nbMois = result.get(0);
+				if(nbMois >= 0){
+					pilotes.add(a);
+				}
 			}
 		}
 		return pilotes;
 	}
 
+	@Override
 	public List<Adherent> rechercherAdherentsRole(String role) throws TechnicalException{
 			return adherentDao.getAdherentsLikeRole(role);
 	}
 	
+	@Override
 	public void creerAdherent(Adherent adherent) throws TechnicalException{
 			adherentDao.create(adherent);
 	}
 	
+	@Override
 	public void updateAdherent(Adherent adherent, int typeMail) throws TechnicalException, ResaException{
 		
 		adherentDao.update(adherent);	
@@ -160,10 +187,12 @@ public class AdherentServiceImpl implements AdherentService, Serializable {
 		}
 	}
 	
+	@Override
 	public void updatePasswordAdherent(Adherent adherent) throws TechnicalException{
 			adherentDao.updatePassword(adherent);
 	}
 	
+	@Override
 	public void creerExterne(Adherent adherent) throws TechnicalException{
 			Integer numExt = adherentDao.getExternes().size()+1;
 			adherent.setNumeroLicense(ResaConstants.LICENSE_EXTERNE.concat(numExt.toString()));
@@ -173,16 +202,28 @@ public class AdherentServiceImpl implements AdherentService, Serializable {
 			adherentDao.create(adherent);
 	}
 
+	@Override
+	public List<Message> rechercherMessagesTous() throws TechnicalException{
+		return adherentDao.getAllMessages();
+	}
+
+	@Override
 	public List<Message> rechercherMessage() throws TechnicalException{
 		return adherentDao.getMessage();
 	}
 
+	@Override
 	public Message updateMessage(Message message) throws TechnicalException{
 		return adherentDao.updateMessage(message);
 	}
 	
+	@Override
 	public Message createMessage(Message message) throws TechnicalException{
 		return adherentDao.createMessage(message);
 	}
 
+	@Override
+	public void deleteMessage(Message message) throws TechnicalException{
+		adherentDao.deleteMessage(message);
+	}
 }

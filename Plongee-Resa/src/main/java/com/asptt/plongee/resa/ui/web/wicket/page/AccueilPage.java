@@ -71,7 +71,7 @@ public class AccueilPage extends TemplatePage {
 			String libCM ="";
 			try {
 				getResaSession().getPlongeeService().checkCertificatMedical(
-						getResaSession().getAdherent());
+						getResaSession().getAdherent(), null);
 			} catch (ResaException e) {
 				libCM=e.getKey();
 			}

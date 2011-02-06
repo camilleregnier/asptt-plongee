@@ -207,6 +207,7 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements Serializable, Ad
 		}
 	}
 
+	@Override
 	public Adherent updatePassword(Adherent adh) throws TechnicalException {
 		Connection conex=null;
 		try {
@@ -273,6 +274,7 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements Serializable, Ad
 		}
 	}
 
+	@Override
 	public List<Adherent> getAdherentsActifs() throws TechnicalException {
 		Connection conex=null;
 		try {
@@ -355,6 +357,7 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements Serializable, Ad
 		}
 	}
 	
+	@Override
 	public Adherent findByIdAll(String id) throws TechnicalException {
 		Connection conex=null;
 		try {
@@ -375,6 +378,7 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements Serializable, Ad
 		}
 	}
 
+	@Override
 	public Adherent authenticateAdherent(String id, String pwd) throws TechnicalException {
 		Connection conex=null;
 		try {
@@ -401,6 +405,7 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements Serializable, Ad
 		}
 	}
 	
+	@Override
 	public List<String> getStrRoles(Adherent adherent)
 			throws TechnicalException {
 		PreparedStatement st;
@@ -427,6 +432,7 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements Serializable, Ad
 		}
 	}
 
+	@Override
 	public List<Adherent> getAdherentsLikeName(String name)
 	throws TechnicalException {
 		PreparedStatement st;
@@ -456,6 +462,7 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements Serializable, Ad
 		}
 	}
 
+	@Override
 	public List<Adherent> getAdherentsLikeRole(String role)
 	throws TechnicalException {
 		PreparedStatement st;
@@ -492,6 +499,7 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements Serializable, Ad
 	 * 	"nom" = nom du plongeur
 	 *  "date" ou null = ordre d'inscription à la plongée
 	 */
+	@Override
 	public List<Adherent> getAdherentsInscrits(Plongee plongee,  String niveauPlongeur, String niveauEncadrement, String trie)
 			throws TechnicalException {
 		PreparedStatement st;
@@ -551,6 +559,7 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements Serializable, Ad
 	 * sur la plongée
 	 * trie par le DATE_ATTENTE
 	 */
+	@Override
 	public List<Adherent> getAdherentsWaiting(Plongee plongee)
 			throws TechnicalException {
 		PreparedStatement st;
@@ -583,6 +592,7 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements Serializable, Ad
 		}
 	}
 
+	@Override
 	public int getIdRole(String libelle) throws TechnicalException {
 		PreparedStatement st;
 		Connection conex=null;
@@ -643,6 +653,32 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements Serializable, Ad
 		adherent.setDateCM(dateCM);
 		adherent.setAnneeCotisation(rs.getInt("ANNEE_COTI"));
 		return adherent;
+	}
+
+	@Override
+	public List<Message> getAllMessages() throws TechnicalException {
+		PreparedStatement st;
+		Connection conex=null;
+		try {
+			conex = getDataSource().getConnection();
+			StringBuffer sb = new StringBuffer("select * from MESSAGE");
+
+			st = conex.prepareStatement(sb.toString());
+			ResultSet rs = st.executeQuery();
+
+			List<Message> messages = new ArrayList<Message>();
+			while (rs.next()) {
+				Message message = wrapMessage(rs);
+				messages.add(message);
+			}
+			return messages;
+			
+		} catch (SQLException e) {
+			log.error(e.getMessage(), e);
+			throw new TechnicalException(e);
+		} finally {
+			closeConnexion(conex);
+		}
 	}
 
 	@Override
@@ -735,6 +771,27 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements Serializable, Ad
 						"Le message n'a pu être creé");
 			}
 			return message;
+		} catch (SQLException e) {
+			log.error(e.getMessage(), e);
+			throw new TechnicalException(e);
+		} finally {
+			closeConnexion(conex);
+		}
+	}
+	
+	@Override
+	public void deleteMessage(Message message) throws TechnicalException {
+		Connection conex=null;
+		try {
+			conex = getDataSource().getConnection();
+			StringBuffer sb = new StringBuffer();
+			sb.append("DELETE FROM MESSAGE WHERE IDMESSAGE = ? ");
+			PreparedStatement st = conex.prepareStatement(sb.toString());
+			st.setInt(1, message.getId());
+			if (st.executeUpdate() == 0) {
+				throw new TechnicalException(
+						"Le message n'a pu être supprimé");
+			}
 		} catch (SQLException e) {
 			log.error(e.getMessage(), e);
 			throw new TechnicalException(e);

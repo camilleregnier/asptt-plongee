@@ -52,5 +52,9 @@ public interface AdherentService {
 
 	Message createMessage(Message message);
 
+	List<Message> rechercherMessagesTous() throws TechnicalException;
+
+	void deleteMessage(Message message) throws TechnicalException;
+
 	
 }
