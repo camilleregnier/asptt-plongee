@@ -77,6 +77,10 @@ public class ContactUrgent implements Serializable {
 			return false;
 		}
 	}
+	
+	public String toString(){
+		return getTitre() + " | " + getPrenom() + " | " + getNom() + " | " + getTelephone() + (getTelephtwo() == null ? "" : " | " + getTelephtwo());
+	}
 
 
 }
