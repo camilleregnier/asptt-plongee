@@ -3,7 +3,7 @@
 	<span class="msg" wicket:id="message"></span>
 	<div id="feedbackPanel"> 
 		<span wicket:id="feedback" />
-	</div> 
+	</div>
 	<form wicket:id="inputForm" id="inputForm"> 
              <div id="corps" align="left"> 
                  <table> 
@@ -36,6 +36,12 @@
                          </tr>
                  </table>     
              </div> 
+             <table width="100%">
+             	<tr><td>
+					<div wicket:id="tree" class="my-tree">	
+					</div>	
+				</td></tr>
+			</table>
              <div align="center">
 	             <input type="submit" value="Annuler" wicket:id="cancel"/>
 	             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
