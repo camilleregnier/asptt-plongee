@@ -173,13 +173,12 @@ public class PlongeeServiceTest extends AbstractServiceTest {
 			dateCM.setTime(gcDebut.getTimeInMillis());
 			
 			Date dateDuJour = sdf.parse("03/03/2010");
-//			Date dateFin = new Date();
 			GregorianCalendar gcFin = new GregorianCalendar();
 			gcFin.setTime(dateDuJour);
 			dateDuJour.setTime(gcFin.getTimeInMillis());
 			
-			List<Integer> result = ResaUtil.checkDateCM(dateCM, dateDuJour);
-			System.out.println("il reste:"+result.get(0)+"mois et:"+result.get(1)+"jour");
+			long result = ResaUtil.checkDateCM(dateCM, dateDuJour);
+			System.out.println("il reste:"+result+"jour");
 			
 
 		} catch (ParseException e) {

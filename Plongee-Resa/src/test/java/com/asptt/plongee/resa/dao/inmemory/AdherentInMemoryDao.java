@@ -191,4 +191,16 @@ public class AdherentInMemoryDao implements AdherentDao{
 		return null;
 	}
 
+	@Override
+	public void deleteMessage(Message message) throws TechnicalException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public List<Message> getAllMessages() throws TechnicalException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

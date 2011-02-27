@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_4.xsd"
 	version="2.4">
 
-	<display-name>resa</display-name>
+	<display-name>${webDisplayName}</display-name>
 	<icon>
 		<small-icon>medias/images/logo-16.jpg</small-icon>
 		<large-icon>medias/images/logo-32.png</large-icon>
@@ -19,7 +19,7 @@
 		</init-param>
 		<init-param>
 			<param-name>configuration</param-name>
-			<param-value>deployment</param-value>
+			<param-value>${webConfig}</param-value>
 		</init-param>
 	</filter>
 

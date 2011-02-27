@@ -163,7 +163,10 @@ public final class PlongeeMail {
 
 		// Mise en forme de la date
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-		String dateAffichee = sdf.format(plongee.getDate());
+		String dateAffichee = "";
+		if(null != plongee){
+			dateAffichee = sdf.format(plongee.getDate());
+		}
 		StringBuffer sb = null;;
 
 		switch (type) {
