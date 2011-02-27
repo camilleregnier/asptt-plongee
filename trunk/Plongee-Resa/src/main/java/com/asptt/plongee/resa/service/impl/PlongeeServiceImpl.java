@@ -235,9 +235,8 @@ public class PlongeeServiceImpl implements PlongeeService, Serializable {
 				}
 			}
 			if (isNotInscrit) {
-				List<Integer> result = ResaUtil.checkDateCM(adherent.getDateCM(), plongee.getDate());
-				int nbMois = result.get(0);
-				if( nbMois >= 0){
+				long nbJours = ResaUtil.checkDateCM(adherent.getDateCM(), plongee.getDate());
+				if( nbJours > 0){
 						plongeesForAdherent.add(plongee);
 				}
 			}	
@@ -622,21 +621,21 @@ public class PlongeeServiceImpl implements PlongeeService, Serializable {
 		if (null != plongee){
 			dateCompare = plongee.getDate();
 		}
-		
+		/*
 		List<Integer> result = ResaUtil.checkDateCM(adherent.getDateCM(), dateCompare);
 		int nbMois = result.get(0);
 		int nbJours = result.get(1);
+		*/
+		long nbJours  = ResaUtil.checkDateCM(adherent.getDateCM(), dateCompare);
 		String libCM ="";
-		if(nbMois < 0){
+		if(nbJours <= 0){
 			//CM Perimé
 			throw new ResaException("\n ton certificat m\u00e9dical est p\u00e9rim\u00e9");
 		} else {
-			if(nbMois == 0){
+			//On leve l'exception sil reste moins de 31 jours 
+			if(nbJours <= 31){
 				throw new ResaException("ATTENTION plus que "+nbJours+" jours avant que ton certificat m\u00e9dical soit p\u00e9rim\u00e9");
-			}else if (nbMois == 1){
-				throw new ResaException("ATTENTION plus que 1 mois avant que ton certificat m\u00e9dical soit p\u00e9rim\u00e9");
 			}
 		}
-
 	}
 }

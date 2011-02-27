@@ -116,9 +116,8 @@ public class AdherentServiceImpl implements AdherentService, Serializable {
 		
 		for(Adherent a : adherents){
 			if(a.isDp() && ! dpInscrits.containsKey(a.getNumeroLicense())){
-				List<Integer> result = ResaUtil.checkDateCM(a.getDateCM(), plongee.getDate());
-				int nbMois = result.get(0);
-				if( nbMois >= 0){
+				long nbJours = ResaUtil.checkDateCM(a.getDateCM(), plongee.getDate());
+				if( nbJours > 0){
 					dps.add(a);
 				}
 			}
@@ -150,9 +149,8 @@ public class AdherentServiceImpl implements AdherentService, Serializable {
 		
 		for(Adherent a : adherents){
 			if(a.isPilote() && ! pilotesInscrits.containsKey(a.getNumeroLicense())){
-				List<Integer> result = ResaUtil.checkDateCM(a.getDateCM(), plongee.getDate());
-				int nbMois = result.get(0);
-				if(nbMois >= 0){
+				long nbJours = ResaUtil.checkDateCM(a.getDateCM(), plongee.getDate());
+				if(nbJours > 0){
 					pilotes.add(a);
 				}
 			}
@@ -177,7 +175,7 @@ public class AdherentServiceImpl implements AdherentService, Serializable {
 		if (typeMail == PlongeeMail.MAIL_MODIF_INFO_ADHERENT){
 			PlongeeMail pMail;
 			try {
-				pMail = new PlongeeMail(PlongeeMail.MAIL_PAS_ASSEZ_ENCADRANT,
+				pMail = new PlongeeMail(PlongeeMail.MAIL_MODIF_INFO_ADHERENT,
 						null, adherent);
 				pMail.sendMail("ADMIN");
 			} catch (MessagingException e) {
