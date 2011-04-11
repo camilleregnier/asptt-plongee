@@ -46,11 +46,11 @@ public class ResaUtil {
 		gcFin.setTime(dateCM);
 		gcFin.add(GregorianCalendar.YEAR, +1);
 		Date dateDeFin = new Date(gcFin.getTimeInMillis());
-		System.out.println("DATE de FIN:"+sdf.format(dateDeFin));
+//		System.out.println("DATE de FIN:"+sdf.format(dateDeFin));
 		
 		GregorianCalendar gcDuJour = new GregorianCalendar();
 		gcDuJour.setTime(dateDuJour);
-		System.out.println("DATE du JOUR:"+sdf.format(dateDuJour));
+//		System.out.println("DATE du JOUR:"+sdf.format(dateDuJour));
 		
 		long nombreJour = (dateDeFin.getTime()-dateDuJour.getTime()) / ONE_DAY_IN_MILLIS;
 		
