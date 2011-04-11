@@ -17,6 +17,7 @@ import org.apache.wicket.markup.html.form.ListMultipleChoice;
 import org.apache.wicket.markup.html.form.RequiredTextField;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
@@ -147,7 +148,13 @@ public class MessagePanel extends Panel {
 
 			});
 
-			add(new Button("cancel", new ResourceModel("button.cancel")));
+			add(new Link("cancel") {
+				@Override
+				public void onClick() {
+					setResponsePage(GererMessage.class);
+				}
+			});
+			//add(new Button("cancel", new ResourceModel("button.cancel")));
 		}
 
 	}

@@ -96,6 +96,7 @@ public class InfoAdherent extends TemplatePage {
 			add(dateCMTextFiled);
 			dateCMTextFiled.add(new DatePicker());
 			
+			/**
 			add(new AjaxButton("validInfo") {
 				@Override
 				// La validation doit se faire en Ajax car le formulaire de la
@@ -133,6 +134,7 @@ public class InfoAdherent extends TemplatePage {
 				}
 
 			});
+			*/
 
 			add(new Link("cancel") {
 				@Override
@@ -142,9 +144,11 @@ public class InfoAdherent extends TemplatePage {
 			});
 			
 			// L'arbre des contacts urgents
+			/** 
 			tree = new LabelTree("tree", createTreeModel(adherent));
 			add(tree);
 			tree.getTreeState().collapseAll();
+			*/
 		}
 
 	}

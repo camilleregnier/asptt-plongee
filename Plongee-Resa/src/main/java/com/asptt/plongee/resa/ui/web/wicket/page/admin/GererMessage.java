@@ -47,8 +47,11 @@ public class GererMessage extends TemplatePage {
 		// Fenêtre modale d'informations sur la plongée à annuler
 		modalMessage = new ModalWindow("modalMessage");
 		modalMessage.setTitle("Informations sur le message \u00e0 afficher");
-		modalMessage.setUseInitialHeight(false);
+		//modalMessage.setUseInitialHeight(false);
 		modalMessage.setWidthUnit("px");
+		modalMessage.setInitialHeight(300);
+		modalMessage.setInitialWidth(700);
+		modalMessage.setResizable(true);
 		add(modalMessage);
 		
 		infoLabel = new Label("infoLabel", "Choisissez la message \u00e0 modifier");
