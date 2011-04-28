@@ -175,7 +175,7 @@ public class InscriptionPlongeePage extends TemplatePage {
 			Calendar cal = Calendar.getInstance();
 			cal.setTime(dateDuJour);
 			int heureCourante = cal.get(Calendar.HOUR_OF_DAY);
-			int heureOuverture = getHeureOuverture(cal, adh);
+			int heureOuverture = getHeureOuverture(cal, adh, plongee);
 			//test actif == 1 ==> ok c un adherent
 			// sinon c un externe donc inscription par secretatiat
 			if ( adh.isVesteRouge() && adh.getActifInt()==1 ){
@@ -258,10 +258,18 @@ public class InscriptionPlongeePage extends TemplatePage {
 		}
 	}
 	
-	public int getHeureOuverture(Calendar cal, Adherent adh){
+	public int getHeureOuverture(Calendar cal, Adherent adh, Plongee plongee){
 
 		int numJour = cal.get(Calendar.DAY_OF_WEEK);			
 		int heure;
+		//Calendar de la plongée pour rechercher le numero du jour de la plongée
+		Calendar calPlongee = Calendar.getInstance();
+		cal.setTime(plongee.getDate());
+		int numPlongee = calPlongee.get(Calendar.DAY_OF_WEEK);
+		// 
+		if(numJour == numPlongee){
+			return 0;
+		}
 		switch (numJour) {
 			case 1: //Dimanche
 				//test actif == 1 ==> ok c un adherent
