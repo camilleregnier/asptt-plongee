@@ -10,6 +10,7 @@ import com.asptt.plongee.resa.dao.AdherentDao;
 import com.asptt.plongee.resa.dao.PlongeeDao;
 import com.asptt.plongee.resa.exception.ResaException;
 import com.asptt.plongee.resa.exception.TechnicalException;
+import com.asptt.plongee.resa.model.NiveauAutonomie;
 import com.asptt.plongee.resa.model.Plongee;
 import com.asptt.plongee.resa.quartz.job.QuartzJob;
 import com.asptt.plongee.resa.service.PlongeeService;
@@ -111,13 +112,14 @@ public class BusinessManager {
 			logger.info("Plongée du MERCREDI aprem créee : "+gc.getTime().toString());
 
 			//Plongée du JEUDI Soir
-//			gc.setTime(dateDuJour);
-//			gc.add(GregorianCalendar.DATE, +11);
-//			plongee.setType(Plongee.Type.SOIR);
-//			plongee.setDate(gc.getTime());
-//			plongee.setDateVisible(null);
-//			plongeeService.creerPlongee(plongee);
-//			logger.info("Plongée du JEUDI soir créee : "+gc.getTime().toString());
+			gc.setTime(dateDuJour);
+			gc.add(GregorianCalendar.DATE, +11);
+			plongee.setType(Plongee.Type.SOIR);
+			plongee.setDate(gc.getTime());
+			plongee.setDateVisible(null);
+			plongee.setNiveauMinimum(NiveauAutonomie.P1.toString());
+			plongeeService.creerPlongee(plongee);
+			logger.info("Plongée du JEUDI soir créee : "+gc.getTime().toString());
 				
 			//Plongée du VENDREDI Aprem
 			gc.setTime(dateDuJour);
@@ -150,6 +152,7 @@ public class BusinessManager {
 			plongee.setType(Plongee.Type.MATIN);
 			plongee.setDate(gc.getTime());
 			plongee.setDateVisible(null);
+			plongee.setNiveauMinimum(NiveauAutonomie.P1.toString());
 			plongeeService.creerPlongee(plongee);
 			logger.info("Plongée du DIMANCHE matin créee : "+gc.getTime().toString());
 		} catch (ResaException e) {
