@@ -12,6 +12,8 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.validation.validator.EmailAddressValidator;
+import org.apache.wicket.validation.validator.PatternValidator;
+import org.apache.wicket.validation.validator.StringValidator.ExactLengthValidator;
 
 import com.asptt.plongee.resa.exception.TechnicalException;
 import com.asptt.plongee.resa.model.Adherent;
@@ -50,9 +52,12 @@ public class ExterieurPanel extends Panel {
 			add(new RequiredTextField<String>("mail").add(EmailAddressValidator
 					.getInstance()));
 
-			// TODO à modifier plus tard pour validation
-			add(new RequiredTextField<Integer>("telephone", Integer.class));
-
+			// numéro de téléphone au bon format (10 caractères numériques)
+			RequiredTextField<String> telephone = new RequiredTextField<String>("telephone", String.class);
+			telephone.add(ExactLengthValidator.exactLength(10));
+			telephone.add(new PatternValidator("\\d{10}"));
+			add(telephone);
+			
 			// Ajout de la liste des niveaux
 			List<String> niveaux = new ArrayList<String>();
 			for (NiveauAutonomie n : NiveauAutonomie.values()) {
