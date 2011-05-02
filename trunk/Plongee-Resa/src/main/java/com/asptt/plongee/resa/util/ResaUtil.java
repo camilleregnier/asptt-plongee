@@ -40,7 +40,7 @@ public class ResaUtil {
 		GregorianCalendar gcCM = new GregorianCalendar();
 		gcCM.setTime(dateCM);
 		dateCM.setTime(gcCM.getTimeInMillis());
-		System.out.println("DATE de DEBUT:"+sdf.format(dateCM));
+//		System.out.println("DATE de DEBUT:"+sdf.format(dateCM));
 		
 		GregorianCalendar gcFin = new GregorianCalendar();
 		gcFin.setTime(dateCM);
