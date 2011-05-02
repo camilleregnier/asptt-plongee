@@ -689,7 +689,7 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements Serializable, Ad
 			conex = getDataSource().getConnection();
 			StringBuffer sb = new StringBuffer("select * from MESSAGE");
 			sb.append(" where date_debut <= CURRENT_TIMESTAMP()");
-			sb.append(" and CURRENT_TIMESTAMP() < date_fin " );
+			sb.append(" and CURRENT_TIMESTAMP() <= date_fin " );
 			sb.append(" or date_fin is null " );
 			sb.append(" order by date_debut " );
 
