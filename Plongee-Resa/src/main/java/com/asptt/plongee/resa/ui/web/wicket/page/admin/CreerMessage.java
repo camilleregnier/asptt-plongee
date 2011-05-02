@@ -1,7 +1,8 @@
 package com.asptt.plongee.resa.ui.web.wicket.page.admin;
 
+import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
+import java.util.GregorianCalendar;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
@@ -27,7 +28,6 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.validation.validator.PatternValidator;
 import org.apache.wicket.validation.validator.StringValidator.ExactLengthValidator;
-import org.wicketstuff.dojo.markup.html.form.DojoTimePicker;
 import org.joda.time.DateTimeField;
 
 import com.asptt.plongee.resa.exception.ResaException;
@@ -56,7 +56,6 @@ public class CreerMessage extends TemplatePage {
 
 		private static final long serialVersionUID = 5374674730458593314L;
 
-		
 		public MessageForm(String id) {
 			super(id);
 			CompoundPropertyModel<Message> model = new CompoundPropertyModel<Message>(new Message());
@@ -70,12 +69,6 @@ public class CreerMessage extends TemplatePage {
 			dateDebTextFiled.setRequired(true);
 			add(dateDebTextFiled);
 			dateDebTextFiled.add(new DatePicker());
-//			dateDebTextFiled.add(new DojoTimePicker("timeDebut", Locale.FRENCH, null));
-			
-			DojoTimePicker dateDebTime = new DojoTimePicker("timeDebut", Locale.FRENCH, null);
-			dateDebTime.setRequired(true);
-//			add(dateDebTime);
-			dateDebTextFiled.add(dateDebTime);
 			
 			DateTextField dateFinTextFiled = new DateTextField("dateFin", new PropertyModel<Date>(model, "dateFin"), new StyleDateConverter("S-", true));
 			dateFinTextFiled.setRequired(false);
@@ -96,6 +89,13 @@ public class CreerMessage extends TemplatePage {
 
 					// Mise à jour du message
 					try {
+						//on force la date de fin à 23h59
+						Date dateFin = message.getDateFin();
+						GregorianCalendar gc = new GregorianCalendar();
+						gc.setTime(dateFin);
+						gc.add(GregorianCalendar.HOUR_OF_DAY, 23);
+						gc.add(GregorianCalendar.MINUTE, 59);
+						message.setDateFin(gc.getTime());
 						if(null != message.getDateFin())
 							if( message.getDateFin().before(message.getDateDebut())){
 							throw new ResaException("La date de fin ne peut pas être avant la date de début");
