@@ -175,7 +175,7 @@ public final class PlongeeMail {
 			sb = new StringBuffer("Bonjour,\n");
 			String niveau = adherent.getPrerogative(); 
 			sb.append("L'encadrant / "+niveau+" "+adherent.getPrenom()+" "+adherent.getNom()+" \n");
-			sb.append("viens de s'inscrire \u00e0 la plong\u00e9e du "+dateAffichee+" ("+plongee.getType()+")\n");
+			sb.append("vient de s'inscrire \u00e0 la plong\u00e9e du "+dateAffichee+" ("+plongee.getType()+")\n");
 			sb.append("\n");
 			sb.append("Cette plong\u00e9e est encore ferm\u00e9e.\n");
 			sb.append("\n");
@@ -234,7 +234,7 @@ public final class PlongeeMail {
 			sb.append("Pour information  \n");
 			sb.append("\n");
 			sb.append("L'adh\u00e9rent "+adherent.getPrenom()+" "+adherent.getNom()+" \n");
-			sb.append("viens de se désinscrire à moins de 24 heures  \n");
+			sb.append("vient de se désinscrire à moins de 24 heures  \n");
 			sb.append("de la plong\u00e9e du "+dateAffichee+" ("+plongee.getType()+")\n");
 			sb.append("\n");
 			sb.append("Cordialement.\n");

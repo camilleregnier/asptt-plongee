@@ -1,7 +1,11 @@
 package com.asptt.plongee.resa.quartz.manager;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Locale;
 
 import org.apache.log4j.Logger;
 
@@ -114,12 +118,25 @@ public class BusinessManager {
 			//Plongée du JEUDI Soir
 			gc.setTime(dateDuJour);
 			gc.add(GregorianCalendar.DATE, +11);
-			plongee.setType(Plongee.Type.SOIR);
-			plongee.setDate(gc.getTime());
-			plongee.setDateVisible(null);
-			plongee.setNiveauMinimum(NiveauAutonomie.P1.toString());
-			plongeeService.creerPlongee(plongee);
-			logger.info("Plongée du JEUDI soir créee : "+gc.getTime().toString());
+			Date datePlongeeJeudi = gc.getTime();
+			int annee = gc.get(Calendar.YEAR);
+			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+			try {
+				Date dateDeb = sdf.parse("31/05/"+annee);
+				Date dateFin = sdf.parse("16/09/"+annee);
+				//Test si on est entre le 1/6 et le 15/9
+				if(dateDeb.before(datePlongeeJeudi) && datePlongeeJeudi.before(dateFin)){
+					plongee.setType(Plongee.Type.SOIR);
+					plongee.setDate(datePlongeeJeudi);
+					plongee.setDateVisible(null);
+					plongee.setNiveauMinimum(NiveauAutonomie.P1.toString());
+					plongeeService.creerPlongee(plongee);
+					logger.info("Plongée du JEUDI soir créee : "+gc.getTime().toString());
+				}
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 				
 			//Plongée du VENDREDI Aprem
 			gc.setTime(dateDuJour);
