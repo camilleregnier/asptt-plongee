@@ -2,6 +2,7 @@ package com.asptt.plongee.resa.service.impl;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -192,12 +193,19 @@ public class AdherentServiceImpl implements AdherentService, Serializable {
 	
 	@Override
 	public void creerExterne(Adherent adherent) throws TechnicalException{
-			Integer numExt = adherentDao.getExternes().size()+1;
-			adherent.setNumeroLicense(ResaConstants.LICENSE_EXTERNE.concat(numExt.toString()));
-			adherent.setActifInt(2);
-			adherent.setPilote(false);
-			adherent.setDp(false);
-			adherentDao.create(adherent);
+			
+		Date dateDuJour = new Date();
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(dateDuJour);
+
+		Integer numExt = adherentDao.getExternes().size()+1;
+		adherent.setNumeroLicense(ResaConstants.LICENSE_EXTERNE.concat(numExt.toString()));
+		adherent.setActifInt(2);
+		adherent.setPilote(false);
+		adherent.setDp(false);
+		adherent.setDateCM(dateDuJour);
+		adherent.setAnneeCotisation(cal.get(Calendar.YEAR));
+		adherentDao.create(adherent);
 	}
 
 	@Override

@@ -264,7 +264,7 @@ public class InscriptionPlongeePage extends TemplatePage {
 		int heure;
 		//Calendar de la plongée pour rechercher le numero du jour de la plongée
 		Calendar calPlongee = Calendar.getInstance();
-		cal.setTime(plongee.getDate());
+		calPlongee.setTime(plongee.getDate());
 		int numPlongee = calPlongee.get(Calendar.DAY_OF_WEEK);
 		// 
 		if(numJour == numPlongee){
