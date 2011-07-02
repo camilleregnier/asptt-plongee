@@ -207,7 +207,7 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements Serializable, Plo
 			conex = getDataSource().getConnection();
 			StringBuffer sb = new StringBuffer("SELECT * FROM PLONGEE p");
 			sb.append(" WHERE OUVERTURE_FORCEE=1");
-			sb.append(" and date > CURRENT_TIMESTAMP()");
+			sb.append(" and date > CURRENT_DATE()");
 			sb.append(" and now() >= DATE_ADD(date_visible, INTERVAL ? DAY)");
 			sb.append(" and now() < DATE_ADD(date, INTERVAL ? HOUR)");
 			sb.append(" ORDER BY DATE");

@@ -19,6 +19,7 @@ import com.asptt.plongee.resa.dao.PlongeeDaoTest;
 import com.asptt.plongee.resa.exception.TechnicalException;
 import com.asptt.plongee.resa.model.NiveauAutonomie;
 import com.asptt.plongee.resa.model.Plongee;
+import com.asptt.plongee.resa.quartz.manager.BusinessManager;
 import com.asptt.plongee.resa.util.Parameters;
 import com.asptt.plongee.resa.util.ResaUtil;
 public class PlongeeServiceTest extends AbstractServiceTest {
@@ -190,6 +191,7 @@ public class PlongeeServiceTest extends AbstractServiceTest {
 	@Test
 	public void testDateQuartz() {
 			//Plongée du JEUDI Soir
+		BusinessManager bm = new BusinessManager();
 		try {
 			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 			Date uneDate = sdf.parse("15/09/2011");
@@ -202,6 +204,7 @@ public class PlongeeServiceTest extends AbstractServiceTest {
 			//Test si on est entre le 1/6 et le 15/9
 			if(dateDeb.before(datePlongeeJeudi) && datePlongeeJeudi.before(dateFin)){
 				logger.info("On est bien entre le 1/6 et le 15/9");
+				bm.runAction();
 			} else {
 				logger.info("On ne créé pas de plongée");
 			}

@@ -42,11 +42,10 @@ public class BusinessManager {
 	public void runAction() throws TechnicalException {
 		logger.info("Classe BusinessManager : execution du runAction()");
 		
-		Plongee plongee = new Plongee();
 		Date dateDuJour = new Date();
-		
 		GregorianCalendar gc = new GregorianCalendar();
 		gc.setTime(dateDuJour);
+		Plongee plongee = new Plongee();
 		
 		try {
 			//------------------ +8 jours-------------------------------------------
@@ -99,16 +98,18 @@ public class BusinessManager {
 //			plongeeService.creerPlongee(plongee);
 //			logger.info("Plongée du DIMANCHE matin créee : "+gc.getTime().toString());
 	
-			//------------------ +15 jours-------------------------------------------
-			// par defaut les plongées sont à 20 plongeurs et n'ont pas de niveau mini
-			plongee.setNbMaxPlaces(20);
-			//plongee.setNiveauMinimum(null);
-			plongee.setOuvertureForcee(true);
-		
-		
+			/**
+			 * ------------------ +15 jours-------------------------------------------
+			 * Le constructeur Plongee initialise les plongées à 
+			 * 20 plongeurs 
+			 * BATM
+			 * Ouverture Forcée à true
+			 */
+			
 			//Plongée du MERCREDI Aprem
 			gc.setTime(dateDuJour);
 			gc.add(GregorianCalendar.DATE, +10);
+			plongee = new Plongee();
 			plongee.setType(Plongee.Type.APRES_MIDI);
 			plongee.setDate(gc.getTime());
 			plongee.setDateVisible(null);
@@ -118,6 +119,7 @@ public class BusinessManager {
 			//Plongée du JEUDI Soir
 			gc.setTime(dateDuJour);
 			gc.add(GregorianCalendar.DATE, +11);
+			plongee = new Plongee();
 			Date datePlongeeJeudi = gc.getTime();
 			int annee = gc.get(Calendar.YEAR);
 			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
@@ -141,6 +143,7 @@ public class BusinessManager {
 			//Plongée du VENDREDI Aprem
 			gc.setTime(dateDuJour);
 			gc.add(GregorianCalendar.DATE, +12);
+			plongee = new Plongee();
 			plongee.setType(Plongee.Type.APRES_MIDI);
 			plongee.setDate(gc.getTime());
 			plongee.setDateVisible(null);
@@ -150,13 +153,14 @@ public class BusinessManager {
 			//Plongée du SAMEDI matin
 			gc.setTime(dateDuJour);
 			gc.add(GregorianCalendar.DATE, +13);
-
+			plongee = new Plongee();
 			plongee.setType(Plongee.Type.MATIN);
 			plongee.setDate(gc.getTime());
 			plongee.setDateVisible(null);
 			plongeeService.creerPlongee(plongee);
 			logger.info("Plongée du SAMEDI matin créee : "+gc.getTime().toString());
 			//Plongée du SAMEDI aprem
+			plongee = new Plongee();
 			plongee.setType(Plongee.Type.APRES_MIDI);
 			plongee.setDate(gc.getTime());
 			plongee.setDateVisible(null);
@@ -166,6 +170,7 @@ public class BusinessManager {
 			//Plongée du DIMANCHE matin
 			gc.setTime(dateDuJour);
 			gc.add(GregorianCalendar.DATE, +14);
+			plongee = new Plongee();
 			plongee.setType(Plongee.Type.MATIN);
 			plongee.setDate(gc.getTime());
 			plongee.setDateVisible(null);
@@ -175,6 +180,8 @@ public class BusinessManager {
 		} catch (ResaException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} finally {
+			plongee = null;
 		}
 	}
 }
