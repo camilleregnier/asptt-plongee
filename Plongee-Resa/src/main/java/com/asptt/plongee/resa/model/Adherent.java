@@ -98,7 +98,12 @@ public class Adherent implements Serializable {
 		if(isEncadrent()){
 			return getEncadrement();
 		}else{
-			return getNiveau();
+			//petite verrue du 19/05/2011 demandée exclusivement pour notre ami Bernard SANGUEDOLCE
+			if (this.getNumeroLicense().equalsIgnoreCase("095821")){
+				return "E1";
+			}else{
+				return getNiveau();
+			}
 		}
 	}
 
