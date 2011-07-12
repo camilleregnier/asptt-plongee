@@ -10,6 +10,8 @@ import org.apache.wicket.markup.html.WebPage;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import org.apache.log4j.Logger;
+
 import com.asptt.plongee.resa.ui.web.wicket.page.AccueilPage;
 import com.asptt.plongee.resa.ui.web.wicket.page.LoginPage;
 import com.asptt.plongee.resa.ui.web.wicket.page.LogoutPage;
@@ -30,9 +32,13 @@ import com.asptt.plongee.resa.ui.web.wicket.page.secretariat.InscriptionExterieu
 public class PlongeeApplication extends AuthenticatedWebApplication {
 
 	private ApplicationContext ctx;
+  
+  private final Logger logger = Logger.getLogger(getClass().getName());
 	
 	protected void init() {
 		super.init();
+    
+    logger.info("init() : Début");
 
 		// démarrage du contexte Spring (injection des dépendances)
 		ctx = new ClassPathXmlApplicationContext("/spring/spring-service-impl.xml", "/spring/spring-dao-jdbc.xml", "/spring/spring-datasource.xml");
@@ -66,6 +72,8 @@ public class PlongeeApplication extends AuthenticatedWebApplication {
 		mountBookmarkablePage("/inscriptionadherent", InscriptionAdherentPlongeePage.class);
 		mountBookmarkablePage("/inscriptionexterieur", InscriptionExterieurPlongeePage.class);
 		mountBookmarkablePage("/desinscription", DesInscriptionPlongeePage.class);
+      
+    logger.info("init() : Fin");
 		
 	}
 
