@@ -52,8 +52,11 @@ public class ResaSession extends AuthenticatedWebSession {
 	
 	public Roles getRoles() {
 		if (isSignedIn()) {
+      logger.info("adhérent authentifié : isSignedIn = true");
+      logger.info("adherent.getRoles().size() : " + adherent.getRoles().size());
 			return adherent.getRoles();
 		}
+    logger.info("adhérent pas authentifié !");
 		return null;
 	}
 
@@ -63,10 +66,10 @@ public class ResaSession extends AuthenticatedWebSession {
 		adherent = getAdherentService().authentifierAdherent(username, password);
       logger.info("après l'appel du service");
 		if (null == adherent){
-      logger.info("adherent null");
+      logger.info("adhérent null");
 			return false;
 		}else{
-      logger.info("adherent non null");
+      logger.info("adhérent non null");
 			return true;
 		}
 	}
