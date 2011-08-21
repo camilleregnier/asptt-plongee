@@ -1,0 +1,21 @@
+<wicket:panel>
+	<form wicket:id="formPlongee">
+             <div id="corps" align="left">
+             	<div id="feedbackPanel"> 
+    				<span wicket:id="feedback"/> 
+    			</div>
+                <table> 
+                         <tr> 
+                                 <td>Nombre de places</td><td><input type="text" wicket:id="nbMaxPlaces"/></td> 
+                         </tr>
+                         <tr> 
+                                 <td>Niveau mini.</td><td><select wicket:id="niveauMinimum"/></td> 
+                         </tr> 
+                         <tr> 
+                                 <td>Inscription &agrave; partir du</td><td><input type="text" wicket:id="dateVisible"/></td> 
+                         </tr>
+                </table>
+                <input type="submit" value="Valider" wicket:id="validPlongee"/>
+             </div> 
+	</form>
+</wicket:panel>
