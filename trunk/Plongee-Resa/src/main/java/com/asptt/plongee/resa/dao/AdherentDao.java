@@ -47,4 +47,10 @@ public interface AdherentDao extends GenericDao<Adherent, String> {
 
 	void deleteMessage(Message message) throws TechnicalException;
 
+	void updateContact(ContactUrgent contact) throws TechnicalException;
+
+	void createContact(ContactUrgent contact, Adherent adh) throws TechnicalException;
+
+	void deleteContact(ContactUrgent contact, Adherent adh)	throws TechnicalException;
+
 }
