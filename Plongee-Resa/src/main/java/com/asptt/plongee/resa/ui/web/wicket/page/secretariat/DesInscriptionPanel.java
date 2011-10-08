@@ -25,6 +25,7 @@ import com.asptt.plongee.resa.model.Adherent;
 import com.asptt.plongee.resa.model.Plongee;
 import com.asptt.plongee.resa.model.PlongeesAdherentDataProvider;
 import com.asptt.plongee.resa.ui.web.wicket.ResaSession;
+import com.asptt.plongee.resa.util.ResaUtil;
 
 public abstract class DesInscriptionPanel extends Panel {
 
@@ -128,7 +129,7 @@ public abstract class DesInscriptionPanel extends Panel {
 			// Informations précisant la plongeur concerné et la plongée
 			// dans la fenêtre de confirmation de désinscription
 			String infoPlongeur = "Etes-vous s\u00fbr de vouloir annuler l'inscription de " + plongeur.getPrenom() + " " + plongeur.getNom();
-			String infoPlongee =  "\u00e0 la plong\u00e9e du " + plongee.getDate() + " " + plongee.getType() + " ?";
+			String infoPlongee =  "\u00e0 la plong\u00e9e du " + ResaUtil.getDateString(plongee.getDate()) + " " + plongee.getType() + " ?";
 			String infoEncadrant = "";
 			
 			if(plongeur.isEncadrent()){

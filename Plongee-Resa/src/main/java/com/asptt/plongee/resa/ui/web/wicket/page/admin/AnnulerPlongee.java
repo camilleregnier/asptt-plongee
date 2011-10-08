@@ -24,6 +24,7 @@ import com.asptt.plongee.resa.ui.web.wicket.page.AccueilPage;
 import com.asptt.plongee.resa.ui.web.wicket.page.ErreurTechniquePage;
 import com.asptt.plongee.resa.ui.web.wicket.page.ErrorPage;
 import com.asptt.plongee.resa.ui.web.wicket.page.TemplatePage;
+import com.asptt.plongee.resa.util.ResaUtil;
 
 public class AnnulerPlongee extends TemplatePage {
 	
@@ -33,6 +34,8 @@ public class AnnulerPlongee extends TemplatePage {
 
 	public AnnulerPlongee() {
 		
+		setPageTitle("Annuler une plongee");
+
 		// Fenêtre modale d'informations sur la plongée à annuler
 		modalPlongee = new ModalWindow("modalPlongee");
 		modalPlongee.setTitle("Informations sur la plong\u00e9e");
@@ -138,7 +141,7 @@ public class AnnulerPlongee extends TemplatePage {
 			
 			// Informations précisant la plongeur concerné et la plongée
 			// dans la fenêtre de confirmation de désinscription
-			add(new Label("infoPlongee", "Etes-vous s\u00fbr de vouloir annuler la plong\u00e9e du  " + plongee.getDate() + " " + plongee.getType() + " ?"));
+			add(new Label("infoPlongee", "Etes-vous s\u00fbr de vouloir annuler la plong\u00e9e du  " + ResaUtil.getDateString(plongee.getDate()) + " " + plongee.getType() + " ?"));
 			int nbPlongeursInscrits = plongee.getParticipants().size();
 			add(new Label("infoPlongeurs", (nbPlongeursInscrits == 0) ? " " : " Il y a " + nbPlongeursInscrits + " plongeur(s) inscrits."));
 			

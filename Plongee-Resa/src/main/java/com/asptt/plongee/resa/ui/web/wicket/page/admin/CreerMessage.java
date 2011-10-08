@@ -45,11 +45,10 @@ public class CreerMessage extends TemplatePage {
 	FeedbackPanel feedback = new FeedbackPanel("feedback");
 
 	public CreerMessage() {
+		setPageTitle("Creer Message");
 		feedback.setOutputMarkupId(true);
 		add(feedback);
-
 		add(new MessageForm("inputForm"));
-
 	}
 
 	class MessageForm extends Form<Message> {

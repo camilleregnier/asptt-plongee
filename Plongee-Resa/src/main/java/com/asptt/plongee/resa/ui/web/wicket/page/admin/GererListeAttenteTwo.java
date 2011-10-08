@@ -7,6 +7,7 @@ import org.apache.wicket.ResourceReference;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.markup.html.form.palette.Palette;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
@@ -31,12 +32,14 @@ public class GererListeAttenteTwo extends TemplatePage {
 
 	public GererListeAttenteTwo(final Plongee plongee)
 	{
+		setPageTitle("Gerer les listes d'attente");
+
 		feedback.setOutputMarkupId(true);
 		add(feedback);
-
+		add(new Label("message1", " -1- : Faire passer 1 seule personne dans le panel de droite."));
+		add(new Label("message2", " -2- : Avec les boutons --> inscription \u00e0 la plong\u00e9ee ou suppression de la liste d'attente."));
 		List<Adherent> persons = getResaSession().getPlongeeService().rechercherListeAttente(plongee);
 		IChoiceRenderer<Adherent> renderer = new ChoiceRenderer<Adherent>("nomComplet", "nom");
-		
 		
 		final Palette<Adherent> palette = new Palette<Adherent>("palette", 
 				new ListModel<Adherent>(new ArrayList<Adherent>()), 

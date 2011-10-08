@@ -1,5 +1,6 @@
 package com.asptt.plongee.resa.util;
 
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -21,9 +22,21 @@ public class ResaUtil {
 	}
 	
 	public static int calculNbJour(Date dateDebut, Date dateFin) throws TechnicalException {
+		GregorianCalendar gcDeb = new GregorianCalendar();
+		gcDeb.setTime(dateDebut);
+		GregorianCalendar gcFin = new GregorianCalendar();
+		gcFin.setTime(dateFin);
+		gcDeb.set(GregorianCalendar.HOUR, 0);
+		gcDeb.set(GregorianCalendar.MINUTE, 0);
+		gcDeb.set(GregorianCalendar.SECOND, 0);
+		gcFin.set(GregorianCalendar.HOUR, 0);
+		gcFin.set(GregorianCalendar.MINUTE, 0);
+		gcFin.set(GregorianCalendar.SECOND, 0);
+		dateDebut.setTime(gcDeb.getTimeInMillis());
+		dateFin.setTime(gcFin.getTimeInMillis());
 		long diffMilli = dateFin.getTime() - dateDebut.getTime();
-		int nombreJour =   Long.valueOf(((diffMilli/1000) / 3600) /24).intValue(); 
-		return nombreJour;
+		float nombreJour =   ((diffMilli/(float)1000) / (float)3600) /(float)24; 
+		return Double.valueOf(Math.ceil(nombreJour)).intValue();
 	}
 	
 	/**
@@ -57,6 +70,11 @@ public class ResaUtil {
 		return nombreJour;
 
 	}
+
+	  public static String getDateString(Date e_d){
+	      SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+	      return dateFormat.format(e_d);
+	  }
 
 }
 

@@ -14,6 +14,7 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.navigation.paging.PagingNavigator;
+import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.AbstractReadOnlyModel;
@@ -27,6 +28,7 @@ import org.wicketstuff.objectautocomplete.ObjectAutoCompleteRenderer;
 
 import com.asptt.plongee.resa.model.Adherent;
 import com.asptt.plongee.resa.model.AdherentDataProvider;
+import com.asptt.plongee.resa.model.ContactUrgent;
 import com.asptt.plongee.resa.model.DetachableAdherentModel;
 import com.asptt.plongee.resa.ui.web.wicket.page.TemplatePage;
 import com.asptt.plongee.resa.ui.web.wicket.page.inscription.InscriptionPlongeePage;
@@ -34,7 +36,9 @@ import com.asptt.plongee.resa.ui.web.wicket.page.inscription.InscriptionPlongeeP
 public class GererAdherents extends TemplatePage {
 
 	private ModalWindow modal2;
+	private ModalWindow modalSupp;
 	private List<Adherent> list;
+	
 	
 	public List<Adherent> getMatchingAdherents(String search) {
 		if (Strings.isEmpty(search)) {
@@ -59,17 +63,27 @@ public class GererAdherents extends TemplatePage {
 	@SuppressWarnings("serial")
 	public GererAdherents() {
 
+		setPageTitle("Gerer les adherents");
+		setOutputMarkupId(true);
 		modal2 = new ModalWindow("modal2");
 		modal2.setTitle("This is modal window with panel content.");
 		modal2.setCookieName("modal-adherent");
 		add(modal2);
 		
+		modalSupp = new ModalWindow("modalSupp");
+		modalSupp.setTitle("Confirmation");
+		modalSupp.setResizable(false);
+		modalSupp.setInitialWidth(30);
+		modalSupp.setInitialHeight(15);
+		modalSupp.setWidthUnit("em");
+		modalSupp.setHeightUnit("em");
+		modalSupp.setCssClassName(ModalWindow.CSS_CLASS_BLUE);
+		add(modalSupp);
+		
 		List<Adherent> adherents = getResaSession().getAdherentService().rechercherAdherentsTous();
 		
 		// On construit la liste des adhérents (avec pagination)
-		DataView<Adherent> dataView = new DataView<Adherent>(
-				"simple",
-				new AdherentDataProvider(adherents), 10) {
+		DataView adherentsView = new DataView<Adherent>("simple", new AdherentDataProvider(adherents), 10) {
 
 				protected void populateItem(final Item<Adherent> item) {
 				final Adherent adherent = item.getModelObject();
@@ -81,6 +95,16 @@ public class GererAdherents extends TemplatePage {
 					{
 						replaceModalWindow(target, item.getModel());
 						modal2.show(target);
+					}
+				});
+
+				item.add(new IndicatingAjaxLink("suppAdh")
+				{
+					@Override
+					public void onClick(AjaxRequestTarget target)
+					{
+						replaceModalWindowSupp(target, item.getModel());
+						modalSupp.show(target);
 					}
 				});
 
@@ -109,8 +133,9 @@ public class GererAdherents extends TemplatePage {
 						}));
 			}
 		};
-		add(dataView);
-		add(new PagingNavigator("navigator", dataView));
+		adherentsView.setOutputMarkupId(true);
+		add(adherentsView);
+		add(new PagingNavigator("navigator", adherentsView));
 		
 		add(new AdherentForm("form"));
 		
@@ -123,7 +148,7 @@ public class GererAdherents extends TemplatePage {
 		
 		// Pour éviter le message de disparition de la fenetre lors de la validation
 		target.appendJavascript( "Wicket.Window.unloadConfirmation  = false;");
-		}
+	}
 	
 	class AdherentForm extends Form{
 
@@ -178,4 +203,57 @@ public class GererAdherents extends TemplatePage {
 			});
 		}
 	}
+
+	private void replaceModalWindowSupp(AjaxRequestTarget target, IModel<Adherent> adherent) {
+		modalSupp.setContent(new ConfirmSuppAdherent(modalSupp.getContentId(), adherent));
+		modalSupp.setTitle("Supprimez un adherent");
+		modalSupp.setUseInitialHeight(true);
+		
+		// Pour éviter le message de disparition de la fenetre lors de la validation
+		target.appendJavascript( "Wicket.Window.unloadConfirmation  = false;");
+	}
+	
+	public class ConfirmSuppAdherent extends Panel
+	{
+		private static final long serialVersionUID = 196724625616748115L;
+
+		@SuppressWarnings("unchecked")
+		public ConfirmSuppAdherent(String id, final IModel<Adherent> adherent)
+		{
+			super(id);
+			 
+			// Informations précisant que le plongeur est en liste d'attente  plong\u00e9e
+			add(new Label("info", " Attention - Confirmez-vous la suppression de l'adherent : " + adherent.getObject().getNom() + " " + adherent.getObject().getPrenom() + " ?"));
+			
+			// Le lien qui va fermer la fenêtre de confirmation
+			// et appeler la méthode de d'inscription en liste d'attente si nécessaire
+			add(new IndicatingAjaxLink("yes")
+			{
+				private static final long serialVersionUID = 1L;
+				@Override
+				public void onClick(AjaxRequestTarget target)
+				{
+					// On supprime l'adherent
+					getResaSession().getAdherentService().supprimerAdherent(adherent.getObject());
+					modalSupp.close(target);
+					setResponsePage(GererAdherents.class);
+				}
+			});
+			
+			// Le lien qui va juste fermer la fenêtre de confirmation
+			add(new IndicatingAjaxLink("no")
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public void onClick(AjaxRequestTarget target)
+				{
+					modalSupp.close(target);
+				}
+			});
+
+		}
+
+	}
+	
 }

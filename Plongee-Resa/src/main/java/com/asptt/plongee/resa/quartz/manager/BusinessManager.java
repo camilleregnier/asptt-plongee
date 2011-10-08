@@ -125,8 +125,8 @@ public class BusinessManager {
 			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 			try {
 				Date dateDeb = sdf.parse("31/05/"+annee);
-				Date dateFin = sdf.parse("16/09/"+annee);
-				//Test si on est entre le 1/6 et le 15/9
+				Date dateFin = sdf.parse("02/09/"+annee);
+				//Test si on est entre le 1/6 et le 01/9
 				if(dateDeb.before(datePlongeeJeudi) && datePlongeeJeudi.before(dateFin)){
 					plongee.setType(Plongee.Type.SOIR);
 					plongee.setDate(datePlongeeJeudi);

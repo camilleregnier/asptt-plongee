@@ -17,7 +17,7 @@ public class InscriptionConfirmationPlongeePage extends TemplatePage {
 
 	@SuppressWarnings("serial")
 	public InscriptionConfirmationPlongeePage(Plongee plongee) {
-		
+		setPageTitle("Inscription Plongee - Confirmation");		
 		// On affiche la liste des participants en guise de confirmation
 		List<Adherent> adherentsInscrit = getResaSession().getPlongeeService().rechercherInscriptions(plongee,null,null,"date");
 		

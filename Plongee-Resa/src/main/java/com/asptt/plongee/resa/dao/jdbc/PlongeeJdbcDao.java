@@ -163,39 +163,39 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements Serializable, Plo
 		}
 	}
 	
-	/**
-	 * Retourne les plongées à partir du lendemain
-	 */
-	@Override
-	public List<Plongee> getPlongeesForFewDay( int visibleApres, int nbjour) throws TechnicalException {
-		Connection conex=null;
-		try {
-			conex = getDataSource().getConnection();
-			StringBuffer sb = new StringBuffer("SELECT * FROM PLONGEE p");
-			sb.append(" WHERE OUVERTURE_FORCEE=1");
-			sb.append(" and date > CURRENT_DATE()");
-			sb.append(" and date < DATE_ADD(CURRENT_DATE(), INTERVAL ? DAY)");
-			sb.append(" and now() < DATE_ADD(date, INTERVAL ? HOUR)");
-			sb.append(" ORDER BY DATE");
-			
-			PreparedStatement st = conex.prepareStatement(sb.toString());
-			st.setInt(1, nbjour);
-			st.setInt(2, visibleApres);
-			
-			ResultSet rs = st.executeQuery();
-			List<Plongee> plongees = new ArrayList<Plongee>();
-			while (rs.next()) {
-				Plongee plongee = wrapPlongee(rs);
-				plongees.add(plongee);
-			}
-			return plongees;
-		} catch (SQLException e) {
-			log.error(e.getMessage(), e);
-			throw new TechnicalException(e);
-		} finally{
-			closeConnexion(conex);
-		}
-	}
+//	/**
+//	 * Retourne les plongées à partir du lendemain
+//	 */
+//	@Override
+//	public List<Plongee> getPlongeesForFewDay( int visibleApres, int nbjour) throws TechnicalException {
+//		Connection conex=null;
+//		try {
+//			conex = getDataSource().getConnection();
+//			StringBuffer sb = new StringBuffer("SELECT * FROM PLONGEE p");
+//			sb.append(" WHERE OUVERTURE_FORCEE=1");
+//			sb.append(" and date > CURRENT_DATE()");
+//			sb.append(" and date < DATE_ADD(CURRENT_DATE(), INTERVAL ? DAY)");
+//			sb.append(" and now() < DATE_ADD(date, INTERVAL ? HOUR)");
+//			sb.append(" ORDER BY DATE");
+//			
+//			PreparedStatement st = conex.prepareStatement(sb.toString());
+//			st.setInt(1, nbjour);
+//			st.setInt(2, visibleApres);
+//			
+//			ResultSet rs = st.executeQuery();
+//			List<Plongee> plongees = new ArrayList<Plongee>();
+//			while (rs.next()) {
+//				Plongee plongee = wrapPlongee(rs);
+//				plongees.add(plongee);
+//			}
+//			return plongees;
+//		} catch (SQLException e) {
+//			log.error(e.getMessage(), e);
+//			throw new TechnicalException(e);
+//		} finally{
+//			closeConnexion(conex);
+//		}
+//	}
 
 	/**
 	 * Retourne les plongées à partir du lendemain

@@ -33,6 +33,11 @@ public class AdherentServiceImpl implements AdherentService, Serializable {
 	}
 
 	@Override
+	public void supprimerAdherent(Adherent adherent) throws TechnicalException{
+		adherentDao.delete(adherent);
+	}
+
+	@Override
 	public Adherent authentifierAdherent(String id, String pwd) throws TechnicalException{
 		return adherentDao.authenticateAdherent(id, pwd);
 	}
@@ -222,7 +227,7 @@ public class AdherentServiceImpl implements AdherentService, Serializable {
 	public Message updateMessage(Message message) throws TechnicalException{
 		return adherentDao.updateMessage(message);
 	}
-	
+
 	@Override
 	public Message createMessage(Message message) throws TechnicalException{
 		return adherentDao.createMessage(message);
@@ -231,5 +236,20 @@ public class AdherentServiceImpl implements AdherentService, Serializable {
 	@Override
 	public void deleteMessage(Message message) throws TechnicalException{
 		adherentDao.deleteMessage(message);
+	}
+
+	@Override
+	public void modifContact(ContactUrgent contact) throws TechnicalException{
+		adherentDao.updateContact(contact);
+	}
+	
+	@Override
+	public void creerContact(ContactUrgent contact, Adherent adherent) throws TechnicalException{
+		adherentDao.createContact(contact, adherent);
+	}
+	
+	@Override
+	public void suppContact(ContactUrgent contact, Adherent adherent) throws TechnicalException{
+		adherentDao.deleteContact(contact, adherent);
 	}
 }

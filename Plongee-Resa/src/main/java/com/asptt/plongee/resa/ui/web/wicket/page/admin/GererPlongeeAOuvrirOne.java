@@ -25,6 +25,7 @@ public class GererPlongeeAOuvrirOne extends TemplatePage {
 
 
 	public GererPlongeeAOuvrirOne() {
+		setPageTitle("Ouvrir plongee");
 		final FeedbackPanel feedback = new FeedbackPanel("feedback");
 		add(feedback);
 		add(new GererListeAttenteOneForm("inputForm", feedback));

@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.ResourceReference;
 import org.apache.wicket.markup.html.WebPage;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.ImageButton;
 import org.apache.wicket.markup.html.image.resource.DefaultButtonImageResource;
@@ -13,6 +14,7 @@ import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.link.ResourceLink;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.model.PropertyModel;
 
 import com.asptt.plongee.resa.ui.web.wicket.ResaSession;
 import com.asptt.plongee.resa.ui.web.wicket.page.admin.AnnulerPlongee;
@@ -31,9 +33,11 @@ import com.asptt.plongee.resa.ui.web.wicket.page.secretariat.DesInscriptionPlong
 import com.asptt.plongee.resa.ui.web.wicket.page.secretariat.InscriptionAdherentPlongeePage;
 import com.asptt.plongee.resa.ui.web.wicket.page.secretariat.InscriptionExterieurPlongeePage;
 
-
 public abstract class TemplatePage extends WebPage {
-	
+
+    /** title of the current page. */
+    private String pageTitle = "ASPTT Marseille Plongee";
+    
 	MarkupContainer userMenus = new MarkupContainer("menuUser"){  
 		  @Override  
 		  public boolean isVisible() {  
@@ -41,20 +45,6 @@ public abstract class TemplatePage extends WebPage {
 		  }  
 	}; 
 	
-//	MarkupContainer resaPlongee = new MarkupContainer("resa"){  
-//		  @Override  
-//		  public boolean isVisible() {
-//			  List<Integer> result =getResaSession().getPlongeeService().checkCertificatMedical(
-//					  getResaSession().getAdherent()); 
-//			  int nbMois = result.get(0);
-//			  if (nbMois < 0){
-//				  return false;
-//			  } else {
-//				  return true;
-//			  }
-//		  }  
-//	}; 
-
 	MarkupContainer secretariatMenus = new MarkupContainer("menuSecretariat"){  
 		  @Override  
 		  public boolean isVisible() {     
@@ -71,6 +61,7 @@ public abstract class TemplatePage extends WebPage {
 
 	public TemplatePage() {
 		super();
+		add(new Label("title", new PropertyModel(this, "pageTitle")));		
 		//menu ADHERENT
 		userMenus.add(addConsultLink());
 //		resaPlongee.add(addReservLink());
@@ -94,7 +85,7 @@ public abstract class TemplatePage extends WebPage {
 		secretariatMenus.add(addInscrireExterneLink());
 		secretariatMenus.add(addSecretDeInscrirePlongeeLink());
 		secretariatMenus.add(addSecretConsultPlongeeLink());
-		add(secretariatMenus);
+		add(secretariatMenus);		
 	}
 
 	private Link addConsultLink() {
@@ -307,5 +298,13 @@ public abstract class TemplatePage extends WebPage {
 	
 	public ResaSession getResaSession(){
 		return (ResaSession) getSession();
+	}
+
+	public String getPageTitle() {
+		return pageTitle;
+	}
+
+	public void setPageTitle(String pageTitle) {
+		this.pageTitle = pageTitle;
 	}
 }

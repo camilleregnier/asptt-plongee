@@ -179,10 +179,9 @@ public class AdherentInMemoryDao implements AdherentDao{
 		return null;
 	}
 
-	public ContactUrgent updateContact(ContactUrgent contact)
+	public void updateContact(ContactUrgent contact)
 			throws TechnicalException {
 		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override
@@ -201,6 +200,20 @@ public class AdherentInMemoryDao implements AdherentDao{
 	public List<Message> getAllMessages() throws TechnicalException {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public void createContact(ContactUrgent contact, Adherent adh)
+			throws TechnicalException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void deleteContact(ContactUrgent contact, Adherent adh)
+			throws TechnicalException {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

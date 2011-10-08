@@ -1,5 +1,6 @@
 package com.asptt.plongee.resa.ui.web.wicket.page.consultation;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -8,20 +9,29 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
 
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.datetime.StyleDateConverter;
 import org.apache.wicket.datetime.markup.html.form.DateTextField;
+import org.apache.wicket.extensions.ajax.markup.html.IndicatingAjaxLink;
 import org.apache.wicket.extensions.yui.calendar.DatePicker;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.RequiredTextField;
+import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.link.Link;
+import org.apache.wicket.markup.html.navigation.paging.PagingNavigator;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.tree.AbstractTree;
 import org.apache.wicket.markup.html.tree.BaseTree;
 import org.apache.wicket.markup.html.tree.LabelTree;
+import org.apache.wicket.markup.repeater.Item;
+import org.apache.wicket.markup.repeater.data.DataView;
+import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.validation.validator.EmailAddressValidator;
 import org.apache.wicket.validation.validator.PatternValidator;
@@ -32,49 +42,33 @@ import com.asptt.plongee.resa.exception.TechnicalException;
 import com.asptt.plongee.resa.mail.PlongeeMail;
 import com.asptt.plongee.resa.model.Adherent;
 import com.asptt.plongee.resa.model.ContactUrgent;
+import com.asptt.plongee.resa.model.ContactUrgentDataProvider;
 import com.asptt.plongee.resa.ui.web.wicket.ResaSession;
 import com.asptt.plongee.resa.ui.web.wicket.page.AccueilPage;
 import com.asptt.plongee.resa.ui.web.wicket.page.TemplatePage;
+import com.asptt.plongee.resa.ui.web.wicket.page.admin.ContactPanel;
 
 public class InfoAdherent extends TemplatePage {
 	
-	FeedbackPanel feedback = new FeedbackPanel("feedback");
-	//private TreeTable tree;
-	private BaseTree tree;
-	
 	public InfoAdherent() {
+		setPageTitle("Information adherent");
 		add(new Label("message", getResaSession().getAdherent().getPrenom() + ", ci-dessous tes infos perso"));
-		feedback.setOutputMarkupId(true);
-		add(feedback);
-		
-		Adherent adherent = getResaSession().getAdherent(); 
-		add(new InfoAdherentForm("inputForm", adherent));
-		
-		
+		setOutputMarkupId(true);
+		init();
 	}
 
-	class InfoAdherentForm extends  Form<Adherent> {
+	private void init() {
 
-		private static final long serialVersionUID = 5374674730458593314L;
+//		private static final long serialVersionUID = 5374674730458593314L;
+		
+		Adherent adherent = getResaSession().getAdherentService().rechercherAdherentParIdentifiant(getResaSession().getAdherent().getNumeroLicense());
 
-		public InfoAdherentForm(String id, Adherent adherent) {
-			super(id);
 			
-			CompoundPropertyModel<Adherent> model = new CompoundPropertyModel<Adherent>(adherent);
-			setModel(model);
-			
-			add(new Label("nom",adherent.getNom()));
-			add(new Label("prenom",adherent.getPrenom()));
-			add(new Label("numeroLicense",adherent.getNumeroLicense()));
-
-			// numéro de téléphone au bon format (10 caractères numériques)
-			RequiredTextField<String> telephone = new RequiredTextField<String>("telephone", String.class);
-			telephone.add(ExactLengthValidator.exactLength(10));
-			telephone.add(new PatternValidator("\\d{10}"));
-			add(telephone);
-			
-			add(new RequiredTextField<String>("mail").add(EmailAddressValidator.getInstance()));
-
+			add(new Label("nom",adherent.getNom())); 
+			add(new Label("prenom", adherent.getPrenom()));
+			add(new Label("numeroLicense", adherent.getNumeroLicense()));
+			add(new Label("telephone", adherent.getTelephone()));
+			add(new Label("mail", adherent.getMail()));
 			add(new Label("niveau",adherent.getNiveau()));
 			
 			// Ajout de la checkbox pilote
@@ -83,59 +77,38 @@ public class InfoAdherent extends TemplatePage {
 			}else{
 				add(new Label("pilote","non"));
 			}
-			
-
 			// Ajout de la liste des niveaux d'encadrement
 			add(new Label("encadrement",adherent.getEncadrement()));
+			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+			add(new Label("dateCM", sdf.format(adherent.getDateCM())));
 
-			
-			//Ajout des nouveaux champs date du certificat medical et de l'année de cotisation
-			DateTextField dateCMTextFiled = new DateTextField("dateCM", new PropertyModel<Date>(model, "dateCM"), new StyleDateConverter("S-", true));
-			dateCMTextFiled.setRequired(false);
-			dateCMTextFiled.setEnabled(false);
-			add(dateCMTextFiled);
-			dateCMTextFiled.add(new DatePicker());
-			
-			/**
-			add(new AjaxButton("validInfo") {
-				@Override
-				// La validation doit se faire en Ajax car le formulaire de la
-				// fenêtre principal n'y a pas accés
-				// http://yeswicket.com/index.php?post/2010/04/26/G%C3%A9rer-facilement-les-fen%C3%AAtres-modales-avec-Wicket
-				protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-					Adherent adherent = (Adherent) form.getModelObject();
-					
-//					// Mise au format des noms et prénom
-//					adherent.setNom(adherent.getNom().toUpperCase());
-//					adherent.setPrenom((adherent.getPrenom().substring(0, 1).toUpperCase()) + (adherent.getPrenom().substring(1).toLowerCase()));
+			List<ContactUrgent> contactUrgents = adherent.getContacts();
+			DataView cuView = new DataView<ContactUrgent>("cuView", new ContactUrgentDataProvider(contactUrgents), 20) {
+		        @Override
+		        protected void populateItem(final Item<ContactUrgent> item) {
+		        	final ContactUrgent contact = (ContactUrgent) item.getModelObject();
 
-					// Mise à jour de l'adhérent
-					try {
-						ResaSession resaSession = (ResaSession) getApplication()
-								.getSessionStore().lookup(getRequest());
-						resaSession.getAdherentService().updateAdherent(adherent, PlongeeMail.MAIL_MODIF_INFO_ADHERENT);
+		        	item.add(new Label("titre", contact.getTitre()));
+		        	item.add(new Label("nom", contact.getNom()));
+		        	item.add(new Label("prenom", contact.getPrenom()));
+		        	item.add(new Label("telephone", contact.getTelephone()));
+		        	item.add(new Label("telephtwo", contact.getTelephtwo()));
 
-						setResponsePage(AccueilPage.class);
-						
-					} catch (TechnicalException e) {
-						e.printStackTrace();
-						error(e.getKey());
-					} catch (ResaException e) {
-						e.printStackTrace();
-						error(e.getKey());
-						setResponsePage(new InfoAdherent());
-					}
+					item.add(new AttributeModifier("class", true,
+							new AbstractReadOnlyModel<String>() {
+								private static final long serialVersionUID = 5259097512265622750L;
 
-				}
-				// L'implémentation de cette méthode est nécessaire pour voir
-				// les messages d'erreur dans le feedBackPanel
-				protected void onError(AjaxRequestTarget target, Form<?> form) {
-					target.addComponent(feedback);
-				}
-
-			});
-			*/
-
+								@Override
+								public String getObject() {
+									return (item.getIndex() % 2 == 1) ? "even": "odd";
+								}
+							})
+					);
+		        
+		        }
+	        };
+		    cuView.setOutputMarkupId(true);    
+	        add(cuView);
 			add(new Link("cancel") {
 				@Override
 				public void onClick() {
@@ -143,14 +116,6 @@ public class InfoAdherent extends TemplatePage {
 				}
 			});
 			
-			// L'arbre des contacts urgents
-			/** 
-			tree = new LabelTree("tree", createTreeModel(adherent));
-			add(tree);
-			tree.getTreeState().collapseAll();
-			*/
-		}
-
 	}
 	
 	protected TreeModel createTreeModel(Adherent adherent)
@@ -178,8 +143,4 @@ public class InfoAdherent extends TemplatePage {
 		}
 	}
 	
-	protected AbstractTree getTree()
-	{
-		return tree;
-	}
 }

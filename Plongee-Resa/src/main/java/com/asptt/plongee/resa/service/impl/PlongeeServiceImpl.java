@@ -1,6 +1,7 @@
 package com.asptt.plongee.resa.service.impl;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -105,12 +106,12 @@ public class PlongeeServiceImpl implements PlongeeService, Serializable {
 				}
 			}
 			if(plongee.getDate().before(plongee.getDateVisible())){
-				throw new ResaException("La date d'inscription doit être antérieure à la date de la plongée");
+				throw new ResaException("La date d'inscription doit \u00eatre ant\u00e9rieure \u00e0 la date de la plong\u00e9e");
 			}
 			plongeeDao.create(plongee);
 		}
 		else{
-			throw new ResaException("Cette Plongée existe déjà");
+			throw new ResaException("Cette Plong\u00e9e existe d\u00e9j\u00e0");
 		}
 	}
 
@@ -338,14 +339,54 @@ public class PlongeeServiceImpl implements PlongeeService, Serializable {
 	 * 3 inscription d'un encadrant ou P4 à une plongée fermée => envoi de mail à l'admin
 	 * 4 inscription en liste d'attente avec mail : pas assez d'encadrant
 	 * 5 inscription en liste d'attente avec mail : Liste d'attente déjà ouverte
-	 * 
-	 * -1 si ko
 	 */
 	@Override
 	public int isOkForResa(Plongee plongee, Adherent adherent) throws ResaException, TechnicalException {
 
 		//initialisation du retour par defaut à 1 CàD : on inscrit
 		int isOk = 1;
+		
+		//Init de l'heure courante
+		Date dateDuJour = new Date();
+		Calendar calDuJour = Calendar.getInstance();
+		calDuJour.setTime(dateDuJour);
+		int heureCourante = calDuJour.get(Calendar.HOUR_OF_DAY);
+		
+		//Verification de l'heure d'ouverture
+		Calendar calOpen = Calendar.getInstance();
+		calOpen.setTime(plongee.getDateVisible());
+		int heureOuverture = getHeureOuverture(calOpen, adherent, plongee);
+		
+		long nbJours = ResaUtil.calculNbJour(dateDuJour, plongee.getDateVisible());
+
+		//test actif == 1 ==> ok c un adherent
+		// sinon c un externe donc inscription par secretariat
+		if ( adherent.isVesteRouge() && adherent.getActifInt()==1 ){
+			//C'est un encadrant un Dp ou un pilote
+			//L'inscription est ouverte à tous moments
+		} else {
+//			if( nbJours >= 0){
+//				//On regarde l'heure avant de donner accès à l'inscription
+//				if( heureCourante < heureOuverture && nbJours==0){
+//					// Trop tot : attendre l'heure d'ouverture
+//					throw new ResaException("D\u00e9sol\u00e9 "+adherent.getPrenom()+" mais l'inscription ouvre \u00e0 partir de : "+heureOuverture+" heures.");
+//				}
+//			}
+			if( nbJours > 0){
+				//La date de visibilité de la plongée n'est pas atteinte : on attend
+				throw new ResaException("D\u00e9sol\u00e9 "+adherent.getPrenom()+
+						"il faudra attendre : le "+ResaUtil.getDateString(plongee.getDateVisible())+" \u00e0 "+heureOuverture+" heures pour t'inscrire.");
+			} else {
+				if( nbJours == 0){
+					//C'est le jour de visibilité de la plongée : On regarde l'heure avant de donner accès à l'inscription
+					if( heureCourante < heureOuverture){
+						// Trop tot : attendre l'heure d'ouverture
+						throw new ResaException("D\u00e9sol\u00e9 "+adherent.getPrenom()+" mais l'inscription ouvre \u00e0 partir de : "+heureOuverture+" heures.");
+					}
+				}
+			}
+			//Si le nombre de jour est < 0 : la date de visi est depassée donc on inscrit
+		}
 		
 		// verifier le nombre d'inscrit
 		if(getNbPlaceRestante(plongee) <= 0){
@@ -354,13 +395,6 @@ public class PlongeeServiceImpl implements PlongeeService, Serializable {
 			return isOk;
 		}
 
-		//Test abandonné on inscrit en liste d'attente dès qu'il y en a une
-//		if(plongee.getParticipants().size() < plongee.getNbMaxPlaces() 
-//				&& ((plongee.getParticipants().size() + plongee.getParticipantsEnAttente().size() ) >= plongee.getNbMaxPlaces())){
-//			// il y a des gens en liste d'attente, mais reste plus de place sur le bateau ==> fermée
-//			throw new ResaException("Pas glop");
-//		}
-		
 		//Si il y a des gens en liste d'attente on empile dans la liste d'attente
 		if(plongee.getParticipantsEnAttente().size() > 0){
 			// il y a des gens en liste d'attente, 
@@ -380,7 +414,7 @@ public class PlongeeServiceImpl implements PlongeeService, Serializable {
 				isOk = 3;
 			} else {
 				// pas de assez de compétences pour ouvrir la plongée : pas inscrit !
-				throw new ResaException("Inscription impossible sur cette plongée : Cette plongée n'est pas ouverte");
+				throw new ResaException("Inscription impossible sur cette plong\u00e9e : Cette plong\u00e9e n'est pas ouverte");
 			}
 			return isOk;
 		}
@@ -391,7 +425,7 @@ public class PlongeeServiceImpl implements PlongeeService, Serializable {
 			if(adherent.getNiveau().equalsIgnoreCase(NiveauAutonomie.BATM.toString()) 
 				|| adherent.getNiveau().equalsIgnoreCase(NiveauAutonomie.P0.toString())){
 				// inscription refusée
-				throw new ResaException("Inscription impossible sur cette plongée : Les BATM ou P0 ne sont pas admis avec un DP P5");
+				throw new ResaException("Inscription impossible sur cette plong\u00e9e : Les BATM ou P0 ne sont pas admis avec un DP P5");
 			}
 		}
 		
@@ -408,14 +442,14 @@ public class PlongeeServiceImpl implements PlongeeService, Serializable {
 		}
 		if(niveauAdherent < niveauMinPlongee){
 			// niveau mini requis : inscription refusée
-			throw new ResaException("Inscription impossible sur cette plongée : Niveau insuffisant");
+			throw new ResaException("Inscription impossible sur cette plong\u00e9e : Niveau insuffisant");
 		}
 
 		//On inscrit pas qqlun si il est dejà en liste d'attente
 		List<Adherent> enAttente = adherentDao.getAdherentsWaiting(plongee);
 		for(Adherent attente : enAttente){
 			if(attente.getNumeroLicense().equalsIgnoreCase(adherent.getNumeroLicense())){
-				throw new ResaException("Inscription impossible sur cette plongée : Vous etes déjà en liste d'attente.");
+				throw new ResaException("Inscription impossible sur cette plong\u00e9e : Vous etes d\u00e9j\u00e0 en liste d'attente.");
 			}
 		}
 
@@ -451,6 +485,40 @@ public class PlongeeServiceImpl implements PlongeeService, Serializable {
 			}
 		}
 		
+		//Issue 69 : limiter le nombre d'encadrant à 7
+		int nbEncadrantMax = new Integer(Parameters.getString("encadrant.max")).intValue();
+		if (nbEncadrant >= nbEncadrantMax && adherent.isVesteRouge()){
+			//On créé un externe bidon pour passer a le methode de recherche de l'heure d'ouvertutre
+			//afin de ramener l'heure d'ouverture pour les externes
+			Adherent ext = new Adherent();
+			ext.setActifInt(2);
+			int heureOuvertureExterne = getHeureOuverture(calOpen, ext, plongee);
+//			if( nbJours >= 0){
+//				//on est avant la date de visibilité : il faut attendre
+//				// Trop d'encadrant : retour pour un message à l'encadrant
+//				if( heureCourante < heureOuverture && nbJours==0){
+//					throw new ResaException("D\u00e9sol\u00e9 "+adherent.getPrenom()+" mais " +
+//						"le nombre limite d'encadrant est atteint, " +
+//						"il faudra attendre : le "+ResaUtil.getDateString(plongee.getDateVisible())+" \u00e0 "+heureOuvertureExterne+" heures pour t'inscrire.");
+//				}
+//			}
+			if( nbJours > 0){
+				//La date de visibilité de la plongée n'est pas atteinte : on attend
+				throw new ResaException("D\u00e9sol\u00e9 "+adherent.getPrenom()+" mais " +
+				"le nombre limite d'encadrant est atteint, " +
+				"il faudra attendre : le "+ResaUtil.getDateString(plongee.getDateVisible())+" \u00e0 "+heureOuvertureExterne+" heures pour t'inscrire.");
+			} else {
+				if( nbJours == 0){
+					//C'est le jour de visibilité de la plongée : On regarde l'heure avant de donner accès à l'inscription
+					if( heureCourante < heureOuvertureExterne){
+						// Trop tot : attendre l'heure d'ouverture
+						throw new ResaException("D\u00e9sol\u00e9 "+adherent.getPrenom()+" mais l'inscription ouvre \u00e0 partir de : "+heureOuvertureExterne+" heures.");
+					}
+				}
+			}
+			//Si le nombre de jour est < 0 : la date de visi est depassée donc on inscrit
+		}
+		
 		// SI on est arrivé jusqu'ici : c'est bon => on inscrit
 		isOk = 1;
 		return isOk;
@@ -460,19 +528,11 @@ public class PlongeeServiceImpl implements PlongeeService, Serializable {
 	@Override
 	public boolean isOkForListeAttente(Plongee plongee, Adherent adherent) throws TechnicalException, ResaException{
 
-//		try {
-//			checkCertificatMedical(adherent, plongee);
-//		} catch (ResaException e) {
-//			if( ! e.getKey().substring(0, 9).equalsIgnoreCase("ATTENTION")){
-//				throw e;
-//			}
-//		}
-		
 		//On inscrit pas qqlun en liste d'attente si il est dejà inscrit
 		List<Adherent> inscrits = adherentDao.getAdherentsInscrits(plongee, null, "TOUS", null);
 		for(Adherent inscrit : inscrits){
 			if(inscrit.getNumeroLicense().equalsIgnoreCase(adherent.getNumeroLicense())){
-				throw new ResaException("Inscription impossible enliste d'attente : Vous êtes déjà inscrit à la plongée.");
+				throw new ResaException("Inscription impossible enliste d'attente : Vous \u00eates d\u00e9j\u00e0 inscrit \u00e0 la plong\u00e9e.");
 			}
 		}
 		return true;
@@ -502,14 +562,6 @@ public class PlongeeServiceImpl implements PlongeeService, Serializable {
 
 	@Override
 	public synchronized void  inscrireAdherent(Plongee plongee, Adherent adherent, int typeMail) throws ResaException, TechnicalException {
-		
-//		try {
-//			checkCertificatMedical(adherent, plongee);
-//		} catch (ResaException e) {
-//			if( ! e.getKey().substring(0, 9).equalsIgnoreCase("ATTENTION")){
-//				throw e;
-//			}
-//		}
 		
 		if(getNbPlaceRestante(plongee) > 0){
 			//Appel DAO
@@ -638,4 +690,73 @@ public class PlongeeServiceImpl implements PlongeeService, Serializable {
 			}
 		}
 	}
+
+	@Override
+	public int getHeureOuverture(Calendar cal, Adherent adh, Plongee plongee){
+
+		int numJour = cal.get(Calendar.DAY_OF_WEEK);			
+		int heure;
+		//Calendar de la plongée pour rechercher le numero du jour de la plongée
+		Calendar calPlongee = Calendar.getInstance();
+		calPlongee.setTime(plongee.getDate());
+		int numPlongee = calPlongee.get(Calendar.DAY_OF_WEEK);
+		switch (numJour) {
+			case 1: //Dimanche
+				//test actif == 1 ==> ok c un adherent
+				// sinon c un externe donc inscription par secretatiat
+				if(adh.getActifInt()==1){
+					heure=Parameters.getInt("ouverture.dimanche.adh");
+				} else {
+					heure=Parameters.getInt("ouverture.dimanche.sct");
+				}
+				break;
+			case 2: //Lundi
+				if(adh.getActifInt()== 1){
+					heure=Parameters.getInt("ouverture.lundi.adh");
+				} else {
+					heure=Parameters.getInt("ouverture.lundi.sct");
+				}
+				break;
+			case 3: //Mardi
+				if(adh.getActifInt()== 1){
+					heure=Parameters.getInt("ouverture.mardi.adh");
+				} else {
+					heure=Parameters.getInt("ouverture.mardi.sct");
+				}
+				break;
+			case 4: //Mercredi 
+				if(adh.getActifInt()== 1){
+				heure=Parameters.getInt("ouverture.mercredi.adh");
+				} else {
+					heure=Parameters.getInt("ouverture.mercredi.sct");
+				}
+				break;
+			case 5: //Jeudi
+				if(adh.getActifInt()== 1){
+				heure=Parameters.getInt("ouverture.jeudi.adh");
+				} else {
+					heure=Parameters.getInt("ouverture.jeudi.sct");
+				}
+				break;
+			case 6: //Vendredi
+				if(adh.getActifInt()== 1){
+				heure=Parameters.getInt("ouverture.vendredi.adh");
+				} else {
+					heure=Parameters.getInt("ouverture.vendredi.sct");
+				}
+				break;
+			case 7: //Samedi
+				if(adh.getActifInt()== 1){
+					heure=Parameters.getInt("ouverture.samedi.adh");
+				} else {
+					heure=Parameters.getInt("ouverture.samedi.sct");
+				}
+				break;
+			default:
+				heure=0;
+				break;
+		}
+		return heure;
+	}
+
 }

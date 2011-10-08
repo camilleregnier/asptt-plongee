@@ -17,6 +17,7 @@ public class InscriptionListeAttentePlongeePage extends TemplatePage {
 
 	@SuppressWarnings("serial")
 	public InscriptionListeAttentePlongeePage(Plongee plongee, String message) {
+		setPageTitle("Inscription liste d'attente");
 		add(new Label("lib", message));
 		// On affiche la liste d'attente pour information
 		List<Adherent> adhereAttente = getResaSession().getPlongeeService().rechercherListeAttente(plongee);

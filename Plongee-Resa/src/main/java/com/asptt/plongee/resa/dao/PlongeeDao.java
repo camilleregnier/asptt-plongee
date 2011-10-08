@@ -10,7 +10,7 @@ import com.asptt.plongee.resa.model.Plongee;
 
 public interface PlongeeDao extends GenericDao<Plongee, Integer>{
 
-	List<Plongee> getPlongeesForFewDay(int aPartir, int nbjour) throws TechnicalException;
+//	List<Plongee> getPlongeesForFewDay(int aPartir, int nbjour) throws TechnicalException;
 	
 	List<Plongee> getPlongeesForEncadrant(int aPartir, int nbjour) throws TechnicalException;
 
