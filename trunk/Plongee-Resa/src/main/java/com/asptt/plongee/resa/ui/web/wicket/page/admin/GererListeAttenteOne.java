@@ -24,6 +24,7 @@ public class GererListeAttenteOne extends TemplatePage {
 	FeedbackPanel feedback = new FeedbackPanel("feedback");
 
 	public GererListeAttenteOne() {
+		setPageTitle("Gerer les listes d'attente");
 		add(new Label("message", getResaSession().getAdherent().getPrenom() + ", ci-dessous, les plong\u00e9es pour lesquelles une liste d'attente existe."));
 		feedback.setOutputMarkupId(true);
 		add(feedback);

@@ -44,6 +44,7 @@ public class GererMessage extends TemplatePage {
 
 	public GererMessage() {
 		
+		setPageTitle("Gerer les messages");
 		// Fenêtre modale d'informations sur la plongée à annuler
 		modalMessage = new ModalWindow("modalMessage");
 		modalMessage.setTitle("Informations sur le message \u00e0 afficher");

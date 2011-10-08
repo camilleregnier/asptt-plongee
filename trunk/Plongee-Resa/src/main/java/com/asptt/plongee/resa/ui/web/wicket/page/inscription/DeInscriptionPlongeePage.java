@@ -26,6 +26,7 @@ import com.asptt.plongee.resa.ui.web.wicket.component.ConfirmAjaxLink;
 import com.asptt.plongee.resa.ui.web.wicket.page.ErreurTechniquePage;
 import com.asptt.plongee.resa.ui.web.wicket.page.TemplatePage;
 import com.asptt.plongee.resa.util.Parameters;
+import com.asptt.plongee.resa.util.ResaUtil;
 
 public class DeInscriptionPlongeePage extends TemplatePage {
 
@@ -39,6 +40,7 @@ public class DeInscriptionPlongeePage extends TemplatePage {
 
 		this.adh = getResaSession().getAdherent(); 
 		
+		setPageTitle("Desinscription plongee");
 		add(new Label("message", adh.getPrenom() + ", voici les plong\u00e9es auxquelles tu es inscrit(e)"));
 		
 		feedback = new FeedbackPanel("feedback");
@@ -85,7 +87,8 @@ public class DeInscriptionPlongeePage extends TemplatePage {
 					nomDP = plongee.getDp().getNom();
 				}
 
-				item.add(new ConfirmAjaxLink("select","Es-tu s\u00fbr(e) de vouloir te d\u00e9sinscrire de cette plong\u00e9e ?") {
+				item.add(new ConfirmAjaxLink("select","Es-tu s\u00fbr(e) de vouloir te d\u00e9sinscrire de la plong\u00e9e du " + ResaUtil.getDateString(plongee.getDate()) + " " + plongee.getType() + " ?") 
+				{
 
 					private static final long serialVersionUID = 1771547719792642196L;
 
@@ -200,7 +203,7 @@ public class DeInscriptionPlongeePage extends TemplatePage {
 			// Informations précisant la plongeur concerné et la plongée
 			// dans la fenêtre de confirmation de désinscription
 			add(new Label("infoPlongeur", "Etes-vous s\u00fbr de vouloir vous d\u00e9sinscrire : il ne reste plus assez d'encadrant"));
-			add(new Label("infoPlongee", " \u00e0 la plong\u00e9e du " + plongee.getDate() + " " + plongee.getType() + " ?"));
+			add(new Label("infoPlongee", " \u00e0 la plong\u00e9e du " + ResaUtil.getDateString(plongee.getDate()) + " " + plongee.getType() + " ?"));
 			
 			// Le lien qui va fermer la fenêtre de confirmation
 			// et appeler la méthode de désinscription de la page principale (DesInscriptionPlongeePage)

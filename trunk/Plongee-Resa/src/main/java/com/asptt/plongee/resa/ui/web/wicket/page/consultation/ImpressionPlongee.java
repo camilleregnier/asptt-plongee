@@ -39,6 +39,7 @@ public class ImpressionPlongee extends WebPage {
 		dateAffichee = dateAffichee + cal.get(Calendar.YEAR);
 
 		add(new Label("message", "Plong\u00e9e du " + dateAffichee + "    '" + plongee.getType() + "'"));
+		add(new Label("nbInscrit", "Nombre de participants " + plongee.getParticipants().size()+ ""));
 
 		List<Adherent> adherentsInscrit = plongee.getParticipants();
 

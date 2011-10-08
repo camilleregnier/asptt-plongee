@@ -49,6 +49,7 @@ public class CreerAdherent extends TemplatePage {
 	FeedbackPanel feedback = new FeedbackPanel("feedback");
 	
 	public CreerAdherent() {
+		setPageTitle("Creer adherent");
 		// Constructeur du formulaire et du feedback panel pour renvoyer des messages sur la page
 		feedback.setOutputMarkupId(true);
 		add(feedback);
@@ -106,7 +107,11 @@ public class CreerAdherent extends TemplatePage {
 			add(dateCMTextFiled);
 			dateCMTextFiled.add(new DatePicker());
 			
-			add(new AjaxButton("validAdherent") {
+			
+	        ContactPanel cuPanel = new ContactPanel("cuPanel", model);
+	        add(cuPanel);
+
+	        add(new AjaxButton("validAdherent") {
 
 				@Override
 				protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
@@ -141,18 +146,6 @@ public class CreerAdherent extends TemplatePage {
 			});
 			
 		}
-
-//		public void onSubmit() {
-//			Adherent adherent = (Adherent) getModelObject();
-//			
-//			// Mise au format des noms et prénom
-//			adherent.setNom(adherent.getNom().toUpperCase());
-//			adherent.setPrenom((adherent.getPrenom().substring(0, 1).toUpperCase()) + (adherent.getPrenom().substring(1).toLowerCase()));
-//			
-//			getResaSession().getAdherentService().creerAdherent(adherent);
-//
-//			setResponsePage(AccueilPage.class);
-//		}
 
 	}
 

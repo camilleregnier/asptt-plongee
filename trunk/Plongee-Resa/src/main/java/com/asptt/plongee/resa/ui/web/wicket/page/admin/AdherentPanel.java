@@ -1,20 +1,23 @@
 package com.asptt.plongee.resa.ui.web.wicket.page.admin;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Iterator;
 import java.util.List;
 
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
+import org.apache.wicket.ajax.form.AjaxFormChoiceComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
-import org.apache.wicket.behavior.BehaviorsUtil;
 import org.apache.wicket.datetime.StyleDateConverter;
 import org.apache.wicket.datetime.markup.html.form.DateTextField;
+import org.apache.wicket.extensions.ajax.markup.html.IndicatingAjaxLink;
+import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.extensions.yui.calendar.DatePicker;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.CheckBox;
@@ -22,40 +25,44 @@ import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.ListMultipleChoice;
 import org.apache.wicket.markup.html.form.RequiredTextField;
-import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.link.Link;
+import org.apache.wicket.markup.html.navigation.paging.PagingNavigator;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.markup.repeater.Item;
+import org.apache.wicket.markup.repeater.data.DataView;
+import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.validation.validator.EmailAddressValidator;
-import org.apache.wicket.validation.validator.MinimumValidator;
 import org.apache.wicket.validation.validator.PatternValidator;
-import org.apache.wicket.validation.validator.RangeValidator;
 import org.apache.wicket.validation.validator.StringValidator.ExactLengthValidator;
 
 import com.asptt.plongee.resa.exception.ResaException;
 import com.asptt.plongee.resa.exception.TechnicalException;
 import com.asptt.plongee.resa.mail.PlongeeMail;
 import com.asptt.plongee.resa.model.Adherent;
+import com.asptt.plongee.resa.model.AdherentDataProvider;
+import com.asptt.plongee.resa.model.ContactUrgent;
+import com.asptt.plongee.resa.model.ContactUrgentDataProvider;
 import com.asptt.plongee.resa.model.NiveauAutonomie;
-import com.asptt.plongee.resa.model.Plongee;
 import com.asptt.plongee.resa.ui.web.wicket.ResaSession;
 import com.asptt.plongee.resa.ui.web.wicket.page.AccueilPage;
-import com.asptt.plongee.resa.ui.web.wicket.page.ErreurTechniquePage;
-import com.asptt.plongee.resa.ui.web.wicket.page.consultation.InfoAdherent;
 
 public class AdherentPanel extends Panel {
 	
-	private CompoundPropertyModel<Adherent> model;
+	private static final long serialVersionUID = 1L;
+	private CompoundPropertyModel<Adherent> modelAdherent;
+	private IModel mAdhSav;
 	
 	public AdherentPanel(String id, IModel<Adherent> adherent) {
 		super(id, adherent);
+		mAdhSav=adherent;
 		setOutputMarkupId(true);
-
 		add(new AdherentForm("inputForm", adherent));
-
 	}
 
 	class AdherentForm extends Form {
@@ -64,8 +71,8 @@ public class AdherentPanel extends Panel {
 
 		public AdherentForm(String id, IModel<Adherent> adherent) {
 			super(id,adherent);
-			model = new CompoundPropertyModel<Adherent>(adherent);
-			setModel(model);
+			modelAdherent = new CompoundPropertyModel<Adherent>(adherent);
+			setModel(modelAdherent);
 			
 			final FeedbackPanel feedback = new FeedbackPanel("feedback");
 			feedback.setOutputMarkupId(true);
@@ -110,7 +117,7 @@ public class AdherentPanel extends Panel {
 			add(new ListMultipleChoice<String>("roles", roles));
 			
 			//Ajout des nouveaux champs date du certificat medical et de l'année de cotisation
-			DateTextField dateCMTextFiled = new DateTextField("dateCM", new PropertyModel<Date>(model, "dateCM"), new StyleDateConverter("S-", true));
+			DateTextField dateCMTextFiled = new DateTextField("dateCM", new PropertyModel<Date>(modelAdherent, "dateCM"), new StyleDateConverter("S-", true));
 			dateCMTextFiled.setRequired(true);
 			add(dateCMTextFiled);
 			dateCMTextFiled.add(new DatePicker());
@@ -128,8 +135,11 @@ public class AdherentPanel extends Panel {
 			DropDownChoice<Integer> listAnnee = new DropDownChoice<Integer>("anneeCotisation", annees);
 			listAnnee.setRequired(true);
 			add(listAnnee);
-			
-			add(new AjaxButton("validPlongee") {
+
+	        ContactPanel cuPanel = new ContactPanel("cuPanel", adherent);
+	        add(cuPanel);
+	        
+	        add(new AjaxButton("validAdherent") {
 				@Override
 				// La validation doit se faire en Ajax car le formulaire de la
 				// fenêtre principal n'y a pas accés
@@ -147,7 +157,7 @@ public class AdherentPanel extends Panel {
 								.getSessionStore().lookup(getRequest());
 						resaSession.getAdherentService().updateAdherent(adherent, PlongeeMail.PAS_DE_MAIL);
 
-						setResponsePage(AccueilPage.class);
+						setResponsePage(GererAdherents.class);
 						
 					} catch (TechnicalException e) {
 						e.printStackTrace();
@@ -168,8 +178,17 @@ public class AdherentPanel extends Panel {
 
 			});
 
-            add(new Button("cancel", new ResourceModel("button.cancel")));
+//            add(new Button("cancel", new ResourceModel("button.cancel")));
+			add(new Link("cancel") {
+				@Override
+				public void onClick() {
+					setModel(mAdhSav);
+					setResponsePage(GererAdherents.class);
+				}
+			});
+            
 		}
 
 	}
+
 }

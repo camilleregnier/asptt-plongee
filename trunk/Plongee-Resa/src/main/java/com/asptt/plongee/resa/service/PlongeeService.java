@@ -1,5 +1,6 @@
 package com.asptt.plongee.resa.service;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -30,6 +31,7 @@ public interface PlongeeService {
 
 	Integer getNbPlaceRestante(Plongee plongee);
 	
+//	int isOkForResa(Plongee plongee, Adherent adherent, int heureCourante, int heureOverture) throws ResaException;
 	int isOkForResa(Plongee plongee, Adherent adherent) throws ResaException;
 	boolean isOkForListeAttente(Plongee plongee, Adherent adherent) throws TechnicalException, ResaException;
 	boolean isEnoughEncadrant(Plongee plongee) throws TechnicalException;
@@ -44,5 +46,6 @@ public interface PlongeeService {
 	void supprimerDeLaListeDattente(Plongee plongee, Adherent adherent, int indic)throws ResaException;
 	
 	void checkCertificatMedical(Adherent adherent, Plongee plongee) throws TechnicalException, ResaException;
+	int getHeureOuverture(Calendar cal, Adherent adh, Plongee plongee);
 
 }

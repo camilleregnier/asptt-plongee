@@ -93,7 +93,7 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements Serializable, Ad
 			}
 			// gestion des Contacts
 			if(adh.getContacts().size() > 0){
-					createContact(adh.getContacts(), adh);
+					createContacts(adh.getContacts(), adh);
 			}
 			return adh;
 		} catch (SQLException e) {
@@ -104,6 +104,7 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements Serializable, Ad
 		}
 	}
 
+	
 	public void delete(Adherent adh) throws TechnicalException {
 		Connection conex=null;
 		try {
@@ -196,7 +197,7 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements Serializable, Ad
 				sb = new StringBuffer();
 			}
 			//Mise à jour des contacts
-			updateContactForAdherent(adh);
+			updateContactsForAdherent(adh);
 			
 			return adh;
 		} catch (SQLException e) {
@@ -258,7 +259,7 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements Serializable, Ad
 		Connection conex=null;
 		try {
 			conex = getDataSource().getConnection();
-			PreparedStatement st = conex.prepareStatement("select * from ADHERENT where ACTIF = 1 or ACTIF = 0 order by NOM");
+			PreparedStatement st = conex.prepareStatement("select * from ADHERENT where (ACTIF = 1 or ACTIF = 0) and (DATE_FIN is null or CURRENT_TIMESTAMP < DATE_FIN) order by NOM");
 			ResultSet rs = st.executeQuery();
 			List<Adherent> adherents = new ArrayList<Adherent>();
 			while (rs.next()) {
@@ -279,7 +280,7 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements Serializable, Ad
 		Connection conex=null;
 		try {
 			conex = getDataSource().getConnection();
-			PreparedStatement st = conex.prepareStatement("select * from ADHERENT where ACTIF = 1 order by NOM");
+			PreparedStatement st = conex.prepareStatement("select * from ADHERENT where ACTIF = 1 and (DATE_FIN is null or CURRENT_TIMESTAMP < DATE_FIN) order by NOM");
 			ResultSet rs = st.executeQuery();
 			List<Adherent> adherents = new ArrayList<Adherent>();
 			while (rs.next()) {
@@ -300,7 +301,7 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements Serializable, Ad
 		Connection conex=null;
 		try {
 			conex = getDataSource().getConnection();
-			PreparedStatement st = conex.prepareStatement("select * from ADHERENT where ACTIF = 0 order by NOM");
+			PreparedStatement st = conex.prepareStatement("select * from ADHERENT where ACTIF = 0 and (DATE_FIN is null or CURRENT_TIMESTAMP < DATE_FIN) order by NOM");
 			ResultSet rs = st.executeQuery();
 			List<Adherent> adherents = new ArrayList<Adherent>();
 			while (rs.next()) {
@@ -321,7 +322,7 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements Serializable, Ad
 		Connection conex=null;
 		try {
 			conex = getDataSource().getConnection();
-			PreparedStatement st = conex.prepareStatement("select * from ADHERENT where ACTIF = 2 order by NOM");
+			PreparedStatement st = conex.prepareStatement("select * from ADHERENT where ACTIF = 2 and (DATE_FIN is null or CURRENT_TIMESTAMP < DATE_FIN) order by NOM");
 			ResultSet rs = st.executeQuery();
 			List<Adherent> adherents = new ArrayList<Adherent>();
 			while (rs.next()) {
@@ -341,7 +342,7 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements Serializable, Ad
 		Connection conex=null;
 		try {
 			conex = getDataSource().getConnection();
-			PreparedStatement st = conex.prepareStatement("select * from ADHERENT where LICENSE = ? and ACTIF <> 0");
+			PreparedStatement st = conex.prepareStatement("select * from ADHERENT where LICENSE = ? and ACTIF <> 0 and (DATE_FIN is null or CURRENT_TIMESTAMP < DATE_FIN)");
 			st.setString(1, id);
 			ResultSet rs = st.executeQuery();
 			Adherent adherent = null;
@@ -383,7 +384,7 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements Serializable, Ad
 		Connection conex=null;
 		try {
 			conex = getDataSource().getConnection();
-			PreparedStatement st = conex.prepareStatement("select * from ADHERENT where LICENSE = ?  and PASSWORD = ? and ACTIF <> 0");
+			PreparedStatement st = conex.prepareStatement("select * from ADHERENT where LICENSE = ?  and PASSWORD = ? and ACTIF <> 0 and (DATE_FIN is null or CURRENT_TIMESTAMP < DATE_FIN)");
 			st.setString(1, id);
 			st.setString(2, pwd);
 			ResultSet rs = st.executeQuery();
@@ -878,7 +879,7 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements Serializable, Ad
 		}
 	}
 
-	public void createContact(List<ContactUrgent> contacts, Adherent adh) throws TechnicalException {
+	public void createContacts(List<ContactUrgent> contacts, Adherent adh) throws TechnicalException {
 		Connection conex=null;
 		try {
 			conex = getDataSource().getConnection();
@@ -931,7 +932,7 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements Serializable, Ad
 		}
 	}
 	
-	public void updateContactForAdherent(Adherent adh) throws TechnicalException {
+	public void updateContactsForAdherent(Adherent adh) throws TechnicalException {
 		
 		List<ContactUrgent> anciensContacts = getContacts(adh);
 		List<ContactUrgent> contactsAMettreAjour = adh.getContacts();
@@ -960,14 +961,14 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements Serializable, Ad
 			}
 		}
 
-		createContact(newContacts, adh);
-		updateContact(majContacts);
-		deleteContact(delContacts, adh);
+		createContacts(newContacts, adh);
+		updateContacts(majContacts);
+		deleteContacts(delContacts, adh);
 		
 	}
 
 		
-	public void updateContact(List<ContactUrgent> contacts) throws TechnicalException {
+	public void updateContacts(List<ContactUrgent> contacts) throws TechnicalException {
 		Connection conex=null;
 		try {
 			for(ContactUrgent contact : contacts){
@@ -1001,7 +1002,7 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements Serializable, Ad
 		}
 	}
 
-	public void deleteContact(List<ContactUrgent> contacts, Adherent adh) throws TechnicalException {
+	public void deleteContacts(List<ContactUrgent> contacts, Adherent adh) throws TechnicalException {
 		Connection conex=null;
 		try {
 			conex = getDataSource().getConnection();
@@ -1021,7 +1022,7 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements Serializable, Ad
 					//On supprime le contact
 					StringBuffer sb2 = new StringBuffer();
 					sb2.append("DELETE FROM CONTACT_URGENT");
-					sb2.append(" WHERE CONTACT_URGENT_IDCONTACT = ?");
+					sb2.append(" WHERE IDCONTACT = ?");
 					st = conex.prepareStatement(sb2.toString());
 					st.setInt(1, contact.getId());
 					if (st.executeUpdate() == 0) {
@@ -1056,6 +1057,128 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements Serializable, Ad
 		contact.setTelephtwo(mail);
 		
 		return contact;
+	}
+
+	@Override
+	public void updateContact(ContactUrgent contact) throws TechnicalException {
+		Connection conex=null;
+		try {
+			conex = getDataSource().getConnection();
+			StringBuffer sb = new StringBuffer();
+			sb.append("UPDATE CONTACT_URGENT");
+			sb.append(" SET TITRE = ?,");
+			sb.append(" NOM = ?,");
+			sb.append(" PRENOM = ?,");
+			sb.append(" TELEPHONE = ?,");
+			sb.append(" TELEPHTWO = ?");
+			sb.append(" WHERE IDCONTACT = ?");
+
+			PreparedStatement st = conex.prepareStatement(sb.toString());
+			st.setString(1, contact.getTitre());
+			st.setString(2, contact.getNom());
+			st.setString(3, contact.getPrenom());
+			st.setString(4, contact.getTelephone());
+			st.setString(5, contact.getTelephtwo());
+			st.setInt(6, contact.getId());
+			if (st.executeUpdate() == 0) {
+				throw new TechnicalException(
+						"Le Contact id : "+contact.getId()+"n'a pu être mis à jour");
+			}
+		} catch (SQLException e) {
+			log.error(e.getMessage(), e);
+			throw new TechnicalException(e);
+		} finally {
+			closeConnexion(conex);
+		}
+	}
+
+	@Override
+	public void deleteContact(ContactUrgent contact, Adherent adh) throws TechnicalException {
+		Connection conex=null;
+		try {
+			conex = getDataSource().getConnection();
+			PreparedStatement st = null;
+			StringBuffer sb = new StringBuffer();
+			sb.append("DELETE FROM REL_ADHERENT_CONTACT");
+			sb.append(" WHERE ADHERENT_LICENSE = ?");
+			sb.append(" AND CONTACT_URGENT_IDCONTACT = ?");
+			st = conex.prepareStatement(sb.toString());
+			st.setString(1, adh.getNumeroLicense());
+			st.setInt(2, contact.getId());
+			if (st.executeUpdate() == 0) {
+				throw new TechnicalException(
+						"La relation contact :"+contact.getNom()+" adherent "+adh.getNom()+" n'a pu être supprimée");
+			}else{
+				//On supprime le contact
+				StringBuffer sb2 = new StringBuffer();
+				sb2.append("DELETE FROM CONTACT_URGENT");
+				sb2.append(" WHERE IDCONTACT = ?");
+				st = conex.prepareStatement(sb2.toString());
+				st.setInt(1, contact.getId());
+				if (st.executeUpdate() == 0) {
+					throw new TechnicalException(
+							"La contact :"+contact.getNom()+", "+ contact.getPrenom()+"n'a pu être supprimé");
+				}
+
+			}
+		} catch (SQLException e) {
+			log.error(e.getMessage(), e);
+			throw new TechnicalException(e);
+		} finally {
+			closeConnexion(conex);
+		}
+	}
+	
+	@Override
+	public void createContact(ContactUrgent contact, Adherent adh) throws TechnicalException {
+		Connection conex=null;
+		try {
+			conex = getDataSource().getConnection();
+			PreparedStatement st = null;
+			StringBuffer sb = new StringBuffer();
+			sb.append("INSERT INTO CONTACT_URGENT (`TITRE`, `NOM`, `PRENOM`, `TELEPHONE`, `TELEPHTWO`)");
+			sb.append(" VALUES (?, ?, ?, ?, ?)");
+			st = conex.prepareStatement(sb.toString());
+			st.setString(1, contact.getTitre());
+			st.setString(2, contact.getNom());
+			st.setString(3, contact.getPrenom());
+			st.setString(4, contact.getTelephone());
+			st.setString(5, contact.getTelephtwo());
+			if (st.executeUpdate() == 0) {
+				throw new TechnicalException(
+						"Le contact :"+contact.getNom()+"n'a pu être creé");
+			}else{
+				//on recupere l'id du contact que l'on vient de créer 
+				StringBuffer sb1 = new StringBuffer();
+				sb1.append("SELECT max(idCONTACT) FROM contact_urgent c");
+				st = conex.prepareStatement(sb1.toString());
+				ResultSet rs = st.executeQuery();
+				if (rs.next()) {
+					int idContact = rs.getInt("max(idCONTACT)");
+					//On crée la relation
+					StringBuffer sb2 = new StringBuffer();
+					sb2.append("INSERT INTO REL_ADHERENT_CONTACT (`ADHERENT_LICENSE`, `CONTACT_URGENT_IDCONTACT`)");
+					sb2.append(" VALUES (?, ?)");
+					st = conex.prepareStatement(sb2.toString());
+					st.setString(1, adh.getNumeroLicense());
+					st.setInt(2, idContact);
+					if (st.executeUpdate() == 0) {
+						throw new TechnicalException(
+								"La relation adherent"+adh.getNom()+" le contact :"+contact.getNom()+", "+ contact.getPrenom()+"n'a pu être creé");
+					}
+				}else{
+					throw new TechnicalException(
+							"Impossible de recuperer le dernier contact créer");
+				}
+				
+
+			}
+		} catch (SQLException e) {
+			log.error(e.getMessage(), e);
+			throw new TechnicalException(e);
+		} finally {
+			closeConnexion(conex);
+		}
 	}
 
 }

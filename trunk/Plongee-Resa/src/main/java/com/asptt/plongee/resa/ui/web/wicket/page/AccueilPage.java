@@ -30,7 +30,7 @@ import com.asptt.plongee.resa.ui.web.wicket.ResaSession;
 public class AccueilPage extends TemplatePage {
 	
 	public AccueilPage() { 
-
+		setPageTitle("Accueil");
 		Adherent adh = getResaSession().getAdherent();
 		
 		// Si l'adhérent est identifié mais qu'il n'a pas changé son password (password = licence)

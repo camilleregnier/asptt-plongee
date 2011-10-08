@@ -50,7 +50,7 @@ public class GererPlongeeAOuvrirTwo extends TemplatePage {
 	TextField<Date> dateVisible;
 
 	public GererPlongeeAOuvrirTwo(final Plongee plongee) {
-
+		setPageTitle("Ouvrir plongee");
 		modalPlongee = new ModalWindow("modalPlongee");
 		modalPlongee.setTitle("This is modal window with panel content.");
 		modalPlongee.setCookieName("modal-plongee");

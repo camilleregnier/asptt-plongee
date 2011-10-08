@@ -34,6 +34,7 @@ public class CreerPlongee extends TemplatePage {
 	FeedbackPanel feedback = new FeedbackPanel("feedback");
 
 	public CreerPlongee() {
+		setPageTitle("Creer plongee");
 		// Constructeur du formulaire et du feedback panel pour renvoyer des messages sur la page
 		feedback.setOutputMarkupId(true);
 		add(feedback);

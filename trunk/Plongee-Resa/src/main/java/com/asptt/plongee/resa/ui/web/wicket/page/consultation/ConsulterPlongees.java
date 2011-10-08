@@ -40,6 +40,7 @@ public class ConsulterPlongees extends TemplatePage {
 	@SuppressWarnings("serial")
 	public ConsulterPlongees() {
 		
+		setPageTitle("Consulter les plongees");
 		add(new Label("message", getResaSession().getAdherent().getPrenom() + ", ci-dessous les plong\u00e9es auxquelles tu as acc\u00e8s"));
 		
 		modal2 = new ModalWindow("modal2");
