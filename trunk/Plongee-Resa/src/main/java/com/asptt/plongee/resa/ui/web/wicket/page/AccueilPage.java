@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Locale;
 
 import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.PageParameters;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import org.apache.wicket.extensions.ajax.markup.html.IndicatingAjaxLink;
@@ -74,6 +75,15 @@ public class AccueilPage extends TemplatePage {
 						getResaSession().getAdherent(), null);
 			} catch (ResaException e) {
 				libCM=e.getKey();
+			}
+			
+			String libCotisation ="";
+			try {
+				getResaSession().getAdherentService().checkAnneeCotisation(getResaSession().getAdherent());
+			} catch (ResaException e) {
+				PageParameters pp = new PageParameters();
+				pp.add("cotisation",e.getKey());
+				setResponsePage(new LoginPage(pp));
 			}
 			
 			add(new Label("hello", libMesg));

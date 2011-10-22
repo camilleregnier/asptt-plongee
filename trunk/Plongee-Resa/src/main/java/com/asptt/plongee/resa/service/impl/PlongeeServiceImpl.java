@@ -659,7 +659,8 @@ public class PlongeeServiceImpl implements PlongeeService, Serializable {
 	/**
 	 * Verifie si le certificat medical de l'adherent est encore valable
 	 * @param Adherent adherent
-	 * @return List<Integer> (nbMois, nbJours)
+	 * @param Plongee plongee
+	 * @return ResaException si Ko
 	 * si nbMois =-1 => perimé
 	 * si nbMois = 0 => Warning : dans le derniers mois 
 	 * si nbMois = 1 => Warning : mois-1 avec le nombre de jour
@@ -673,11 +674,6 @@ public class PlongeeServiceImpl implements PlongeeService, Serializable {
 		if (null != plongee){
 			dateCompare = plongee.getDate();
 		}
-		/*
-		List<Integer> result = ResaUtil.checkDateCM(adherent.getDateCM(), dateCompare);
-		int nbMois = result.get(0);
-		int nbJours = result.get(1);
-		*/
 		long nbJours  = ResaUtil.checkDateCM(adherent.getDateCM(), dateCompare);
 		String libCM ="";
 		if(nbJours <= 0){

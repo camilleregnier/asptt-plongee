@@ -65,5 +65,8 @@ public interface AdherentService {
 
 	void supprimerAdherent(Adherent adherent) throws TechnicalException;
 
+	void checkAnneeCotisation(Adherent adherent) throws TechnicalException,
+			ResaException;
+
 	
 }
