@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.TreeSet;
@@ -21,6 +22,7 @@ import com.asptt.plongee.resa.model.Message;
 import com.asptt.plongee.resa.model.Plongee;
 import com.asptt.plongee.resa.model.ResaConstants;
 import com.asptt.plongee.resa.service.AdherentService;
+import com.asptt.plongee.resa.util.Parameters;
 import com.asptt.plongee.resa.util.ResaUtil;
 
 public class AdherentServiceImpl implements AdherentService, Serializable {
@@ -164,6 +166,33 @@ public class AdherentServiceImpl implements AdherentService, Serializable {
 		return pilotes;
 	}
 
+	/**
+	 * Verifie si l"année de cotisation est correcte
+	 * @param Adherent adherent
+	 * si nbMois =-1 => perimé
+	 * si nbMois = 0 => Warning : dans le derniers mois 
+	 * si nbMois = 1 => Warning : mois-1 avec le nombre de jour
+	 * si nbMois = 2 => No soucie 
+	 *  
+	 */
+	@Override
+	public void checkAnneeCotisation(Adherent adherent) throws TechnicalException, ResaException{
+		
+		//la date du jour
+		Date dateDuJour = new Date();
+		//construction d'une date au 15/9/<annee de cotisation de l'adherent>
+		Date dateCotisation = new Date();
+		GregorianCalendar gc = new GregorianCalendar(adherent.getAnneeCotisation(), 8, 15);
+		dateCotisation.setTime(gc.getTimeInMillis());
+		
+		
+		if (dateDuJour.after(dateCotisation)){
+			//A cette date la cotisation aurait du etre versée
+			throw new ResaException(Parameters.getString("MSG.COTISATION"));
+		}
+	}
+	
+	
 	@Override
 	public List<Adherent> rechercherAdherentsRole(String role) throws TechnicalException{
 			return adherentDao.getAdherentsLikeRole(role);

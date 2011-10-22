@@ -106,6 +106,20 @@ public class CreerAdherent extends TemplatePage {
 			dateCMTextFiled.setRequired(true);
 			add(dateCMTextFiled);
 			dateCMTextFiled.add(new DatePicker());
+
+			Date dateDuJour = new Date();
+			GregorianCalendar gc = new GregorianCalendar();
+			gc.setTime(dateDuJour);
+			int anneeCourante = gc.get(Calendar.YEAR);
+			int nextAnnee = anneeCourante + 1;
+			
+			List<Integer> annees = new ArrayList<Integer>();
+			annees.add(new Integer(anneeCourante));
+			annees.add(new Integer(nextAnnee));
+			
+			DropDownChoice<Integer> listAnnee = new DropDownChoice<Integer>("anneeCotisation", annees);
+			listAnnee.setRequired(true);
+			add(listAnnee);
 			
 			
 	        ContactPanel cuPanel = new ContactPanel("cuPanel", model);
@@ -117,11 +131,11 @@ public class CreerAdherent extends TemplatePage {
 				protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 					Adherent adherent = (Adherent) form.getModelObject();
 					try {
-						Date dateDuJour = new Date();
-						GregorianCalendar gc = new GregorianCalendar();
-						gc.setTime(dateDuJour);
-						int anneeCourante = gc.get(Calendar.YEAR);
-						adherent.setAnneeCotisation(new Integer(anneeCourante));
+//						Date dateDuJour = new Date();
+//						GregorianCalendar gc = new GregorianCalendar();
+//						gc.setTime(dateDuJour);
+//						int anneeCourante = gc.get(Calendar.YEAR);
+//						adherent.setAnneeCotisation(new Integer(anneeCourante));
 						getResaSession().getAdherentService().creerAdherent(adherent);
 
 						setResponsePage(AccueilPage.class);
