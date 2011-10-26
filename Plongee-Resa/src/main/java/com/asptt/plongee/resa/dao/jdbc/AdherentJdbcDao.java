@@ -900,7 +900,7 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements Serializable, Ad
 				}else{
 					//on recupere l'id du contact que l'on vient de créer 
 					StringBuffer sb1 = new StringBuffer();
-					sb1.append("SELECT max(idCONTACT) FROM contact_urgent c");
+					sb1.append("SELECT max(idCONTACT) FROM CONTACT_URGENT c");
 					st = conex.prepareStatement(sb1.toString());
 					ResultSet rs = st.executeQuery();
 					if (rs.next()) {
@@ -1150,7 +1150,7 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements Serializable, Ad
 			}else{
 				//on recupere l'id du contact que l'on vient de créer 
 				StringBuffer sb1 = new StringBuffer();
-				sb1.append("SELECT max(idCONTACT) FROM contact_urgent c");
+				sb1.append("SELECT max(idCONTACT) FROM CONTACT_URGENT c");
 				st = conex.prepareStatement(sb1.toString());
 				ResultSet rs = st.executeQuery();
 				if (rs.next()) {
