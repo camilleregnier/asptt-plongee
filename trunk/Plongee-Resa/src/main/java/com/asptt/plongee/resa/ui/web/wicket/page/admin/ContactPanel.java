@@ -25,6 +25,7 @@ import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.ListMultipleChoice;
 import org.apache.wicket.markup.html.form.RequiredTextField;
+import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.navigation.paging.PagingNavigator;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -205,9 +206,7 @@ public class ContactPanel extends Panel {
 				add(telephone);
 				
 				// numéro de téléphone au bon format (10 caractères numériques)
-				RequiredTextField<String> telephtwo = new RequiredTextField<String>("telephtwo", String.class);
-				telephtwo.add(ExactLengthValidator.exactLength(10));
-				telephtwo.add(new PatternValidator("\\d{10}"));
+				TextField<String> telephtwo = new TextField<String>("telephtwo", String.class);
 				add(telephtwo);
 
 				add(new AjaxButton("modifContact") {
@@ -293,9 +292,7 @@ public class ContactPanel extends Panel {
 				add(telephone);
 				
 				// numéro de téléphone au bon format (10 caractères numériques)
-				RequiredTextField<String> telephtwo = new RequiredTextField<String>("telephtwo", String.class);
-				telephtwo.add(ExactLengthValidator.exactLength(10));
-				telephtwo.add(new PatternValidator("\\d{10}"));
+				TextField<String> telephtwo = new TextField<String>("telephtwo", String.class);
 				add(telephtwo);
 
 				add(new AjaxButton("creerContact") {
