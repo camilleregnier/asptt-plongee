@@ -40,6 +40,7 @@ import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.validation.IValidator;
 import org.apache.wicket.validation.validator.EmailAddressValidator;
 import org.apache.wicket.validation.validator.PatternValidator;
+import org.apache.wicket.validation.validator.StringValidator;
 import org.apache.wicket.validation.validator.StringValidator.ExactLengthValidator;
 
 import com.asptt.plongee.resa.exception.ResaException;
@@ -66,7 +67,7 @@ public class ContactPanel extends Panel {
 	public ContactPanel(String id, IModel<Adherent> adherent) {
 		super(id, adherent);
 		setOutputMarkupId(true);
-		
+
 		modalContactModif = new ModalWindow("modalContactModif");
 		modalContactModif.setTitle("This is modal window with panel content.");
 		modalContactModif.setCookieName("modal-modif-contact");
@@ -191,6 +192,7 @@ public class ContactPanel extends Panel {
 				final FeedbackPanel feedback = new FeedbackPanel("feedback");
 				feedback.setOutputMarkupId(true);
 				add(feedback);
+				
 				// Ajout de la liste des titres
 				List<String> titres = new ArrayList<String>();
 					titres.add("Mr");
@@ -200,20 +202,20 @@ public class ContactPanel extends Panel {
 				add(new RequiredTextField<String>("prenom"));
 				
 				// numéro de téléphone au bon format (10 caractères numériques)
-				RequiredTextField<String> telephone = new RequiredTextField<String>("telephone", String.class);
-				telephone.add(ExactLengthValidator.exactLength(10));
-				telephone.add(new PatternValidator("\\d{10}"));
+				TextField<String> telephone = new TextField<String>("telephone", String.class);
+				telephone.add(new PatternValidator("^0[0-9]{9}$"));
 				add(telephone);
 				
-				// numéro de téléphone au bon format (10 caractères numériques)
+				// numéro de téléphone au bon format (10 caractères numériques) facultatif
 				TextField<String> telephtwo = new TextField<String>("telephtwo", String.class);
+				telephtwo.add(new PatternValidator("^(0[0-9]{9})?$"));
 				add(telephtwo);
 
 				add(new AjaxButton("modifContact") {
 
 					@Override
 					protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-						ContactUrgent contact = (ContactUrgent) form.getModelObject();
+//						ContactUrgent contact = (ContactUrgent) form.getModelObject();
 						Adherent adh = (Adherent) modelAdherent.getObject();
 						try {
 							//Pour rafraichir les contact dans la fenetre parent
@@ -233,14 +235,6 @@ public class ContactPanel extends Panel {
 						target.addComponent(feedback);
 					}
 				});
-				
-				add(new AjaxButton("cancelModif") {
-					@Override
-					public void onSubmit(AjaxRequestTarget target, Form<?> form) {
-						modalContactModif.close(target);
-					}
-				});
-				
 			}
 
 		}
@@ -266,7 +260,7 @@ public class ContactPanel extends Panel {
 
 		class CreerContactForm extends Form {
 
-			private static final long serialVersionUID = 5374674730458593314L;
+//			private static final long serialVersionUID = 5374674730458593314L;
 
 			public CreerContactForm(String id) {
 				super(id);
@@ -286,13 +280,13 @@ public class ContactPanel extends Panel {
 				add(new RequiredTextField<String>("prenom"));
 				
 				// numéro de téléphone au bon format (10 caractères numériques)
-				RequiredTextField<String> telephone = new RequiredTextField<String>("telephone", String.class);
-				telephone.add(ExactLengthValidator.exactLength(10));
-				telephone.add(new PatternValidator("\\d{10}"));
+				TextField<String> telephone = new TextField<String>("telephone", String.class);
+				telephone.add(new PatternValidator("^0[0-9]{9}$"));
 				add(telephone);
 				
-				// numéro de téléphone au bon format (10 caractères numériques)
+				// numéro de téléphone au bon format (10 caractères numériques) facultatif
 				TextField<String> telephtwo = new TextField<String>("telephtwo", String.class);
+				telephtwo.add(new PatternValidator("^(0[0-9]{9})?$"));
 				add(telephtwo);
 
 				add(new AjaxButton("creerContact") {
@@ -319,15 +313,6 @@ public class ContactPanel extends Panel {
 						target.addComponent(feedback);
 					}
 				});
-				
-//				add(new AjaxButton("cancelCreer") {
-//					@Override
-//					public void onSubmit(AjaxRequestTarget target, Form<?> form) {
-//						modalContactCreer.close(target);
-//						setResponsePage(GererAdherents.class);
-//					}
-//				});
-				
 			}
 
 		}
@@ -336,7 +321,6 @@ public class ContactPanel extends Panel {
 	private void replaceModalSuppContact(AjaxRequestTarget target, ContactUrgent contact) {
 		modalConfirmSupp.setContent(new ConfirmSuppContact(modalConfirmSupp.getContentId(), contact));
 		modalConfirmSupp.setTitle("Confirmation de suppression d'un contact");
-//		modalConfirmSupp.setUseInitialHeight(true);
 		
 		// Pour éviter le message de disparition de la fenetre lors de la validation
 		target.appendJavascript( "Wicket.Window.unloadConfirmation  = false;");

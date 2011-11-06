@@ -231,26 +231,13 @@ public final class PlongeeMail {
 			this.email.setMsg(sb.toString());
 			break;
 		case MAIL_DESINSCRIPTION_24: 
-//			this.email.setSubject("Desinscription tardive \u00e0 la plong\u00e9e du : "+dateAffichee+" ("+plongee.getType()+")");
-//			sb = new StringBuffer("Bonjour,\n");
-//			sb.append("Pour information  \n");
-//			sb.append("\n");
-//			sb.append("L'adh\u00e9rent "+adherent.getPrenom()+" "+adherent.getNom()+" \n");
-//			sb.append("vient de se désinscrire à moins de 24 heures  \n");
-//			sb.append("de la plong\u00e9e du "+dateAffichee+" ("+plongee.getType()+")\n");
-//			sb.append("\n");
-//			sb.append("Cordialement.\n");
-//			this.email.setMsg(sb.toString());
-//			break;
-//			int MAIL_DESINSCRIPTION_24_ADHERENT;
-//		case MAIL_DESINSCRIPTION_24_ADHERENT: 
 			this.email.setSubject("Desinscription tardive \u00e0 la plong\u00e9e du : "+dateAffichee+" ("+plongee.getType()+")");
 			sb = new StringBuffer("Bonjour,"+adherent.getPrenom()+" "+adherent.getNom()+" \n");
 			sb.append("Ta d\u00e9sinscription \u00e0 la plong\u00e9e du "+dateAffichee+" ("+plongee.getType()+")\n");
 			sb.append("a bien \u00e9t\u00e9 prise en compte  \n");
 			sb.append("\n");
 			sb.append("Toutefois, nous te rappelons que les d\u00e9sinscriptions \u00e0 moins de 24 heures de la plong\u00e9e  \n");
-			sb.append("doivent \u00eatre exceptionnelles et motiv\u00e9s essentiellement par des raisons  \n");
+			sb.append("doivent \u00eatre exceptionnelles et motiv\u00e9es essentiellement par des raisons  \n");
 			sb.append("de s\u00e9curit\u00e9 (rhume, fatigue, manque de sommeil, fi\u00e8vre etc...)  \n");
 			sb.append("\n");
 			sb.append("A bient\u00f4t sur le Cyana  \n");
