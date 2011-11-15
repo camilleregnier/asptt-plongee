@@ -359,19 +359,19 @@ public class PlongeeServiceImpl implements PlongeeService, Serializable {
 		
 		long nbJours = ResaUtil.calculNbJour(dateDuJour, plongee.getDateVisible());
 
+		//Test si l'adherent est déjà inscrit à la plongée
+		for (Adherent inscrit : plongee.getParticipants()) {
+			if (inscrit.getNumeroLicense().equalsIgnoreCase(adherent.getNumeroLicense())) {
+				throw new ResaException("D\u00e9sol\u00e9 "+adherent.getPrenom()+" mais tu es d\u00e9j\u00e0 inscrit \u00e0 cette plong\u00e9e");
+			}
+		}
+		
 		//test actif == 1 ==> ok c un adherent
 		// sinon c un externe donc inscription par secretariat
 		if ( adherent.isVesteRouge() && adherent.getActifInt()==1 ){
 			//C'est un encadrant un Dp ou un pilote
 			//L'inscription est ouverte à tous moments
 		} else {
-//			if( nbJours >= 0){
-//				//On regarde l'heure avant de donner accès à l'inscription
-//				if( heureCourante < heureOuverture && nbJours==0){
-//					// Trop tot : attendre l'heure d'ouverture
-//					throw new ResaException("D\u00e9sol\u00e9 "+adherent.getPrenom()+" mais l'inscription ouvre \u00e0 partir de : "+heureOuverture+" heures.");
-//				}
-//			}
 			if( nbJours > 0){
 				//La date de visibilité de la plongée n'est pas atteinte : on attend
 				throw new ResaException("D\u00e9sol\u00e9 "+adherent.getPrenom()+
@@ -493,15 +493,6 @@ public class PlongeeServiceImpl implements PlongeeService, Serializable {
 			Adherent ext = new Adherent();
 			ext.setActifInt(2);
 			int heureOuvertureExterne = getHeureOuverture(calOpen, ext, plongee);
-//			if( nbJours >= 0){
-//				//on est avant la date de visibilité : il faut attendre
-//				// Trop d'encadrant : retour pour un message à l'encadrant
-//				if( heureCourante < heureOuverture && nbJours==0){
-//					throw new ResaException("D\u00e9sol\u00e9 "+adherent.getPrenom()+" mais " +
-//						"le nombre limite d'encadrant est atteint, " +
-//						"il faudra attendre : le "+ResaUtil.getDateString(plongee.getDateVisible())+" \u00e0 "+heureOuvertureExterne+" heures pour t'inscrire.");
-//				}
-//			}
 			if( nbJours > 0){
 				//La date de visibilité de la plongée n'est pas atteinte : on attend
 				throw new ResaException("D\u00e9sol\u00e9 "+adherent.getPrenom()+" mais " +

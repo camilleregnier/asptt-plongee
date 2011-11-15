@@ -68,5 +68,7 @@ public interface AdherentService {
 	void checkAnneeCotisation(Adherent adherent) throws TechnicalException,
 			ResaException;
 
+	List<Adherent> rechercherAdherentInscrits(Plongee plongee);
+
 	
 }

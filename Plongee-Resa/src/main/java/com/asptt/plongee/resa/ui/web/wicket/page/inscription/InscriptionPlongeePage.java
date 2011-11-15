@@ -175,16 +175,12 @@ public class InscriptionPlongeePage extends TemplatePage {
 	public void inscrire(AjaxRequestTarget target, IModel<Plongee> iModel) {
 		
 		Plongee plongee = iModel.getObject();
-		// Si l'adhérent est inscrit par le secrétariat
-		// on ne prend pas l'adhérent en session
-//		if(null != adh){
-//			adh = getResaSession().getAdherent();
-//		}
-		
 		try {
+			//On met à jour la liste des participant pour verifier si l'adherent n'est pas déjà inscrit
+			//cette verification se fera dans la methode isOkForResa
+			List<Adherent> participants = getResaSession().getAdherentService().rechercherAdherentInscrits(plongee);
+			plongee.setParticipants(participants);
 			
-//			int response = getResaSession().getPlongeeService().isOkForResa(
-//					plongee, adh != null ? adh : getResaSession().getAdherent());
 			int response = getResaSession().getPlongeeService().isOkForResa(plongee, adh);
 			
 			//Analyse le retour de service
@@ -223,9 +219,6 @@ public class InscriptionPlongeePage extends TemplatePage {
 				
 			case 3: //on inscrit un pilote ou un dp sur une plongée fermée avec envoi d'un mail aux admins
 				typeMail=PlongeeMail.MAIL_INSCRIPTION_SUR_PLONGEE_FERMEE;
-//				getResaSession().getPlongeeService().inscrireAdherent(
-//						plongee, 
-//						adh != null ?  adh : getResaSession().getAdherent(), PlongeeMail.MAIL_INSCRIPTION_SUR_PLONGEE_FERMEE);
 					
 				getResaSession().getPlongeeService().inscrireAdherent(plongee, adh, PlongeeMail.MAIL_INSCRIPTION_SUR_PLONGEE_FERMEE);
 					setResponsePage(new InscriptionConfirmationPlongeePage(plongee));
@@ -233,9 +226,7 @@ public class InscriptionPlongeePage extends TemplatePage {
 				
 			case 1: //on peut inscrire l'adherent à la plongee
 				typeMail=PlongeeMail.PAS_DE_MAIL;
-//				getResaSession().getPlongeeService().inscrireAdherent(
-//						plongee, 
-//						adh != null ?  adh : getResaSession().getAdherent(), PlongeeMail.PAS_DE_MAIL);
+
 				getResaSession().getPlongeeService().inscrireAdherent(plongee,adh, PlongeeMail.PAS_DE_MAIL);
 				setResponsePage(new InscriptionConfirmationPlongeePage(plongee));
 				break;
