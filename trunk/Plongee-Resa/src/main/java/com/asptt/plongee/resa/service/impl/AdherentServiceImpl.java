@@ -281,4 +281,9 @@ public class AdherentServiceImpl implements AdherentService, Serializable {
 	public void suppContact(ContactUrgent contact, Adherent adherent) throws TechnicalException{
 		adherentDao.deleteContact(contact, adherent);
 	}
+
+	@Override
+	public List<Adherent> rechercherAdherentInscrits(Plongee plongee) {
+		return adherentDao.getAdherentsInscrits(plongee, null, null, null);
+	}
 }

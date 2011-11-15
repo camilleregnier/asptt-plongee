@@ -232,7 +232,7 @@ public final class PlongeeMail {
 			break;
 		case MAIL_DESINSCRIPTION_24: 
 			this.email.setSubject("Desinscription tardive \u00e0 la plong\u00e9e du : "+dateAffichee+" ("+plongee.getType()+")");
-			sb = new StringBuffer("Bonjour,"+adherent.getPrenom()+" "+adherent.getNom()+" \n");
+			sb = new StringBuffer("Bonjour "+adherent.getPrenom()+" "+adherent.getNom()+", \n");
 			sb.append("Ta d\u00e9sinscription \u00e0 la plong\u00e9e du "+dateAffichee+" ("+plongee.getType()+")\n");
 			sb.append("a bien \u00e9t\u00e9 prise en compte  \n");
 			sb.append("\n");
