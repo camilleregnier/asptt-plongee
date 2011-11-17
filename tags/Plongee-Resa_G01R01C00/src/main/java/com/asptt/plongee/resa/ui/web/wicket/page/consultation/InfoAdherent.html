@@ -1,0 +1,58 @@
+<wicket:extend>
+   <div class="justification">
+	<span class="msg" wicket:id="message"></span>
+	<br>
+           <div id="corps" align="left"> 
+               <table> 
+                       <tr> 
+                            	 <td>Licence</td><td>&nbsp;:&nbsp;<b><span wicket:id="numeroLicense"/></b></td>
+                       </tr>
+                       <tr> 
+                               <td>Nom</td><td>&nbsp;:&nbsp;<b><span wicket:id="nom"/></b></td> 
+                       </tr> 
+                       <tr> 
+                               <td>Prenom</td><td>&nbsp;:&nbsp;<b><span wicket:id="prenom"/></b></td> 
+                       </tr> 
+                       <tr> 
+                               <td>Telephone</td><td>&nbsp;:&nbsp;<b><span wicket:id="telephone"/></b></td> 
+                       </tr> 
+                       <tr> 
+                               <td>Mail</td><td>&nbsp;:&nbsp;<b><span wicket:id="mail"/></b></td> 
+                       </tr> 
+                       <tr>    
+                       		<td>Pilote</td><td>&nbsp;:&nbsp;<b><span wicket:id="pilote"/></b></td> 
+                       </tr> 
+                       <tr> 
+                               <td>Encadrement</td><td>&nbsp;:&nbsp;<b><span wicket:id="encadrement"/></b></td> 
+                       </tr> 
+                       <tr> 
+                               <td>Niveau</td><td>&nbsp;:&nbsp;<b><span wicket:id="niveau"/></b></td> 
+                       </tr> 
+                       <tr> 
+                               <td>Certificat Medical</td><td>&nbsp;:&nbsp;<b><span wicket:id="dateCM"/></b></td> 
+                       </tr>
+               </table>     
+             	<table  cellspacing="0" class="dataview"> 
+				    <tr align="center">
+					    <th colspan="5">CONTACT URGENT</th>
+				    </tr>
+				    <tr align="center">
+						<th>Titre</th>
+						<th>Nom</th>
+						<th>Pr&eacute;nom</th>
+						<th>T&eacute;l&eacute;phone 1</th>
+						<th>T&eacute;l&eacute;phone 2</th>
+				    </tr>
+				    <tr wicket:id="cuView">
+					    <td><span wicket:id="titre" /></td>
+					    <td><span wicket:id="nom" /></td>
+					    <td><span wicket:id="prenom" /></td>
+					    <td><span wicket:id="telephone" /></td>
+					    <td><span wicket:id="telephtwo" /></td>
+				    </tr>
+	          </table>
+	          <br>
+             <input type="submit" value="Retour" wicket:id="cancel"/>
+         </div>
+	</div> 
+</wicket:extend>

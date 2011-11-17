@@ -1,0 +1,70 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:wicket="http://wicket.apache.org" xml:lang="fr">
+
+    <head>
+        <title>Edition plongee</title>
+        <link rel="stylesheet" type="text/css" href="medias/css/plongee.css" />
+    </head>
+    <body>
+    <div align=center>
+    <br></br>
+    <br></br>
+	<table cellspacing="0">
+	<tr>
+		<td colspan=3 align=center><h3><span wicket:id="message"/></h3></td>
+	</tr>
+	<tr>
+		<td colspan=3 align=center><h3><span wicket:id="nbInscrit"/></h3></td>
+	</tr>
+	<tr><td colspan=3>&nbsp;</td></tr>
+	<tr>
+		<td>Inscrits
+			<table cellspacing="0" class="dataview">
+				<tr>
+					<th>Nom</th>
+					<th>Prenom</th>
+					<th>Niveau</th>
+					<th>T&eacute;lephone</th>
+				</tr>
+				<tr wicket:id="participants">
+					<td><span wicket:id="nom">[nom]</span> </td>
+					<td><span wicket:id="prenom">[prenom]</span> </td>
+					<td><span wicket:id="niveau">[niveau]</span></td>
+					<td><span wicket:id="telephone">[telephone]</span></td>
+				</tr>
+			</table>
+		</td>
+		<td>&nbsp;</td>
+		<td style="vertical-align:top">Liste d'attente
+		<table cellspacing="0" class="dataview">
+			<tr>
+				<th>Nom</th>
+				<th>Prenom</th>
+				<th>Niveau</th>
+				<th>T&eacute;lephone</th>
+			</tr>
+			<tr wicket:id="listeAttente">
+				<td><span wicket:id="nom">[nom]</span> </td>
+				<td><span wicket:id="prenom">[prenom]</span> </td>
+				<td><span wicket:id="niveau">[niveau]</span></td>
+				<td><span wicket:id="telephone">[telephone]</span></td>
+			</tr>
+		</table>
+		</td>
+	</tr>
+	</table>
+	<br></br>
+	<br></br>
+	<div align=center>
+		<span>Pour imprimer, appuyer sur les touches "Ctrl + P"</span>
+		<br></br>
+		<br></br>
+		<wicket:link>
+					<a href="accueil">Accueil</a>
+		 </wicket:link>
+	 </div>
+	 </div>
+    </body>
+</html>  
