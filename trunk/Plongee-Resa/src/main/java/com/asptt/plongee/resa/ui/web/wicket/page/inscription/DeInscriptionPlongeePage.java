@@ -15,6 +15,9 @@ import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
+import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.StringResourceModel;
 
 import com.asptt.plongee.resa.exception.ResaException;
 import com.asptt.plongee.resa.exception.TechnicalException;
@@ -25,6 +28,7 @@ import com.asptt.plongee.resa.model.PlongeeDataProvider;
 import com.asptt.plongee.resa.ui.web.wicket.component.ConfirmAjaxLink;
 import com.asptt.plongee.resa.ui.web.wicket.page.ErreurTechniquePage;
 import com.asptt.plongee.resa.ui.web.wicket.page.TemplatePage;
+import com.asptt.plongee.resa.util.CatalogueMessages;
 import com.asptt.plongee.resa.util.Parameters;
 import com.asptt.plongee.resa.util.ResaUtil;
 
@@ -41,7 +45,7 @@ public class DeInscriptionPlongeePage extends TemplatePage {
 		this.adh = getResaSession().getAdherent(); 
 		
 		setPageTitle("Desinscription plongee");
-		add(new Label("message", adh.getPrenom() + ", voici les plong\u00e9es auxquelles tu es inscrit(e)"));
+		add(new Label("message",new StringResourceModel(CatalogueMessages.DESINSCRIPTION_MSG_ADHERENT, this,new Model<Adherent>(adh))));
 		
 		feedback = new FeedbackPanel("feedback");
 		feedback.setOutputMarkupId(true);
@@ -86,12 +90,15 @@ public class DeInscriptionPlongeePage extends TemplatePage {
 				if (null != plongee.getDp()) {
 					nomDP = plongee.getDp().getNom();
 				}
-
-				item.add(new ConfirmAjaxLink("select","Es-tu s\u00fbr(e) de vouloir te d\u00e9sinscrire de la plong\u00e9e du " + ResaUtil.getDateString(plongee.getDate()) + " " + plongee.getType() + " ?") 
+				//preparation du message de confirmation
+				IModel<Plongee> model = new Model<Plongee>(plongee);
+				StringResourceModel srm = new StringResourceModel(CatalogueMessages.DESINSCRIPTION_CONFIRMATION, this, model, 
+					new Object[]{new PropertyModel<Plongee>(model, "getType"),ResaUtil.getDateString(plongee.getDateVisible())}
+	            );
+				
+				item.add(new ConfirmAjaxLink("select",srm.getString()) 
 				{
-
 					private static final long serialVersionUID = 1771547719792642196L;
-
 					@Override
 					public void onClick(AjaxRequestTarget target) {
 						deInscrire(target, item.getModel());
@@ -202,8 +209,14 @@ public class DeInscriptionPlongeePage extends TemplatePage {
 			
 			// Informations précisant la plongeur concerné et la plongée
 			// dans la fenêtre de confirmation de désinscription
-			add(new Label("infoPlongeur", "Etes-vous s\u00fbr de vouloir vous d\u00e9sinscrire : il ne reste plus assez d'encadrant"));
-			add(new Label("infoPlongee", " \u00e0 la plong\u00e9e du " + ResaUtil.getDateString(plongee.getDate()) + " " + plongee.getType() + " ?"));
+			IModel<Plongee> model = new Model<Plongee>(plongee);
+			StringResourceModel srmPlongeur = new StringResourceModel(CatalogueMessages.DESINSCRIPTION_CONFIRMATION_PLONGEUR, this,null); 		
+			add(new Label("infoPlongeur", srmPlongeur));
+			
+			StringResourceModel srmPlongee = new StringResourceModel(CatalogueMessages.DESINSCRIPTION_CONFIRMATION_PLONGEE, this, model, 
+					new Object[]{ResaUtil.getDateString(plongee.getDateVisible()),new PropertyModel<Plongee>(model, "getType")}
+       		);
+			add(new Label("infoPlongee", srmPlongee));
 			
 			// Le lien qui va fermer la fenêtre de confirmation
 			// et appeler la méthode de désinscription de la page principale (DesInscriptionPlongeePage)

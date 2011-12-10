@@ -18,6 +18,8 @@ import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.version.undo.Change;
 
 import com.asptt.plongee.resa.exception.ResaException;
@@ -31,17 +33,21 @@ import com.asptt.plongee.resa.ui.web.wicket.page.AccueilPage;
 import com.asptt.plongee.resa.ui.web.wicket.page.ErreurTechniquePage;
 import com.asptt.plongee.resa.ui.web.wicket.page.ErrorPage;
 import com.asptt.plongee.resa.ui.web.wicket.page.TemplatePage;
+import com.asptt.plongee.resa.util.CatalogueMessages;
+import com.asptt.plongee.resa.util.Parameters;
 
 @AuthorizeInstantiation({"USER", "SECRETARIAT"})
 public class ConsulterPlongees extends TemplatePage {
+	private Adherent adh = null;
 	private Plongee selected;
 	private ModalWindow modal2;
 
 	@SuppressWarnings("serial")
 	public ConsulterPlongees() {
 		
-		setPageTitle("Consulter les plongees");
-		add(new Label("message", getResaSession().getAdherent().getPrenom() + ", ci-dessous les plong\u00e9es auxquelles tu as acc\u00e8s"));
+		setPageTitle("Consulter les plong\u00e9es");
+		this.adh = getResaSession().getAdherent(); 
+		add(new Label("message",new StringResourceModel(CatalogueMessages.CONSULTER_MSG_ADHERENT, this,new Model<Adherent>(adh))));
 		
 		modal2 = new ModalWindow("modal2");
 		modal2.setTitle("This is modal window with panel content.");
@@ -49,7 +55,7 @@ public class ConsulterPlongees extends TemplatePage {
 		add(modal2);
 
 		try {
-			List<Plongee> plongees = getResaSession().getPlongeeService().rechercherPlongeeProchainJour(getResaSession().getAdherent());
+			List<Plongee> plongees = getResaSession().getPlongeeService().rechercherPlongeeProchainJour(adh);
 			
 			PlongeeDataProvider pDataProvider = new PlongeeDataProvider(plongees);
 
@@ -64,7 +70,7 @@ public class ConsulterPlongees extends TemplatePage {
 					item.add(new IndicatingAjaxLink("select") {
 						@Override
 						public void onClick(AjaxRequestTarget target) {
-							if (getResaSession().getAdherent().isEncadrent() || getResaSession().getAdherent().getRoles().hasRole("SECRETARIAT") ){
+							if (adh.isEncadrent() || adh.getRoles().hasRole("SECRETARIAT") ){
 								replaceModalWindowEncadrant(target, item.getModel());
 							} else {
 								replaceModalWindow(target, item.getModel());
@@ -99,14 +105,24 @@ public class ConsulterPlongees extends TemplatePage {
 									} else {
 										cssClass = "odd";
 									}
-									for (Adherent adh : plongee.getParticipants()){
-										if (adh.getNumeroLicense().equals(getResaSession().getAdherent().getNumeroLicense())){
+									boolean isInscrit = false;
+									for (Adherent adherent : plongee.getParticipants()){
+										if (adherent.getNumeroLicense().equals(adh.getNumeroLicense())){
 											cssClass = cssClass + " inscrit";
+											isInscrit = true;
+										}
+									}
+									if(!plongee.isNbMiniAtteint(Parameters.getInt("nb.plongeur.mini"))){
+										if (isInscrit){
+											cssClass = cssClass + "MinimumPlongeur";
+										} else {
+											cssClass = cssClass + " minimumPlongeur";
 										}
 									}
 									return cssClass;
 								}
-							}));
+							})
+					);
 				}
 			});
 		}	catch (TechnicalException e) {

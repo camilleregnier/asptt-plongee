@@ -109,13 +109,7 @@ public class InfoAdherent extends TemplatePage {
 	        };
 		    cuView.setOutputMarkupId(true);    
 	        add(cuView);
-			add(new Link("cancel") {
-				@Override
-				public void onClick() {
-					setResponsePage(AccueilPage.class);
-				}
-			});
-			
+		
 	}
 	
 	protected TreeModel createTreeModel(Adherent adherent)

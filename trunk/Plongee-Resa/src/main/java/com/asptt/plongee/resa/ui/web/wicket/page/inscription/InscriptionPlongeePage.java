@@ -24,6 +24,9 @@ import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
+import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.StringResourceModel;
 
 import com.asptt.plongee.resa.exception.ResaException;
 import com.asptt.plongee.resa.exception.TechnicalException;
@@ -34,6 +37,7 @@ import com.asptt.plongee.resa.model.PlongeeDataProvider;
 import com.asptt.plongee.resa.ui.web.wicket.component.ConfirmAjaxLink;
 import com.asptt.plongee.resa.ui.web.wicket.page.TemplatePage;
 import com.asptt.plongee.resa.ui.web.wicket.page.admin.GererPlongeeAOuvrirTwo;
+import com.asptt.plongee.resa.util.CatalogueMessages;
 import com.asptt.plongee.resa.util.Parameters;
 import com.asptt.plongee.resa.util.ResaUtil;
 
@@ -50,17 +54,20 @@ public class InscriptionPlongeePage extends TemplatePage {
 	public InscriptionPlongeePage(){
 		setPageTitle("Inscription plongee");
 		this.adh = getResaSession().getAdherent(); 
-		add(new Label("message", adh.getPrenom() + ", ci-dessous, les plong\u00e9es auxquelles tu peux t'inscrire"));
-		String libCM ="";
+		
+		add(new Label("message",new StringResourceModel(CatalogueMessages.INSCRIPTION_MSG_ADHERENT, this,new Model<Adherent>(adh))));
+		
+		//gestion message pour le certificat medical
+		Label labelCertificat = new Label("certificat", "");
 		try {
 			 getResaSession().getPlongeeService().checkCertificatMedical(adh, null);
 		} catch (TechnicalException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (ResaException e) {
-			libCM=e.getKey();
+			String msgCertificat=initMessageException(e.getKey(),null);
+			labelCertificat = new Label("certificat",msgCertificat);
 		}
-		add(new Label("certificat", libCM));
+		add(labelCertificat);
 		feedback.setOutputMarkupId(true);
 		add(feedback);
 		init();
@@ -73,18 +80,20 @@ public class InscriptionPlongeePage extends TemplatePage {
 	public InscriptionPlongeePage(Adherent adherent) {
 		setPageTitle("Inscription plongee");
 		this.adh = adherent;
-		String libMesg = adh.getPrenom()+" "+ adh.getNom() + " peut s'inscrire aux plong\u00e9es suivantes";
-		String libCM ="";
+
+		add(new Label("message",new StringResourceModel(CatalogueMessages.INSCRIPTION_MSG_SECRETARIAT, this,new Model<Adherent>(adh))));
+
+		//gestion message pour le certificat medical
+		Label labelCertificat = new Label("certificat", "");
 		try {
-			getResaSession().getPlongeeService().checkCertificatMedical(adh, null);
+			 getResaSession().getPlongeeService().checkCertificatMedical(adh, null);
 		} catch (TechnicalException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (ResaException e) {
-			libCM=e.getKey();
+			String msgCertificat=initMessageException(e.getKey(),null);
+			labelCertificat = new Label("certificat",msgCertificat);
 		}
-		add(new Label("message", libMesg));
-		add(new Label("certificat", libCM));
+		add(labelCertificat);
 		feedback.setOutputMarkupId(true);
 		add(feedback);
 		init();
@@ -98,18 +107,13 @@ public class InscriptionPlongeePage extends TemplatePage {
 			// Initialisation de la fenêtre modal de confirmation d'annulation
 			add(modalConfirm = new ModalWindow("modalConfirm"));
 			//modalConfirm.setPageMapName("modal-2");
-
 			modalConfirm.setTitle("Confirmation");
-
 			modalConfirm.setResizable(false);
 			modalConfirm.setInitialWidth(30);
 			modalConfirm.setInitialHeight(15);
 			modalConfirm.setWidthUnit("em");
 			modalConfirm.setHeightUnit("em");
-
 			modalConfirm.setCssClassName(ModalWindow.CSS_CLASS_BLUE);
-			
-			
 			plongees = getResaSession().getPlongeeService().rechercherPlongeePourInscriptionAdherent(adh);
 		} catch (TechnicalException e) {
 			e.printStackTrace();
@@ -123,22 +127,27 @@ public class InscriptionPlongeePage extends TemplatePage {
 			private static final long serialVersionUID = 4247578422439877902L;
 
 			protected void populateItem(final Item<Plongee> item) {
-				Plongee plongee = item.getModelObject();
+				final Plongee plongee = item.getModelObject();
 				String nomDP = "Aucun";
 				if (null != plongee.getDp()) {
 					nomDP = plongee.getDp().getNom();
 				}
+				//preparation du message de confirmation
+				IModel<Plongee> model = new Model<Plongee>(plongee);
+				StringResourceModel srm = new StringResourceModel(CatalogueMessages.INSCRIPTION_CONFIRM_RESA, this, model, 
+					new Object[]{new PropertyModel<Plongee>(model, "getType"),ResaUtil.getDateString(plongee.getDateVisible())}
+	            );
 				
-				item.add(new ConfirmAjaxLink("select","Es-tu s\u00fbr(e) de vouloir r\u00e9server la plong\u00e9e du " + ResaUtil.getDateString(plongee.getDate()) + " " + plongee.getType() + " ?") 
-				{
-					private static final long serialVersionUID = 4442484995694176106L;
-
-					@Override
-					public void onClick(AjaxRequestTarget target) {
-						inscrire(target, item.getModel());
+				item.add(new ConfirmAjaxLink("select",srm.getString()) 
+					{
+						private static final long serialVersionUID = 4442484995694176106L;
+	
+						@Override
+						public void onClick(AjaxRequestTarget target) {
+							inscrire(target, item.getModel());
+						}
 					}
-				});
-
+				);
 
 				// Mise en forme de la date
 				Calendar cal = Calendar.getInstance();
@@ -159,16 +168,23 @@ public class InscriptionPlongeePage extends TemplatePage {
 				item.add(new AttributeModifier("class", true,
 					new AbstractReadOnlyModel<String>() {
 						private static final long serialVersionUID = 5259097512265622750L;
-
 						@Override
 						public String getObject() {
-							return (item.getIndex() % 2 == 1) ? "even"
-									: "odd";
+							String cssClass;
+							if (item.getIndex() % 2 == 1){
+								cssClass = "even";
+							} else {
+								cssClass = "odd";
+							}
+							if(!plongee.isNbMiniAtteint(Parameters.getInt("nb.plongeur.mini"))){
+								cssClass = cssClass + " minimumPlongeur";
+							}
+							return cssClass;
 						}
 					})
 				);
-			}
-		});
+			}//fin du populaItem
+		});//fin du Dataview plongee
 		
 	}
 
@@ -239,8 +255,9 @@ public class InscriptionPlongeePage extends TemplatePage {
 			}
 
 		} catch (ResaException e) {
-			e.printStackTrace();
-			error(e.getKey());
+			String libRetour = "";
+			libRetour=initMessageException(e.getKey(), plongee);
+			error(libRetour);
 		} catch (TechnicalException e) {
 			e.printStackTrace();
 			error(e.getKey());
@@ -249,12 +266,93 @@ public class InscriptionPlongeePage extends TemplatePage {
 		}
 	}
 	
+	private String initMessageException(String entreeCatalogue, Plongee plongee){
+		String libRetour="";
+		if(entreeCatalogue.startsWith(CatalogueMessages.INSCRIPTION_ATTENDRE_HO)){
+			String ho = entreeCatalogue.substring(12);
+			IModel<Adherent> model = new Model<Adherent>(adh);
+			StringResourceModel srm = new StringResourceModel(CatalogueMessages.INSCRIPTION_ATTENDRE_HO, this, model, 
+				new Object[]{new PropertyModel<Adherent>(model, "prenom"),ResaUtil.getDateString(plongee.getDateVisible()),ho}
+            );
+			libRetour=srm.getString();
+		} else if(entreeCatalogue.startsWith(CatalogueMessages.INSCRIPTION_ATTENDRE_J_HO)){
+			String ho = entreeCatalogue.substring(14);
+			IModel<Adherent> model = new Model<Adherent>(adh);
+			StringResourceModel srm = new StringResourceModel(CatalogueMessages.INSCRIPTION_ATTENDRE_J_HO, this, model, 
+				new Object[]{new PropertyModel<Adherent>(model, "prenom"),ho}
+            );
+			libRetour=srm.getString();
+		} else if(entreeCatalogue.equalsIgnoreCase(CatalogueMessages.CM_PERIME)){
+			StringResourceModel srm = new StringResourceModel(CatalogueMessages.CM_PERIME, this, null);
+			libRetour=srm.getString();
+		} else if(entreeCatalogue.startsWith(CatalogueMessages.CM_A_RENOUVELER)){
+			String nbJour = entreeCatalogue.substring(14);
+			IModel<Adherent> model = new Model<Adherent>(adh);
+			StringResourceModel srm = new StringResourceModel(CatalogueMessages.CM_A_RENOUVELER, this, model, 
+					new Object[]{new PropertyModel<Adherent>(model, "prenom"),nbJour}
+				);
+			libRetour=srm.getString();
+		} else if(entreeCatalogue.equalsIgnoreCase(CatalogueMessages.INSCRIPTION_KO_PLONGEE_FERMEE)){
+			IModel<Plongee> model = new Model<Plongee>(plongee);
+			StringResourceModel srm = new StringResourceModel(CatalogueMessages.INSCRIPTION_KO_PLONGEE_FERMEE, this, model, 
+				new Object[]{new PropertyModel<Plongee>(model, "getType"),ResaUtil.getDateString(plongee.getDateVisible())}
+       		);
+			libRetour=srm.getString();
+		} else if(entreeCatalogue.equalsIgnoreCase(CatalogueMessages.INSCRIPTION_KO_NB_MAX_PLONGEUR)){
+			StringResourceModel srm = new StringResourceModel(CatalogueMessages.INSCRIPTION_KO_NB_MAX_PLONGEUR, this,new Model<Plongee>(plongee));
+			libRetour=srm.getString();
+		} else if(entreeCatalogue.equalsIgnoreCase(CatalogueMessages.INSCRIPTION_KO_DP_P5)){
+			IModel<Plongee> model = new Model<Plongee>(plongee);
+			StringResourceModel srm = new StringResourceModel(CatalogueMessages.INSCRIPTION_KO_DP_P5, this, model, 
+				new Object[]{new PropertyModel<Plongee>(model, "getType"),ResaUtil.getDateString(plongee.getDateVisible())}
+            );
+			libRetour=srm.getString();
+		} else if(entreeCatalogue.equalsIgnoreCase(CatalogueMessages.INSCRIPTION_KO_NIVEAU_MINI)){
+			IModel<Plongee> model = new Model<Plongee>(plongee);
+			StringResourceModel srm = new StringResourceModel(CatalogueMessages.INSCRIPTION_KO_NIVEAU_MINI, this, model, 
+				new Object[]{new PropertyModel<Plongee>(model, "getType"),ResaUtil.getDateString(plongee.getDateVisible()),
+							new PropertyModel<Plongee>(model, "getNiveauMinimum")}
+            );
+			libRetour=srm.getString();
+		} else if(entreeCatalogue.equalsIgnoreCase(CatalogueMessages.INSCRIPTION_KO_DEJA_EN_ATTENTE)){
+			IModel<Plongee> model = new Model<Plongee>(plongee);
+			StringResourceModel srm = new StringResourceModel(CatalogueMessages.INSCRIPTION_KO_DEJA_EN_ATTENTE, this, model, 
+				new Object[]{new PropertyModel<Plongee>(model, "getType"),ResaUtil.getDateString(plongee.getDateVisible())}
+            );
+			libRetour=srm.getString();
+		} else if(entreeCatalogue.equalsIgnoreCase(CatalogueMessages.INSCRIPTION_KO_DEJA_INSCRIT)){
+			StringResourceModel srm = new StringResourceModel(CatalogueMessages.INSCRIPTION_KO_DEJA_INSCRIT, this,new Model<Adherent>(adh)); 
+			libRetour=srm.getString();
+		} else if(entreeCatalogue.equalsIgnoreCase(CatalogueMessages.INSCRIPTION_LISTE_ATTENTE_KO)){
+			IModel<Plongee> model = new Model<Plongee>(plongee);
+			StringResourceModel srm = new StringResourceModel(CatalogueMessages.INSCRIPTION_LISTE_ATTENTE_KO, this, model, 
+				new Object[]{new PropertyModel<Plongee>(model, "getType"),ResaUtil.getDateString(plongee.getDateVisible())}
+            );
+			libRetour=srm.getString();
+		} else if(entreeCatalogue.startsWith(CatalogueMessages.INSCRIPTION_ATTENDRE_VR_HO)){
+			String ho = entreeCatalogue.substring(15);
+			IModel<Adherent> model = new Model<Adherent>(adh);
+			StringResourceModel srm = new StringResourceModel(CatalogueMessages.INSCRIPTION_ATTENDRE_VR_HO, this, model, 
+				new Object[]{new PropertyModel<Adherent>(model, "prenom"),ResaUtil.getDateString(plongee.getDateVisible()),ho}
+            );
+			libRetour=srm.getString();
+		} else if(entreeCatalogue.startsWith(CatalogueMessages.INSCRIPTION_ATTENDRE_VR_J_HO)){
+			String ho = entreeCatalogue.substring(14);
+			IModel<Adherent> model = new Model<Adherent>(adh);
+			StringResourceModel srm = new StringResourceModel(CatalogueMessages.INSCRIPTION_ATTENDRE_VR_J_HO, this, model, 
+				new Object[]{new PropertyModel<Adherent>(model, "prenom"),ho}
+            );
+			libRetour=srm.getString();
+		} else {
+			libRetour="......";
+		}
+		return libRetour;
+	}
 
 	private void replaceModalWindow(AjaxRequestTarget target, Plongee plongee) {
 		modalConfirm.setContent(new ConfirmSelectionModal(modalConfirm.getContentId(), plongee));
 		modalConfirm.setTitle("Confirmation d'inscription en liste d'attente");
 		modalConfirm.setUseInitialHeight(true);
-		
 		// Pour éviter le message de disparition de la fenetre lors de la validation
 		target.appendJavascript( "Wicket.Window.unloadConfirmation  = false;");
 	}
@@ -263,21 +361,31 @@ public class InscriptionPlongeePage extends TemplatePage {
 	{
 		private static final long serialVersionUID = 196724625616748115L;
 
-		String message = "La plong\u00e9e est compl\u00e8te";
-		
+		StringResourceModel srm = new StringResourceModel(CatalogueMessages.INSCRIPTION_ATT_MAX_ATTEINT, this,null); 
+		String message = srm.getString();
+
 		@SuppressWarnings("unchecked")
 		public ConfirmSelectionModal(String id, final Plongee plongee)
 		{
 			super(id);
 			
 			if(typeMail == PlongeeMail.MAIL_PAS_ASSEZ_ENCADRANT){
-				message = "Il n'y a pas assez d'encadrant";
+				srm = new StringResourceModel(CatalogueMessages.INSCRIPTION_ATT_MANQUE_ENCADRANT, this,null); 
+				message = srm.getString();
 			}else if(typeMail == PlongeeMail.MAIL_LISTE_ATTENTE_EXIST){
-				message = "Cette plong\u00e9e demande l'intervention d'un administrateur pour la gestion des palanqu\u00e9es";
+				srm = new StringResourceModel(CatalogueMessages.INSCRIPTION_ATT_A_GERER, this,null); 
+				message = srm.getString();
 			} 
 			// Informations précisant que le plongeur est en liste d'attente
-			add(new Label("infoPlongeur", message+"\n Vous allez \u00eatres en liste d'attente en position " + (plongee.getParticipantsEnAttente().size()+1) + "."));
-			add(new Label("infoPlongee", " Confirmez-vous votre inscription pour la plong\u00e9e du " + plongee.getDate() + " " + plongee.getType() + " ?"));
+			IModel<Plongee> model = new Model<Plongee>(plongee);
+			StringResourceModel srmPlongeur = new StringResourceModel(CatalogueMessages.INSCRIPTION_ATT_INFO_PLONGEUR, this,null); 
+			
+			add(new Label("infoPlongeur", message+"\n"+srmPlongeur.getString()+" "+plongee.getParticipantsEnAttente().size()+1+"."));
+			
+			StringResourceModel srmPlongee = new StringResourceModel(CatalogueMessages.INSCRIPTION_ATT_INFO_PLONGEE, this, model, 
+					new Object[]{ResaUtil.getDateString(plongee.getDateVisible()),new PropertyModel<Plongee>(model, "getType")}
+       		);
+			add(new Label("infoPlongee", srmPlongee.getString()));
 			
 			// Le lien qui va fermer la fenêtre de confirmation
 			// et appeler la méthode de d'inscription en liste d'attente si nécessaire
@@ -291,11 +399,9 @@ public class InscriptionPlongeePage extends TemplatePage {
 					try{
 						// On inscrit en liste d'attente
 						getResaSession().getPlongeeService().inscrireAdherentEnListeAttente(
-						plongee, 
-						adh != null ?  adh : getResaSession().getAdherent(), typeMail);
+								plongee, adh != null ?  adh : getResaSession().getAdherent(), typeMail);
 					
 						setResponsePage(new InscriptionListeAttentePlongeePage(plongee,message));
-
 					} catch (ResaException e) {
 						e.printStackTrace();
 						error(e.getKey());
@@ -311,7 +417,6 @@ public class InscriptionPlongeePage extends TemplatePage {
 			add(new IndicatingAjaxLink("no")
 			{
 				private static final long serialVersionUID = 1L;
-
 				@Override
 				public void onClick(AjaxRequestTarget target)
 				{
@@ -319,9 +424,9 @@ public class InscriptionPlongeePage extends TemplatePage {
 				}
 			});
 
-		}
+		}//fin constructeur de la fenetre modal de confirmation
 
-	}
+	}// fin de la classe de la fenetre modal de confirmation
 
 		
 }

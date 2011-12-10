@@ -22,17 +22,23 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.validation.validator.PatternValidator;
 import org.apache.wicket.validation.validator.StringValidator.ExactLengthValidator;
 
 import com.asptt.plongee.resa.exception.ResaException;
 import com.asptt.plongee.resa.exception.TechnicalException;
+import com.asptt.plongee.resa.model.Adherent;
 import com.asptt.plongee.resa.model.Message;
+import com.asptt.plongee.resa.model.Plongee;
 import com.asptt.plongee.resa.ui.web.wicket.ResaSession;
 import com.asptt.plongee.resa.ui.web.wicket.page.AccueilPage;
 import com.asptt.plongee.resa.ui.web.wicket.page.ErreurTechniquePage;
+import com.asptt.plongee.resa.util.CatalogueMessages;
+import com.asptt.plongee.resa.util.ResaUtil;
 
 public class MessagePanel extends Panel {
 	
@@ -82,9 +88,10 @@ public class MessagePanel extends Panel {
 					
 					// Mise à jour du message
 					try {
-						if(null != message.getDateFin())
+						if(null != message.getDateFin()){
 							if( message.getDateFin().before(message.getDateDebut()) ){
-							throw new ResaException("La date de fin ne peut pas être avant la date de début");
+								throw new ResaException(CatalogueMessages.DATE_INCOMPATIBLE);
+							}
 						}
 						ResaSession resaSession = (ResaSession) getApplication()
 								.getSessionStore().lookup(getRequest());
@@ -97,7 +104,7 @@ public class MessagePanel extends Panel {
 						error(e.getKey());
 					} catch (ResaException e) {
 						e.printStackTrace();
-						error(e.getKey());
+						error(initMessageException(e.getKey()));
 					}
 
 				}
@@ -120,9 +127,10 @@ public class MessagePanel extends Panel {
 					
 					// Mise à jour du message
 					try {
-						if(null != message.getDateFin())
+						if(null != message.getDateFin()){
 							if( message.getDateFin().before(message.getDateDebut())){
-							throw new ResaException("La date de fin ne peut pas être avant la date de début");
+								throw new ResaException(CatalogueMessages.DATE_INCOMPATIBLE);
+							}
 						}
 						ResaSession resaSession = (ResaSession) getApplication()
 								.getSessionStore().lookup(getRequest());
@@ -135,7 +143,7 @@ public class MessagePanel extends Panel {
 						error(e.getKey());
 					} catch (ResaException e) {
 						e.printStackTrace();
-						error(e.getKey());
+						error(initMessageException(e.getKey()));
 					}
 
 				}
@@ -157,5 +165,13 @@ public class MessagePanel extends Panel {
 			//add(new Button("cancel", new ResourceModel("button.cancel")));
 		}
 
+	}
+	private String initMessageException(String entreeCatalogue){
+		String libError="";
+		if(entreeCatalogue.equalsIgnoreCase(CatalogueMessages.DATE_INCOMPATIBLE)){
+			StringResourceModel srm = new StringResourceModel(CatalogueMessages.DATE_INCOMPATIBLE, this, null);
+			libError=srm.getString();
+		}
+		return libError;
 	}
 }

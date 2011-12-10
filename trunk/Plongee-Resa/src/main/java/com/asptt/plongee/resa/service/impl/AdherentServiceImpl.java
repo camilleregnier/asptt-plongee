@@ -22,6 +22,7 @@ import com.asptt.plongee.resa.model.Message;
 import com.asptt.plongee.resa.model.Plongee;
 import com.asptt.plongee.resa.model.ResaConstants;
 import com.asptt.plongee.resa.service.AdherentService;
+import com.asptt.plongee.resa.util.CatalogueMessages;
 import com.asptt.plongee.resa.util.Parameters;
 import com.asptt.plongee.resa.util.ResaUtil;
 
@@ -188,7 +189,7 @@ public class AdherentServiceImpl implements AdherentService, Serializable {
 		
 		if (dateDuJour.after(dateCotisation)){
 			//A cette date la cotisation aurait du etre versée
-			throw new ResaException(Parameters.getString("MSG.COTISATION"));
+			throw new ResaException(CatalogueMessages.ACCUEIL_COTISATION_PERIME);
 		}
 	}
 	

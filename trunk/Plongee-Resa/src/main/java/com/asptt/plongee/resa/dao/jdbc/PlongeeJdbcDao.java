@@ -502,9 +502,28 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements Serializable, Plo
 		int nbMaxPlongeur = rs.getInt("NB_MAX_PLG");
 		Plongee plongee = new Plongee();
 		plongee.setId(id);
-		plongee.setDate(date);
-		plongee.setDateVisible(dateVisible);
 		plongee.setType(demie_journee);
+		//Mise à jour de la date
+		//maj de l'heure de la plongée en fonction du type
+		GregorianCalendar gc = new GregorianCalendar();
+		gc.setTime(date);
+		gc.set(GregorianCalendar.MINUTE, 0);
+		gc.set(GregorianCalendar.SECOND, 0);
+		if( plongee.getType().equalsIgnoreCase(Plongee.Type.MATIN.toString()) ){
+			gc.set(GregorianCalendar.HOUR_OF_DAY, 8);
+//			plongee.setDate(gc.getTime());
+		} else if( plongee.getType().equalsIgnoreCase(Plongee.Type.APRES_MIDI.toString()) ){
+			gc.set(GregorianCalendar.HOUR_OF_DAY, 13);
+//			plongee.setDate(gc.getTime());
+		} else if( plongee.getType().equalsIgnoreCase(Plongee.Type.SOIR.toString()) ){
+			gc.set(GregorianCalendar.HOUR_OF_DAY, 18);
+//			plongee.setDate(gc.getTime());
+		} else if( plongee.getType().equalsIgnoreCase(Plongee.Type.NUIT.toString()) ){
+			gc.set(GregorianCalendar.HOUR_OF_DAY, 21);
+		}
+		plongee.setDate(gc.getTime());
+//		plongee.setDate(date);
+		plongee.setDateVisible(dateVisible);
 		plongee.setEnumNiveauMinimum(niveauMini);
 		plongee.setNbMaxPlaces(nbMaxPlongeur);
 		if(ouvertForcee == 1){

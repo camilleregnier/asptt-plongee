@@ -16,11 +16,15 @@ import org.apache.wicket.markup.html.form.RequiredTextField;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.validation.validator.MinimumValidator;
 
 import com.asptt.plongee.resa.exception.ResaException;
 import com.asptt.plongee.resa.exception.TechnicalException;
+import com.asptt.plongee.resa.model.Adherent;
 import com.asptt.plongee.resa.model.NiveauAutonomie;
 import com.asptt.plongee.resa.model.Plongee;
 import com.asptt.plongee.resa.ui.web.wicket.ResaSession;
@@ -28,6 +32,8 @@ import com.asptt.plongee.resa.ui.web.wicket.page.AccueilPage;
 import com.asptt.plongee.resa.ui.web.wicket.page.ErreurTechniquePage;
 import com.asptt.plongee.resa.ui.web.wicket.page.ErrorPage;
 import com.asptt.plongee.resa.ui.web.wicket.page.TemplatePage;
+import com.asptt.plongee.resa.util.CatalogueMessages;
+import com.asptt.plongee.resa.util.ResaUtil;
 
 public class CreerPlongee extends TemplatePage {
 	
@@ -82,11 +88,11 @@ public class CreerPlongee extends TemplatePage {
 					Plongee plongee = (Plongee) form.getModelObject();
 					try {
 						getResaSession().getPlongeeService().creerPlongee(plongee);
-
 						setResponsePage(AccueilPage.class);
 					} catch (ResaException e) {
-						e.printStackTrace();
-						error(e.getKey());
+						String libRetour = "";
+						libRetour=initMessageException(e.getKey(), plongee);
+						error(libRetour);
 					} catch (TechnicalException e) {
 						e.printStackTrace();
 						error(e.getKey());
@@ -111,4 +117,17 @@ public class CreerPlongee extends TemplatePage {
 
 	}
 
+	private String initMessageException(String entreeCatalogue, Plongee plongee){
+		String libRetour="";
+		if(entreeCatalogue.startsWith(CatalogueMessages.CREATION_PLONGEE_DATE_INCOMPATIBLE)){
+			StringResourceModel srm = new StringResourceModel(CatalogueMessages.CREATION_PLONGEE_DATE_INCOMPATIBLE, this, null);
+			libRetour=srm.getString();
+		} else if(entreeCatalogue.startsWith(CatalogueMessages.CREATION_PLONGEE_EXISTE_DEJA)){
+			StringResourceModel srm = new StringResourceModel(CatalogueMessages.CREATION_PLONGEE_EXISTE_DEJA, this, null);
+			libRetour=srm.getString();
+		} else {
+			libRetour="......";
+		}
+		return libRetour;
+	}
 }

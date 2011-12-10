@@ -16,6 +16,10 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.AbstractReadOnlyModel;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
+import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.StringResourceModel;
 
 import com.asptt.plongee.resa.exception.ResaException;
 import com.asptt.plongee.resa.exception.TechnicalException;
@@ -26,6 +30,7 @@ import com.asptt.plongee.resa.model.Plongee;
 import com.asptt.plongee.resa.model.PlongeeDataProvider;
 //import com.asptt.plongee.resa.util.PlongeeMail;
 import com.asptt.plongee.resa.ui.web.wicket.ResaSession;
+import com.asptt.plongee.resa.util.CatalogueMessages;
 
 @AuthorizeInstantiation({"USER","ADMIN","SECRETARIAT"})
 public class AccueilPage extends TemplatePage {
@@ -39,8 +44,14 @@ public class AccueilPage extends TemplatePage {
 			setResponsePage(ModifPasswordPage.class);
 		}
 		
-		String libMesg = "Bienvenue:"+adh.getPrenom()+", nous sommes le : " + calculerDateCourante();
-	   
+		IModel<Adherent> model = new Model<Adherent>(adh);
+		add(new Label("hello",
+	             new StringResourceModel(CatalogueMessages.ACCUEIL_BIENVENUE, this, model, 
+	            		 new Object[]{new PropertyModel<Adherent>(model, "prenom"),calculerDateCourante()}
+	             )
+			)
+		);
+		
 		try {
 			List<Message> messages = getResaSession().getAdherentService().rechercherMessage();
 			
@@ -69,25 +80,36 @@ public class AccueilPage extends TemplatePage {
 				}
 
 			});
-			String libCM ="";
+			//gestion du message pour le certificat medical perimé
+			String msgCertificat ="";
 			try {
 				getResaSession().getPlongeeService().checkCertificatMedical(
 						getResaSession().getAdherent(), null);
 			} catch (ResaException e) {
-				libCM=e.getKey();
+				if(e.getKey().equalsIgnoreCase(CatalogueMessages.CM_PERIME)){
+					StringResourceModel srm = new StringResourceModel(CatalogueMessages.CM_PERIME, this, null);
+					msgCertificat=srm.getString();
+				} else {
+					String nbJour = e.getKey().substring(14);
+					StringResourceModel srm = new StringResourceModel(CatalogueMessages.CM_A_RENOUVELER, this, model, 
+						new Object[]{new PropertyModel<Adherent>(model, "prenom"),nbJour}
+					);
+					msgCertificat=srm.getString();
+				}
 			}
+			add(new Label("certificat", msgCertificat));
 			
-			String libCotisation ="";
+			//gestion du message pour le cotisation non renouvellée
 			try {
 				getResaSession().getAdherentService().checkAnneeCotisation(getResaSession().getAdherent());
 			} catch (ResaException e) {
 				PageParameters pp = new PageParameters();
-				pp.add("cotisation",e.getKey());
+				StringResourceModel msgCotisation = new StringResourceModel(CatalogueMessages.ACCUEIL_COTISATION_PERIME,
+						this, new Model<Adherent>(adh)); 
+				pp.add("cotisation",msgCotisation.getString());
 				setResponsePage(new LoginPage(pp));
 			}
-			
-			add(new Label("hello", libMesg));
-			add(new Label("certificat", libCM));
+
 
 		}	catch (TechnicalException e) {
 			e.printStackTrace();
@@ -99,10 +121,7 @@ public class AccueilPage extends TemplatePage {
 
 	private String calculerDateCourante() {
 		DateFormat sdf = new SimpleDateFormat("dd MMMM yyyy HH:mm:ss");
-	
 		return sdf.format(new Date());
-
 	}
-	
 
 }
