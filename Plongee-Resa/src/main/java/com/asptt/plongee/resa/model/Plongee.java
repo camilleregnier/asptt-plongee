@@ -6,7 +6,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import com.asptt.plongee.resa.model.Adherent.Encadrement;
 
 public class Plongee implements Serializable {
 
@@ -172,21 +171,11 @@ public class Plongee implements Serializable {
 		}
 	}
 	
-	/**
-	 * Une plongée est ouverte s'il existe 
-	 *  - au moins un DP et un pilote (ça peut-être la même personne)
-	 *  reunion du 2709/2010
-	 *  - que le nombre de participants (inscrit + liste d'attente)
-	 *  soit inferieure au nombre de plongeurs max
-	 *  ceci pour bloquer l'inscription en cas de liste d'attente sur plongée pleine
-	public boolean isOuverte(){
-		if(  isExistDP() && isExistPilote()
-				&& ((getParticipants().size() + getParticipantsEnAttente().size()) < getNbMaxPlaces()) 
-				){
+	public boolean isNbMiniAtteint(int nbMini){
+		if(getParticipants().size() >= nbMini){
 			return true;
-		} else{
+		} else {
 			return false;
 		}
 	}
-	 */
 }

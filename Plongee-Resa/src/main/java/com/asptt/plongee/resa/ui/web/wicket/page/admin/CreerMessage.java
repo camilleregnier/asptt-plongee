@@ -26,6 +26,7 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.validation.validator.PatternValidator;
 import org.apache.wicket.validation.validator.StringValidator.ExactLengthValidator;
 import org.joda.time.DateTimeField;
@@ -39,6 +40,7 @@ import com.asptt.plongee.resa.ui.web.wicket.page.AccueilPage;
 import com.asptt.plongee.resa.ui.web.wicket.page.ErreurTechniquePage;
 import com.asptt.plongee.resa.ui.web.wicket.page.TemplatePage;
 import com.asptt.plongee.resa.ui.web.wicket.page.admin.CreerPlongee.PlongeeForm;
+import com.asptt.plongee.resa.util.CatalogueMessages;
 
 public class CreerMessage extends TemplatePage {
 	
@@ -82,10 +84,6 @@ public class CreerMessage extends TemplatePage {
 				protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 					Message message = (Message) form.getModelObject();
 					
-					// TODO Mise au format du libellé
-//					adherent.setNom(adherent.getNom().toUpperCase());
-//					adherent.setPrenom((adherent.getPrenom().substring(0, 1).toUpperCase()) + (adherent.getPrenom().substring(1).toLowerCase()));
-
 					// Mise à jour du message
 					try {
 						//on force la date de fin à 23h59
@@ -95,9 +93,10 @@ public class CreerMessage extends TemplatePage {
 						gc.add(GregorianCalendar.HOUR_OF_DAY, 23);
 						gc.add(GregorianCalendar.MINUTE, 59);
 						message.setDateFin(gc.getTime());
-						if(null != message.getDateFin())
+						if(null != message.getDateFin()){
 							if( message.getDateFin().before(message.getDateDebut())){
-							throw new ResaException("La date de fin ne peut pas être avant la date de début");
+								throw new ResaException(CatalogueMessages.DATE_INCOMPATIBLE);
+							}
 						}
 						ResaSession resaSession = (ResaSession) getApplication()
 								.getSessionStore().lookup(getRequest());
@@ -110,7 +109,7 @@ public class CreerMessage extends TemplatePage {
 						error(e.getKey());
 					} catch (ResaException e) {
 						e.printStackTrace();
-						error(e.getKey());
+						error(initMessageException(e.getKey()));
 					}
 
 				}
@@ -132,5 +131,14 @@ public class CreerMessage extends TemplatePage {
 
 		}
 
+	}
+
+	private String initMessageException(String entreeCatalogue){
+		String libError="";
+		if(entreeCatalogue.equalsIgnoreCase(CatalogueMessages.DATE_INCOMPATIBLE)){
+			StringResourceModel srm = new StringResourceModel(CatalogueMessages.DATE_INCOMPATIBLE, this, null);
+			libError=srm.getString();
+		}
+		return libError;
 	}
 }

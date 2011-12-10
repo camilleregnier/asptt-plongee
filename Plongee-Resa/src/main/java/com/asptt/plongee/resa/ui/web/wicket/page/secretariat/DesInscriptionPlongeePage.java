@@ -44,7 +44,7 @@ public class DesInscriptionPlongeePage extends TemplatePage {
 		// Fenêtre modale de consultation des plongées pour lesquelles
 		// le plongeur est inscrit
 		modalPlongees = new ModalWindow("modalPlongees");
-		modalPlongees.setTitle("Liste des plongées pour ce plongeur");
+		modalPlongees.setTitle("Liste des plong\u00e9es pour ce plongeur");
 		modalPlongees.setUseInitialHeight(false);
 		modalPlongees.setInitialWidth(750);
 		modalPlongees.setWidthUnit("px");

@@ -20,6 +20,7 @@ import com.asptt.plongee.resa.model.NiveauAutonomie;
 import com.asptt.plongee.resa.model.Plongee;
 import com.asptt.plongee.resa.model.Adherent.Encadrement;
 import com.asptt.plongee.resa.service.PlongeeService;
+import com.asptt.plongee.resa.util.CatalogueMessages;
 import com.asptt.plongee.resa.util.Parameters;
 import com.asptt.plongee.resa.util.ResaUtil;
 
@@ -106,12 +107,12 @@ public class PlongeeServiceImpl implements PlongeeService, Serializable {
 				}
 			}
 			if(plongee.getDate().before(plongee.getDateVisible())){
-				throw new ResaException("La date d'inscription doit \u00eatre ant\u00e9rieure \u00e0 la date de la plong\u00e9e");
+				throw new ResaException(CatalogueMessages.CREATION_PLONGEE_DATE_INCOMPATIBLE);
 			}
 			plongeeDao.create(plongee);
 		}
 		else{
-			throw new ResaException("Cette Plong\u00e9e existe d\u00e9j\u00e0");
+			throw new ResaException(CatalogueMessages.CREATION_PLONGEE_EXISTE_DEJA);
 		}
 	}
 
@@ -362,7 +363,7 @@ public class PlongeeServiceImpl implements PlongeeService, Serializable {
 		//Test si l'adherent est déjà inscrit à la plongée
 		for (Adherent inscrit : plongee.getParticipants()) {
 			if (inscrit.getNumeroLicense().equalsIgnoreCase(adherent.getNumeroLicense())) {
-				throw new ResaException("D\u00e9sol\u00e9 "+adherent.getPrenom()+" mais tu es d\u00e9j\u00e0 inscrit \u00e0 cette plong\u00e9e");
+				throw new ResaException(CatalogueMessages.INSCRIPTION_KO_DEJA_INSCRIT);
 			}
 		}
 		
@@ -374,14 +375,13 @@ public class PlongeeServiceImpl implements PlongeeService, Serializable {
 		} else {
 			if( nbJours > 0){
 				//La date de visibilité de la plongée n'est pas atteinte : on attend
-				throw new ResaException("D\u00e9sol\u00e9 "+adherent.getPrenom()+
-						"il faudra attendre : le "+ResaUtil.getDateString(plongee.getDateVisible())+" \u00e0 "+heureOuverture+" heures pour t'inscrire.");
+				throw new ResaException(CatalogueMessages.INSCRIPTION_ATTENDRE_HO+"."+heureOuverture);
 			} else {
 				if( nbJours == 0){
 					//C'est le jour de visibilité de la plongée : On regarde l'heure avant de donner accès à l'inscription
 					if( heureCourante < heureOuverture){
 						// Trop tot : attendre l'heure d'ouverture
-						throw new ResaException("D\u00e9sol\u00e9 "+adherent.getPrenom()+" mais l'inscription ouvre \u00e0 partir de : "+heureOuverture+" heures.");
+						throw new ResaException(CatalogueMessages.INSCRIPTION_ATTENDRE_J_HO+"."+heureOuverture);
 					}
 				}
 			}
@@ -414,7 +414,7 @@ public class PlongeeServiceImpl implements PlongeeService, Serializable {
 				isOk = 3;
 			} else {
 				// pas de assez de compétences pour ouvrir la plongée : pas inscrit !
-				throw new ResaException("Inscription impossible sur cette plong\u00e9e : Cette plong\u00e9e n'est pas ouverte");
+				throw new ResaException(CatalogueMessages.INSCRIPTION_KO_PLONGEE_FERMEE);
 			}
 			return isOk;
 		}
@@ -425,7 +425,7 @@ public class PlongeeServiceImpl implements PlongeeService, Serializable {
 			if(adherent.getNiveau().equalsIgnoreCase(NiveauAutonomie.BATM.toString()) 
 				|| adherent.getNiveau().equalsIgnoreCase(NiveauAutonomie.P0.toString())){
 				// inscription refusée
-				throw new ResaException("Inscription impossible sur cette plong\u00e9e : Les BATM ou P0 ne sont pas admis avec un DP P5");
+				throw new ResaException(CatalogueMessages.INSCRIPTION_KO_DP_P5);
 			}
 		}
 		
@@ -442,14 +442,14 @@ public class PlongeeServiceImpl implements PlongeeService, Serializable {
 		}
 		if(niveauAdherent < niveauMinPlongee){
 			// niveau mini requis : inscription refusée
-			throw new ResaException("Inscription impossible sur cette plong\u00e9e : Niveau insuffisant");
+			throw new ResaException(CatalogueMessages.INSCRIPTION_KO_NIVEAU_MINI);
 		}
 
 		//On inscrit pas qqlun si il est dejà en liste d'attente
 		List<Adherent> enAttente = adherentDao.getAdherentsWaiting(plongee);
 		for(Adherent attente : enAttente){
 			if(attente.getNumeroLicense().equalsIgnoreCase(adherent.getNumeroLicense())){
-				throw new ResaException("Inscription impossible sur cette plong\u00e9e : Vous etes d\u00e9j\u00e0 en liste d'attente.");
+				throw new ResaException(CatalogueMessages.INSCRIPTION_KO_DEJA_EN_ATTENTE);
 			}
 		}
 
@@ -495,15 +495,13 @@ public class PlongeeServiceImpl implements PlongeeService, Serializable {
 			int heureOuvertureExterne = getHeureOuverture(calOpen, ext, plongee);
 			if( nbJours > 0){
 				//La date de visibilité de la plongée n'est pas atteinte : on attend
-				throw new ResaException("D\u00e9sol\u00e9 "+adherent.getPrenom()+" mais " +
-				"le nombre limite d'encadrant est atteint, " +
-				"il faudra attendre : le "+ResaUtil.getDateString(plongee.getDateVisible())+" \u00e0 "+heureOuvertureExterne+" heures pour t'inscrire.");
+				throw new ResaException(CatalogueMessages.INSCRIPTION_ATTENDRE_VR_HO+"."+heureOuvertureExterne);
 			} else {
 				if( nbJours == 0){
 					//C'est le jour de visibilité de la plongée : On regarde l'heure avant de donner accès à l'inscription
 					if( heureCourante < heureOuvertureExterne){
 						// Trop tot : attendre l'heure d'ouverture
-						throw new ResaException("D\u00e9sol\u00e9 "+adherent.getPrenom()+" mais l'inscription ouvre \u00e0 partir de : "+heureOuvertureExterne+" heures.");
+						throw new ResaException(CatalogueMessages.INSCRIPTION_ATTENDRE_VR_J_HO+"."+heureOuvertureExterne);
 					}
 				}
 			}
@@ -523,7 +521,7 @@ public class PlongeeServiceImpl implements PlongeeService, Serializable {
 		List<Adherent> inscrits = adherentDao.getAdherentsInscrits(plongee, null, "TOUS", null);
 		for(Adherent inscrit : inscrits){
 			if(inscrit.getNumeroLicense().equalsIgnoreCase(adherent.getNumeroLicense())){
-				throw new ResaException("Inscription impossible enliste d'attente : Vous \u00eates d\u00e9j\u00e0 inscrit \u00e0 la plong\u00e9e.");
+				throw new ResaException(CatalogueMessages.INSCRIPTION_LISTE_ATTENTE_KO);
 			}
 		}
 		return true;
@@ -568,7 +566,7 @@ public class PlongeeServiceImpl implements PlongeeService, Serializable {
 				}
 			}
 		}else{
-			throw new ResaException("Nombre Max de plongeurs atteint");
+			throw new ResaException(CatalogueMessages.INSCRIPTION_KO_NB_MAX_PLONGEUR);
 		}
 	}
 
@@ -666,14 +664,13 @@ public class PlongeeServiceImpl implements PlongeeService, Serializable {
 			dateCompare = plongee.getDate();
 		}
 		long nbJours  = ResaUtil.checkDateCM(adherent.getDateCM(), dateCompare);
-		String libCM ="";
 		if(nbJours <= 0){
 			//CM Perimé
-			throw new ResaException("\n ton certificat m\u00e9dical est p\u00e9rim\u00e9");
+			throw new ResaException(CatalogueMessages.CM_PERIME);
 		} else {
 			//On leve l'exception sil reste moins de 31 jours 
 			if(nbJours <= 31){
-				throw new ResaException("ATTENTION plus que "+nbJours+" jours avant que ton certificat m\u00e9dical soit p\u00e9rim\u00e9");
+				throw new ResaException(CatalogueMessages.CM_A_RENOUVELER+"."+String.valueOf(nbJours));
 			}
 		}
 	}
