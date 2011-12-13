@@ -490,8 +490,8 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements Serializable, Plo
 
 	private Plongee wrapPlongee(ResultSet rs)throws SQLException, TechnicalException {
 		int id = rs.getInt("idPLONGEES");
-		Date date = rs.getDate("DATE");
-		Date dateVisible = rs.getDate("DATE_VISIBLE");
+		Date date = rs.getTimestamp("DATE");
+		Date dateVisible = rs.getTimestamp("DATE_VISIBLE");
 		Type demie_journee = Type.valueOf(rs.getString("DEMIE_JOURNEE"));
 		String nMin = rs.getString("NIVEAU_MINI");
 		NiveauAutonomie niveauMini = NiveauAutonomie.P0;	
@@ -509,20 +509,7 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements Serializable, Plo
 		gc.setTime(date);
 		gc.set(GregorianCalendar.MINUTE, 0);
 		gc.set(GregorianCalendar.SECOND, 0);
-		if( plongee.getType().equalsIgnoreCase(Plongee.Type.MATIN.toString()) ){
-			gc.set(GregorianCalendar.HOUR_OF_DAY, 8);
-//			plongee.setDate(gc.getTime());
-		} else if( plongee.getType().equalsIgnoreCase(Plongee.Type.APRES_MIDI.toString()) ){
-			gc.set(GregorianCalendar.HOUR_OF_DAY, 13);
-//			plongee.setDate(gc.getTime());
-		} else if( plongee.getType().equalsIgnoreCase(Plongee.Type.SOIR.toString()) ){
-			gc.set(GregorianCalendar.HOUR_OF_DAY, 18);
-//			plongee.setDate(gc.getTime());
-		} else if( plongee.getType().equalsIgnoreCase(Plongee.Type.NUIT.toString()) ){
-			gc.set(GregorianCalendar.HOUR_OF_DAY, 21);
-		}
-		plongee.setDate(gc.getTime());
-//		plongee.setDate(date);
+		plongee.setDate(date);
 		plongee.setDateVisible(dateVisible);
 		plongee.setEnumNiveauMinimum(niveauMini);
 		plongee.setNbMaxPlaces(nbMaxPlongeur);
