@@ -5,35 +5,40 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.extensions.ajax.markup.html.IndicatingAjaxLink;
 import org.apache.wicket.extensions.ajax.markup.html.IndicatingAjaxSubmitButton;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.util.string.Strings;
 import org.wicketstuff.objectautocomplete.AutoCompletionChoicesProvider;
 import org.wicketstuff.objectautocomplete.ObjectAutoCompleteBuilder;
 import org.wicketstuff.objectautocomplete.ObjectAutoCompleteField;
 import org.wicketstuff.objectautocomplete.ObjectAutoCompleteRenderer;
+import org.wicketstuff.objectautocomplete.ObjectReadOnlyRenderer;
 
 import com.asptt.plongee.resa.model.Adherent;
+import com.asptt.plongee.resa.model.DetachableAdherentModel;
 import com.asptt.plongee.resa.ui.web.wicket.page.TemplatePage;
 import com.asptt.plongee.resa.ui.web.wicket.page.inscription.InscriptionPlongeePage;
 
 public class InscriptionExterieurPlongeePage extends TemplatePage {
 	
 	private ModalWindow modalExterieur;
-	
+	private ModalWindow modalModifExterne;
 	private List<Adherent> list;
+	private Adherent _ext;
 
 	public InscriptionExterieurPlongeePage() {
 		super();
 		add(new ExterieurForm("form"));
-		
 
 		// Lien pour la création du plongeur extérieur
 		modalExterieur = new ModalWindow("modalExterieur");
@@ -50,6 +55,11 @@ public class InscriptionExterieurPlongeePage extends TemplatePage {
 			}
 		});
 
+		// Lien pour la modification du plongeur extérieur
+		modalModifExterne = new ModalWindow("modalModifExterne");
+		modalModifExterne.setTitle("This is modal window with panel content.");
+		modalModifExterne.setCookieName("modal-modif-externe");
+		add(modalModifExterne);
 	}
 
 	public List<Adherent> getMatchingAdherents(String search) {
@@ -102,34 +112,53 @@ public class InscriptionExterieurPlongeePage extends TemplatePage {
 			
 			ObjectAutoCompleteBuilder<Adherent, String> builder = new ObjectAutoCompleteBuilder<Adherent, String>(provider);
 			builder.autoCompleteRenderer(renderer);
+			builder.preselect();
 			builder.searchLinkText("Autre recherche");
 			builder.width(200);
-
 
 			autocompleteField = builder.build("numeroLicense", new Model<String>());
 			final TextField<String> adherent = autocompleteField.getSearchTextField();
 			adherent.setRequired(true);
-			
 			add(autocompleteField);
 			
 			add(new IndicatingAjaxSubmitButton("valider", this) {
-
 				@Override
 				protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 					setResponsePage(new InscriptionPlongeePage(getResaSession().getAdherentService().rechercherAdherentParIdentifiant(autocompleteField.getConvertedInput())));
 				}
-
 			});
+
+			add(new IndicatingAjaxSubmitButton("modifier", this) {
+				@Override
+				protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+					IModel<Adherent> ext = new DetachableAdherentModel(getResaSession().getAdherentService().rechercherAdherentParIdentifiant(autocompleteField.getConvertedInput()));
+					replaceModifExternePanel(target, ext);
+					modalModifExterne.show(target);
+
+				}
+			});
+		
 		}
 		
 	}
 	
 	private void replaceModalWindow(AjaxRequestTarget target) {
 		modalExterieur.setContent(new ExterieurPanel(modalExterieur.getContentId()));
-		modalExterieur.setTitle("Compl&eacute;tez les  informations concernant le plongeur ext&eacute;rieur");
+		modalExterieur.setTitle("Compl&eacute;tez les informations concernant le plongeur ext&eacute;rieur");
 		
 		// La hauteur de la fenetre s'adapte à son contenu
 		modalExterieur.setUseInitialHeight(false);
+		
+		// Pour éviter le message de disparition de la fenetre lors de la validation
+		target.appendJavascript( "Wicket.Window.unloadConfirmation  = false;");
+	}
+
+	private void replaceModifExternePanel(AjaxRequestTarget target, IModel<Adherent> ext) {
+		modalModifExterne.setContent(new ExterieurModifPanel(modalModifExterne.getContentId(), ext));
+		modalModifExterne.setTitle("Modifiez les informations concernant le plongeur ext&eacute;rieur");
+		
+		// La hauteur de la fenetre s'adapte à son contenu
+		modalModifExterne.setUseInitialHeight(false);
 		
 		// Pour éviter le message de disparition de la fenetre lors de la validation
 		target.appendJavascript( "Wicket.Window.unloadConfirmation  = false;");

@@ -3,12 +3,16 @@ package com.asptt.plongee.resa.util;
 public interface CatalogueMessages {
 	/**
 	 * AccueilPage + InscriptionPlongeePage
-	 * msg dans PlongeeApplication.properties 
+	 * msg dans PlongeeApplication.properties  inscription.impossible
 	 */
 	//Certificat medical bientôt perimé msg affiche le nombre de jours restant
 	public final String CM_A_RENOUVELER= "cm.renouveler";
 	//Certificat medical perimé 
 	public final String CM_PERIME= "cm.perime";
+	//desinscription impossible à moins de x heure de la plongée 
+    public final String DESINSCRIPTION_IMPOSSIBLE = "desinscrire.impossible";
+	//desinscription impossible à moins de x heure de la plongée 
+    public final String INSCRIPTION_IMPOSSIBLE = "inscrire.impossible";
 	
 	/**
 	 * AccueilPage 
@@ -91,4 +95,55 @@ public interface CatalogueMessages {
 	//date de fin et debut incompatible
     public final String DATE_INCOMPATIBLE = "date.incompatible";
     
+    /**
+	 * AnnulerPlongee
+	 */
+	//message de haut de page
+    public final String ANNULER_MSG = "msg.adherent";
+    // confirmation d'annulation de la plongée
+    public final String ANNULATION_CONFIRMATION_PLONGEE = "annulation.info.plongee";
+    public final String ANNULATION_CONFIRMATION_PLONGEUR = "annulation.info.plongeur";
+
+    /**
+	 * ContactPanel$ConfirmSuppContact (inner class) 
+	 */
+	//Confirmation de la suppression du contactUrgent de l'adherent
+    public final String CONTACT_CONFIRME_SUPP = "confirme.supp";
+
+    /**
+	 * GererAdherent$ConfirmSuppAdherent (inner class) 
+	 */
+	//Confirmation de la suppression du contactUrgent de l'adherent
+    public final String ADHERENT_CONFIRME_SUPP = "confirme.supp";
+
+    /**
+	 * Gerer Liste attente ONE 
+	 */
+	//message de haut de page
+    public final String LISTE_ATTENTE_ONE_MSG = "message";
+    
+    /**
+	 * Gerer Liste attente TWO 
+	 */
+	//messages pour manipuler 1 seule personnes à la fois dans la liste d'attente
+    public final String LISTE_ATTENTE_TWO_1 = "message1";
+    public final String LISTE_ATTENTE_TWO_2 = "message2";
+
+    /**
+	 * GererMessage 
+	 */
+	//message de haut de page
+    public final String GERER_MESSAGE_MSG = "message";
+    
+    /**
+	 * Gerer Plongee A Ouvrir ONE 
+	 */
+	//message de haut de page
+    public final String PLONGEE_A_OUVRIR_ONE_MSG = "message";
+    
+    /**
+	 * InfoAdherent 
+	 */
+	//message de haut de page
+    public final String INFO_ADHERENT_MSG = "message";
 }

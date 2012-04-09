@@ -17,6 +17,7 @@ import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.StringResourceModel;
 
 import com.asptt.plongee.resa.exception.ResaException;
 import com.asptt.plongee.resa.exception.TechnicalException;
@@ -34,6 +35,7 @@ import com.asptt.plongee.resa.ui.web.wicket.page.ErrorPage;
 import com.asptt.plongee.resa.ui.web.wicket.page.TemplatePage;
 import com.asptt.plongee.resa.ui.web.wicket.page.admin.MessagePanel.MessageForm;
 import com.asptt.plongee.resa.ui.web.wicket.page.inscription.InscriptionListeAttentePlongeePage;
+import com.asptt.plongee.resa.util.CatalogueMessages;
 
 public class GererMessage extends TemplatePage {
 	
@@ -55,7 +57,7 @@ public class GererMessage extends TemplatePage {
 		modalMessage.setResizable(true);
 		add(modalMessage);
 		
-		infoLabel = new Label("infoLabel", "Choisissez la message \u00e0 modifier");
+		infoLabel = new Label("infoLabel", new StringResourceModel(CatalogueMessages.GERER_MESSAGE_MSG, this, null));
 		add(infoLabel);
 		
 		// TODO, voir si on ajoute pas cela dans un panel

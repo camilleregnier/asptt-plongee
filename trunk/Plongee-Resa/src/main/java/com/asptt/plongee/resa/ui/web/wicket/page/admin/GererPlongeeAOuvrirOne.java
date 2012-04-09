@@ -16,10 +16,14 @@ import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
+import org.apache.wicket.model.StringResourceModel;
 
+import com.asptt.plongee.resa.model.Adherent;
 import com.asptt.plongee.resa.model.Plongee;
 import com.asptt.plongee.resa.model.PlongeeDataProvider;
 import com.asptt.plongee.resa.ui.web.wicket.page.TemplatePage;
+import com.asptt.plongee.resa.util.CatalogueMessages;
 
 public class GererPlongeeAOuvrirOne extends TemplatePage {
 
@@ -29,7 +33,7 @@ public class GererPlongeeAOuvrirOne extends TemplatePage {
 		final FeedbackPanel feedback = new FeedbackPanel("feedback");
 		add(feedback);
 		add(new GererListeAttenteOneForm("inputForm", feedback));
-		add(new Label("message", getResaSession().getAdherent().getPrenom() + ", ci-dessous, les plong\u00e9es en attente d'ouverture."));
+		add(new Label("message",new StringResourceModel(CatalogueMessages.PLONGEE_A_OUVRIR_ONE_MSG, this,new Model<Adherent>(getResaSession().getAdherent()))));
 	}
 
 	public class GererListeAttenteOneForm extends Form {

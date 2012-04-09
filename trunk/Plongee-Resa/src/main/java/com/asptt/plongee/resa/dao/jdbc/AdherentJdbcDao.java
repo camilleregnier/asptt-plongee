@@ -209,6 +209,36 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements Serializable, Ad
 	}
 
 	@Override
+	public Adherent updateExterne(Adherent ext) throws TechnicalException {
+		Connection conex=null;
+		try {
+			conex = getDataSource().getConnection();
+			StringBuffer sb = new StringBuffer();
+			sb.append("UPDATE ADHERENT");
+			sb.append(" SET NIVEAU = ?,");
+			sb.append(" TELEPHONE = ?,");
+			sb.append(" MAIL = ?");
+			sb.append(" WHERE license = ?");
+
+			PreparedStatement st = conex.prepareStatement(sb.toString());
+			st.setString(1, ext.getNiveau());
+			st.setString(2, ext.getTelephone());
+			st.setString(3, ext.getMail());
+			st.setString(4, ext.getNumeroLicense());
+			if (st.executeUpdate() == 0) {
+				throw new TechnicalException(
+						"L'externe n'a pu être modifié");
+			}
+			return ext;
+		} catch (SQLException e) {
+			log.error(e.getMessage(), e);
+			throw new TechnicalException(e);
+		} finally {
+			closeConnexion(conex);
+		}
+	}
+
+	@Override
 	public Adherent updatePassword(Adherent adh) throws TechnicalException {
 		Connection conex=null;
 		try {

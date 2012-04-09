@@ -33,6 +33,7 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.validation.validator.EmailAddressValidator;
 import org.apache.wicket.validation.validator.PatternValidator;
 import org.apache.wicket.validation.validator.StringValidator.ExactLengthValidator;
@@ -47,12 +48,13 @@ import com.asptt.plongee.resa.ui.web.wicket.ResaSession;
 import com.asptt.plongee.resa.ui.web.wicket.page.AccueilPage;
 import com.asptt.plongee.resa.ui.web.wicket.page.TemplatePage;
 import com.asptt.plongee.resa.ui.web.wicket.page.admin.ContactPanel;
+import com.asptt.plongee.resa.util.CatalogueMessages;
 
 public class InfoAdherent extends TemplatePage {
 	
 	public InfoAdherent() {
 		setPageTitle("Information adherent");
-		add(new Label("message", getResaSession().getAdherent().getPrenom() + ", ci-dessous tes infos perso"));
+		add(new Label("message",new StringResourceModel(CatalogueMessages.INFO_ADHERENT_MSG, this,new Model<Adherent>(getResaSession().getAdherent()))));
 		setOutputMarkupId(true);
 		init();
 	}

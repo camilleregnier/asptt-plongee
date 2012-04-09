@@ -14,8 +14,6 @@ public interface PlongeeService {
 	Plongee rechercherPlongeeParId(Integer id);
 	List<Plongee> rechercherPlongeeTout();
 	List<Plongee> rechercherPlongeeProchainJour(Adherent adherent);
-//	List<Plongee> rechercherPlongeePourAdherent();
-//	List<Plongee> rechercherPlongeePourEncadrant();
 	List<Plongee> rechercherPlongeeAOuvrir(List<Plongee> plongees);
 	List<Plongee> rechercherPlongeeOuverteTout(List<Plongee> plongees);
 	List<Plongee> rechercherPlongeePourInscriptionAdherent(Adherent adherent);
@@ -31,7 +29,6 @@ public interface PlongeeService {
 
 	Integer getNbPlaceRestante(Plongee plongee);
 	
-//	int isOkForResa(Plongee plongee, Adherent adherent, int heureCourante, int heureOverture) throws ResaException;
 	int isOkForResa(Plongee plongee, Adherent adherent) throws ResaException;
 	boolean isOkForListeAttente(Plongee plongee, Adherent adherent) throws TechnicalException, ResaException;
 	boolean isEnoughEncadrant(Plongee plongee) throws TechnicalException;

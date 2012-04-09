@@ -268,7 +268,14 @@ public class InscriptionPlongeePage extends TemplatePage {
 	
 	private String initMessageException(String entreeCatalogue, Plongee plongee){
 		String libRetour="";
-		if(entreeCatalogue.startsWith(CatalogueMessages.INSCRIPTION_ATTENDRE_HO)){
+		if(entreeCatalogue.startsWith(CatalogueMessages.INSCRIPTION_IMPOSSIBLE)){
+			String nbHeure = entreeCatalogue.substring(20);
+			IModel<Adherent> model = new Model<Adherent>(adh);
+			StringResourceModel srm = new StringResourceModel(CatalogueMessages.INSCRIPTION_IMPOSSIBLE, this, model, 
+				new Object[]{new PropertyModel<Adherent>(model, "prenom"),nbHeure}
+            );
+			libRetour=srm.getString();
+		} else if(entreeCatalogue.startsWith(CatalogueMessages.INSCRIPTION_ATTENDRE_HO)){
 			String ho = entreeCatalogue.substring(12);
 			IModel<Adherent> model = new Model<Adherent>(adh);
 			StringResourceModel srm = new StringResourceModel(CatalogueMessages.INSCRIPTION_ATTENDRE_HO, this, model, 

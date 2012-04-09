@@ -20,6 +20,7 @@ import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.util.string.Strings;
 import org.wicketstuff.objectautocomplete.AutoCompletionChoicesProvider;
 import org.wicketstuff.objectautocomplete.ObjectAutoCompleteBuilder;
@@ -32,6 +33,7 @@ import com.asptt.plongee.resa.model.ContactUrgent;
 import com.asptt.plongee.resa.model.DetachableAdherentModel;
 import com.asptt.plongee.resa.ui.web.wicket.page.TemplatePage;
 import com.asptt.plongee.resa.ui.web.wicket.page.inscription.InscriptionPlongeePage;
+import com.asptt.plongee.resa.util.CatalogueMessages;
 
 public class GererAdherents extends TemplatePage {
 
@@ -222,8 +224,8 @@ public class GererAdherents extends TemplatePage {
 		{
 			super(id);
 			 
-			// Informations précisant que le plongeur est en liste d'attente  plong\u00e9e
-			add(new Label("info", " Attention - Confirmez-vous la suppression de l'adherent : " + adherent.getObject().getNom() + " " + adherent.getObject().getPrenom() + " ?"));
+			// Informations (nom, prenom) du l'adherent à supprimer
+			add(new Label("info", new StringResourceModel(CatalogueMessages.ADHERENT_CONFIRME_SUPP, this,new Model<Adherent>(adherent.getObject()))));
 			
 			// Le lien qui va fermer la fenêtre de confirmation
 			// et appeler la méthode de d'inscription en liste d'attente si nécessaire

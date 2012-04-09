@@ -216,4 +216,10 @@ public class AdherentInMemoryDao implements AdherentDao{
 		
 	}
 
+	@Override
+	public Adherent updateExterne(Adherent ext) throws TechnicalException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

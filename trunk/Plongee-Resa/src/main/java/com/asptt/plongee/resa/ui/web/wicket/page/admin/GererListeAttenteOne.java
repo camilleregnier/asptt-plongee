@@ -14,10 +14,14 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.AbstractReadOnlyModel;
+import org.apache.wicket.model.Model;
+import org.apache.wicket.model.StringResourceModel;
 
+import com.asptt.plongee.resa.model.Adherent;
 import com.asptt.plongee.resa.model.Plongee;
 import com.asptt.plongee.resa.model.PlongeeDataProvider;
 import com.asptt.plongee.resa.ui.web.wicket.page.TemplatePage;
+import com.asptt.plongee.resa.util.CatalogueMessages;
 
 public class GererListeAttenteOne extends TemplatePage {
 
@@ -25,7 +29,7 @@ public class GererListeAttenteOne extends TemplatePage {
 
 	public GererListeAttenteOne() {
 		setPageTitle("Gerer les listes d'attente");
-		add(new Label("message", getResaSession().getAdherent().getPrenom() + ", ci-dessous, les plong\u00e9es pour lesquelles une liste d'attente existe."));
+		add(new Label("message",new StringResourceModel(CatalogueMessages.LISTE_ATTENTE_ONE_MSG, this,new Model<Adherent>(getResaSession().getAdherent()))));
 		feedback.setOutputMarkupId(true);
 		add(feedback);
 		add(new GererListeAttenteOneForm("inputForm", feedback));
