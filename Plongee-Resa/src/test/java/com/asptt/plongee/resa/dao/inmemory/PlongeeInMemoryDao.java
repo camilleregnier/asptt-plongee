@@ -107,13 +107,6 @@ public class PlongeeInMemoryDao implements PlongeeDao {
 		
 	}
 
-//	@Override
-//	public List<Plongee> getPlongeesForFewDay(int aPartir, int nbjour)
-//			throws TechnicalException {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-
 	@Override
 	public List<Plongee> getPlongeesWhithSameDate(Date date, String type)
 			throws TechnicalException {

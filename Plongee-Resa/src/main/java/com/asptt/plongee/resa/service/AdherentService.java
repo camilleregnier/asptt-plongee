@@ -70,5 +70,7 @@ public interface AdherentService {
 
 	List<Adherent> rechercherAdherentInscrits(Plongee plongee);
 
+	void modifierExterne(Adherent externe) throws TechnicalException;
+
 	
 }

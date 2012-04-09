@@ -222,6 +222,12 @@ public class AdherentServiceImpl implements AdherentService, Serializable {
 	}
 	
 	@Override
+	public void modifierExterne(Adherent externe) throws TechnicalException{
+		
+		adherentDao.updateExterne(externe);	
+	}
+	
+	@Override
 	public void updatePasswordAdherent(Adherent adherent) throws TechnicalException{
 			adherentDao.updatePassword(adherent);
 	}

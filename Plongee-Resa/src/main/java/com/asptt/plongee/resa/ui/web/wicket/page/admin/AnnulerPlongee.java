@@ -14,6 +14,9 @@ import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
+import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.StringResourceModel;
 
 import com.asptt.plongee.resa.exception.ResaException;
 import com.asptt.plongee.resa.exception.TechnicalException;
@@ -24,6 +27,7 @@ import com.asptt.plongee.resa.ui.web.wicket.page.AccueilPage;
 import com.asptt.plongee.resa.ui.web.wicket.page.ErreurTechniquePage;
 import com.asptt.plongee.resa.ui.web.wicket.page.ErrorPage;
 import com.asptt.plongee.resa.ui.web.wicket.page.TemplatePage;
+import com.asptt.plongee.resa.util.CatalogueMessages;
 import com.asptt.plongee.resa.util.ResaUtil;
 
 public class AnnulerPlongee extends TemplatePage {
@@ -43,7 +47,7 @@ public class AnnulerPlongee extends TemplatePage {
 		modalPlongee.setWidthUnit("px");
 		add(modalPlongee);
 		
-		infoLabel = new Label("infoLabel", "Choisissez la plong\u00e9e \u00e0 annuler");
+		infoLabel = new Label("infoLabel", new StringResourceModel(CatalogueMessages.ANNULER_MSG, this,null));
 		add(infoLabel);
 		
 		// TODO, voir si on ajoute pas cela dans un panel
@@ -141,9 +145,23 @@ public class AnnulerPlongee extends TemplatePage {
 			
 			// Informations précisant la plongeur concerné et la plongée
 			// dans la fenêtre de confirmation de désinscription
-			add(new Label("infoPlongee", "Etes-vous s\u00fbr de vouloir annuler la plong\u00e9e du  " + ResaUtil.getDateString(plongee.getDate()) + " " + plongee.getType() + " ?"));
+			IModel<Plongee> model = new Model<Plongee>(plongee);
+			StringResourceModel srmPlongee = new StringResourceModel(CatalogueMessages.ANNULATION_CONFIRMATION_PLONGEE, this, model, 
+					new Object[]{ResaUtil.getDateString(plongee.getDateVisible()),new PropertyModel<Plongee>(model, "getType")}
+       		);
+			add(new Label("infoPlongee", srmPlongee.getString()));
+			
 			int nbPlongeursInscrits = plongee.getParticipants().size();
-			add(new Label("infoPlongeurs", (nbPlongeursInscrits == 0) ? " " : " Il y a " + nbPlongeursInscrits + " plongeur(s) inscrits."));
+			String msgInfoPlongeur;
+			if(nbPlongeursInscrits == 0){
+				msgInfoPlongeur=" ";
+			} else {
+				StringResourceModel srmPlongeur = new StringResourceModel(CatalogueMessages.ANNULATION_CONFIRMATION_PLONGEUR, this, model, 
+						new Object[]{nbPlongeursInscrits}
+	       		);
+				msgInfoPlongeur=srmPlongeur.getString();
+			}
+			add(new Label("infoPlongeurs", msgInfoPlongeur));
 			
 			// Le lien qui va fermer la fenêtre de confirmation
 			// et appeler la méthode de désinscription de la page principale (DesInscriptionPlongeePage)

@@ -146,7 +146,6 @@ public class PlongeeServiceImpl implements PlongeeService, Serializable {
 			plongees = rechercherPlongeePourAdherent();
 		}
 		return plongees;
-			
 	}
 
 	private List<Plongee> rechercherPlongeePourAdherent()  throws TechnicalException{
@@ -239,7 +238,7 @@ public class PlongeeServiceImpl implements PlongeeService, Serializable {
 			if (isNotInscrit) {
 				long nbJours = ResaUtil.checkDateCM(adherent.getDateCM(), plongee.getDate());
 				if( nbJours > 0){
-						plongeesForAdherent.add(plongee);
+					plongeesForAdherent.add(plongee);
 				}
 			}	
 		}
@@ -366,16 +365,12 @@ public class PlongeeServiceImpl implements PlongeeService, Serializable {
 				throw new ResaException(CatalogueMessages.INSCRIPTION_KO_DEJA_INSCRIT);
 			}
 		}
-		
-		//test actif == 1 ==> ok c un adherent
-		// sinon c un externe donc inscription par secretariat
-		if ( adherent.isVesteRouge() && adherent.getActifInt()==1 ){
-			//C'est un encadrant un Dp ou un pilote
-			//L'inscription est ouverte à tous moments
-		} else {
+		// c'est un adherent non encadrant
+		// si c'est un externe => inscription par secretariat
+		if ( ! adherent.isVesteRouge() && adherent.getActifInt()==1 ){
 			if( nbJours > 0){
-				//La date de visibilité de la plongée n'est pas atteinte : on attend
-				throw new ResaException(CatalogueMessages.INSCRIPTION_ATTENDRE_HO+"."+heureOuverture);
+						//La date de visibilité de la plongée n'est pas atteinte : on attend
+						throw new ResaException(CatalogueMessages.INSCRIPTION_ATTENDRE_HO+"."+heureOuverture);
 			} else {
 				if( nbJours == 0){
 					//C'est le jour de visibilité de la plongée : On regarde l'heure avant de donner accès à l'inscription
@@ -385,9 +380,14 @@ public class PlongeeServiceImpl implements PlongeeService, Serializable {
 					}
 				}
 			}
-			//Si le nombre de jour est < 0 : la date de visi est depassée donc on inscrit
 		}
-		
+		//Inscription impossible si on est à moins de x heures de la plongée quand il y a juste le nombre pour ouvrir la plongée.
+		if( ! plongee.isNbMiniAtteint(Parameters.getInt("nb.plongeur.mini"))){
+			int nombreheure = new Integer(ResaUtil.calculNbHeure(new Date(), plongee.getDate()));
+			if( nombreheure < Parameters.getInt("inscription.impossible")){
+				throw new ResaException(CatalogueMessages.INSCRIPTION_IMPOSSIBLE+"."+Parameters.getString("inscription.impossible"));
+			}
+		}
 		// verifier le nombre d'inscrit
 		if(getNbPlaceRestante(plongee) <= 0){
 			// trop de monde : inscription en liste d'attente avec msg 'bateau plein'
@@ -589,13 +589,22 @@ public class PlongeeServiceImpl implements PlongeeService, Serializable {
 
 	@Override
 	public void deInscrireAdherent(Plongee plongee, Adherent adherent, int typeMail)   throws ResaException, TechnicalException{
+		Date dateDuJour = new Date();
+		Date datePlongee = plongee.getDate();
+		int nombreheure = new Integer(ResaUtil.calculNbHeure(dateDuJour, datePlongee));
+
+		//Desinscription impossible si on est à moins de x heures de la plongée quand il y a juste le nombre pour ouvrir la plongée.
+		if(plongee.getParticipants().size() <= Parameters.getInt("nb.plongeur.mini")){
+			if( nombreheure < Parameters.getInt("desincription.impossible")){
+				throw new ResaException(CatalogueMessages.DESINSCRIPTION_IMPOSSIBLE+"."+Parameters.getString("desincription.impossible"));
+			}
+		}
+
 		//Appel DAO
 		plongeeDao.supprimeAdherentPlongee(plongee, adherent);
 		
 		//Envoi d'un mail si la desincription a lieu à moins de 24 heure de la plongée
-		Date dateDuJour = new Date();
-		Date datePlongee = plongee.getDate();
-		if(ResaUtil.calculNbHeure(dateDuJour, datePlongee) < Parameters.getInt("desincription.alerte")){
+		if( nombreheure < Parameters.getInt("desincription.alerte")){
 			try {
 				
 				PlongeeMail pMail = new PlongeeMail(PlongeeMail.MAIL_DESINSCRIPTION_24,

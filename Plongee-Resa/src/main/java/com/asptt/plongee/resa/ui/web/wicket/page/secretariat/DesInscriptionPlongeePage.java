@@ -11,7 +11,10 @@ import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.util.string.Strings;
 import org.wicketstuff.objectautocomplete.AutoCompletionChoicesProvider;
 import org.wicketstuff.objectautocomplete.ObjectAutoCompleteBuilder;
@@ -24,6 +27,7 @@ import com.asptt.plongee.resa.mail.PlongeeMail;
 import com.asptt.plongee.resa.model.Adherent;
 import com.asptt.plongee.resa.model.Plongee;
 import com.asptt.plongee.resa.ui.web.wicket.page.TemplatePage;
+import com.asptt.plongee.resa.util.CatalogueMessages;
 
 public class DesInscriptionPlongeePage extends TemplatePage {
 
@@ -191,8 +195,16 @@ public class DesInscriptionPlongeePage extends TemplatePage {
 			e.printStackTrace();
 			error(e.getKey());
 		} catch (ResaException e) {
-			e.printStackTrace();
-			error(e.getKey());
+			String libRetour = "";
+			if(e.getKey().startsWith(CatalogueMessages.DESINSCRIPTION_IMPOSSIBLE)){
+				String nbHeure = e.getKey().substring(23);
+				IModel<Adherent> model = new Model<Adherent>(plongeur);
+				StringResourceModel srm = new StringResourceModel(CatalogueMessages.DESINSCRIPTION_IMPOSSIBLE, this, model, 
+					new Object[]{new PropertyModel<Adherent>(model, "prenom"),nbHeure}
+	            );
+				libRetour=srm.getString();
+			}
+			error(libRetour);
 		} finally {
 			target.addComponent(feedback);
 		}

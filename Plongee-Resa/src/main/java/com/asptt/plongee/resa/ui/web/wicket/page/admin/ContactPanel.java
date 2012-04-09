@@ -37,6 +37,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.validation.IValidator;
 import org.apache.wicket.validation.validator.EmailAddressValidator;
 import org.apache.wicket.validation.validator.PatternValidator;
@@ -53,6 +54,7 @@ import com.asptt.plongee.resa.model.ContactUrgentDataProvider;
 import com.asptt.plongee.resa.model.NiveauAutonomie;
 import com.asptt.plongee.resa.ui.web.wicket.ResaSession;
 import com.asptt.plongee.resa.ui.web.wicket.page.AccueilPage;
+import com.asptt.plongee.resa.util.CatalogueMessages;
 
 public class ContactPanel extends Panel {
 	
@@ -335,8 +337,8 @@ public class ContactPanel extends Panel {
 		{
 			super(id);
 			 
-			// Informations précisant que le plongeur est en liste d'attente  plong\u00e9e
-			add(new Label("info", " Confirmez-vous la suppression du contact : " + contact.getNom() + " " + contact.getPrenom() + " ?"));
+			// Informations (nom, prenom) du contact à supprimer
+			add(new Label("info", new StringResourceModel(CatalogueMessages.CONTACT_CONFIRME_SUPP, this,new Model<ContactUrgent>(contact))));
 			
 			// Le lien qui va fermer la fenêtre de confirmation
 			// et appeler la méthode de d'inscription en liste d'attente si nécessaire

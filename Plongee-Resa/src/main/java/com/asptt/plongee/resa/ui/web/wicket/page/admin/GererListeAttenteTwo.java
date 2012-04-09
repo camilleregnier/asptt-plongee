@@ -14,6 +14,7 @@ import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.model.util.CollectionModel;
 import org.apache.wicket.model.util.ListModel;
 
@@ -25,6 +26,7 @@ import com.asptt.plongee.resa.ui.web.wicket.component.ConfirmAjaxLink;
 import com.asptt.plongee.resa.ui.web.wicket.page.AccueilPage;
 import com.asptt.plongee.resa.ui.web.wicket.page.TemplatePage;
 import com.asptt.plongee.resa.ui.web.wicket.page.inscription.InscriptionConfirmationPlongeePage;
+import com.asptt.plongee.resa.util.CatalogueMessages;
 
 public class GererListeAttenteTwo extends TemplatePage {
 	
@@ -36,8 +38,8 @@ public class GererListeAttenteTwo extends TemplatePage {
 
 		feedback.setOutputMarkupId(true);
 		add(feedback);
-		add(new Label("message1", " -1- : Faire passer 1 seule personne dans le panel de droite."));
-		add(new Label("message2", " -2- : Avec les boutons --> inscription \u00e0 la plong\u00e9ee ou suppression de la liste d'attente."));
+		add(new Label("message1", new StringResourceModel(CatalogueMessages.LISTE_ATTENTE_TWO_1, this,null)));
+		add(new Label("message2", new StringResourceModel(CatalogueMessages.LISTE_ATTENTE_TWO_2, this,null)));
 		List<Adherent> persons = getResaSession().getPlongeeService().rechercherListeAttente(plongee);
 		IChoiceRenderer<Adherent> renderer = new ChoiceRenderer<Adherent>("nomComplet", "nom");
 		
