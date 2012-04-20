@@ -85,7 +85,7 @@ public class DeInscriptionPlongeePage extends TemplatePage {
 			private static final long serialVersionUID = 2877768852318892774L;
 
 			protected void populateItem(final Item<Plongee> item) {
-				Plongee plongee = item.getModelObject();
+				final Plongee plongee = item.getModelObject();
 				String nomDP = "Aucun";
 				if (null != plongee.getDp()) {
 					nomDP = plongee.getDp().getNom();
@@ -123,12 +123,32 @@ public class DeInscriptionPlongeePage extends TemplatePage {
 
 				item.add(new AttributeModifier("class", true,
 						new AbstractReadOnlyModel<String>() {
-							@Override
-							public String getObject() {
-								return (item.getIndex() % 2 == 1) ? "even"
-										: "odd";
+						@Override
+						public String getObject() {
+							String cssClass;
+							if (item.getIndex() % 2 == 1){
+								cssClass = "even";
+							} else {
+								cssClass = "odd";
 							}
-						}));
+							boolean isInscrit = false;
+							for (Adherent adherent : plongee.getParticipants()){
+								if (adherent.getNumeroLicense().equals(adh.getNumeroLicense())){
+									cssClass = cssClass + " inscrit";
+									isInscrit = true;
+								}
+							}
+							if(!plongee.isNbMiniAtteint(Parameters.getInt("nb.plongeur.mini"))){
+								if (isInscrit){
+									cssClass = cssClass + "MinimumPlongeur";
+								} else {
+									cssClass = cssClass + " minimumPlongeur";
+								}
+							}
+							return cssClass;
+						}
+					})
+				);
 			}
 		});
 		
