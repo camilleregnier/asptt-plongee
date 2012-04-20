@@ -135,7 +135,7 @@ public class InscriptionPlongeePage extends TemplatePage {
 				//preparation du message de confirmation
 				IModel<Plongee> model = new Model<Plongee>(plongee);
 				StringResourceModel srm = new StringResourceModel(CatalogueMessages.INSCRIPTION_CONFIRM_RESA, this, model, 
-					new Object[]{new PropertyModel<Plongee>(model, "getType"),ResaUtil.getDateString(plongee.getDateVisible())}
+					new Object[]{new PropertyModel<Plongee>(model, "getType"),ResaUtil.getDateString(plongee.getDate())}
 	            );
 				
 				item.add(new ConfirmAjaxLink("select",srm.getString()) 
