@@ -7,6 +7,7 @@ public class Message {
 	private static final long serialVersionUID = -2548032640337298221L;
 
 	private Integer id;
+	private Integer rang;
 	private String libelle;
 	private Date dateDebut;
 	private Date dateFin;
@@ -17,6 +18,12 @@ public class Message {
 	}
 	public void setId(Integer id) {
 		this.id = id;
+	}
+	public Integer getRang() {
+		return rang;
+	}
+	public void setRang(Integer rang) {
+		this.rang = rang;
 	}
 	public String getLibelle() {
 		return libelle;

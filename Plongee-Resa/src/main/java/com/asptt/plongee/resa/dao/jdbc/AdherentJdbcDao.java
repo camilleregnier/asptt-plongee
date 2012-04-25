@@ -692,7 +692,7 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements Serializable, Ad
 		Connection conex=null;
 		try {
 			conex = getDataSource().getConnection();
-			StringBuffer sb = new StringBuffer("select * from MESSAGE");
+			StringBuffer sb = new StringBuffer("select * from MESSAGE order by RANG, DATE_DEBUT");
 
 			st = conex.prepareStatement(sb.toString());
 			ResultSet rs = st.executeQuery();
@@ -722,7 +722,7 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements Serializable, Ad
 			sb.append(" where date_debut <= CURRENT_TIMESTAMP()");
 			sb.append(" and CURRENT_TIMESTAMP() <= date_fin " );
 			sb.append(" or date_fin is null " );
-			sb.append(" order by date_debut " );
+			sb.append(" order by rang, date_debut " );
 
 			st = conex.prepareStatement(sb.toString());
 			ResultSet rs = st.executeQuery();
@@ -751,7 +751,8 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements Serializable, Ad
 			sb.append("UPDATE MESSAGE");
 			sb.append(" SET LIBELLE = ?,");
 			sb.append(" DATE_DEBUT = ?,");
-			sb.append(" DATE_FIN = ?");
+			sb.append(" DATE_FIN = ?,");
+			sb.append(" RANG = ?");
 			sb.append(" WHERE IDMESSAGE = ?");
 
 			PreparedStatement st = conex.prepareStatement(sb.toString());
@@ -764,7 +765,8 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements Serializable, Ad
 				Timestamp tsFin = new Timestamp(message.getDateFin().getTime());
 				st.setTimestamp(3, tsFin);
 			}
-			st.setInt(4, message.getId());
+			st.setInt(4, message.getRang());
+			st.setInt(5, message.getId());
 			if (st.executeUpdate() == 0) {
 				throw new TechnicalException(
 						"Le message id n°"+message.getId()+"n'a pu être mis à jour");
@@ -785,8 +787,8 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements Serializable, Ad
 		try {
 			conex = getDataSource().getConnection();
 			StringBuffer sb = new StringBuffer();
-			sb.append("INSERT INTO MESSAGE (`LIBELLE`, `DATE_DEBUT`, `DATE_FIN`)");
-			sb.append(" VALUES (?, ?, ?)");
+			sb.append("INSERT INTO MESSAGE (`LIBELLE`, `DATE_DEBUT`, `DATE_FIN`, `RANG`)");
+			sb.append(" VALUES (?, ?, ?, ?)");
 			PreparedStatement st = conex.prepareStatement(sb.toString());
 			st.setString(1, message.getLibelle());
 			Timestamp tsDeb = new Timestamp(message.getDateDebut().getTime());
@@ -797,6 +799,7 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements Serializable, Ad
 				Timestamp tsFin = new Timestamp(message.getDateFin().getTime());
 				st.setTimestamp(3, tsFin);
 			}
+			st.setInt(4, message.getRang());
 			if (st.executeUpdate() == 0) {
 				throw new TechnicalException(
 						"Le message n'a pu être creé");
@@ -836,12 +839,14 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements Serializable, Ad
 		String libelle = rs.getString("LIBELLE");
 		Date dateDebut = rs.getDate("DATE_DEBUT");
 		Date dateFin = rs.getDate("DATE_FIN");
+		int rang = rs.getInt("RANG");
 		
 		Message message = new Message();
 		message.setId(id);
 		message.setLibelle(libelle);
 		message.setDateDebut(dateDebut);
 		message.setDateFin(dateFin);
+		message.setRang(rang);
 		
 		return message;
 	}

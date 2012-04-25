@@ -83,15 +83,19 @@ ne pas modifier les valeurs*/
 
 
 table.dataview {
-	margin-bottom: 10px;
 	border-bottom: 1px solid #0079d6;
 	font-size: 1em;
 	font-family: arial;
-	padding-top: 20px;
-	}
+	margin-top: 10px;
+	margin-bottom: 10px;
+	/*
+	border-left: 1px solid #0079D6;
+	border-right:1px solid #0079D6;
+	*/
+}
 	
 table.dataview caption { text-align: left; }
-table.dataview tr { padding-top: 2px; padding-bottom: 2px; }
+table.dataview tr { padding-top: 2px; padding-bottom: 2px;}
 table.dataview tr.even { background-color: #ffebcd; }
 table.dataview tr.odd { background-color: #fff; }
 table.dataview tr.inactif { color: red; }
@@ -112,6 +116,43 @@ table.dataview tr th.wicket_orderNone {
 table.dataview tr th a { font-weight: normal; }
 table.dataview #message { padding-left: 3px; }
 table.dataview caption { padding-bottom: 2px; }
+
+/*-----------------------------------------------------------
+Debut message
+------------------------------------------------------------*/
+table.messageview {
+	border-bottom: 1px solid #0079d6;
+	font-size: 1em;
+	font-family: arial;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	/*
+	border-left: 1px solid #0079D6;
+	border-right:1px solid #0079D6;
+	*/
+}
+	
+table.messageview caption { text-align: left; padding-bottom: 2px; }
+table.messageview tr { padding-top: 2px; padding-bottom: 2px; }
+table.messageview tr.even { background-color: #ffebcd; text-align: center; vertical-align: middle; height: 15px;}
+table.messageview tr.odd { background-color: #fff; }
+table.messageview tr td { padding-left: 8px; padding-right: 30px; }
+table.messageview tr th { color: black; padding-top: 3px; padding-bottom: 3px; padding-left: 8px; padding-right: 24px; background-color: #c1e4ff; border-bottom: 1px solid #0079d6; border-top: 1px solid #0079d6; text-align: center; white-space: nowrap; vertical-align: middle;}
+
+table.messageview tr th { background-position: right; background-repeat:no-repeat; }
+table.messageview tr th.wicket_orderDown {
+	background-color: #87cbff; background-image: url(displaytag/img/arrow_down.png); }
+table.messageview tr th.wicket_orderUp {
+	background-color: #87cbff; background-image: url(displaytag/img/arrow_up.png); }
+table.messageview tr th.wicket_orderNone {
+	background-image: url(displaytag/img/arrow_off.png);
+}
+table.messageview tr th a { font-weight: normal; }
+table.messageview #message { padding-left: 3px; }
+	
+/*-----------------------------------------------------------
+Fin message
+------------------------------------------------------------*/
 
 ul
 {
@@ -141,7 +182,7 @@ max-width:82.5em;
 min-width:64.5em;
 position:relative;
 text-align:left;
-width:98.5%;
+/*width:98.5%;*/
 background-color: #FFFFFF;
 }
 
@@ -163,7 +204,8 @@ padding-top:20px;
 padding-bottom:5px; 
 padding-left: 5px;
 float: left;
-width:180px;
+/*width:180px;*/
+width:18%
 }
 .menu ul{
 	list-style-type: none;
@@ -176,7 +218,7 @@ width:180px;
 .content{
 padding-left:10px;
 padding-top:20px;
-width: 69%;
+width: 80%;
 float: left;
 
 	height: 100%;

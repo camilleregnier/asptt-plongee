@@ -13,7 +13,6 @@ import org.apache.log4j.Logger;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowire;
 
-import sun.util.resources.CalendarData;
 
 import com.asptt.plongee.resa.dao.PlongeeDaoTest;
 import com.asptt.plongee.resa.exception.TechnicalException;

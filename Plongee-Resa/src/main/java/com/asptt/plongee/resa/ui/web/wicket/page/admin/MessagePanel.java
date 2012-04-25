@@ -26,6 +26,7 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.validation.validator.MinimumValidator;
 import org.apache.wicket.validation.validator.PatternValidator;
 import org.apache.wicket.validation.validator.StringValidator.ExactLengthValidator;
 
@@ -65,8 +66,8 @@ public class MessagePanel extends Panel {
 			model = new CompoundPropertyModel<Message>(message);
 			setModel(model);
 			
-			TextArea textareaInput = new TextArea("libelle");
-			add(textareaInput);
+			TextArea libelle = new TextArea("libelle");
+			add(libelle);
 			
 			DateTextField dateDebTextFiled = new DateTextField("dateDebut", new PropertyModel<Date>(model, "dateDebut"), new StyleDateConverter("S-", true));
 			dateDebTextFiled.setRequired(true);
@@ -77,6 +78,8 @@ public class MessagePanel extends Panel {
 			dateFinTextFiled.setRequired(false);
 			add(dateFinTextFiled);
 			dateFinTextFiled.add(new DatePicker());
+			
+			add(new RequiredTextField<Integer>("rang", Integer.class));
 			
 			add(new AjaxButton("validMessage") {
 				@Override
