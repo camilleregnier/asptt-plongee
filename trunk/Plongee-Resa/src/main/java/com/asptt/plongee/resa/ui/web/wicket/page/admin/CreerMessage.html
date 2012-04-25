@@ -3,11 +3,11 @@
 		<span wicket:id="feedback" />
 	</div> 
 	<form wicket:id="inputForm" id="inputForm"> 
-		<table width=400> 
+		<table> 
 			<tr> 
-				<td>Libell&eacute;</td>
-				<td colspan="2" width=500>
-				 <textarea rows="4" cols="100" wicket:id="libelle"></textarea>
+				<td width="120">Libell&eacute;</td>
+				<td>
+				 <textarea rows="5" cols="70" wicket:id="libelle"></textarea>
 				</td> 
 			</tr>
 			<tr> 
@@ -16,9 +16,12 @@
 			<tr> 
 				<td>Date de fin</td><td><input type="text" wicket:id="dateFin"/></td>
 			</tr> 
+			<tr> 
+				<td>Rang</td><td><input type="text" wicket:id="rang"/></td>
+			</tr> 
 		</table>     
          <div align="center">
-	        <input type="submit" value="Valide le Message" wicket:id="validerMessage"/>
+	        <input type="submit" value="Valider le message" wicket:id="validerMessage"/>
 	             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 	     	<input type="submit" value="Annuler" wicket:id="cancel"/>
          </div>

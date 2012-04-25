@@ -27,6 +27,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.validation.validator.MinimumValidator;
 import org.apache.wicket.validation.validator.PatternValidator;
 import org.apache.wicket.validation.validator.StringValidator.ExactLengthValidator;
 import org.joda.time.DateTimeField;
@@ -62,7 +63,6 @@ public class CreerMessage extends TemplatePage {
 			CompoundPropertyModel<Message> model = new CompoundPropertyModel<Message>(new Message());
 			setModel(model);
 			
-//			add(new RequiredTextField<String>("libelle"));
 			TextArea<String> textareaInput = new TextArea<String>("libelle");
 			add(textareaInput);
 			
@@ -76,6 +76,8 @@ public class CreerMessage extends TemplatePage {
 			add(dateFinTextFiled);
 			dateFinTextFiled.add(new DatePicker());
 			
+			add(new RequiredTextField<Integer>("rang", Integer.class));
+
 			add(new AjaxButton("validerMessage") {
 				@Override
 				// La validation doit se faire en Ajax car le formulaire de la
@@ -87,13 +89,13 @@ public class CreerMessage extends TemplatePage {
 					// Mise à jour du message
 					try {
 						//on force la date de fin à 23h59
-						Date dateFin = message.getDateFin();
-						GregorianCalendar gc = new GregorianCalendar();
-						gc.setTime(dateFin);
-						gc.add(GregorianCalendar.HOUR_OF_DAY, 23);
-						gc.add(GregorianCalendar.MINUTE, 59);
-						message.setDateFin(gc.getTime());
 						if(null != message.getDateFin()){
+							Date dateFin = message.getDateFin();
+							GregorianCalendar gc = new GregorianCalendar();
+							gc.setTime(dateFin);
+							gc.add(GregorianCalendar.HOUR_OF_DAY, 23);
+							gc.add(GregorianCalendar.MINUTE, 59);
+							message.setDateFin(gc.getTime());
 							if( message.getDateFin().before(message.getDateDebut())){
 								throw new ResaException(CatalogueMessages.DATE_INCOMPATIBLE);
 							}

@@ -81,6 +81,8 @@ public class GererMessage extends TemplatePage {
 						}
 					});
 
+					String rang = message.getRang().toString();
+
 					// Mise en forme de la date de debut
 					Calendar calDeb = Calendar.getInstance();
 					calDeb.setTime(message.getDateDebut());
@@ -102,6 +104,7 @@ public class GererMessage extends TemplatePage {
 						dateFinAffichee = "Pas de date de fin";
 					}
 					item.add(new Label("libelle", libelle));
+					item.add(new Label("rang", rang));
 					item.add(new Label("dateDebut", dateDebAffichee));
 					item.add(new Label("dateFin", dateFinAffichee));
 					

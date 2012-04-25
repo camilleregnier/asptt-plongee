@@ -2,14 +2,17 @@ package com.asptt.plongee.resa.ui.web.wicket.page;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.AjaxSelfUpdatingTimerBehavior;
 import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import org.apache.wicket.extensions.ajax.markup.html.IndicatingAjaxLink;
 import org.apache.wicket.markup.html.basic.Label;
@@ -20,6 +23,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.util.time.Duration;
 
 import com.asptt.plongee.resa.exception.ResaException;
 import com.asptt.plongee.resa.exception.TechnicalException;
@@ -31,11 +35,22 @@ import com.asptt.plongee.resa.model.PlongeeDataProvider;
 //import com.asptt.plongee.resa.util.PlongeeMail;
 import com.asptt.plongee.resa.ui.web.wicket.ResaSession;
 import com.asptt.plongee.resa.util.CatalogueMessages;
+import com.asptt.plongee.resa.util.Clock;
 
 @AuthorizeInstantiation({"USER","ADMIN","SECRETARIAT"})
 public class AccueilPage extends TemplatePage {
 	
 	public AccueilPage() { 
+		
+//        // add the clock component
+//        Clock clock = new Clock("clock", TimeZone.getTimeZone("Europe/Paris"));
+//        add(clock);
+//
+//        // add the ajax behavior which will keep updating the component every 5
+//        // seconds
+//        clock.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(20)));
+ 		
+		
 		setPageTitle("Accueil");
 		Adherent adh = getResaSession().getAdherent();
 		
@@ -54,10 +69,21 @@ public class AccueilPage extends TemplatePage {
 		
 		try {
 			List<Message> messages = getResaSession().getAdherentService().rechercherMessage();
+			List<Message> msgSepares = new ArrayList();
+			Message ligne = new Message();
+//			ligne.setLibelle("=========================================================================================");
+			ligne.setLibelle(" ");
+				
+			for (Message msg : messages){
+				msgSepares.add(msg);
+				msgSepares.add(ligne);
+			}
+			int ledernier = msgSepares.size();
+			msgSepares.remove(ledernier-1);
 			
-			MessageDataProvider pDataProvider = new MessageDataProvider(messages);
+			MessageDataProvider pDataProvider = new MessageDataProvider(msgSepares);
 
-			add(new DataView<Message>("simple", pDataProvider) {
+			add(new DataView<Message>("listmessages", pDataProvider) {
 
 				@Override
 				protected void populateItem(final Item<Message> item) {

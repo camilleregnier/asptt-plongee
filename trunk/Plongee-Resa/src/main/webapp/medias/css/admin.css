@@ -13,12 +13,16 @@ div.wicket-aa ul { list-style:none; padding: 2px; margin:0; }
 div.wicket-aa ul li.selected { background-color: #FFFF00; padding: 2px; margin:0; }
 
 table.contactview {
-	margin-bottom: 10px;
 	border-bottom: 1px solid #0079d6;
 	font-size: 8pt;
 	font-family: arial;
-	padding-top: 20px;
-	}
+	margin-top: 10px;
+	margin-bottom: 10px;
+	/*
+	border-left: 1px solid #0079D6;
+	border-right:1px solid #0079D6;
+	*/
+}
 	
 table.contactview caption { text-align: left; }
 table.contactview tr { padding-top: 2px; padding-bottom: 2px; }
