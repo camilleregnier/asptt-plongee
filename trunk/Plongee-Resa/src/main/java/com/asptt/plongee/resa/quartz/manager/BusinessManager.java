@@ -124,7 +124,7 @@ public class BusinessManager {
 			int annee = gc.get(Calendar.YEAR);
 			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 			try {
-				Date dateDeb = sdf.parse("31/05/"+annee);
+				Date dateDeb = sdf.parse("01/06/"+annee);
 				Date dateFin = sdf.parse("02/09/"+annee);
 				//Test si on est entre le 1/6 et le 01/9
 				if(dateDeb.before(datePlongeeJeudi) && datePlongeeJeudi.before(dateFin)){

@@ -344,7 +344,7 @@ public class InscriptionPlongeePage extends TemplatePage {
             );
 			libRetour=srm.getString();
 		} else if(entreeCatalogue.startsWith(CatalogueMessages.INSCRIPTION_ATTENDRE_VR_J_HO)){
-			String ho = entreeCatalogue.substring(14);
+			String ho = entreeCatalogue.substring(17);
 			IModel<Adherent> model = new Model<Adherent>(adh);
 			StringResourceModel srm = new StringResourceModel(CatalogueMessages.INSCRIPTION_ATTENDRE_VR_J_HO, this, model, 
 				new Object[]{new PropertyModel<Adherent>(model, "prenom"),ho}
@@ -390,7 +390,7 @@ public class InscriptionPlongeePage extends TemplatePage {
 			add(new Label("infoPlongeur", message+"\n"+srmPlongeur.getString()+" "+plongee.getParticipantsEnAttente().size()+1+"."));
 			
 			StringResourceModel srmPlongee = new StringResourceModel(CatalogueMessages.INSCRIPTION_ATT_INFO_PLONGEE, this, model, 
-					new Object[]{ResaUtil.getDateString(plongee.getDateVisible()),new PropertyModel<Plongee>(model, "getType")}
+					new Object[]{ResaUtil.getDateString(plongee.getDate()),new PropertyModel<Plongee>(model, "getType")}
        		);
 			add(new Label("infoPlongee", srmPlongee.getString()));
 			
