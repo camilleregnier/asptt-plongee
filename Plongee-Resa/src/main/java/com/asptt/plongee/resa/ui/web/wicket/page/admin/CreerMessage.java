@@ -64,6 +64,7 @@ public class CreerMessage extends TemplatePage {
 			setModel(model);
 			
 			TextArea<String> textareaInput = new TextArea<String>("libelle");
+			textareaInput.setRequired(true);
 			add(textareaInput);
 			
 			DateTextField dateDebTextFiled = new DateTextField("dateDebut", new PropertyModel<Date>(model, "dateDebut"), new StyleDateConverter("S-", true));

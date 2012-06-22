@@ -100,6 +100,10 @@ public interface CatalogueMessages {
 	 */
 	//message de haut de page
     public final String ANNULER_MSG = "msg.adherent";
+    
+    /**
+	 * AnnulerPlongee$PlongeePanel
+	 */
     // confirmation d'annulation de la plongée
     public final String ANNULATION_CONFIRMATION_PLONGEE = "annulation.info.plongee";
     public final String ANNULATION_CONFIRMATION_PLONGEUR = "annulation.info.plongeur";

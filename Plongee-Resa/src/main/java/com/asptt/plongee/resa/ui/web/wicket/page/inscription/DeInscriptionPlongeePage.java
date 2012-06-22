@@ -93,7 +93,7 @@ public class DeInscriptionPlongeePage extends TemplatePage {
 				//preparation du message de confirmation
 				IModel<Plongee> model = new Model<Plongee>(plongee);
 				StringResourceModel srm = new StringResourceModel(CatalogueMessages.DESINSCRIPTION_CONFIRMATION, this, model, 
-					new Object[]{new PropertyModel<Plongee>(model, "getType"),ResaUtil.getDateString(plongee.getDateVisible())}
+					new Object[]{new PropertyModel<Plongee>(model, "getType"),ResaUtil.getDateString(plongee.getDate())}
 	            );
 				
 				item.add(new ConfirmAjaxLink("select",srm.getString()) 
@@ -242,7 +242,7 @@ public class DeInscriptionPlongeePage extends TemplatePage {
 			add(new Label("infoPlongeur", srmPlongeur));
 			
 			StringResourceModel srmPlongee = new StringResourceModel(CatalogueMessages.DESINSCRIPTION_CONFIRMATION_PLONGEE, this, model, 
-					new Object[]{ResaUtil.getDateString(plongee.getDateVisible()),new PropertyModel<Plongee>(model, "getType")}
+					new Object[]{ResaUtil.getDateString(plongee.getDate()),new PropertyModel<Plongee>(model, "getType")}
        		);
 			add(new Label("infoPlongee", srmPlongee));
 			
