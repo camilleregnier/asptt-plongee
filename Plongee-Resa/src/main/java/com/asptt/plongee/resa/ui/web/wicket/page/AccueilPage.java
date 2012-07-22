@@ -73,13 +73,15 @@ public class AccueilPage extends TemplatePage {
 			Message ligne = new Message();
 //			ligne.setLibelle("=========================================================================================");
 			ligne.setLibelle(" ");
-				
-			for (Message msg : messages){
-				msgSepares.add(msg);
-				msgSepares.add(ligne);
+			
+			if ( ! messages.isEmpty()){
+				for (Message msg : messages){
+					msgSepares.add(msg);
+					msgSepares.add(ligne);
+				}
+				int ledernier = msgSepares.size();
+				msgSepares.remove(ledernier-1);
 			}
-			int ledernier = msgSepares.size();
-			msgSepares.remove(ledernier-1);
 			
 			MessageDataProvider pDataProvider = new MessageDataProvider(msgSepares);
 

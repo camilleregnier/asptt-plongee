@@ -1,6 +1,8 @@
 package com.asptt.plongee.resa.service.impl;
 
 import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -238,13 +240,21 @@ public class AdherentServiceImpl implements AdherentService, Serializable {
 		Date dateDuJour = new Date();
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(dateDuJour);
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		Date dateCM = new Date();
+		try {
+			dateCM = sdf.parse("01/01/2030");
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		Integer numExt = adherentDao.getExternes().size()+1;
 		adherent.setNumeroLicense(ResaConstants.LICENSE_EXTERNE.concat(numExt.toString()));
 		adherent.setActifInt(2);
 		adherent.setPilote(false);
 		adherent.setDp(false);
-		adherent.setDateCM(dateDuJour);
+		adherent.setDateCM(dateCM);
 		adherent.setAnneeCotisation(cal.get(Calendar.YEAR));
 		adherentDao.create(adherent);
 	}

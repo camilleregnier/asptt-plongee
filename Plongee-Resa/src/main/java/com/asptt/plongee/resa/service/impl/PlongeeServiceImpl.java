@@ -365,22 +365,17 @@ public class PlongeeServiceImpl implements PlongeeService, Serializable {
 				throw new ResaException(CatalogueMessages.INSCRIPTION_KO_DEJA_INSCRIT);
 			}
 		}
+		
+		// Verification de l'heure d'ouverture a la reservation
 		// c'est un adherent non encadrant
-		// si c'est un externe => inscription par secretariat
 		if ( ! adherent.isVesteRouge() && adherent.getActifInt()==1 ){
-			if( nbJours > 0){
-						//La date de visibilité de la plongée n'est pas atteinte : on attend
-						throw new ResaException(CatalogueMessages.INSCRIPTION_ATTENDRE_HO+"."+heureOuverture);
-			} else {
-				if( nbJours == 0){
-					//C'est le jour de visibilité de la plongée : On regarde l'heure avant de donner accès à l'inscription
-					if( heureCourante < heureOuverture){
-						// Trop tot : attendre l'heure d'ouverture
-						throw new ResaException(CatalogueMessages.INSCRIPTION_ATTENDRE_J_HO+"."+heureOuverture);
-					}
-				}
-			}
+			checkHeureOuverture(nbJours, heureCourante, heureOuverture);
 		}
+		// si c'est un externe
+		if ( adherent.getActifInt()==2 ){
+			checkHeureOuverture(nbJours, heureCourante, heureOuverture);
+		}
+		
 		//Inscription impossible si on est à moins de x heures de la plongée quand il y a juste le nombre pour ouvrir la plongée.
 		if( ! plongee.isNbMiniAtteint(Parameters.getInt("nb.plongeur.mini"))){
 			int nombreheure = new Integer(ResaUtil.calculNbHeure(new Date(), plongee.getDate()));
@@ -750,6 +745,22 @@ public class PlongeeServiceImpl implements PlongeeService, Serializable {
 				break;
 		}
 		return heure;
+	}
+	
+	public void checkHeureOuverture(long nbJours, int heureCourante, int heureOuverture)
+		throws ResaException {
+		if( nbJours > 0){
+			//La date de visibilité de la plongée n'est pas atteinte : on attend
+			throw new ResaException(CatalogueMessages.INSCRIPTION_ATTENDRE_HO+"."+heureOuverture);
+		} else {
+			if( nbJours == 0){
+				//C'est le jour de visibilité de la plongée : On regarde l'heure avant de donner accès à l'inscription
+				if( heureCourante < heureOuverture){
+					// Trop tot : attendre l'heure d'ouverture
+					throw new ResaException(CatalogueMessages.INSCRIPTION_ATTENDRE_J_HO+"."+heureOuverture);
+				}
+			}
+		}
 	}
 
 }
