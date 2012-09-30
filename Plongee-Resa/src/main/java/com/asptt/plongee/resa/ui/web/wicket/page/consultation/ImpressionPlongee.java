@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Locale;
 
 import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.Session;
 import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
@@ -17,15 +18,17 @@ import com.asptt.plongee.resa.model.Adherent;
 import com.asptt.plongee.resa.model.InscritsPlongeeDataProvider;
 import com.asptt.plongee.resa.model.ListeAttentePlongeeDataProvider;
 import com.asptt.plongee.resa.model.Plongee;
+import com.asptt.plongee.resa.ui.web.wicket.ResaSession;
 import com.asptt.plongee.resa.ui.web.wicket.page.ErreurTechniquePage;
 import com.asptt.plongee.resa.ui.web.wicket.page.TemplatePage;
 
 @AuthorizeInstantiation( { "USER", "SECRETARIAT" })
 public class ImpressionPlongee extends WebPage {
+	
 
 	@SuppressWarnings("serial")
-	public ImpressionPlongee(Plongee plongee) {
-
+	public ImpressionPlongee(final Plongee plongee, final ResaSession session) {
+		
 		// Mise en forme de la date
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(plongee.getDate());
@@ -56,12 +59,22 @@ public class ImpressionPlongee extends WebPage {
 				String niveauAffiche = adherent.getPrerogative();
 
 				// Pour les externes, le niveau est suffixé par (Ext.)
-				if (adherent.getActifInt() == 2) {
+				String refParrain = "";
+				String noTelParrain = "";
+				if (adherent.getActifInt() == 2){
 					niveauAffiche = niveauAffiche + " (Ext.)";
+					Adherent parrain = session.getAdherentService().rechercherParrainParIdentifiantFilleul(adherent.getNumeroLicense(), plongee.getId());
+					if(null != parrain){
+						refParrain=parrain.getNom().concat(" "+parrain.getPrenom());
+						noTelParrain=parrain.getTelephone();
+					}
 				}
-
+					
 				item.add(new Label("niveau", niveauAffiche));
 				item.add(new Label("telephone", adherent.getTelephone()));
+				
+				item.add(new Label("nomParrain", refParrain));
+				item.add(new Label("telParrain", noTelParrain));
 
 				item.add(new AttributeModifier("class", true,
 						new AbstractReadOnlyModel<String>() {
@@ -89,12 +102,22 @@ public class ImpressionPlongee extends WebPage {
 				String niveauAffiche = adherent.getPrerogative();
 
 				// Pour les externes, le niveau est suffixé par (Ext.)
-				if (adherent.getActifInt() == 2) {
+				String refParrain = "";
+				String noTelParrain = "";
+				if (adherent.getActifInt() == 2){
 					niveauAffiche = niveauAffiche + " (Ext.)";
+					Adherent parrain = session.getAdherentService().rechercherParrainParIdentifiantFilleul(adherent.getNumeroLicense(), plongee.getId());
+					if(null != parrain){
+						refParrain=parrain.getNom().concat(" "+parrain.getPrenom());
+						noTelParrain=parrain.getTelephone();
+					}
 				}
-
+					
 				item.add(new Label("niveau", niveauAffiche));
 				item.add(new Label("telephone", adherent.getTelephone()));
+				
+				item.add(new Label("nomParrain", refParrain));
+				item.add(new Label("telParrain", noTelParrain));
 
 				item.add(new AttributeModifier("class", true,
 						new AbstractReadOnlyModel<String>() {

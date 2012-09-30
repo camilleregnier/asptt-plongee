@@ -16,6 +16,7 @@ import com.asptt.plongee.resa.exception.ResaException;
 import com.asptt.plongee.resa.exception.TechnicalException;
 import com.asptt.plongee.resa.mail.PlongeeMail;
 import com.asptt.plongee.resa.model.Adherent;
+import com.asptt.plongee.resa.model.InscriptionFilleul;
 import com.asptt.plongee.resa.model.NiveauAutonomie;
 import com.asptt.plongee.resa.model.Plongee;
 import com.asptt.plongee.resa.model.Adherent.Encadrement;
@@ -249,6 +250,11 @@ public class PlongeeServiceImpl implements PlongeeService, Serializable {
 	@Override
 	public List<Plongee> rechercherPlongeesAdherentInscrit(Adherent adherent, int nbHours)  throws TechnicalException{
 		return plongeeDao.getPlongeesWhereAdherentIsInscrit(adherent, nbHours);
+	}
+
+	@Override
+	public List<InscriptionFilleul> rechercherPlongeesFilleulInscrit(Adherent adherent, int nbHours)  throws TechnicalException{
+		return plongeeDao.getPlongeesWhereFilleulIsInscrit(adherent, nbHours);
 	}
 
 	@Override
@@ -555,6 +561,27 @@ public class PlongeeServiceImpl implements PlongeeService, Serializable {
 				try {
 					PlongeeMail pMail = new PlongeeMail( PlongeeMail.MAIL_INSCRIPTION_SUR_PLONGEE_FERMEE,
 							plongee, adherent );
+					pMail.sendMail("ADMIN");
+				} catch (MessagingException e) {
+					e.printStackTrace();
+				}
+			}
+		}else{
+			throw new ResaException(CatalogueMessages.INSCRIPTION_KO_NB_MAX_PLONGEUR);
+		}
+	}
+
+	@Override
+	public synchronized void  inscrireAdherent(Plongee plongee, Adherent plongeur, Adherent parrain,int typeMail) throws ResaException, TechnicalException {
+		
+		if(getNbPlaceRestante(plongee) > 0){
+			//Appel DAO
+			plongeeDao.inscrireAdherentPlongee(plongee, plongeur, parrain);
+			//Envoi mail
+			if (typeMail == PlongeeMail.MAIL_INSCRIPTION_SUR_PLONGEE_FERMEE){
+				try {
+					PlongeeMail pMail = new PlongeeMail( PlongeeMail.MAIL_INSCRIPTION_SUR_PLONGEE_FERMEE,
+							plongee, plongeur );
 					pMail.sendMail("ADMIN");
 				} catch (MessagingException e) {
 					e.printStackTrace();

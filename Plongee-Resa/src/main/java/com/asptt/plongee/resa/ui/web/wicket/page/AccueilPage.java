@@ -40,7 +40,9 @@ import com.asptt.plongee.resa.util.Clock;
 @AuthorizeInstantiation({"USER","ADMIN","SECRETARIAT"})
 public class AccueilPage extends TemplatePage {
 	
-	public AccueilPage() { 
+    private static final long serialVersionUID = 8154566252027772269L;
+        
+        public AccueilPage() { 
 		
 //        // add the clock component
 //        Clock clock = new Clock("clock", TimeZone.getTimeZone("Europe/Paris"));
@@ -148,7 +150,7 @@ public class AccueilPage extends TemplatePage {
 	} 
 
 	private String calculerDateCourante() {
-		DateFormat sdf = new SimpleDateFormat("dd MMMM yyyy HH:mm:ss");
+		DateFormat sdf = new SimpleDateFormat("dd MMMM yyyy HH:mm:ss", new Locale("fr", "FR"));
 		return sdf.format(new Date());
 	}
 

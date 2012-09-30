@@ -74,6 +74,16 @@ ne pas modifier les valeurs*/
 	border: thin dotted #E9601A;
 }
  	
+#monfeedbackPanel{
+	/*margin: 20px;*/
+	padding-top: 5px;
+	padding-bottom: 5px;
+	padding-left: 5px;
+	/*border: thin dotted #E9601A;*/
+	font-weight: bold;
+	font-size: 13px;
+	width: 80%;
+}
 #pied{
 	background-color: #F5F5F5;
 	width: 100%;

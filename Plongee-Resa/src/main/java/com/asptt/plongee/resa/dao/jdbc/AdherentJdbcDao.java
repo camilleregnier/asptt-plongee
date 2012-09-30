@@ -39,6 +39,14 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements Serializable, Ad
 		this.plongeeDao = plongeeDao;
 	}
 
+        
+        /**
+         * LAST_INSERT_ID()LAST_INSERT_ID()
+         * @param adh
+         * @return
+         * @throws TechnicalException 
+         */
+        
 	public Adherent create(Adherent adh) throws TechnicalException {
 		Connection conex=null;
 		try {
@@ -368,6 +376,38 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements Serializable, Ad
 		}
 	}
 
+	
+	@Override
+	public int getIdExternes() throws TechnicalException {
+		Connection conex=null;
+		try {
+			conex = getDataSource().getConnection();
+			StringBuffer sb = new StringBuffer();
+			sb.append("UPDATE SEQUENCE_EXT");
+			sb.append(" SET id_ext=LAST_INSERT_ID(id_ext+1)");
+			PreparedStatement st = conex.prepareStatement(sb.toString());
+			if (st.executeUpdate() == 0) {
+				throw new TechnicalException("L'ajout de sequence_externe n'a pu être effectué");
+			}
+                        log.info("update_ext est passé");
+                        sb = new StringBuffer();
+			sb.append("SELECT LAST_INSERT_ID()");
+                        st = conex.prepareStatement(sb.toString());
+			ResultSet rs = st.executeQuery();
+                        int id=0;
+			if (rs.next()) {
+				id = rs.getInt("LAST_INSERT_ID()");
+			}
+                        log.info("id externe = "+id);
+                        return id;
+		} catch (SQLException e) {
+			log.error(e.getMessage(), e);
+			throw new TechnicalException(e);
+		} finally {
+			closeConnexion(conex);
+		}
+	}
+
 	public Adherent findById(String id) throws TechnicalException {
 		Connection conex=null;
 		try {
@@ -615,6 +655,41 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements Serializable, Ad
 				adherents.add(adherent);
 			}
 			return adherents;
+		} catch (SQLException e) {
+			log.error(e.getMessage(), e);
+			throw new TechnicalException(e);
+		} finally {
+			closeConnexion(conex);
+		}
+	}
+
+	/**
+	 * Retourne la liste des adherents en liste d'attente
+	 * sur la plongée
+	 * trie par le DATE_ATTENTE
+	 */
+	@Override
+	public Adherent getParrainById(String licenseFilleul, int idPlongee)
+			throws TechnicalException {
+		PreparedStatement st;
+		Connection conex=null;
+		try {
+			conex = getDataSource().getConnection();
+			StringBuffer sb = new StringBuffer(
+					"select LICENSE, NOM, PRENOM, NIVEAU, TELEPHONE, MAIL, ENCADRANT, PILOTE, ACTIF, PASSWORD, DATE_CM, ANNEE_COTI ");
+			sb.append(" from ADHERENT ad, REL_PARRAIN_FILLEUL pf");
+			sb.append(" where IDPLONGEE = ?");
+			sb.append(" and IDFILLEUL = ?");
+			sb.append(" and ad.LICENSE = IDPARRAIN");
+			st = conex.prepareStatement(sb.toString());
+			st.setInt(1, idPlongee);
+			st.setString(2, licenseFilleul);
+			ResultSet rs = st.executeQuery();
+			Adherent adherent = null;
+			if (rs.next()) {
+				adherent = wrapAdherent(rs);
+			}
+			return adherent;
 		} catch (SQLException e) {
 			log.error(e.getMessage(), e);
 			throw new TechnicalException(e);
@@ -1207,6 +1282,29 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements Serializable, Ad
 				}
 				
 
+			}
+		} catch (SQLException e) {
+			log.error(e.getMessage(), e);
+			throw new TechnicalException(e);
+		} finally {
+			closeConnexion(conex);
+		}
+	}
+
+	@Override
+	public void initPwd(Adherent adh) throws TechnicalException {
+		Connection conex=null;
+		try {
+			conex = getDataSource().getConnection();
+			StringBuffer sb = new StringBuffer();
+			sb.append("UPDATE ADHERENT");
+			sb.append(" SET PASSWORD = ?");
+			sb.append(" WHERE LICENSE = ?");
+			PreparedStatement st = conex.prepareStatement(sb.toString());
+			st.setString(1, adh.getNumeroLicense());
+			st.setString(2, adh.getNumeroLicense());
+			if (st.executeUpdate() == 0) {
+				throw new TechnicalException("Le mot de passe de l'adhérent n'a pu être réinitialisé");
 			}
 		} catch (SQLException e) {
 			log.error(e.getMessage(), e);

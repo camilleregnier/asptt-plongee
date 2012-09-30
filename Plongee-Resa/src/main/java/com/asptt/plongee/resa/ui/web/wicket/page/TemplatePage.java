@@ -28,6 +28,8 @@ import com.asptt.plongee.resa.ui.web.wicket.page.admin.GererPlongeeAOuvrirOne;
 import com.asptt.plongee.resa.ui.web.wicket.page.consultation.ConsulterPlongees;
 import com.asptt.plongee.resa.ui.web.wicket.page.consultation.InfoAdherent;
 import com.asptt.plongee.resa.ui.web.wicket.page.inscription.DeInscriptionPlongeePage;
+import com.asptt.plongee.resa.ui.web.wicket.page.inscription.DesinscriptionFilleulPage;
+import com.asptt.plongee.resa.ui.web.wicket.page.inscription.InscriptionFilleulPlongeePage;
 import com.asptt.plongee.resa.ui.web.wicket.page.inscription.InscriptionPlongeePage;
 import com.asptt.plongee.resa.ui.web.wicket.page.secretariat.DesInscriptionPlongeePage;
 import com.asptt.plongee.resa.ui.web.wicket.page.secretariat.InscriptionAdherentPlongeePage;
@@ -68,6 +70,8 @@ public abstract class TemplatePage extends WebPage {
 //		userMenus.add(resaPlongee);
 		userMenus.add(addReservLink());
 		userMenus.add(addDeInscrireLink());
+		userMenus.add(addInscrireFilleulLink());
+		userMenus.add(addDesinscrireFilleulLink());
 		userMenus.add(addInfoLink());
 		add(userMenus);
 		//menu ADMIN
@@ -101,6 +105,30 @@ public abstract class TemplatePage extends WebPage {
 		return link;
 	}
 	
+	private Link addInscrireFilleulLink() {
+		Link link = new Link("inscrireFilleul") {
+			private static final long serialVersionUID = 1L;
+
+			public void onClick() {
+				setResponsePage(new InscriptionFilleulPlongeePage(getResaSession().getAdherent()));
+			}
+		};
+		add(link);
+		return link;
+	}
+
+	private Link addDesinscrireFilleulLink() {
+		Link link = new Link("desinscrireFilleul") {
+			private static final long serialVersionUID = 1L;
+
+			public void onClick() {
+				setResponsePage(new DesinscriptionFilleulPage());
+			}
+		};
+		add(link);
+		return link;
+	}
+
 	private Link addInfoLink() {
 		Link link = new Link("infoAdherent") {
 		//DefaultButtonImageResource def = new DefaultButtonImageResource("Cancel"){

@@ -13,6 +13,7 @@
 		<th>Pr&eacute;nom</th>
 		<th>Niveau</th>
 		<th>&nbsp;</th>
+		<th>&nbsp;</th>
 	</tr>
 	<tr wicket:id="simple">
 		<td><a href="#" wicket:id="select" title="Editer"><img wicket:message="src:editer" class="no_cadre" alt="Editer"/></a></td>
@@ -21,6 +22,7 @@
 		<td><span wicket:id="prenom">[prenom]</span></td>
 		<td><span wicket:id="niveau">[niveau]</span></td>
 		<td><a href="#" wicket:id="suppAdh" title="Supprimer"><img wicket:message="src:supprimer" class="no_cadre" alt="Supprimer"/></a></td>
+		<td><a href="#" wicket:id="pwdAdh" title="init password"><img wicket:message="src:password" class="no_cadre" alt="Reinitialiser le mot de passe"/></a></td>
 	</tr>
 </table>
 <form wicket:id="form">
@@ -30,4 +32,5 @@
 </form>
 <div wicket:id="modal2"></div>
 <div wicket:id="modalSupp"></div>
+<div wicket:id="modalPwd"></div>
 </wicket:extend>

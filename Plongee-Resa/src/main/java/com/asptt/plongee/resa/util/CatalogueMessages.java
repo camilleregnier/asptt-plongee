@@ -78,6 +78,14 @@ public interface CatalogueMessages {
     public final String DESINSCRIPTION_CONFIRMATION_PLONGEE = "confirmation.vr.info.plongee";
 
     /**
+	 * DesInscriptionPlongeePage
+	 */
+	//message de haut de page
+    public final String DESINSCRIPTION_FILLEUL_MSG_ADHERENT = "msg.adherent";
+	//confirmation de desinscription
+    public final String DESINSCRIPTION_FILLEUL_CONFIRMATION = "confirmation";
+
+    /**
 	 * CreerPlongee
 	 */
     public final String CREATION_PLONGEE_DATE_INCOMPATIBLE = "date.incompatible";
@@ -115,10 +123,16 @@ public interface CatalogueMessages {
     public final String CONTACT_CONFIRME_SUPP = "confirme.supp";
 
     /**
-	 * GererAdherent$ConfirmSuppAdherent (inner class) 
-	 */
-	//Confirmation de la suppression du contactUrgent de l'adherent
+     * GererAdherent$ConfirmSuppAdherent (inner class) 
+     */
+    //Confirmation de la suppression de l'adherent
     public final String ADHERENT_CONFIRME_SUPP = "confirme.supp";
+
+    /**
+     * GererAdherent$ConfirmReInitPwdAdherent (inner class) 
+     */
+    //Confirmation de la reinitialisation du mot de passe de l'adherent
+    public final String ADHERENT_CONFIRME_RINIT_PWD = "confirme.pwd";
 
     /**
 	 * Gerer Liste attente ONE 

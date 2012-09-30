@@ -29,6 +29,7 @@ import com.asptt.plongee.resa.model.InscritsPlongeeDataProvider;
 import com.asptt.plongee.resa.model.ListeAttentePlongeeDataProvider;
 import com.asptt.plongee.resa.model.Plongee;
 import com.asptt.plongee.resa.model.PlongeeDataProvider;
+import com.asptt.plongee.resa.ui.web.wicket.ResaSession;
 import com.asptt.plongee.resa.ui.web.wicket.page.AccueilPage;
 import com.asptt.plongee.resa.ui.web.wicket.page.ErreurTechniquePage;
 import com.asptt.plongee.resa.ui.web.wicket.page.ErrorPage;
@@ -288,12 +289,22 @@ public class ConsulterPlongees extends TemplatePage {
 						String niveauAffiche = adherent.getPrerogative();
 						
 						// Pour les externes, le niveau est suffixé par (Ext.)
-						if (adherent.getActifInt() ==2){
+						String refParrain = "";
+						String noTelParrain = "";
+						if (adherent.getActifInt() == 2){
 							niveauAffiche = niveauAffiche + " (Ext.)";
+							Adherent parrain = getResaSession().getAdherentService().rechercherParrainParIdentifiantFilleul(adherent.getNumeroLicense(), plongee.getObject().getId());
+							if(null != parrain){
+								refParrain=parrain.getNom().concat(" "+parrain.getPrenom());
+								noTelParrain=parrain.getTelephone();
+							}
 						}
 							
 						item.add(new Label("niveau", niveauAffiche));
 						item.add(new Label("telephone", adherent.getTelephone()));
+						
+						item.add(new Label("nomParrain", refParrain));
+						item.add(new Label("telParrain", noTelParrain));
 	
 						item.add(new AttributeModifier("class", true,
 								new AbstractReadOnlyModel<String>() {
@@ -320,13 +331,23 @@ public class ConsulterPlongees extends TemplatePage {
 								String niveauAffiche = adherent.getPrerogative();
 								
 								// Pour les externes, le niveau est suffixé par (Ext.)
-								if (adherent.getActifInt() ==2){
+								String refParrain = "";
+								String noTelParrain = "";
+								if (adherent.getActifInt() == 2){
 									niveauAffiche = niveauAffiche + " (Ext.)";
+									Adherent parrain = getResaSession().getAdherentService().rechercherParrainParIdentifiantFilleul(adherent.getNumeroLicense(), plongee.getObject().getId());
+									if(null != parrain){
+										refParrain=parrain.getNom().concat(" "+parrain.getPrenom());
+										noTelParrain=parrain.getTelephone();
+									}
 								}
 								
 								item.add(new Label("niveau", niveauAffiche));
 								item.add(new Label("telephone", adherent.getTelephone()));
 	
+								item.add(new Label("nomParrain", refParrain));
+								item.add(new Label("telParrain", noTelParrain));
+			
 								item.add(new AttributeModifier("class", true,
 								new AbstractReadOnlyModel<String>() {
 									@Override
@@ -342,7 +363,7 @@ public class ConsulterPlongees extends TemplatePage {
 				add(new Link("print") {
 					@Override
 					public void onClick() {
-						setResponsePage(new ImpressionPlongee(plongee.getObject()));
+						setResponsePage(new ImpressionPlongee(plongee.getObject(), getResaSession()));
 					}
 				});
 			} catch (TechnicalException e) {

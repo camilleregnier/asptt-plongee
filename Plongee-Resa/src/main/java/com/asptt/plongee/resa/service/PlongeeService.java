@@ -7,6 +7,7 @@ import java.util.List;
 import com.asptt.plongee.resa.exception.ResaException;
 import com.asptt.plongee.resa.exception.TechnicalException;
 import com.asptt.plongee.resa.model.Adherent;
+import com.asptt.plongee.resa.model.InscriptionFilleul;
 import com.asptt.plongee.resa.model.Plongee;
 
 public interface PlongeeService {
@@ -35,6 +36,8 @@ public interface PlongeeService {
 	boolean isOuverte(Plongee plongee);
 	
 	void inscrireAdherent(Plongee plongee, Adherent adherent, int typeMail) throws ResaException;
+	void inscrireAdherent(Plongee plongee, Adherent adherent, Adherent filleul,
+			int typeMail) throws ResaException, TechnicalException;
 	void inscrireAdherentEnListeAttente(Plongee plongee, Adherent adherent, int typeMail) throws ResaException;
 	void fairePasserAttenteAInscrit(Plongee plongee, Adherent adherent);
 
@@ -44,5 +47,8 @@ public interface PlongeeService {
 	
 	void checkCertificatMedical(Adherent adherent, Plongee plongee) throws TechnicalException, ResaException;
 	int getHeureOuverture(Calendar cal, Adherent adh, Plongee plongee);
+	
+	List<InscriptionFilleul> rechercherPlongeesFilleulInscrit(Adherent adherent,
+			int nbHours) throws TechnicalException;
 
 }

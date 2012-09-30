@@ -18,6 +18,7 @@ import com.asptt.plongee.resa.dao.AdherentDao;
 import com.asptt.plongee.resa.dao.PlongeeDao;
 import com.asptt.plongee.resa.exception.TechnicalException;
 import com.asptt.plongee.resa.model.Adherent;
+import com.asptt.plongee.resa.model.InscriptionFilleul;
 import com.asptt.plongee.resa.model.NiveauAutonomie;
 import com.asptt.plongee.resa.model.Plongee;
 import com.asptt.plongee.resa.model.Plongee.Type;
@@ -267,6 +268,7 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements Serializable, Plo
 			PreparedStatement st = conex.prepareStatement(sb.toString());
 			st.setString(1, adherent.getNumeroLicense());
 			st.setInt(2, nbHours);
+			System.out.println(st.toString());
 			ResultSet rs = st.executeQuery();
 			List<Plongee> plongees = new ArrayList<Plongee>();
 			while (rs.next()) {
@@ -274,6 +276,42 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements Serializable, Plo
 				plongees.add(plongee);
 			}
 			return plongees;
+		} catch (SQLException e) {
+			log.error(e.getMessage(), e);
+			throw new TechnicalException(e);
+		} finally{
+			closeConnexion(conex);
+		}
+	}
+
+	@Override
+	public List<InscriptionFilleul> getPlongeesWhereFilleulIsInscrit(Adherent adherent, int nbHours)
+	throws TechnicalException {
+		Connection conex=null;
+		try {
+			conex = getDataSource().getConnection();
+			StringBuffer sb = new StringBuffer();
+			sb.append("SELECT ad.`LICENSE`, pl.`idPLONGEES`");
+			sb.append(" FROM PLONGEE pl, INSCRIPTION_PLONGEE rel , ADHERENT ad, REL_PARRAIN_FILLEUL pf");
+			sb.append(" WHERE idparrain = ?");
+			sb.append(" AND ( idFilleul = adherent_license AND idPlongee = plongees_idPlongees AND date_annul_plongee is null)");
+			sb.append(" AND idPlongee = idPlongees");
+			sb.append(" AND idFilleul = license");
+			sb.append(" AND pl.date > DATE_ADD(now(), INTERVAL ? HOUR)");
+			sb.append(" and OUVERTURE_FORCEE = 1");
+			sb.append(" ORDER BY DATE;");
+			PreparedStatement st = conex.prepareStatement(sb.toString());
+			st.setString(1, adherent.getNumeroLicense());
+			st.setInt(2, nbHours);
+			ResultSet rs = st.executeQuery();
+			List<InscriptionFilleul> plongeesDesFilleuls = new ArrayList<InscriptionFilleul>();
+			while (rs.next()) {
+				Adherent filleul = adherentDao.findById(rs.getString("LICENSE"));
+				Plongee plongee = findById(new Integer(rs.getInt("idPLONGEES")));
+				InscriptionFilleul unFilleul = new InscriptionFilleul(filleul,plongee);
+				plongeesDesFilleuls.add(unFilleul);
+			}
+			return plongeesDesFilleuls;
 		} catch (SQLException e) {
 			log.error(e.getMessage(), e);
 			throw new TechnicalException(e);
@@ -358,6 +396,41 @@ public class PlongeeJdbcDao extends AbstractJdbcDao implements Serializable, Plo
 			st.setInt(2, plongee.getId());
 			if (st.executeUpdate() == 0) {
 				throw new TechnicalException("L'adhérent"+adherent.getNumeroLicense()+
+						" n'a pu être inscrit à la plongée:"+plongee.getId()+"."); 
+			}
+		} catch (SQLException e) {
+			log.error(e.getMessage(), e);
+			throw new TechnicalException(e);
+		} finally{
+			closeConnexion(conex);
+		}
+	}
+
+	@Override
+	public void inscrireAdherentPlongee(Plongee plongee,
+			Adherent plongeur, Adherent parrain) throws TechnicalException {
+		Connection conex=null;
+		try {
+			conex = getDataSource().getConnection();
+			StringBuffer sb = new StringBuffer();
+			sb.append("INSERT INTO INSCRIPTION_PLONGEE (`ADHERENT_LICENSE`, PLONGEES_idPLONGEES, `DATE_INSCRIPTION`)");
+			sb.append(" VALUES (?, ?, current_timestamp)");
+			PreparedStatement st = conex.prepareStatement(sb.toString());
+			st.setString(1, plongeur.getNumeroLicense());
+			st.setInt(2, plongee.getId());
+			if (st.executeUpdate() == 0) {
+				throw new TechnicalException("L'adhérent"+plongeur.getNumeroLicense()+
+						" n'a pu être inscrit à la plongée:"+plongee.getId()+"."); 
+			}
+			StringBuffer sb1 = new StringBuffer();
+			sb1.append("INSERT INTO REL_PARRAIN_FILLEUL (`IDPARRAIN`, `IDFILLEUL`, `IDPLONGEE`)");
+			sb1.append(" VALUES (?, ?, ?)");
+			st = conex.prepareStatement(sb1.toString());
+			st.setString(1, parrain.getNumeroLicense());
+			st.setString(2, plongeur.getNumeroLicense());
+			st.setInt(3, plongee.getId());
+			if (st.executeUpdate() == 0) {
+				throw new TechnicalException("L'adhérent"+plongeur.getNumeroLicense()+
 						" n'a pu être inscrit à la plongée:"+plongee.getId()+"."); 
 			}
 		} catch (SQLException e) {

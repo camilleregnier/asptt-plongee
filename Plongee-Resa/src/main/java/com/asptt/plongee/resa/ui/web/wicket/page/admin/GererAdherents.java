@@ -39,6 +39,7 @@ public class GererAdherents extends TemplatePage {
 
 	private ModalWindow modal2;
 	private ModalWindow modalSupp;
+	private ModalWindow modalPwd;
 	private List<Adherent> list;
 	
 	
@@ -82,7 +83,17 @@ public class GererAdherents extends TemplatePage {
 		modalSupp.setCssClassName(ModalWindow.CSS_CLASS_BLUE);
 		add(modalSupp);
 		
-		List<Adherent> adherents = getResaSession().getAdherentService().rechercherAdherentsTous();
+		modalPwd = new ModalWindow("modalPwd");
+		modalPwd.setTitle("Confirmation");
+		modalPwd.setResizable(false);
+		modalPwd.setInitialWidth(30);
+		modalPwd.setInitialHeight(15);
+		modalPwd.setWidthUnit("em");
+		modalPwd.setHeightUnit("em");
+		modalPwd.setCssClassName(ModalWindow.CSS_CLASS_BLUE);
+		add(modalPwd);
+
+                List<Adherent> adherents = getResaSession().getAdherentService().rechercherAdherentsTous();
 		
 		// On construit la liste des adhérents (avec pagination)
 		DataView adherentsView = new DataView<Adherent>("simple", new AdherentDataProvider(adherents), 10) {
@@ -110,7 +121,17 @@ public class GererAdherents extends TemplatePage {
 					}
 				});
 
-				item.add(new Label("license", adherent.getNumeroLicense()));
+				item.add(new IndicatingAjaxLink("pwdAdh")
+				{
+					@Override
+					public void onClick(AjaxRequestTarget target)
+					{
+						replaceModalWindowPwd(target, item.getModel());
+						modalPwd.show(target);
+					}
+				});
+
+                                item.add(new Label("license", adherent.getNumeroLicense()));
 				item.add(new Label("nom", adherent.getNom()));
 				item.add(new Label("prenom", adherent.getPrenom()));
 				
@@ -118,22 +139,22 @@ public class GererAdherents extends TemplatePage {
 				String niveauAffiche = adherent.getPrerogative();
 				item.add(new Label("niveau", niveauAffiche));
 				item.add(new AttributeModifier("class", true,
-						new AbstractReadOnlyModel<String>() {
-							@Override
-							public String getObject() {
-								String cssClass;
-								if (item.getIndex() % 2 == 1){
-									cssClass = "even";
-								} else {
-									cssClass = "odd";
-								}
-								if (!adherent.isActif()){
-									cssClass = cssClass + " inactif";
-								}
-								return cssClass;
-							}
-						}));
-			}
+                                        new AbstractReadOnlyModel<String>() {
+                                                @Override
+                                                public String getObject() {
+                                                        String cssClass;
+                                                        if (item.getIndex() % 2 == 1){
+                                                                cssClass = "even";
+                                                        } else {
+                                                                cssClass = "odd";
+                                                        }
+                                                        if (!adherent.isActif()){
+                                                                cssClass = cssClass + " inactif";
+                                                        }
+                                                        return cssClass;
+                                                }
+                                }));
+        		}
 		};
 		adherentsView.setOutputMarkupId(true);
 		add(adherentsView);
@@ -258,4 +279,56 @@ public class GererAdherents extends TemplatePage {
 
 	}
 	
+	private void replaceModalWindowPwd(AjaxRequestTarget target, IModel<Adherent> adherent) {
+		modalPwd.setContent(new ConfirmReInitPwdAdherent(modalPwd.getContentId(), adherent));
+		modalPwd.setTitle("Réinitialisation du mot de passe d'un adhérent");
+		modalPwd.setUseInitialHeight(true);
+		
+		// Pour éviter le message de disparition de la fenetre lors de la validation
+		target.appendJavascript( "Wicket.Window.unloadConfirmation  = false;");
+	}
+	
+	public class ConfirmReInitPwdAdherent extends Panel
+	{
+		private static final long serialVersionUID = 196724625616748115L;
+
+		@SuppressWarnings("unchecked")
+		public ConfirmReInitPwdAdherent(String id, final IModel<Adherent> adherent)
+		{
+			super(id);
+			 
+			// Informations (nom, prenom) du l'adherent à supprimer
+			add(new Label("info", new StringResourceModel(CatalogueMessages.ADHERENT_CONFIRME_RINIT_PWD, this,new Model<Adherent>(adherent.getObject()))));
+			
+			// Le lien qui va fermer la fenêtre de confirmation
+			// et appeler la méthode de d'inscription en liste d'attente si nécessaire
+			add(new IndicatingAjaxLink("yes")
+			{
+				private static final long serialVersionUID = 1L;
+				@Override
+				public void onClick(AjaxRequestTarget target)
+				{
+					// On supprime l'adherent
+					getResaSession().getAdherentService().reinitPwdAdherent(adherent.getObject());
+					modalPwd.close(target);
+					setResponsePage(GererAdherents.class);
+				}
+			});
+			
+			// Le lien qui va juste fermer la fenêtre de confirmation
+			add(new IndicatingAjaxLink("no")
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public void onClick(AjaxRequestTarget target)
+				{
+					modalPwd.close(target);
+				}
+			});
+
+		}
+
+	}
+
 }
