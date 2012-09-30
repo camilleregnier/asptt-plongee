@@ -7,6 +7,7 @@ import java.util.List;
 import com.asptt.plongee.resa.dao.PlongeeDao;
 import com.asptt.plongee.resa.exception.TechnicalException;
 import com.asptt.plongee.resa.model.Adherent;
+import com.asptt.plongee.resa.model.InscriptionFilleul;
 import com.asptt.plongee.resa.model.Plongee;
 
 public class PlongeeInMemoryDao implements PlongeeDao {
@@ -146,5 +147,19 @@ public class PlongeeInMemoryDao implements PlongeeDao {
 			int indic) throws TechnicalException {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public void inscrireAdherentPlongee(Plongee plongee, Adherent adherent,
+			Adherent filleul) throws TechnicalException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public List<InscriptionFilleul> getPlongeesWhereFilleulIsInscrit(
+			Adherent adherent, int nbHours) throws TechnicalException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

@@ -43,6 +43,11 @@ public class AdherentServiceImpl implements AdherentService, Serializable {
 	}
 
 	@Override
+	public void reinitPwdAdherent(Adherent adherent) throws TechnicalException{
+		adherentDao.initPwd(adherent);
+	}
+
+        @Override
 	public Adherent authentifierAdherent(String id, String pwd) throws TechnicalException{
 		return adherentDao.authenticateAdherent(id, pwd);
 	}
@@ -55,6 +60,11 @@ public class AdherentServiceImpl implements AdherentService, Serializable {
 	@Override
 	public Adherent rechercherAdherentParIdentifiantTous(String id) throws TechnicalException{
 			return adherentDao.findByIdAll(id);
+	}
+
+	@Override
+	public Adherent rechercherParrainParIdentifiantFilleul(String licenseFilleul, int idPlongee) throws TechnicalException{
+		return adherentDao.getParrainById(licenseFilleul, idPlongee);
 	}
 
 	@Override
@@ -183,9 +193,9 @@ public class AdherentServiceImpl implements AdherentService, Serializable {
 		
 		//la date du jour
 		Date dateDuJour = new Date();
-		//construction d'une date au 15/9/<annee de cotisation de l'adherent>
+		//construction d'une date au 7/10/<annee de cotisation de l'adherent>
 		Date dateCotisation = new Date();
-		GregorianCalendar gc = new GregorianCalendar(adherent.getAnneeCotisation(), 8, 15);
+		GregorianCalendar gc = new GregorianCalendar(adherent.getAnneeCotisation(), 9, 7);
 		dateCotisation.setTime(gc.getTimeInMillis());
 		
 		
@@ -236,27 +246,44 @@ public class AdherentServiceImpl implements AdherentService, Serializable {
 	
 	@Override
 	public void creerExterne(Adherent adherent) throws TechnicalException{
-			
-		Date dateDuJour = new Date();
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(dateDuJour);
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-		Date dateCM = new Date();
-		try {
-			dateCM = sdf.parse("01/01/2030");
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		Integer numExt = adherentDao.getExternes().size()+1;
-		adherent.setNumeroLicense(ResaConstants.LICENSE_EXTERNE.concat(numExt.toString()));
-		adherent.setActifInt(2);
-		adherent.setPilote(false);
-		adherent.setDp(false);
-		adherent.setDateCM(dateCM);
-		adherent.setAnneeCotisation(cal.get(Calendar.YEAR));
-		adherentDao.create(adherent);
+            
+            //Recherche si existe déjà
+            List<Adherent> adherents = rechercherExternes();
+            for(Adherent a : adherents){
+                if(a.getNom().equalsIgnoreCase(adherent.getNom())
+                        && a.getPrenom().equalsIgnoreCase(adherent.getPrenom())
+                        ){
+                    throw new TechnicalException("Cet externe existe déjà");
+                }
+            }
+            
+            // On met le nom en majuscule et la premiere lettre du prenom
+            String nom = adherent.getNom().toUpperCase();
+            adherent.setNom(nom);
+            String prenom = ResaUtil.capitalizeFirstLetter(adherent.getPrenom());
+            adherent.setPrenom(prenom);
+            // Le Certificat Medical est forcé au 01/01/2030 pour eviter d'etre bloqué à l'inscription
+            // L'exterieur doit apporté son CM avec lui
+            Date dateDuJour = new Date();
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(dateDuJour);
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+            Date dateCM = new Date();
+            try {
+                    dateCM = sdf.parse("01/01/2030");
+            } catch (ParseException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+            }
+            // Recupere l'id Externe dans la table des sequences_ext
+            Integer numExt = adherentDao.getIdExternes();
+            adherent.setNumeroLicense(ResaConstants.LICENSE_EXTERNE.concat(numExt.toString()));
+            adherent.setActifInt(2);
+            adherent.setPilote(false);
+            adherent.setDp(false);
+            adherent.setDateCM(dateCM);
+            adherent.setAnneeCotisation(cal.get(Calendar.YEAR));
+            adherentDao.create(adherent);
 	}
 
 	@Override

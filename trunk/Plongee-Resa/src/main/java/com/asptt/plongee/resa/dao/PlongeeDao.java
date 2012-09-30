@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.asptt.plongee.resa.exception.TechnicalException;
 import com.asptt.plongee.resa.model.Adherent;
+import com.asptt.plongee.resa.model.InscriptionFilleul;
 import com.asptt.plongee.resa.model.Plongee;
 
 public interface PlongeeDao extends GenericDao<Plongee, Integer>{
@@ -31,5 +32,11 @@ public interface PlongeeDao extends GenericDao<Plongee, Integer>{
 	void sortirAdherentAttente(Plongee plongee, Adherent adherent) throws TechnicalException;
 
 	void supprimerDeLaListeAttente(Plongee plongee, Adherent adherent, int indic) throws TechnicalException;
+
+	void inscrireAdherentPlongee(Plongee plongee, Adherent adherent,
+			Adherent filleul) throws TechnicalException;
+
+	List<InscriptionFilleul> getPlongeesWhereFilleulIsInscrit(Adherent adherent,
+			int nbHours) throws TechnicalException;
 
 }

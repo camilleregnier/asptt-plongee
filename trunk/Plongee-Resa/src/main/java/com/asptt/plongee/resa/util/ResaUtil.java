@@ -76,5 +76,18 @@ public class ResaUtil {
 	      return dateFormat.format(e_d);
 	  }
 
+          
+	public static String capitalizeFirstLetter(String value) {
+		if (value == null) {
+			return null;
+		}
+		if (value.length() == 0) {
+			return value;
+		}
+                
+		StringBuilder result = new StringBuilder(value.toLowerCase());
+		result.replace(0, 1, result.substring(0, 1).toUpperCase());
+		return result.toString();
+	}          
 }
 

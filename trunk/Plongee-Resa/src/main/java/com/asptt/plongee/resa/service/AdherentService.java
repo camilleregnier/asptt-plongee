@@ -65,12 +65,17 @@ public interface AdherentService {
 
 	void supprimerAdherent(Adherent adherent) throws TechnicalException;
 
-	void checkAnneeCotisation(Adherent adherent) throws TechnicalException,
+	void reinitPwdAdherent(Adherent adherent) throws TechnicalException;
+
+        void checkAnneeCotisation(Adherent adherent) throws TechnicalException,
 			ResaException;
 
 	List<Adherent> rechercherAdherentInscrits(Plongee plongee);
 
 	void modifierExterne(Adherent externe) throws TechnicalException;
+
+	Adherent rechercherParrainParIdentifiantFilleul(String id, int idPlongee)
+			throws TechnicalException;
 
 	
 }

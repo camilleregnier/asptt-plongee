@@ -47,12 +47,19 @@ public interface AdherentDao extends GenericDao<Adherent, String> {
 
 	void deleteMessage(Message message) throws TechnicalException;
 
-	void updateContact(ContactUrgent contact) throws TechnicalException;
+	void initPwd(Adherent adherent) throws TechnicalException;
+
+        void updateContact(ContactUrgent contact) throws TechnicalException;
 
 	void createContact(ContactUrgent contact, Adherent adh) throws TechnicalException;
 
 	void deleteContact(ContactUrgent contact, Adherent adh)	throws TechnicalException;
 
 	Adherent updateExterne(Adherent ext) throws TechnicalException;
+
+	Adherent getParrainById(String licenseParrain, int idPlongee)
+			throws TechnicalException;
+
+        int getIdExternes() throws TechnicalException;
 
 }

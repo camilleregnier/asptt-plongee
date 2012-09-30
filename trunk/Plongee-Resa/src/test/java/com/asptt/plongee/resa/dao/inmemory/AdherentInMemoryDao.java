@@ -222,4 +222,11 @@ public class AdherentInMemoryDao implements AdherentDao{
 		return null;
 	}
 
+	@Override
+	public Adherent getParrainById(String licenseParrain, int idPlongee)
+			throws TechnicalException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

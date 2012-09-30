@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Locale;
 
 import javax.mail.MessagingException;
+import javax.swing.Box.Filler;
 
 import org.apache.commons.mail.Email;
 import org.apache.commons.mail.SimpleEmail;
@@ -43,7 +44,8 @@ import com.asptt.plongee.resa.util.ResaUtil;
 
 public class InscriptionPlongeePage extends TemplatePage {
 	
-	private Adherent adh = null;
+	private Adherent plongeur = null;
+	private Adherent parrain = null;
 	private List<Plongee> plongees = null;
 	private FeedbackPanel feedback = new FeedbackPanel("feedback");
 	private int typeMail;
@@ -53,14 +55,14 @@ public class InscriptionPlongeePage extends TemplatePage {
 	
 	public InscriptionPlongeePage(){
 		setPageTitle("Inscription plongee");
-		this.adh = getResaSession().getAdherent(); 
+		this.plongeur = getResaSession().getAdherent(); 
 		
-		add(new Label("message",new StringResourceModel(CatalogueMessages.INSCRIPTION_MSG_ADHERENT, this,new Model<Adherent>(adh))));
+		add(new Label("message",new StringResourceModel(CatalogueMessages.INSCRIPTION_MSG_ADHERENT, this,new Model<Adherent>(plongeur))));
 		
 		//gestion message pour le certificat medical
 		Label labelCertificat = new Label("certificat", "");
 		try {
-			 getResaSession().getPlongeeService().checkCertificatMedical(adh, null);
+			 getResaSession().getPlongeeService().checkCertificatMedical(plongeur, null);
 		} catch (TechnicalException e) {
 			e.printStackTrace();
 		} catch (ResaException e) {
@@ -79,14 +81,14 @@ public class InscriptionPlongeePage extends TemplatePage {
 	 */
 	public InscriptionPlongeePage(Adherent adherent) {
 		setPageTitle("Inscription plongee");
-		this.adh = adherent;
+		this.plongeur = adherent;
 
-		add(new Label("message",new StringResourceModel(CatalogueMessages.INSCRIPTION_MSG_SECRETARIAT, this,new Model<Adherent>(adh))));
+		add(new Label("message",new StringResourceModel(CatalogueMessages.INSCRIPTION_MSG_SECRETARIAT, this,new Model<Adherent>(plongeur))));
 
 		//gestion message pour le certificat medical
 		Label labelCertificat = new Label("certificat", "");
 		try {
-			 getResaSession().getPlongeeService().checkCertificatMedical(adh, null);
+			 getResaSession().getPlongeeService().checkCertificatMedical(plongeur, null);
 		} catch (TechnicalException e) {
 			e.printStackTrace();
 		} catch (ResaException e) {
@@ -99,7 +101,32 @@ public class InscriptionPlongeePage extends TemplatePage {
 		init();
 	}
 	
+	/**
+	 * Ce constructeur est appelé par l'inscription d'un filleul
+	 * @param adherent
+	 */
+	public InscriptionPlongeePage(Adherent parrain, Adherent filleul) {
+		setPageTitle("Inscription plongee");
+		this.plongeur = filleul;
+		this.parrain = parrain;
 
+		add(new Label("message",new StringResourceModel(CatalogueMessages.INSCRIPTION_MSG_SECRETARIAT, this,new Model<Adherent>(plongeur))));
+
+		//gestion message pour le certificat medical
+		Label labelCertificat = new Label("certificat", "");
+		try {
+			 getResaSession().getPlongeeService().checkCertificatMedical(plongeur, null);
+		} catch (TechnicalException e) {
+			e.printStackTrace();
+		} catch (ResaException e) {
+			String msgCertificat=initMessageException(e.getKey(),null);
+			labelCertificat = new Label("certificat",msgCertificat);
+		}
+		add(labelCertificat);
+		feedback.setOutputMarkupId(true);
+		add(feedback);
+		init();
+	}
 	
 	private void init() {
 
@@ -114,7 +141,7 @@ public class InscriptionPlongeePage extends TemplatePage {
 			modalConfirm.setWidthUnit("em");
 			modalConfirm.setHeightUnit("em");
 			modalConfirm.setCssClassName(ModalWindow.CSS_CLASS_BLUE);
-			plongees = getResaSession().getPlongeeService().rechercherPlongeePourInscriptionAdherent(adh);
+			plongees = getResaSession().getPlongeeService().rechercherPlongeePourInscriptionAdherent(plongeur);
 		} catch (TechnicalException e) {
 			e.printStackTrace();
 			error(e.getKey());
@@ -197,14 +224,14 @@ public class InscriptionPlongeePage extends TemplatePage {
 			List<Adherent> participants = getResaSession().getAdherentService().rechercherAdherentInscrits(plongee);
 			plongee.setParticipants(participants);
 			
-			int response = getResaSession().getPlongeeService().isOkForResa(plongee, adh);
+			int response = getResaSession().getPlongeeService().isOkForResa(plongee, plongeur);
 			
 			//Analyse le retour de service
 			switch (response) {
 			case 0://on inscrit l'adherent en liste d'attente sans envoi de mail : car plongee complete  
 				typeMail=PlongeeMail.PAS_DE_MAIL;
 				if(getResaSession().getPlongeeService().isOkForListeAttente(
-						plongee, adh )){ //getResaSession().getAdherent()
+						plongee, plongeur )){ //getResaSession().getAdherent()
 					// On demande confirmation pour l'inscriptions en liste attente
 					replaceModalWindow(target, plongee);
 					modalConfirm.show(target);
@@ -214,7 +241,7 @@ public class InscriptionPlongeePage extends TemplatePage {
 			case 4: //on inscrit l'adherent en liste d'attente avec envoi d'un mail : pas assez d'encadrant
 				typeMail=PlongeeMail.MAIL_PAS_ASSEZ_ENCADRANT;
 				if(getResaSession().getPlongeeService().isOkForListeAttente(
-						plongee,  adh )){ //getResaSession().getAdherent()
+						plongee,  plongeur )){ //getResaSession().getAdherent()
 					
 					// On demande confirmation pour l'inscription en liste d'attente
 					replaceModalWindow(target, plongee);
@@ -225,7 +252,7 @@ public class InscriptionPlongeePage extends TemplatePage {
 			case 5: //on inscrit l'adherent en liste d'attente avec envoi d'un mail : Liste d'attente déjà ouverte
 				typeMail=PlongeeMail.MAIL_LISTE_ATTENTE_EXIST;
 				if(getResaSession().getPlongeeService().isOkForListeAttente(
-						plongee,  adh )){ //getResaSession().getAdherent()
+						plongee,  plongeur )){ //getResaSession().getAdherent()
 					
 					// On demande confirmation pour l'inscription en liste d'attente
 					replaceModalWindow(target, plongee);
@@ -236,14 +263,19 @@ public class InscriptionPlongeePage extends TemplatePage {
 			case 3: //on inscrit un pilote ou un dp sur une plongée fermée avec envoi d'un mail aux admins
 				typeMail=PlongeeMail.MAIL_INSCRIPTION_SUR_PLONGEE_FERMEE;
 					
-				getResaSession().getPlongeeService().inscrireAdherent(plongee, adh, PlongeeMail.MAIL_INSCRIPTION_SUR_PLONGEE_FERMEE);
+				getResaSession().getPlongeeService().inscrireAdherent(plongee, plongeur, PlongeeMail.MAIL_INSCRIPTION_SUR_PLONGEE_FERMEE);
 					setResponsePage(new InscriptionConfirmationPlongeePage(plongee));
 				break;
 				
 			case 1: //on peut inscrire l'adherent à la plongee
 				typeMail=PlongeeMail.PAS_DE_MAIL;
+				
+				if (null == this.parrain){
+					getResaSession().getPlongeeService().inscrireAdherent(plongee,plongeur,PlongeeMail.PAS_DE_MAIL);
+				} else {
+					getResaSession().getPlongeeService().inscrireAdherent(plongee,plongeur,parrain,PlongeeMail.PAS_DE_MAIL);
+				}
 
-				getResaSession().getPlongeeService().inscrireAdherent(plongee,adh, PlongeeMail.PAS_DE_MAIL);
 				setResponsePage(new InscriptionConfirmationPlongeePage(plongee));
 				break;
 
@@ -270,21 +302,21 @@ public class InscriptionPlongeePage extends TemplatePage {
 		String libRetour="";
 		if(entreeCatalogue.startsWith(CatalogueMessages.INSCRIPTION_IMPOSSIBLE)){
 			String nbHeure = entreeCatalogue.substring(20);
-			IModel<Adherent> model = new Model<Adherent>(adh);
+			IModel<Adherent> model = new Model<Adherent>(plongeur);
 			StringResourceModel srm = new StringResourceModel(CatalogueMessages.INSCRIPTION_IMPOSSIBLE, this, model, 
 				new Object[]{new PropertyModel<Adherent>(model, "prenom"),nbHeure}
             );
 			libRetour=srm.getString();
 		} else if(entreeCatalogue.startsWith(CatalogueMessages.INSCRIPTION_ATTENDRE_HO)){
 			String ho = entreeCatalogue.substring(12);
-			IModel<Adherent> model = new Model<Adherent>(adh);
+			IModel<Adherent> model = new Model<Adherent>(plongeur);
 			StringResourceModel srm = new StringResourceModel(CatalogueMessages.INSCRIPTION_ATTENDRE_HO, this, model, 
 				new Object[]{new PropertyModel<Adherent>(model, "prenom"),ResaUtil.getDateString(plongee.getDateVisible()),ho}
             );
 			libRetour=srm.getString();
 		} else if(entreeCatalogue.startsWith(CatalogueMessages.INSCRIPTION_ATTENDRE_J_HO)){
 			String ho = entreeCatalogue.substring(14);
-			IModel<Adherent> model = new Model<Adherent>(adh);
+			IModel<Adherent> model = new Model<Adherent>(plongeur);
 			StringResourceModel srm = new StringResourceModel(CatalogueMessages.INSCRIPTION_ATTENDRE_J_HO, this, model, 
 				new Object[]{new PropertyModel<Adherent>(model, "prenom"),ho}
             );
@@ -294,7 +326,7 @@ public class InscriptionPlongeePage extends TemplatePage {
 			libRetour=srm.getString();
 		} else if(entreeCatalogue.startsWith(CatalogueMessages.CM_A_RENOUVELER)){
 			String nbJour = entreeCatalogue.substring(14);
-			IModel<Adherent> model = new Model<Adherent>(adh);
+			IModel<Adherent> model = new Model<Adherent>(plongeur);
 			StringResourceModel srm = new StringResourceModel(CatalogueMessages.CM_A_RENOUVELER, this, model, 
 					new Object[]{new PropertyModel<Adherent>(model, "prenom"),nbJour}
 				);
@@ -328,7 +360,7 @@ public class InscriptionPlongeePage extends TemplatePage {
             );
 			libRetour=srm.getString();
 		} else if(entreeCatalogue.equalsIgnoreCase(CatalogueMessages.INSCRIPTION_KO_DEJA_INSCRIT)){
-			StringResourceModel srm = new StringResourceModel(CatalogueMessages.INSCRIPTION_KO_DEJA_INSCRIT, this,new Model<Adherent>(adh)); 
+			StringResourceModel srm = new StringResourceModel(CatalogueMessages.INSCRIPTION_KO_DEJA_INSCRIT, this,new Model<Adherent>(plongeur)); 
 			libRetour=srm.getString();
 		} else if(entreeCatalogue.equalsIgnoreCase(CatalogueMessages.INSCRIPTION_LISTE_ATTENTE_KO)){
 			IModel<Plongee> model = new Model<Plongee>(plongee);
@@ -338,14 +370,14 @@ public class InscriptionPlongeePage extends TemplatePage {
 			libRetour=srm.getString();
 		} else if(entreeCatalogue.startsWith(CatalogueMessages.INSCRIPTION_ATTENDRE_VR_HO)){
 			String ho = entreeCatalogue.substring(15);
-			IModel<Adherent> model = new Model<Adherent>(adh);
+			IModel<Adherent> model = new Model<Adherent>(plongeur);
 			StringResourceModel srm = new StringResourceModel(CatalogueMessages.INSCRIPTION_ATTENDRE_VR_HO, this, model, 
 				new Object[]{new PropertyModel<Adherent>(model, "prenom"),ResaUtil.getDateString(plongee.getDateVisible()),ho}
             );
 			libRetour=srm.getString();
 		} else if(entreeCatalogue.startsWith(CatalogueMessages.INSCRIPTION_ATTENDRE_VR_J_HO)){
 			String ho = entreeCatalogue.substring(17);
-			IModel<Adherent> model = new Model<Adherent>(adh);
+			IModel<Adherent> model = new Model<Adherent>(plongeur);
 			StringResourceModel srm = new StringResourceModel(CatalogueMessages.INSCRIPTION_ATTENDRE_VR_J_HO, this, model, 
 				new Object[]{new PropertyModel<Adherent>(model, "prenom"),ho}
             );
@@ -406,7 +438,7 @@ public class InscriptionPlongeePage extends TemplatePage {
 					try{
 						// On inscrit en liste d'attente
 						getResaSession().getPlongeeService().inscrireAdherentEnListeAttente(
-								plongee, adh != null ?  adh : getResaSession().getAdherent(), typeMail);
+								plongee, plongeur != null ?  plongeur : getResaSession().getAdherent(), typeMail);
 					
 						setResponsePage(new InscriptionListeAttentePlongeePage(plongee,message));
 					} catch (ResaException e) {
