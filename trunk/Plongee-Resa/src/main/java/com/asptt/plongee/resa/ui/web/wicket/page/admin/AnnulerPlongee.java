@@ -147,7 +147,7 @@ public class AnnulerPlongee extends TemplatePage {
 			// dans la fenêtre de confirmation de désinscription
 			IModel<Plongee> model = new Model<Plongee>(plongee);
 			StringResourceModel srmPlongee = new StringResourceModel(CatalogueMessages.ANNULATION_CONFIRMATION_PLONGEE, this, model, 
-					new Object[]{ResaUtil.getDateString(plongee.getDateVisible()),new PropertyModel<Plongee>(model, "getType")}
+					new Object[]{ResaUtil.getDateString(plongee.getDate()),new PropertyModel<Plongee>(model, "getType")}
        		);
 			add(new Label("infoPlongee", srmPlongee.getString()));
 			
