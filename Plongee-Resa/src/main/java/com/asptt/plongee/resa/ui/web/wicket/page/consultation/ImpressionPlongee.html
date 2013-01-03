@@ -8,10 +8,9 @@
         <link rel="stylesheet" type="text/css" href="medias/css/plongee.css" />
     </head>
     <body>
-    <div align=center>
     <br></br>
     <br></br>
-	<table cellspacing="0">
+	<table id="ImprimePlongee" class="tabcenter">
 	<tr>
 		<td colspan=3 align=center><h3><span wicket:id="message"/></h3></td>
 	</tr>
@@ -20,7 +19,7 @@
 	</tr>
 	<tr><td colspan=3>&nbsp;</td></tr>
 	<tr>
-		<td>Inscrits
+		<td align=center><h4>Inscrits</h4>
 			<table cellspacing="0" class="dataview">
 				<tr>
 					<th>Nom</th>
@@ -29,6 +28,7 @@
 					<th>T&eacute;lephone</th>
 					<th>Parrain</th>
 					<th>T&eacute;lephone</th>
+					<th>Commentaire</th>
 				</tr>
 				<tr wicket:id="participants">
 					<td><span wicket:id="nom">[nom]</span> </td>
@@ -37,12 +37,13 @@
 					<td><span wicket:id="telephone">[telephone]</span></td>
 					<td><span wicket:id="nomParrain">[nomParrain]</span></td>
 					<td><span wicket:id="telParrain">[telParrain]</span></td>
+					<td style="max-width:120px"><span wicket:id="commentaire">[commentaire]</span></td>
 				</tr>
 			</table>
 		</td>
 	</tr>
 	<tr>
-		<td style="vertical-align:top">Liste d'attente
+		<td align=center><h4>Liste d'attente</h4>
 		<table cellspacing="0" class="dataview">
 			<tr>
 				<th>Nom</th>
@@ -51,6 +52,7 @@
 				<th>T&eacute;lephone</th>
 				<th>Parrain</th>
 				<th>T&eacute;lephone</th>
+				<th>Commentaire</th>
 			</tr>
 			<tr wicket:id="listeAttente">
 				<td><span wicket:id="nom">[nom]</span> </td>
@@ -59,21 +61,21 @@
 				<td><span wicket:id="telephone">[telephone]</span></td>
 				<td><span wicket:id="nomParrain">[nomParrain]</span></td>
 				<td><span wicket:id="telParrain">[telParrain]</span></td>
+				<td style="max-width:120px"><span wicket:id="commentaire">[commentaire]</span></td>
 			</tr>
 		</table>
 		</td>
 	</tr>
 	</table>
-	<br></br>
-	<br></br>
-	<div align=center>
+	<div style="text-align: center">
+		<br></br>
+		<br></br>
 		<span>Pour imprimer, appuyer sur les touches "Ctrl + P"</span>
 		<br></br>
 		<br></br>
 		<wicket:link>
 					<a href="accueil">Accueil</a>
 		 </wicket:link>
-	 </div>
 	 </div>
     </body>
 </html>  

@@ -35,7 +35,7 @@ import com.asptt.plongee.resa.model.PlongeeDataProvider;
 //import com.asptt.plongee.resa.util.PlongeeMail;
 import com.asptt.plongee.resa.ui.web.wicket.ResaSession;
 import com.asptt.plongee.resa.util.CatalogueMessages;
-import com.asptt.plongee.resa.util.Clock;
+
 
 @AuthorizeInstantiation({"USER","ADMIN","SECRETARIAT"})
 public class AccueilPage extends TemplatePage {

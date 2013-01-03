@@ -19,6 +19,7 @@ public class Adherent implements Serializable {
 	private Encadrement encadrement;
 	private NiveauAutonomie niveau;
 	private boolean pilote;
+	private boolean tiv;
 	private boolean dp;
 	private boolean actif;
 	private int intActif = 1;
@@ -28,6 +29,7 @@ public class Adherent implements Serializable {
 	private Roles roles;
 	private String role;
 	private String password;
+	private String commentaire;
 	
 	private Date dateCM;
 	private Integer anneeCotisation;
@@ -305,5 +307,21 @@ public class Adherent implements Serializable {
 
 	public void setContacts(List<ContactUrgent> contacts) {
 		this.contacts = contacts;
+	}
+
+	public boolean isTiv() {
+		return tiv;
+	}
+
+	public void setTiv(boolean tiv) {
+		this.tiv = tiv;
+	}
+
+	public String getCommentaire() {
+		return commentaire;
+	}
+
+	public void setCommentaire(String commentaire) {
+		this.commentaire = commentaire;
 	}
 }

@@ -213,7 +213,12 @@ public class AdherentServiceImpl implements AdherentService, Serializable {
 	
 	@Override
 	public void creerAdherent(Adherent adherent) throws TechnicalException{
-			adherentDao.create(adherent);
+        // On met le nom en majuscule et la premiere lettre du prenom
+        String nom = adherent.getNom().toUpperCase();
+        adherent.setNom(nom);
+        String prenom = ResaUtil.capitalizeFirstLetter(adherent.getPrenom());
+        adherent.setPrenom(prenom);
+		adherentDao.create(adherent);
 	}
 	
 	@Override
@@ -280,6 +285,7 @@ public class AdherentServiceImpl implements AdherentService, Serializable {
             adherent.setNumeroLicense(ResaConstants.LICENSE_EXTERNE.concat(numExt.toString()));
             adherent.setActifInt(2);
             adherent.setPilote(false);
+            adherent.setTiv(false);
             adherent.setDp(false);
             adherent.setDateCM(dateCM);
             adherent.setAnneeCotisation(cal.get(Calendar.YEAR));
