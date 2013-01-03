@@ -22,7 +22,7 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.ListChoice;
 import org.apache.wicket.markup.html.form.ListMultipleChoice;
 import org.apache.wicket.markup.html.form.RequiredTextField;
-import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
@@ -121,6 +121,12 @@ public class CreerAdherent extends TemplatePage {
 			listAnnee.setRequired(true);
 			add(listAnnee);
 			
+			// Ajout de la checkbox TIV
+			add(new CheckBox("tiv", model.bind("tiv")));
+			//commentaire
+			TextArea<String> textareaInput = new TextArea<String>("commentaire");
+			textareaInput.add(ExactLengthValidator.maximumLength(45));
+			add(textareaInput);
 			
 	        ContactPanel cuPanel = new ContactPanel("cuPanel", model);
 	        add(cuPanel);

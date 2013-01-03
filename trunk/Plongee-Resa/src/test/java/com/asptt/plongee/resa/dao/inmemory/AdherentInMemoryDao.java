@@ -229,4 +229,16 @@ public class AdherentInMemoryDao implements AdherentDao{
 		return null;
 	}
 
+	@Override
+	public void initPwd(Adherent adherent) throws TechnicalException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public int getIdExternes() throws TechnicalException {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
 }

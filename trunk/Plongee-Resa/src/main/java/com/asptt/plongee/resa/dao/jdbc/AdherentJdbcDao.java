@@ -52,8 +52,8 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements Serializable, Ad
 		try {
 			conex = getDataSource().getConnection();
 			StringBuffer sb = new StringBuffer();
-			sb.append("INSERT INTO ADHERENT (`LICENSE`, `NOM`, `PRENOM`, `NIVEAU`, `TELEPHONE`, `MAIL`, `ENCADRANT`, `PILOTE`, `DATE_DEBUT`, `ACTIF`, `PASSWORD`, `DATE_CM`, `ANNEE_COTI`)");
-			sb.append(" VALUES (?, ?, ?, ?, ?, ?, ?, ?, current_timestamp, ?, ?, ?, ?)");
+			sb.append("INSERT INTO ADHERENT (`LICENSE`, `NOM`, `PRENOM`, `NIVEAU`, `TELEPHONE`, `MAIL`, `ENCADRANT`, `PILOTE`, `DATE_DEBUT`, `ACTIF`, `PASSWORD`, `DATE_CM`, `ANNEE_COTI`, `TIV`, `COMMENTAIRE`)");
+			sb.append(" VALUES (?, ?, ?, ?, ?, ?, ?, ?, current_timestamp, ?, ?, ?, ?, ?, ?)");
 			PreparedStatement st = conex.prepareStatement(sb.toString());
 			st.setString(1, adh.getNumeroLicense());
 			st.setString(2, adh.getNom());
@@ -76,6 +76,12 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements Serializable, Ad
 			Timestamp tsCm = new Timestamp(adh.getDateCM().getTime());
 			st.setTimestamp(11, tsCm);
 			st.setInt(12, adh.getAnneeCotisation());
+			if (adh.isTiv()) {
+				st.setInt(13, 1);
+			} else {
+				st.setInt(13, 0);
+			}
+			st.setString(14, adh.getCommentaire());
 			if (st.executeUpdate() == 0) {
 				throw new TechnicalException(
 						"L'adhérent n'a pu être enregistré");
@@ -149,7 +155,9 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements Serializable, Ad
 			sb.append(" NOM = ?,");
 			sb.append(" PRENOM = ?,");
 			sb.append(" DATE_CM = ?,");
-			sb.append(" ANNEE_COTI = ?");
+			sb.append(" ANNEE_COTI = ?,");
+			sb.append(" TIV = ?,");
+			sb.append(" COMMENTAIRE = ?");
 			sb.append(" WHERE license = ?");
 
 			PreparedStatement st = conex.prepareStatement(sb.toString());
@@ -172,7 +180,13 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements Serializable, Ad
 			Timestamp ts = new Timestamp(adh.getDateCM().getTime());
 			st.setTimestamp(9, ts);
 			st.setInt(10, adh.getAnneeCotisation());
-			st.setString(11, adh.getNumeroLicense());
+			if (adh.isTiv()) {
+				st.setInt(11, 1);
+			} else {
+				st.setInt(11, 0);
+			}
+			st.setString(12, adh.getCommentaire());
+			st.setString(13, adh.getNumeroLicense());
 			if (st.executeUpdate() == 0) {
 				throw new TechnicalException(
 						"L'adhérent n'a pu être enregistré");
@@ -225,14 +239,16 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements Serializable, Ad
 			sb.append("UPDATE ADHERENT");
 			sb.append(" SET NIVEAU = ?,");
 			sb.append(" TELEPHONE = ?,");
-			sb.append(" MAIL = ?");
+			sb.append(" MAIL = ?,");
+			sb.append(" COMMENTAIRE = ?");
 			sb.append(" WHERE license = ?");
 
 			PreparedStatement st = conex.prepareStatement(sb.toString());
 			st.setString(1, ext.getNiveau());
 			st.setString(2, ext.getTelephone());
 			st.setString(3, ext.getMail());
-			st.setString(4, ext.getNumeroLicense());
+			st.setString(4, ext.getCommentaire());
+			st.setString(5, ext.getNumeroLicense());
 			if (st.executeUpdate() == 0) {
 				throw new TechnicalException(
 						"L'externe n'a pu être modifié");
@@ -513,8 +529,7 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements Serializable, Ad
 			String generiqueName = "%";
 			generiqueName.concat(name);
 			generiqueName.concat("%");
-			StringBuffer sb = new StringBuffer("select LICENSE, NOM, PRENOM, NIVEAU, TELEPHONE, MAIL, ENCADRANT, PILOTE, ACTIF, PASSWORD, DATE_CM, ANNEE_COTI ");
-			sb.append(" from ADHERENT a ");
+			StringBuffer sb = new StringBuffer("select * from ADHERENT a");
 			sb.append(" where NOM LIKE ? order by NOM");
 			st = conex.prepareStatement(sb.toString());
 			st.setString(1, generiqueName);
@@ -540,8 +555,7 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements Serializable, Ad
 		Connection conex=null;
 		try {
 			conex = getDataSource().getConnection();
-			StringBuffer sb = new StringBuffer("select LICENSE, NOM, PRENOM, NIVEAU, TELEPHONE, MAIL, ENCADRANT, PILOTE, ACTIF, PASSWORD, DATE_CM, ANNEE_COTI ");
-			sb.append(" FROM ADHERENT a, REL_ADHERENT_ROLES rel, ROLES r");
+			StringBuffer sb = new StringBuffer("select * FROM ADHERENT a, REL_ADHERENT_ROLES rel, ROLES r ");
 			sb.append(" where a.license = rel.adherent_license");
 			sb.append(" and rel.roles_idRoles = r.idroles");
 			sb.append(" and r.libelle = ? order by NOM");
@@ -577,8 +591,7 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements Serializable, Ad
 		Connection conex=null;
 		try {
 			conex = getDataSource().getConnection();
-			StringBuffer sb = new StringBuffer("select LICENSE, NOM, PRENOM, NIVEAU, TELEPHONE, MAIL, ENCADRANT, PILOTE, ACTIF, PASSWORD, DATE_CM, ANNEE_COTI ");
-			sb.append(" from PLONGEE p, INSCRIPTION_PLONGEE i, ADHERENT a ");
+			StringBuffer sb = new StringBuffer("select * from PLONGEE p, INSCRIPTION_PLONGEE i, ADHERENT a ");
 			sb.append(" where idPLONGEES = ?");
 			sb.append(" and idPLONGEES = PLONGEES_idPLONGEES ");
 			sb.append(" and ADHERENT_LICENSE = LICENSE");
@@ -638,8 +651,7 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements Serializable, Ad
 		try {
 			conex = getDataSource().getConnection();
 			StringBuffer sb = new StringBuffer(
-					"select LICENSE, NOM, PRENOM, NIVEAU, TELEPHONE, MAIL, ENCADRANT, PILOTE, ACTIF, PASSWORD, DATE_CM, ANNEE_COTI ");
-			sb.append(" from PLONGEE p, LISTE_ATTENTE la, ADHERENT a ");
+					"select * from PLONGEE p, LISTE_ATTENTE la, ADHERENT a ");
 			sb.append(" where idPLONGEES = ?");
 			sb.append(" and idPLONGEES = PLONGEES_idPLONGEES ");
 			sb.append(" and ADHERENT_LICENSE = LICENSE ");
@@ -676,8 +688,7 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements Serializable, Ad
 		try {
 			conex = getDataSource().getConnection();
 			StringBuffer sb = new StringBuffer(
-					"select LICENSE, NOM, PRENOM, NIVEAU, TELEPHONE, MAIL, ENCADRANT, PILOTE, ACTIF, PASSWORD, DATE_CM, ANNEE_COTI ");
-			sb.append(" from ADHERENT ad, REL_PARRAIN_FILLEUL pf");
+					"select * from ADHERENT ad, REL_PARRAIN_FILLEUL pf");
 			sb.append(" where IDPLONGEE = ?");
 			sb.append(" and IDFILLEUL = ?");
 			sb.append(" and ad.LICENSE = IDPARRAIN");
@@ -750,6 +761,13 @@ public class AdherentJdbcDao extends AbstractJdbcDao implements Serializable, Ad
 		} else {
 			adherent.setPilote(false);
 		}
+		int tiv = rs.getInt("TIV");
+		if (tiv == 1) {
+			adherent.setTiv(true);
+		} else {
+			adherent.setTiv(false);
+		}
+		adherent.setCommentaire(rs.getString("COMMENTAIRE"));
 		adherent.setPassword(rs.getString("PASSWORD"));
 		// Pour les Contacts
 		adherent.setContacts(getContacts(adherent));

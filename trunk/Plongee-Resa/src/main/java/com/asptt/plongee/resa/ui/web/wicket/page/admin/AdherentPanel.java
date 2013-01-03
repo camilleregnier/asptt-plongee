@@ -25,6 +25,7 @@ import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.ListMultipleChoice;
 import org.apache.wicket.markup.html.form.RequiredTextField;
+import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.navigation.paging.PagingNavigator;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
@@ -135,6 +136,12 @@ public class AdherentPanel extends Panel {
 			DropDownChoice<Integer> listAnnee = new DropDownChoice<Integer>("anneeCotisation", annees);
 			listAnnee.setRequired(true);
 			add(listAnnee);
+			// Ajout de la checkbox tiv
+			add(new CheckBox("tiv"));
+			//commentaire
+			TextArea<String> textareaInput = new TextArea<String>("commentaire");
+			textareaInput.add(ExactLengthValidator.maximumLength(45));
+			add(textareaInput);
 
 	        ContactPanel cuPanel = new ContactPanel("cuPanel", adherent);
 	        add(cuPanel);
