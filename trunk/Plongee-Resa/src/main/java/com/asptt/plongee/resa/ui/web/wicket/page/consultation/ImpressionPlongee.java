@@ -76,8 +76,6 @@ public class ImpressionPlongee extends WebPage {
 				item.add(new Label("nomParrain", refParrain));
 				item.add(new Label("telParrain", noTelParrain));
 
-				item.add(new Label("commentaire", adherent.getCommentaire()));
-
 				item.add(new AttributeModifier("class", true,
 						new AbstractReadOnlyModel<String>() {
 							@Override
