@@ -1,0 +1,47 @@
+div.wicket-aa {
+	font-family: "Lucida Grande","Lucida Sans Unicode",Tahoma,Verdana;
+	font-size: 12px;
+	background-color: white;
+	border-width: 1px;
+	border-color: #cccccc;
+	border-style: solid;
+	padding: 2px;
+	margin: 10px 0 0 0;
+	text-align:left;
+}
+div.wicket-aa ul { list-style:none; padding: 2px; margin:0; }
+div.wicket-aa ul li.selected { background-color: #FFFF00; padding: 2px; margin:0; }
+
+table.contactview {
+	border-bottom: 1px solid #0079d6;
+	font-size: 8pt;
+	font-family: arial;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	/*
+	border-left: 1px solid #0079D6;
+	border-right:1px solid #0079D6;
+	*/
+}
+	
+table.contactview caption { text-align: left; }
+table.contactview tr { padding-top: 2px; padding-bottom: 2px; }
+table.contactview tr.even { background-color: #ffebcd; }
+table.contactview tr.odd { background-color: #fff; }
+table.contactview tr.inactif { color: red; }
+table.contactview tr.inscrit { color: red	; }
+table.contactview tr td { padding-left: 5px; padding-right: 15px; }
+table.contactview tr th { color: black; padding-top: 3px; padding-bottom: 3px; padding-left: 3px; padding-right: 3px; background-color: #c1e4ff; border-bottom: 1px solid #0079d6; border-top: 1px solid #0079d6; text-align: left; white-space: nowrap; vertical-align: middle;}
+
+table.contactview tr th { background-position: right; background-repeat:no-repeat; }
+table.contactview tr th.wicket_orderDown {
+	background-color: #87cbff; background-image: url(displaytag/img/arrow_down.png); }
+table.contactview tr th.wicket_orderUp {
+	background-color: #87cbff; background-image: url(displaytag/img/arrow_up.png); }
+table.contactview tr th.wicket_orderNone {
+	background-image: url(displaytag/img/arrow_off.png);
+}
+table.contactview tr th a { font-weight: normal; }
+table.contactview #message { padding-left: 3px; }
+table.contactview caption { padding-bottom: 2px; }
+
