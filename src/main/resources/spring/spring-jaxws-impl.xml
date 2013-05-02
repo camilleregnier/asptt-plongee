@@ -14,14 +14,15 @@
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd"
 	>
 	
-
-	<bean id="adherentService" class="com.asptt.plongee.resa.service.impl.AdherentServiceImpl">
-		<property name="adherentDao" ref="adherentDao" />
-	</bean>
-
-	<bean id="plongeeService" class="com.asptt.plongee.resa.service.impl.PlongeeServiceImpl">
+	<bean id="ReservationServiceProvider" class="com.asptt.plongee.resa.service.impl.ReservationServiceImpl">
 		<property name="plongeeDao" ref="plongeeDao" />
 		<property name="adherentDao" ref="adherentDao" />
 	</bean>
+    
+    <jaxws:endpoint
+    	id="reservationServiceEndPoint"
+    	implementor="#ReservationServiceProvider"
+    	address="/reservationService">
+    </jaxws:endpoint>
 
 </beans>

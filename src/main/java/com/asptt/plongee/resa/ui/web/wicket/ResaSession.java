@@ -52,24 +52,24 @@ public class ResaSession extends AuthenticatedWebSession {
        
         public Roles getRoles() {
                 if (isSignedIn()) {
-      logger.info("adhérent authentifié : isSignedIn = true");
-      logger.info("adherent.getRoles().size() : " + adherent.getRoles().size());
+                	logger.info("adhérent authentifié : isSignedIn = true");
+                	logger.debug("adherent.getRoles().size() : " + adherent.getRoles().size());
                         return adherent.getRoles();
                 }
-    logger.info("adhérent pas authentifié !");
+                logger.info("adhérent pas authentifié !");
                 return null;
         }
 
         public boolean authenticate(String username, String password) {
-      logger.info("avant l'appel du service");
+        		logger.debug("avant l'appel du service");
                 // FIXME a changer des que la clé primaire de l'adhérent aura été choisie
                 adherent = getAdherentService().authentifierAdherent(username, password);
-      logger.info("après l'appel du service");
+                logger.debug("après l'appel du service");
                 if (null == adherent){
-      logger.info("adhérent null");
+                	logger.debug("adhérent null");
                         return false;
                 }else{
-      logger.info("adhérent non null");
+                	logger.debug("adhérent non null");
                         return true;
                 }
         }
