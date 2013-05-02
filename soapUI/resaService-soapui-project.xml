@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:soapui-project activeEnvironment="Default" name="resaService" resourceRoot="" soapui-version="4.5.1" abortOnError="false" runType="SEQUENTIAL" xmlns:con="http://eviware.com/soapui/config"><con:settings/><con:interface xsi:type="con:WsdlInterface" wsaVersion="NONE" name="ReservationServiceServiceSoapBinding" type="wsdl" bindingName="{http://service.resa.plongee.asptt.com/}ReservationServiceServiceSoapBinding" soapVersion="1_1" anonymous="optional" definition="file:/C:/Users/ecus6396/Documents/workspaceJuno/Plongee-Resa/target/generated/wsdl/ReservationService.wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="file:\C:\Users\ecus6396\Documents\workspaceJuno\Plongee-Resa\target\generated\wsdl\ReservationService.wsdl"><con:part><con:url>file:\C:\Users\ecus6396\Documents\workspaceJuno\Plongee-Resa\target\generated\wsdl\ReservationService.wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="ReservationServiceService" targetNamespace="http://service.resa.plongee.asptt.com/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://service.resa.plongee.asptt.com/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+  <wsdl:types>
+    <xs:schema elementFormDefault="unqualified" targetNamespace="http://service.resa.plongee.asptt.com/" version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+      <xs:element name="rechercherPlongeeProchainJour" type="tns:rechercherPlongeeProchainJour"/>
+      <xs:element name="rechercherPlongeeProchainJourResponse" type="tns:rechercherPlongeeProchainJourResponse"/>
+      <xs:complexType name="rechercherPlongeeProchainJour">
+        <xs:sequence>
+          <xs:element name="isVesteRouge" type="xs:boolean"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="rechercherPlongeeProchainJourResponse">
+        <xs:sequence>
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="return" type="tns:plongee"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="plongee">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="date" type="xs:dateTime"/>
+          <xs:element minOccurs="0" name="dateVisible" type="xs:dateTime"/>
+          <xs:element minOccurs="0" name="dp" type="tns:adherent"/>
+          <xs:element minOccurs="0" name="enumNiveauMinimum" type="tns:niveauAutonomie"/>
+          <xs:element minOccurs="0" name="id" type="xs:int"/>
+          <xs:element minOccurs="0" name="lieux" type="xs:string"/>
+          <xs:element minOccurs="0" name="maxPlaces" type="xs:string"/>
+          <xs:element name="nbMaxPlaces" type="xs:int"/>
+          <xs:element minOccurs="0" name="niveauDP" type="xs:string"/>
+          <xs:element minOccurs="0" name="niveauMinimum" type="xs:string"/>
+          <xs:element minOccurs="0" name="ouvertureForcee" type="xs:boolean"/>
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="participants" nillable="true" type="tns:adherent"/>
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="participantsEnAttente" nillable="true" type="tns:adherent"/>
+          <xs:element minOccurs="0" name="pilote" type="tns:adherent"/>
+          <xs:element minOccurs="0" name="type" type="xs:string"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="adherent">
+        <xs:sequence>
+          <xs:element name="actif" type="xs:boolean"/>
+          <xs:element name="actifInt" type="xs:int"/>
+          <xs:element minOccurs="0" name="anneeCotisation" type="xs:int"/>
+          <xs:element minOccurs="0" name="commentaire" type="xs:string"/>
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="contacts" nillable="true" type="tns:contactUrgent"/>
+          <xs:element minOccurs="0" name="dateCM" type="xs:dateTime"/>
+          <xs:element name="dp" type="xs:boolean"/>
+          <xs:element minOccurs="0" name="encadrement" type="xs:string"/>
+          <xs:element minOccurs="0" name="enumEncadrement" type="tns:encadrement"/>
+          <xs:element minOccurs="0" name="enumNiveau" type="tns:niveauAutonomie"/>
+          <xs:element minOccurs="0" name="mail" type="xs:string"/>
+          <xs:element minOccurs="0" name="niveau" type="xs:string"/>
+          <xs:element minOccurs="0" name="nom" type="xs:string"/>
+          <xs:element minOccurs="0" name="numeroLicense" type="xs:string"/>
+          <xs:element minOccurs="0" name="password" type="xs:string"/>
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="photo" nillable="true" type="xs:byte"/>
+          <xs:element name="pilote" type="xs:boolean"/>
+          <xs:element minOccurs="0" name="prenom" type="xs:string"/>
+          <xs:element minOccurs="0" name="role" type="xs:string"/>
+          <xs:element minOccurs="0" name="telephone" type="xs:string"/>
+          <xs:element name="tiv" type="xs:boolean"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="contactUrgent">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="id" type="xs:int"/>
+          <xs:element minOccurs="0" name="nom" type="xs:string"/>
+          <xs:element minOccurs="0" name="prenom" type="xs:string"/>
+          <xs:element minOccurs="0" name="telephone" type="xs:string"/>
+          <xs:element minOccurs="0" name="telephtwo" type="xs:string"/>
+          <xs:element minOccurs="0" name="titre" type="xs:string"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:simpleType name="encadrement">
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="E2"/>
+          <xs:enumeration value="E3"/>
+          <xs:enumeration value="E4"/>
+        </xs:restriction>
+      </xs:simpleType>
+      <xs:simpleType name="niveauAutonomie">
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="BATM"/>
+          <xs:enumeration value="P0"/>
+          <xs:enumeration value="P1"/>
+          <xs:enumeration value="P2"/>
+          <xs:enumeration value="P3"/>
+          <xs:enumeration value="P4"/>
+          <xs:enumeration value="P5"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:schema>
+  </wsdl:types>
+  <wsdl:message name="rechercherPlongeeProchainJourResponse">
+    <wsdl:part name="parameters" element="tns:rechercherPlongeeProchainJourResponse"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="rechercherPlongeeProchainJour">
+    <wsdl:part name="parameters" element="tns:rechercherPlongeeProchainJour"></wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="ReservationService">
+    <wsdl:operation name="rechercherPlongeeProchainJour">
+      <wsdl:input name="rechercherPlongeeProchainJour" message="tns:rechercherPlongeeProchainJour"></wsdl:input>
+      <wsdl:output name="rechercherPlongeeProchainJourResponse" message="tns:rechercherPlongeeProchainJourResponse"></wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="ReservationServiceServiceSoapBinding" type="tns:ReservationService">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="rechercherPlongeeProchainJour">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="rechercherPlongeeProchainJour">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="rechercherPlongeeProchainJourResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="ReservationServiceService">
+    <wsdl:port name="ReservationServicePort" binding="tns:ReservationServiceServiceSoapBinding">
+      <soap:address location="http://localhost:9090/ReservationServicePort"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part></con:definitionCache><con:endpoints><con:endpoint>http://localhost:9090/ReservationServicePort</con:endpoint><con:endpoint>http://localhost:8075/resa-qpm/ws/reservationService</con:endpoint></con:endpoints><con:operation isOneWay="false" action="" name="rechercherPlongeeProchainJour" bindingOperationName="rechercherPlongeeProchainJour" type="Request-Response" outputName="rechercherPlongeeProchainJourResponse" inputName="rechercherPlongeeProchainJour" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8075/resa-qpm/ws/reservationService</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ser="http://service.resa.plongee.asptt.com/">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <ser:rechercherPlongeeProchainJour>
+         <isVesteRouge>false</isVesteRouge>
+      </ser:rechercherPlongeeProchainJour>
+   </soapenv:Body>
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>Global HTTP Settings</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://service.resa.plongee.asptt.com/ReservationService/rechercherPlongeeProchainJour"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:properties/><con:wssContainer/></con:soapui-project>
