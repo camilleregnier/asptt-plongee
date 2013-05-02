@@ -1,26 +1,28 @@
 package com.asptt.plongee.resa.service;
 
+import java.util.List;
+
+import javax.jws.WebMethod;
+import javax.jws.WebParam;
+import javax.jws.WebService;
+import javax.jws.soap.SOAPBinding;
+import javax.jws.soap.SOAPBinding.Style;
+
 import com.asptt.plongee.resa.model.Adherent;
 import com.asptt.plongee.resa.model.Plongee;
 
-public interface ReservationService {
+@WebService 
+public interface ReservationService 
+{
 
-	/**
-	 * Indique si la plongée donnée peut être ouverte ou non.
-	 * Une plongée peut être ouverte si dans les plongeurs il y a 1 directeur de plongée et un pilote OU si l'administrateur a forcé la plongée à l'ouverture. 
-	 */
-	boolean isOuverte(Plongee plongee);
+	@WebMethod
+	List<Plongee> rechercherPlongeeProchainJour(
+			@WebParam(name = "isVesteRouge")
+			boolean isVesteRouge);
 	
-	/**
-	 * 
-	 * @param plongee
-	 * @param plongeur
-	 * @throws MetierException si l'adhérent n'a pas le niveau requis pour participer 
-	 */
-	void inscrire(Plongee plongee, Adherent plongeur) throws MetierException;
-	void desinscrire(Plongee plongee, Adherent plongeur) throws MetierException;
-	
-	
-//	public boolean estValide(Plongee plongee);
+	@WebMethod
+	List<Plongee> rechercherPlongeesAdherentInscrit(
+			@WebParam(name = "numeroLicence") String numeroLicence, 
+			@WebParam(name = "nombreHeure")int nbHours);
 	
 }
