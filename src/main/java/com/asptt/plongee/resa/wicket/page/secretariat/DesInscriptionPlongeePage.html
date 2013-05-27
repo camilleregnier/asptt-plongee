@@ -1,0 +1,18 @@
+<wicket:head>
+    <wicket:link> 
+        <link rel="stylesheet" type="text/css" href="secretariat.css" />
+    </wicket:link>
+</wicket:head> 
+<wicket:extend>
+
+    <form wicket:id="formPlongeurADesinscrire">
+        <span class="msg">Nom du plongeur :</span> 
+        <input type="text" wicket:id="numeroLicense" size="50"/>
+        <a href="#" wicket:id="select">Valider</a> 
+    </form>
+
+    <div wicket:id="modalPlongees"></div>
+
+    <div><span wicket:id="feedback"></span></div>
+
+</wicket:extend>
