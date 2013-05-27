@@ -1,17 +1,14 @@
 package com.asptt.plongee.resa.dao.inmemory;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
-import org.apache.wicket.authorization.strategies.role.Roles;
-
 import com.asptt.plongee.resa.dao.AdherentDao;
 import com.asptt.plongee.resa.exception.TechnicalException;
 import com.asptt.plongee.resa.model.Adherent;
 import com.asptt.plongee.resa.model.ContactUrgent;
 import com.asptt.plongee.resa.model.Message;
 import com.asptt.plongee.resa.model.Plongee;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class AdherentInMemoryDao implements AdherentDao{
 
@@ -21,6 +18,7 @@ public class AdherentInMemoryDao implements AdherentDao{
 		adherents = new ArrayList<Adherent>();
 	}
 	
+    @Override
 	public List<String> getStrRoles(Adherent adherent) throws TechnicalException {
 		adherent.getRoles();
 		List<String> lstRoles = new ArrayList<String>();
@@ -31,6 +29,7 @@ public class AdherentInMemoryDao implements AdherentDao{
 		return lstRoles;
 	}
 
+    @Override
 	public Adherent create(Adherent obj) throws TechnicalException {
 		if(null == obj.getNumeroLicense()){
 			throw new TechnicalException("Adherent sans N° de License");
@@ -43,15 +42,18 @@ public class AdherentInMemoryDao implements AdherentDao{
 		return obj;
 	}
 
+    @Override
 	public void delete(Adherent obj) throws TechnicalException {
 		adherents.remove(obj);
 	}
 
+    @Override
 	public List<Adherent> findAll() throws TechnicalException {
 		List<Adherent> copie = new ArrayList<Adherent>(adherents);
 		return copie;
 	}
 
+    @Override
 	public Adherent findById(String id) throws TechnicalException {
 		for(Adherent a : adherents){
 			if(a.getNumeroLicense().equalsIgnoreCase(id)){
@@ -61,6 +63,7 @@ public class AdherentInMemoryDao implements AdherentDao{
 		return null;
 	}
 
+    @Override
 	public Adherent update(Adherent obj) throws TechnicalException {
 		// deja fait en memoire
 		return obj;
@@ -81,18 +84,21 @@ public class AdherentInMemoryDao implements AdherentDao{
 		return null;
 	}
 
+    @Override
 	public List<Adherent> getAdherentsInscrits(Plongee plongee, String niveauPlongeur, String niveauEncadrement, String trie)
 			throws TechnicalException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+    @Override
 	public List<Adherent> getAdherentsWaiting(Plongee plongee)
 			throws TechnicalException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+    @Override
 	public int getIdRole(String libelle) throws TechnicalException {
 		// TODO Auto-generated method stub
 		return 0;
@@ -179,6 +185,7 @@ public class AdherentInMemoryDao implements AdherentDao{
 		return null;
 	}
 
+    @Override
 	public void updateContact(ContactUrgent contact)
 			throws TechnicalException {
 		// TODO Auto-generated method stub

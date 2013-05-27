@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:task="http://www.springframework.org/schema/task"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+       xmlns:task="http://www.springframework.org/schema/task"
 	xsi:schemaLocation="http://www.springframework.org/schema/task
 	  http://www.springframework.org/schema/task/spring-task-3.0.xsd
       http://www.springframework.org/schema/beans
@@ -11,17 +12,21 @@
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<!-- SCHEDULER -->
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	<task:scheduler id="taskScheduler" />
+	<task:scheduler id="taskScheduler" pool-size="1"/>
 
 	<task:scheduled-tasks scheduler="taskScheduler">
-		<task:scheduled ref="resaTask" method="execute" cron="0 0/1 * * * ?" />
-	</task:scheduled-tasks>
+        <!-- value : sec min heure jourDuMois  mois jourDeSemaine
+        http://www.quartz-scheduler.org/docs/tutorial/TutorialLesson06.html 
+            <task:scheduled ref="resaTask" method="execute" cron="0 0/1 * * * ?" />
+            <task:scheduled ref="resaTask" method="execute" cron="0 20 20 ? * THU" />-->
+            <task:scheduled ref="resaTask" method="execute" cron="0 00 12 ? * SUN" />
+	</task:scheduled-tasks> 
 
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<!-- TASKS -->
-	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 	<bean id="resaTask" class="com.asptt.plongee.resa.task.ResaTask">
 		<property name="plongeeService" ref="plongeeService" />
-	</bean>
+	</bean> 
 
 </beans>

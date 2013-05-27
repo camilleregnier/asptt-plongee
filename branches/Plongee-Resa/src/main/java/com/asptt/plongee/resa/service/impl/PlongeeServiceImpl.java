@@ -43,7 +43,7 @@ public class PlongeeServiceImpl implements PlongeeService, Serializable {
 	public void creerPlongee(Plongee plongee) throws ResaException,TechnicalException {
 		//On verifie d'abord qu'elle n'existe pas déjà
 		List<Plongee> plongees = rechercherPlongees(plongee.getDate(), plongee.getType());
-		if(plongees.size() == 0){
+		if(plongees.isEmpty()){
 			//maj de l'heure de la plongée en fonction du type
 			GregorianCalendar gc = new GregorianCalendar();
 			gc.setTime(plongee.getDate());

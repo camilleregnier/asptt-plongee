@@ -1,8 +1,9 @@
 package com.asptt.plongee.resa.model;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class Message {
+public class Message implements Serializable {
 
 	private static final long serialVersionUID = -2548032640337298221L;
 
