@@ -145,7 +145,7 @@ public class InscriptionFilleulPlongeePage extends TemplatePage {
 	}
 	
 	private void replaceModalWindow(AjaxRequestTarget target) {
-		modalExterieur.setContent(new ExterieurPanel(modalExterieur.getContentId()));
+		modalExterieur.setContent(new ExterieurPanel(modalExterieur.getContentId(), parrain));
 		modalExterieur.setTitle("Compl&eacute;tez les informations concernant le plongeur ext&eacute;rieur");
 		
 		// La hauteur de la fenetre s'adapte à son contenu

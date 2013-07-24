@@ -23,9 +23,19 @@ import com.asptt.plongee.resa.ui.web.wicket.page.inscription.InscriptionPlongeeP
 
 public class ExterieurPanel extends Panel {
 	private CompoundPropertyModel modelAdherent;
+        private Adherent parrain;
 
 	public ExterieurPanel(String id) {
 		super(id);
+
+		setOutputMarkupId(true);
+		add(new ExterieurForm("inputForm"));
+
+	}
+        
+        public ExterieurPanel(String id, Adherent parrain) {
+		super(id);
+                this.parrain = parrain;
 
 		setOutputMarkupId(true);
 		add(new ExterieurForm("inputForm"));
@@ -79,7 +89,8 @@ public class ExterieurPanel extends Panel {
 						
 						resaSession.getAdherentService().creerExterne(adherent);
 	
-						setResponsePage(new InscriptionPlongeePage(adherent));
+                                                // Si il y a un parrain, l'adhérent passé en paramètre est de fait un filleul
+						setResponsePage(new InscriptionPlongeePage(parrain, adherent));
 
 					} catch ( TechnicalException e) {
 						e.printStackTrace();
