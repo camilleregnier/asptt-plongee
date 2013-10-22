@@ -1,0 +1,84 @@
+<wicket:extend>
+    <div id="monfeedbackPanel"> 
+        <span wicket:id="feedback"></span> 
+    </div>
+    <div id="entetePalanque">
+        <!--<div style="text-align: center">-->
+        <span>FICHE DE SECURITE de la Plong&eacute;e&nbsp;&nbsp;du&nbsp;:&nbsp;&nbsp;</span>
+        <span style="color: #FA0101" wicket:id="date"></span>
+        <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+        <span style="color: #FA0101" wicket:id="type"></span>
+        <br>
+        <span>Site&nbsp;:&nbsp;</span>
+        <span style="color: #FA0101" wicket:id="site"></span>
+        <br>
+        <span>M&eacute;t&eacute;o&nbsp;&nbsp;:&nbsp;&nbsp;</span>
+        <span style="color: #FA0101" wicket:id="meteo"></span>
+        <br>
+        <span>Pilote&nbsp;:&nbsp;</span>
+        <span style="color: #FA0101" wicket:id="pilote"></span>
+        <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DP&nbsp;:&nbsp;</span>
+        <span style="color: #FA0101" wicket:id="dp"></span>
+    </div>
+    <br>
+    <div id="entetePalanqueNumero">
+        <span>Palanqu&eacute;es</span>
+    </div>
+    <br>
+    <div class="justification">
+        <span class="msg" wicket:id="message"></span>
+        <form wicket:id="fsForm" id="fsForm">
+            <table cellspacing="0" class="dataview" >
+                <tr>
+                    <th rowspan="2">No</th>
+                    <th rowspan="2">Guide</th>
+                    <th rowspan="2">Plongeur1</th>
+                    <th rowspan="2">Plongeur2</th>
+                    <th rowspan="2">Plongeur3</th>
+                    <th rowspan="2">Plongeur4</th>
+                    <th colspan="2" style="text-align: center">ProfondeurMaxi</th>
+                    <th colspan="2" style="text-align: center">Dur&eacute;e Totale</th>
+                    <th colspan="4" style="text-align: center">Paliers</th>
+                    <th>Heure</th>
+                </tr>
+                <tr>
+                    <th>Pr&eacute;vue</th>
+                    <th>R&eacute;alis&eacute;e</th>
+                    <th>Pr&eacute;vue</th>
+                    <th>R&eacute;alis&eacute;e</th>
+                    <th>3m</th>
+                    <th>6m</th>
+                    <th>9m</th>
+                    <th>Profonds</th>
+                    <th>Sortie</th>
+                </tr>
+                <tr wicket:id="simple">
+                    <td><span wicket:id="numero">[numero]</span> </td>
+                    <td><span wicket:id="guide">[guide]</span> </td>
+                    <td><span wicket:id="plongeur1">[plongeur1]</span> </td>
+                    <td><span wicket:id="plongeur2">[plongeur2]</span></td>
+                    <td><span wicket:id="plongeur3">[plongeur3]</span></td>
+                    <td><span wicket:id="plongeur4">[plongeur4]</span></td>
+                    <td><span wicket:id="profondeurMaxPrevue">[profondeurMaxPrevue]</span></td>
+                    <td><span wicket:id="profondeurMaxRea">[profondeurMaxRea]</span></td>
+                    <td><span wicket:id="dureeTotalePrevue">[dureeTotalePrevue]</span></td>
+                    <td><span wicket:id="dureeTotaleRea">[dureeTotaleRea]</span></td>
+                    <td><span wicket:id="palier3">[palier3]</span></td>
+                    <td><span wicket:id="palier6">[palier6]</span></td>
+                    <td><span wicket:id="palier9">[palier9]</span></td>
+                    <td><span wicket:id="palierProfond">[palierProfond]</span></td>
+                    <td><span wicket:id="heureSortie">[heureSortie]</span></td>
+                </tr>
+            </table>
+            <br>
+            <div style="text-align: center">
+                <input type="button" wicket:id="cancel" value="Annuler"/>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="button" wicket:id="validerFS" value="Valider la Feuille de S&eacute;curit&eacute;"/>
+            </div>            
+            <br>
+            <br>
+        </form>
+    </div>
+    <div id="errorsDiv" class="innerError"></div>
+</wicket:extend>

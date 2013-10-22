@@ -1,0 +1,76 @@
+<wicket:extend>
+    <div id="monfeedbackPanel"> 
+        <span wicket:id="feedback"></span> 
+    </div>
+    <div class="justification">
+        <span class="msg" wicket:id="message"></span>
+        <form wicket:id="fsForm" id="fsForm">
+            <br>
+            <table>
+                <tr>
+                    <td>Date : </td>
+                    <td><input type="text" wicket:id="date"/></td>
+                    <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                    <td>Type : </td>
+                    <td><input type="text" wicket:id="type"/></td>
+                </tr>
+                <tr>
+                    <td>Site : </td>
+                    <td colspan="4"><input class="textfieldLong" type="text" wicket:id="site"/></td>
+                </tr>
+                <tr>
+                    <td>M&eacute;t&eacute;o : </td>
+                    <td colspan="4"><input class="textfieldLong" type="text" wicket:id="meteo"/></td>
+                </tr>
+                <tr>
+                    <td>Pilote : </td>
+                    <td><input type="text" wicket:id="pilote"/></td>
+                    <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                    <td>DP : </td>
+                    <td><input type="text" wicket:id="dp"/></td>
+                </tr>
+            </table>
+            <br>
+            <table cellspacing="0" class="dataview" >
+                <tr>
+                    <th>Nom</th>
+                    <th>Prenom</th>
+                    <th>Niveau</th>
+                    <th>&nbsp;</th>
+                </tr>
+                <tr wicket:id="simple">
+                    <td><span wicket:id="nom">[nom]</span> </td>
+                    <td><span wicket:id="prenom">[prenom]</span> </td>
+                    <td><span wicket:id="niveau">[niveau]</span></td>
+                    <td><a href="#" wicket:id="suppAdh" title="Supprimer"><img wicket:message="src:supprimer" class="no_cadre" alt="Supprimer"/></a></td>
+                </tr>
+            </table>
+            <br>
+            <table>
+                <tr>
+                    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                    <td><input type="submit" name="submit" wicket:id="annulPlongee" value="Annuler la plong&eacute;e" /></td>
+                    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                    <td><input type="submit" name="submit" wicket:id="addPlongeur" value="Ajouter un plongeur" /></td>
+                    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                    <td><input type="button" wicket:id="cancel" value="Retour"/></td>
+                    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                </tr>
+            </table>
+            <br>
+            <br>
+            <br>
+            <table>
+                <tr>
+                    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                    <td><input type="submit" name="submit" wicket:id="saisiePalanque" value="Saisie des palanquees" /></td>
+                    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                </tr>
+            </table>
+        </form>
+    </div>
+    <div wicket:id="modalAnnulPlongee"></div>
+    <div wicket:id="modalAjoutPlongeur"></div>
+    <div wicket:id="modalSuppPlongeur"></div>
+    <div id="errorsDiv" class="innerError"></div>
+</wicket:extend>

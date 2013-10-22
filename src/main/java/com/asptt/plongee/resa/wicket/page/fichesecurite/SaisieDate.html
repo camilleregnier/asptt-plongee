@@ -1,0 +1,23 @@
+<wicket:extend>
+    <div class="justification">
+        <span class="msg" wicket:id="message"></span>
+        <form wicket:id="saisieDates" id="saisieDates">
+            <table> 
+                <tr> 
+                    <td>Date Mini</td><td><input type="text" wicket:id="dateMin"/></td> 
+                    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                    <td>Date Max</td><td><input type="text" wicket:id="dateMax"/></td> 
+                </tr> 
+                <tr>
+                    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                    <td><input type="submit" name="submit" wicket:id="validDate" value="Valider les dates" /></td>
+                    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                    <td><input type="button" wicket:id="cancel" value="Annuler"/></td>
+                    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                </tr>
+            </table> 
+        </form>
+    </div>
+    <div><span wicket:id="feedback"></span></div>
+    <div id="errorsDiv" class="innerError"></div>
+</wicket:extend>

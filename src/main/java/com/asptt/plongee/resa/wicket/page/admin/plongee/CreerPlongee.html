@@ -1,0 +1,28 @@
+<wicket:extend> 
+    <div id="feedbackPanel"> 
+        <span wicket:id="feedback" />
+    </div> 
+    <form wicket:id="inputForm" id="inputForm"> 
+        <table> 
+            <tr> 
+                <td>Date de la plong&eacute;e</td><td><input type="text" wicket:id="date"/></td> 
+            </tr> 
+            <tr> 
+                <td>Inscription &agrave; partir du </td><td><input type="text" wicket:id="dateVisible"/></td> 
+            </tr> 
+            <tr>
+                <td>Nombre de places</td><td><input type="text" wicket:id="nbMaxPlaces"/></td> 
+            </tr>
+            <tr>
+                <td>Niveau</td><td><select wicket:id="niveauMinimum"/></td> 
+            </tr>
+            <tr>
+                <td>Type de plong&eacute;e</td><td><select wicket:id="type"/></td>
+            </tr>
+            <tr>
+                <td><input type="submit" name="submit" wicket:id="validPlongee"	value="Valide la plongee" /></td>
+                <td><input type="button" wicket:id="cancel" value="Annuler"/></td>
+            </tr>
+        </table>     
+    </form> 
+</wicket:extend>

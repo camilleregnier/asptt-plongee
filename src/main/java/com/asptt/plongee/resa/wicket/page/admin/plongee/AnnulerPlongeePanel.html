@@ -1,0 +1,20 @@
+<wicket:panel>
+    <body>
+        <div><span wicket:id="feedback"></span></div>
+        <span wicket:id="infoPlongeurs">Bla bla bla</span>
+        <br>
+        <span wicket:id="infoPlongee">Bla bla bla</span>
+        <br><br>
+        <form wicket:id="annulPlongeeForm" id="annulPlongeeForm">
+
+            <span>Motif d'annulation</span>
+            <textarea rows="3" cols="15" wicket:id="motif"></textarea>
+            <br><br>
+            <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+            <span><input type="submit" name="submit" wicket:id="validAnnulPlongee" value="Valider l'annulation" /></span>
+            <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+            <span><input type="button" wicket:id="cancel" value="Retour"/></span>
+            <br><br>
+        </form>
+    </body>
+</wicket:panel>

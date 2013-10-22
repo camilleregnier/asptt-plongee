@@ -1,0 +1,15 @@
+<wicket:extend>
+    <div id="feedbackPanel"> 
+        <span wicket:id="feedback"/> 
+    </div>
+    <br/>
+    <div><span class="msg" wicket:id="message1"></span></div>
+    <div><span class="msg" wicket:id="message2"></span></div>
+    <br/>
+    <form wicket:id="form">
+        <span wicket:id="palette"></span>
+        <input type="submit" name="submit" wicket:id="valid" value="Valider l'inscription" />
+        <input type="button" wicket:id="cancel" value="Annuler"/>
+        <input type="button" wicket:id="supprimer" value="Supprimer de la liste d'attente"/>
+    </form>
+</wicket:extend>

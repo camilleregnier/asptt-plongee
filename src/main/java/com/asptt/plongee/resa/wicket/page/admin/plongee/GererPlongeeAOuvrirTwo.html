@@ -1,0 +1,36 @@
+<wicket:head>
+    <wicket:link> 
+        <link rel="stylesheet" type="text/css" href="medias/css/PlongeePalette.css" />
+    </wicket:link>
+</wicket:head> 
+<wicket:extend>
+
+    <form wicket:id="form">
+        <table>
+            <tr>
+                <td><span><a href="#" wicket:id="change">Modifier les caract&eacute;ristiques de la plong&eacute;e</a></span></td><td></td>
+            </tr>
+            <tr> 
+                <td>Nombre de places</td><td><input type="text" wicket:id="nbMaxPlaces"/></td> 
+            </tr>
+            <tr> 
+                <td>Niveau mini</td><td><input type="text" wicket:id="niveauMinimum"/></td> 
+            </tr>
+            <tr> 
+                <td>Inscription &agrave; partir du </td><td><input type="text" wicket:id="dateVisible"/></td> 
+            </tr>
+        </table>
+
+        <legend>Choix du Directeur de Plong&eacute;e</legend>
+        <span wicket:id="paletteDps">
+        </span>
+        <legend>Choix du Pilote</legend>
+        <span wicket:id="palettePilotes">
+        </span>
+        <input type="submit" value="Valider" />
+
+    </form>
+
+    <div wicket:id="modalPlongee"/>
+
+</wicket:extend>
