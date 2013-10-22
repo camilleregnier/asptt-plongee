@@ -24,7 +24,7 @@ import com.asptt.plongee.resa.util.ResaUtil;
 public class PlongeeServiceTest extends AbstractServiceTest {
 	
 	private final Logger logger = Logger.getLogger(getClass());
-	@Test
+//	@Test
 	public void testCreerPlongee() throws TechnicalException {
 		
 		Plongee plongee = new Plongee();
@@ -69,7 +69,7 @@ public class PlongeeServiceTest extends AbstractServiceTest {
 		
 	}
 
-	@Test
+//	@Test
 	public void testUpdatePlongee() throws TechnicalException {
 		Plongee plongee = new Plongee();
 		plongee.setId(4);
@@ -79,7 +79,7 @@ public class PlongeeServiceTest extends AbstractServiceTest {
 		plongeeDao.update(plongee);
 	}
 
-	@Test
+//	@Test
 	public void testRechercherPlongee() throws TechnicalException {
 		try {
 			GregorianCalendar gc = new GregorianCalendar();
@@ -97,7 +97,7 @@ public class PlongeeServiceTest extends AbstractServiceTest {
 		}
 	}
 
-	@Test
+//	@Test
 	public void testCalculNbHeure() throws TechnicalException {
 		try {
 			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
@@ -144,7 +144,7 @@ public class PlongeeServiceTest extends AbstractServiceTest {
 		}
 	}
 
-	@Test
+//	@Test
 	public void testInscrireAdherent() throws TechnicalException {
 		try {
 			GregorianCalendar gc = new GregorianCalendar();
@@ -163,7 +163,7 @@ public class PlongeeServiceTest extends AbstractServiceTest {
 	}
 
 
-	@Test
+//	@Test
 	public void testCalculNbMois() {
 		try {
 			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
@@ -187,7 +187,7 @@ public class PlongeeServiceTest extends AbstractServiceTest {
 		}
 	}
 
-	@Test
+//	@Test
 	public void testDateQuartz() {
 			//Plongée du JEUDI Soir
 		BusinessManager bm = new BusinessManager();
@@ -213,7 +213,7 @@ public class PlongeeServiceTest extends AbstractServiceTest {
 		}
 	}
 
-	@Test
+//	@Test
 	public void testGC() {
 		 // create a GregorianCalendar with the Pacific Daylight time zone
 		 // and the current date and time
