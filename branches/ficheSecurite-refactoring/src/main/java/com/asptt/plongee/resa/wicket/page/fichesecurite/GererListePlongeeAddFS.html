@@ -1,0 +1,26 @@
+<wicket:extend>
+    <div class="justification">
+        <span class="msg" wicket:id="message"></span>
+        <form wicket:id="listePlongees" id="listePlongees">
+            <table cellspacing="0" class="dataview">
+                <tr>
+                    <th>Cr&eacute;er</th>
+                    <th>Date</th>
+                    <th>DP</th>
+                    <th>Type</th>
+                    <th>Niveau Mini.</th>
+                </tr>
+                <tr wicket:id="simple">
+                    <td><a href="#" wicket:id="select" title="Cr&eacute;er la fiche de S&eacute;curit&eacute;">
+                            <img wicket:message="src:select" class="no_cadre" alt="Cr&eacute;er la fiche de S&eacute;curit&eacute;" /></a></td>
+                    <td><span wicket:id="date">[date]</span></td>
+                    <td><span wicket:id="dp">[dp]</span></td>
+                    <td><span wicket:id="type">[type]</span></td>
+                    <td><span wicket:id="niveauMini">[niveauMini]</span></td>
+                </tr>
+            </table>
+        </form>
+    </div>
+    <div><span wicket:id="feedback"></span></div>
+    <div id="errorsDiv" class="innerError"></div>
+</wicket:extend>

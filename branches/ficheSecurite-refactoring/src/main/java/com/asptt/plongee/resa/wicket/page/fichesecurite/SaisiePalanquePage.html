@@ -1,0 +1,110 @@
+<wicket:extend>
+    <div id="monfeedbackPanel"> 
+        <span wicket:id="feedback"></span>
+    </div> 
+    <div id="entetePalanque">
+        <span wicket:id="message"></span>
+        <span style="color: #FA0101" wicket:id="messagePlongee"></span><br>
+        <span>SITE&nbsp;&nbsp;:&nbsp;&nbsp;</span>
+        <span style="color: #FA0101" wicket:id="messageSite"></span><br>
+        <span>METEO&nbsp;&nbsp;:&nbsp;&nbsp;</span>
+        <span style="color: #FA0101" wicket:id="messageMeteo"></span>
+    </div>
+        <br>
+        <br>
+    <div id="entetePalanqueNumero">
+        <span>Saisie de la palanque N&deg;&nbsp;&nbsp;:&nbsp;&nbsp;</span>
+        <span style="color: #FA0101" wicket:id="messageNumPalanque"></span>
+    </div>
+        <br>
+        <br>
+    <div id="cadreNoir">
+        <form wicket:id="palanqueForm" id="palanqueForm">
+            <div align="center">
+                <table cellspacing="0">
+                    <tr>
+                        <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                        <td><input type="submit" name="submit" wicket:id="valideGuide" value="valider le Guide" /></td>
+                        <td>&nbsp;&nbsp;&nbsp;&nbsp;<span>GUIDE : </span></td>
+                        <td><span wicket:id="nomGuide" /></td>
+                        <td><input type="submit" name="submit" wicket:id="annulerGuide" value="Annuler le Guide" /></td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                        <td><input type="submit" name="submit" wicket:id="validePlongeur1" value="valider le Plongeur1" /></td>
+                        <td>&nbsp;&nbsp;&nbsp;&nbsp;<span>PLONGEUR 1 : </span></td>
+                        <td><span wicket:id="nomPlongeur1" /></td>
+                        <td><input type="submit" name="submit" wicket:id="annulerPlongeur1" value="Annuler le Plongeur1" /></td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                        <td><input type="submit" name="submit" wicket:id="validePlongeur2" value="valider le Plongeur2" /></td>
+                        <td>&nbsp;&nbsp;&nbsp;&nbsp;<span>PLONGEUR 2 : </span></td>
+                        <td><span wicket:id="nomPlongeur2" /></td>
+                        <td><input type="submit" name="submit" wicket:id="annulerPlongeur2" value="Annuler le Plongeur2" /></td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                        <td><input type="submit" name="submit" wicket:id="validePlongeur3" value="valider le Plongeur3" /></td>
+                        <td>&nbsp;&nbsp;&nbsp;&nbsp;<span>PLONGEUR 3 : </span></td>
+                        <td><span wicket:id="nomPlongeur3" /></td>
+                        <td><input type="submit" name="submit" wicket:id="annulerPlongeur3" value="Annuler le Plongeur3" /></td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                        <td><input type="submit" name="submit" wicket:id="validePlongeur4" value="valider le Plongeur4" /></td>
+                        <td>&nbsp;&nbsp;&nbsp;&nbsp;<span>PLONGEUR 4 : </span></td>
+                        <td><span wicket:id="nomPlongeur4" /></td>
+                        <td><input type="submit" name="submit" wicket:id="annulerPlongeur4" value="Annuler le Plongeur4" /></td>
+                    </tr>
+                    <tr>
+                        <td colspan="5">&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                        <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                        <td><span><b>Liste des plongeurs&nbsp;:&nbsp;</b></span></td>
+                        <td><span><select wicket:id="listPlongeurs"></select></span></td>
+                        <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td colspan="5">&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="justification40">
+                <span><b>Profondeur Maxi&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;</b>
+                    Pr&eacutevue&nbsp;:&nbsp;
+                    <input class="textfieldCourt" type="text" wicket:id="profondeurMaxPrevue"/>
+                    &nbsp;&nbsp;&nbsp;&nbsp;R&eacutealis&eacutee&nbsp;:&nbsp;
+                    <input class="textfieldCourt" type="text" wicket:id="profondeurMaxRea"/>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <b>Dur&eacutee Maxi&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;</b>
+                    Pr&eacutevue&nbsp;:&nbsp;
+                    <input class="textfieldCourt" type="text" wicket:id="dureeTotalePrevue"/>
+                    &nbsp;&nbsp;&nbsp;&nbsp;R&eacutealis&eacutee&nbsp;:&nbsp;
+                    <input class="textfieldCourt" type="text" wicket:id="dureeTotaleRea"/>
+                </span>
+                <br>
+                <span>--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</span>
+                <br>
+                <span>
+                    <b>Paliers&nbsp;:&nbsp;</b>
+                    3m&nbsp;:&nbsp;<input class="textfieldCourt" type="text" wicket:id="palier3m"/>
+                    &nbsp;&nbsp;&nbsp;6m&nbsp;:&nbsp;<input class="textfieldCourt" type="text" wicket:id="palier6m"/>
+                    &nbsp;&nbsp;&nbsp;9m&nbsp;:&nbsp;<input class="textfieldCourt" type="text" wicket:id="palier9m"/>
+                    &nbsp;&nbsp;&nbsp;profond&nbsp;:&nbsp;<input class="textfieldCourt" type="text" wicket:id="palierProfond"/>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <b>Heure de sortie&nbsp;:&nbsp;</b><input class="textfieldCourt" type="text" wicket:id="heureSortie"/>
+                    &nbsp;&nbsp;:&nbsp;&nbsp;<input class="textfieldCourt" type="text" wicket:id="minuteSortie"/>
+                </span>
+            </div>
+            <br>
+            <div align="center">
+                <input type="submit" name="submit" wicket:id="validerPalanque" value="Valider la Palanque" />
+            </div>
+            <br>
+        </form>
+    </div>
+    <div id="errorsDiv" class="innerError"></div>
+</wicket:extend>
