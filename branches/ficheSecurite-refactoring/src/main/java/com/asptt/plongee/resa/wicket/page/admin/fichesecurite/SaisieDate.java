@@ -1,4 +1,4 @@
-package com.asptt.plongee.resa.wicket.page.fichesecurite;
+package com.asptt.plongee.resa.wicket.page.admin.fichesecurite;
 
 import com.asptt.plongee.resa.model.Adherent;
 import com.asptt.plongee.resa.util.CatalogueMessages;

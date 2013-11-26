@@ -12,7 +12,7 @@ import com.asptt.plongee.resa.wicket.page.admin.plongee.GererPlongeeAOuvrirOne;
 import com.asptt.plongee.resa.wicket.page.admin.plongee.attente.GererListeAttenteOne;
 import com.asptt.plongee.resa.wicket.page.consultation.ConsulterPlongees;
 import com.asptt.plongee.resa.wicket.page.consultation.InfoAdherent;
-import com.asptt.plongee.resa.wicket.page.fichesecurite.SaisieDate;
+import com.asptt.plongee.resa.wicket.page.admin.fichesecurite.SaisieDate;
 import com.asptt.plongee.resa.wicket.page.inscription.DeInscriptionPlongeePage;
 import com.asptt.plongee.resa.wicket.page.inscription.DesinscriptionFilleulPage;
 import com.asptt.plongee.resa.wicket.page.inscription.InscriptionFilleulPlongeePage;
