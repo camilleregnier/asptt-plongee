@@ -1,4 +1,4 @@
-package com.asptt.plongee.resa.wicket.page.fichesecurite;
+package com.asptt.plongee.resa.wicket.page.admin.fichesecurite;
 
 import com.asptt.plongee.resa.exception.ResaException;
 import com.asptt.plongee.resa.exception.TechnicalException;

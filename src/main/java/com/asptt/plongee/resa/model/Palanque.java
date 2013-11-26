@@ -4,7 +4,7 @@
  */
 package com.asptt.plongee.resa.model;
 
-import com.asptt.plongee.resa.wicket.page.fichesecurite.ChoiceRenderPlongeur;
+import com.asptt.plongee.resa.wicket.page.admin.fichesecurite.ChoiceRenderPlongeur;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
