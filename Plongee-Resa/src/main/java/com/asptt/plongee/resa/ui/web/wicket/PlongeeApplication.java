@@ -31,86 +31,77 @@ import com.asptt.plongee.resa.ui.web.wicket.page.secretariat.InscriptionExterieu
 
 public class PlongeeApplication extends AuthenticatedWebApplication {
 
-        private ApplicationContext ctx;
- 
-  private final Logger logger = Logger.getLogger(getClass().getName());
-       
-        protected void init() {
-                super.init();
-   
-    logger.info("init() : Début");
+    private ApplicationContext ctx;
+    private final Logger logger = Logger.getLogger(getClass().getName());
 
-                // démarrage du contexte Spring (injection des dépendances)
-                ctx = new ClassPathXmlApplicationContext("/spring/spring-service-impl.xml", "/spring/spring-dao-jdbc.xml", "/spring/spring-datasource.xml");
-               
-                // setting page that Wicket will display if user has no rights to access
-                // a page
-                getApplicationSettings().setAccessDeniedPage(LoginPage.class);
-                // setting authorization strategy (you can use any strategy you like)
+    protected void init() {
+        super.init();
+
+        logger.info("init() : Début");
+
+        // démarrage du contexte Spring (injection des dépendances)
+        ctx = new ClassPathXmlApplicationContext("/spring/spring-service-impl.xml", "/spring/spring-dao-jdbc.xml", "/spring/spring-datasource.xml");
+
+        // setting page that Wicket will display if user has no rights to access
+        // a page
+        getApplicationSettings().setAccessDeniedPage(LoginPage.class);
+        // setting authorization strategy (you can use any strategy you like)
 //              getSecuritySettings().setAuthorizationStrategy( new
 //               RoleAuthorizationStrategy( new MyRoleCheckingStrategy() ) );
 //              getSecuritySettings().setAuthorizationStrategy(
 //                              new RoleAuthorizationStrategy(new RoleAuthorizationStrategy()));
 //                      MetaDataRoleAuthorizationStrategy.authorize(CreerAdherent.class, "ADMIN");
 //                      MetaDataRoleAuthorizationStrategy.authorize(AdminInternalPage.class, "ADMIN");
-               
-                // mounting login page so that it can be referred to in the security
-                // constraint
-                mountBookmarkablePage("/login", LoginPage.class);
-                mountBookmarkablePage("/logout", LogoutPage.class);
-                mountBookmarkablePage("/consulter", ConsulterPlongees.class);
-                mountBookmarkablePage("/inscrire", InscriptionPlongeePage.class);
-                mountBookmarkablePage("/desinscrire", DeInscriptionPlongeePage.class);
-                mountBookmarkablePage("/accueil", AccueilPage.class);
-                mountBookmarkablePage("/modifpassword", ModifPasswordPage.class);
-                mountBookmarkablePage("/creeradherent", CreerAdherent.class);
-                mountBookmarkablePage("/creerplongee", CreerPlongee.class);
-                mountBookmarkablePage("/annulerplongee", AnnulerPlongee.class);
-                mountBookmarkablePage("/gereradherents", GererAdherents.class);
-                mountBookmarkablePage("/gererplongee", GererPlongeeAOuvrirOne.class);
-                mountBookmarkablePage("/gererlisteattente", GererListeAttenteOne.class);
-                mountBookmarkablePage("/inscriptionadherent", InscriptionAdherentPlongeePage.class);
-                mountBookmarkablePage("/inscriptionexterieur", InscriptionExterieurPlongeePage.class);
-                mountBookmarkablePage("/desinscription", DesInscriptionPlongeePage.class);
-     
-    logger.info("init() : Fin");
-               
-        }
 
-        public Session newSession(Request request, Response response) {
-                return new ResaSession(request, ctx);
-        }
+        // mounting login page so that it can be referred to in the security
+        // constraint
+        mountBookmarkablePage("/login", LoginPage.class);
+        mountBookmarkablePage("/logout", LogoutPage.class);
+        mountBookmarkablePage("/consulter", ConsulterPlongees.class);
+        mountBookmarkablePage("/inscrire", InscriptionPlongeePage.class);
+        mountBookmarkablePage("/desinscrire", DeInscriptionPlongeePage.class);
+        mountBookmarkablePage("/accueil", AccueilPage.class);
+        mountBookmarkablePage("/modifpassword", ModifPasswordPage.class);
+        mountBookmarkablePage("/creeradherent", CreerAdherent.class);
+        mountBookmarkablePage("/creerplongee", CreerPlongee.class);
+        mountBookmarkablePage("/annulerplongee", AnnulerPlongee.class);
+        mountBookmarkablePage("/gereradherents", GererAdherents.class);
+        mountBookmarkablePage("/gererplongee", GererPlongeeAOuvrirOne.class);
+        mountBookmarkablePage("/gererlisteattente", GererListeAttenteOne.class);
+        mountBookmarkablePage("/inscriptionadherent", InscriptionAdherentPlongeePage.class);
+        mountBookmarkablePage("/inscriptionexterieur", InscriptionExterieurPlongeePage.class);
+        mountBookmarkablePage("/desinscription", DesInscriptionPlongeePage.class);
 
-        /**
-         * Overriding newWebRequest so that to store take user information from
-         * servletRequest and put it into wicket session.
-        @Override
-        protected WebRequest newWebRequest(final HttpServletRequest servletRequest) {
-                final WebRequest webRequest = super.newWebRequest(servletRequest);
-                final Session session = getSessionStore().lookup(webRequest);
-                if (session != null) {
-                         Save user info into session.
-                         ( ( PlongeeSession )session ).takeUserFromRequest( servletRequest
-                         );
-                }
-                return webRequest;
-        }
-         */
+        logger.info("init() : Fin");
 
-        public Class<? extends WebPage> getHomePage() {
-                return AccueilPage.class;
-        }
+    }
 
-        @Override
-        protected Class<? extends SignInPage> getSignInPageClass() {
-                return LoginPage.class;
-        }
+    public Session newSession(Request request, Response response) {
+        return new ResaSession(request, ctx);
+    }
 
-        @Override
-        protected Class<? extends AuthenticatedWebSession> getWebSessionClass() {
-                return ResaSession.class;
-        }
+    /**
+     * Overriding newWebRequest so that to store take user information from
+     * servletRequest and put it into wicket session.
+     *
+     * @Override protected WebRequest newWebRequest(final HttpServletRequest
+     * servletRequest) { final WebRequest webRequest =
+     * super.newWebRequest(servletRequest); final Session session =
+     * getSessionStore().lookup(webRequest); if (session != null) { Save user
+     * info into session. ( ( PlongeeSession )session ).takeUserFromRequest(
+     * servletRequest ); } return webRequest; }
+     */
+    public Class<? extends WebPage> getHomePage() {
+        return AccueilPage.class;
+    }
 
-       
+    @Override
+    protected Class<? extends SignInPage> getSignInPageClass() {
+        return LoginPage.class;
+    }
+
+    @Override
+    protected Class<? extends AuthenticatedWebSession> getWebSessionClass() {
+        return ResaSession.class;
+    }
 }
-
