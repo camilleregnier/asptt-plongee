@@ -1,0 +1,53 @@
+<wicket:head>
+	<wicket:link> 
+	<link rel="stylesheet" type="text/css" href="medias/css/admin.css" />
+	</wicket:link>
+</wicket:head> 
+<wicket:panel>
+	<form wicket:id="inputForm" id="inputForm"> 
+			<div id="feedbackPanel"> 
+		    	<span wicket:id="feedback"/> 
+		    </div>
+             <div id="corps" align="left"> 
+                 <table> 
+                         <tr><td>Licence</td><td><span wicket:id="numeroLicense"/></td></tr>
+                         <tr><td>Actif</td><td><input type="checkbox" wicket:id="actif"/></td></tr> 
+                         <tr><td>Annee de cotisation</td><td><select wicket:id="anneeCotisation"/></td></tr>
+                         <tr><td>Nom</td><td><input type="text" wicket:id="nom"/></td></tr> 
+                         <tr><td>Prenom</td><td><input type="text" wicket:id="prenom"/></td></tr> 
+                         <tr><td>Telephone</td><td><input type="text" wicket:id="telephone"/></td></tr> 
+                         <tr><td>Mail</td><td><input type="text" wicket:id="mail"/></td></tr> 
+                         <tr>
+                         	<td>Pilote</td> 
+                            <td><input type="checkbox" wicket:id="pilote"/></td> 
+                         </tr> 
+                         <tr><td>Encadrement</td><td><select wicket:id="encadrement"/></td></tr> 
+                         <tr><td>Niveau</td><td><select wicket:id="niveau"/></td></tr> 
+                         <tr><td>Aptitude</td><td><select wicket:id="aptitude"/></td></tr> 
+                         <tr><td>Roles</td><td><select wicket:id="roles"/></td></tr>
+                         <tr><td>Certificat Medical</td><td><input type="text" wicket:id="dateCM"/></td></tr>
+                         <tr>
+                         	<td>Tiv</td> 
+                            <td><input type="checkbox" wicket:id="tiv"/></td> 
+                         </tr> 
+						<tr> 
+							<td>Commentaire</td>
+							<td>
+							 <textarea rows="2" cols="30" wicket:id="commentaire"></textarea>
+							</td> 
+						</tr>
+                 </table>
+                 <br><br>
+	             <div align="center">
+	             	<span wicket:id="cuPanel"/> 
+	             </div>
+		    </div>
+             <br>     
+             <div align="center">
+	             <input type="submit" value="Annuler" wicket:id="cancel"/>
+	             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	             <input type="submit" value="Valider" wicket:id="validAdherent"/>
+             </div>
+             <br>     
+	</form>
+</wicket:panel>

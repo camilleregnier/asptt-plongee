@@ -1,0 +1,33 @@
+<wicket:panel>
+		<div id="feedbackPanel"> 
+	    	<span wicket:id="feedback"></span> 
+	    </div>
+		<div id="corps" align="left"> 
+		 <form wicket:id="inputForm" id="inputForm"> 
+			<table style="max-width:400"> 
+				<tr> 
+					<td>Libell&eacute;</td>
+					<td colspan="2" style="max-width:500">
+					 <textarea rows="4" cols="60" wicket:id="libelle"></textarea>
+					</td> 
+				</tr>
+				<tr> 
+					<td>Date de d&eacute;but</td><td><input type="text" wicket:id="dateDebut"/></td> 
+				</tr> 
+				<tr> 
+					<td>Date de fin</td><td><input type="text" wicket:id="dateFin"/></td>
+				</tr> 
+				<tr> 
+					<td>rang</td><td><input type="text" wicket:id="rang"/></td>
+				</tr> 
+			</table>     
+           <div align="center">
+	        <input type="submit" value="Valider" wicket:id="validMessage"/>
+	             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	        <input type="submit" value="Cr&eacute;er" wicket:id="creerMessage"/>
+	             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	     	<input type="submit" value="Annuler" wicket:id="cancel"/>
+           </div>
+		 </form>
+        </div> 
+</wicket:panel>
