@@ -340,6 +340,7 @@ public class ConsulterPlongees extends TemplatePage {
                         }
 
                         item.add(new Label("niveau", niveauAffiche));
+                        item.add(new Label("aptitude", adherent.getAptitude()));
                         item.add(new Label("telephone", adherent.getTelephone()));
 
                         item.add(new Label("nomParrain", refParrain));

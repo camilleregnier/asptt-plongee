@@ -14,18 +14,17 @@ import com.asptt.plongee.resa.model.Plongee;
 public class PlongeeDaoTest extends AbstractDaoTest {
 
 	private static final Logger logger = Logger.getLogger(PlongeeDaoTest.class);
-//	@Test
-//	public void testFindById() throws TechnicalException {
-//		// test de la fonction
-//		Adherent adh = adherentDao.findById("111111");
-//		
-//		Assert.assertNotNull(adh);
-//		Assert.assertTrue("gilbert".equalsIgnoreCase(adh.getPrenom()));
-//
-//		// recherche d'un inconnu
-//		Adherent inconnu = adherentDao.findById("identifiant n'existant pas");
-//		Assert.assertNull(inconnu);
-//	}
+	@Test
+	public void testFindById() throws TechnicalException {
+		// test de la fonction
+		Adherent adh = adherentDao.findById("096042");
+		
+		Assert.assertNotNull(adh);
+
+		// recherche d'un inconnu
+		Adherent inconnu = adherentDao.findById("identifiant n'existant pas");
+		Assert.assertNull(inconnu);
+	}
 	
 //	@Test
 //	public void testCreateKo() {
@@ -64,7 +63,7 @@ public class PlongeeDaoTest extends AbstractDaoTest {
 		}
 	}
 
-	@Test
+//	@Test
 	public void testDeInscrireAdherentToAttente() {
 		Adherent adh = new Adherent();
 		adh.setNumeroLicense("222222");

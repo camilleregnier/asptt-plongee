@@ -16,7 +16,8 @@ public class Adherent implements Serializable {
     }
 
     public static enum Aptitude {
-        PE1, PE2, PE3, PE4, PA1, PA2, PA3, PA4
+//        PA12, PE40, PA20, PA40, PE60
+        PE40, PE60
     }
     
     private String numeroLicense; // ID
